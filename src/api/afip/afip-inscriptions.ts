@@ -1,5 +1,5 @@
 import { ApiHttp } from '../base-api';
-import type { AfipInscription } from '@/types/Afip';
+import type { AfipInscription } from '@/app/types/Afip';
 
 export const apiAfipGetInscriptions = async (): Promise<AfipInscription[]> => {
 	const params = new URLSearchParams();

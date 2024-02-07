@@ -1,4 +1,4 @@
-import type { AfipState } from '@/types/Afip';
+import type { AfipState } from '@/app/types/Afip';
 import { ApiHttp } from '../base-api';
 
 export const apiAfipGetStates = async (): Promise<AfipState[]> => {

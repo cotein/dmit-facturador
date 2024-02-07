@@ -1,4 +1,4 @@
-import type { RegisterUserResponse, RegisterUser, Cuit } from './../../types/User';
+import type { RegisterUserResponse, RegisterUser, Cuit } from '../../app/types/User';
 import { ApiHttp } from '../base-api';
 import type { AxiosResponse } from 'axios';
 

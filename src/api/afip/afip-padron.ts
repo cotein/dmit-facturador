@@ -1,4 +1,4 @@
-import type { PersonaReturn } from '@/types/Afip';
+import type { PersonaReturn } from '@/app/types/Afip';
 import { ApiHttp } from '../base-api';
 
 export const apiAfipGetCompanyDataByCuit = async (cuit: any): Promise<PersonaReturn> => {

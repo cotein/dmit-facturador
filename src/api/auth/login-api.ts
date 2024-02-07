@@ -1,5 +1,5 @@
 import { ApiHttp } from '../base-api';
-import type { LoginDataOAuthToken, OAuthToken } from '@/types/OauthToken';
+import type { LoginDataOAuthToken, OAuthToken } from '@/app/types/OauthToken';
 
 export const Login = async (loginData: LoginDataOAuthToken): Promise<any> => {
 	try {

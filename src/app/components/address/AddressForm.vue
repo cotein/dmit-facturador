@@ -11,12 +11,12 @@
 		:visible="open"
 		@close="onClose"
 	>
-		<a-form :model="addressStore.address" :rules="rules" layout="vertical" ref="addressFormRef">
+		<a-form :model="address" :rules="rules" layout="vertical" ref="addressFormRef">
 			<a-row :gutter="16">
 				<a-col :span="12">
 					<a-form-item ref="state_id" name="state_id" label="Provincia">
 						<a-select
-							v-model:value="addressStore.address.state_id"
+							v-model:value="address.state_id"
 							size="large"
 							show-search
 							placeholder="Inscripción en Afip"
@@ -33,26 +33,26 @@
 				</a-col>
 				<a-col :span="12">
 					<a-form-item ref="city" name="city" label="Localidad">
-						<a-input v-model:value="addressStore.address.city" autocomplete="off" />
+						<a-input v-model:value="address.city" autocomplete="off" />
 					</a-form-item>
 				</a-col>
 			</a-row>
 			<a-row :gutter="16">
 				<a-col :span="24">
 					<a-form-item ref="street" name="street" label="Calle">
-						<a-input v-model:value="addressStore.address.street" autocomplete="off" />
+						<a-input v-model:value="address.street" autocomplete="off" />
 					</a-form-item>
 				</a-col>
 			</a-row>
 			<a-row :gutter="16">
 				<a-col :span="12">
 					<a-form-item ref="cp" name="cp" label="Código Postal">
-						<a-input v-model:value="addressStore.address.cp" autocomplete="off" />
+						<a-input v-model:value="address.cp" autocomplete="off" />
 					</a-form-item>
 				</a-col>
 				<a-col :span="12">
 					<a-form-item ref="number" name="number" label="Número">
-						<a-input v-model:value="addressStore.address.number" autocomplete="off" />
+						<a-input v-model:value="address.number" autocomplete="off" />
 					</a-form-item>
 				</a-col>
 			</a-row>
@@ -60,7 +60,7 @@
 				<a-col :span="24">
 					<a-form-item label="Entre calles" name="between_streets">
 						<a-textarea
-							v-model:value="addressStore.address.between_streets"
+							v-model:value="address.between_streets"
 							show-count
 							:maxlength="250"
 							placeholder="Por favor ingrese entre qué calles se encuentra el domicilio"
@@ -72,7 +72,7 @@
 				<a-col :span="24">
 					<a-form-item label="Observaciones" name="obs">
 						<a-textarea
-							v-model:value="addressStore.address.obs"
+							v-model:value="address.obs"
 							show-count
 							:maxlength="250"
 							placeholder="Si desea ingresar alguna observación del domicilio, ingreselo aquí"
@@ -91,20 +91,19 @@
 	</a-drawer>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
-import { useState } from '@/composables/afip/useStateComposable';
-import { useAddressStore } from '@/store/address/address-store';
+import { useState } from '@/app/composables/afip/useStateComposable';
+import { useAddressComposable } from '@/app/composables/address/useAddressComposable';
 
 interface Props {
 	title: string;
 }
-/**STORE */
-const addressStore = useAddressStore();
+
+const { address, isValid, Address } = useAddressComposable();
 const { statesLoading, statesStore } = useState();
 
-/**PROPS */
 const props = defineProps<Props>();
 
 const rules: Record<string, Rule[]> = {
@@ -130,15 +129,23 @@ const onClose = () => {
 
 const resetForm = () => {
 	addressFormRef.value.resetFields();
-	addressStore.isValid = false;
+	isValid.value = false;
 };
 
 const onSubmit = async () => {
 	const addressIsOk = await addressFormRef.value.validate();
 
 	if (addressIsOk) {
-		addressStore.isValid = true;
+		isValid.value = true;
 		open.value = false;
 	}
 };
+
+watch(
+	Address.value,
+	(n) => {
+		console.log('🚀 ~ file: AddressForm.vue:144 ~ watch ~ n:', n);
+	},
+	{ deep: true },
+);
 </script>

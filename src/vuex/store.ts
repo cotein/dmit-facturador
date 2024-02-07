@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
-import auth from './modules/authentication/axios/actionCreator';
 import themeLayout from './modules/themeLayout/actionCreator';
+/* import auth from './modules/authentication/axios/actionCreator';
 import chartContent from './modules/chartContent/actionCreator';
 import task from './modules/task/actionCreator';
 import chat from './modules/chat/actionCreator';
@@ -17,28 +17,28 @@ import crud from './modules/crud/axios/actionCreator';
 import users from './modules/users';
 import dataTable from './modules/data-filter/actionCreator';
 import team from './modules/team/actionCreator';
-import contact from './modules/contact/actionCreator';
+import contact from './modules/contact/actionCreator'; */
 
 export default createStore({
-  modules: {
-    themeLayout,
-    auth,
-    chartContent,
-    task,
-    chat,
-    email,
-    headerSearchData,
-    ecommerce,
-    orders,
-    cart,
-    profile,
-    gallery,
-    project,
-    jobSearch,
-    crud,
-    users,
-    dataTable,
-    team,
-    contact,
-  },
+	modules: {
+		themeLayout,
+		/* auth,
+		chartContent,
+		task,
+		chat,
+		email,
+		headerSearchData,
+		ecommerce,
+		orders,
+		cart,
+		profile,
+		gallery,
+		project,
+		jobSearch,
+		crud,
+		users,
+		dataTable,
+		team,
+		contact, */
+	},
 });

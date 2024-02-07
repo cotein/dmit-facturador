@@ -1,12 +1,14 @@
-import type { User } from '@/types/User';
+import type { LoggedUser } from '@/app/types/User';
 import { ApiHttp } from '../base-api';
+import type { AxiosResponse } from 'axios';
 
-export const getuser = async (): Promise<any> => {
+export const getMyData = async (): Promise<any> => {
 	try {
-		const response = await ApiHttp.get<User>('http://localhost:8001/api/users');
+		const response = await ApiHttp.get<AxiosResponse<LoggedUser>>('http://localhost:8001/api/users');
 
 		return response;
 	} catch (error) {
 		console.log('🚀 ~ file: login-api.ts:13 ~ Login ~ error:', error);
+		throw error;
 	}
 };

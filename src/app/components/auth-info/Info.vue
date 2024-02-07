@@ -1,60 +1,88 @@
 <script setup lang="ts">
-import { InfoWraper, NavAuth, UserDropDown } from './auth-info-style';
-// import Support from "./Support";
-import Settings from './Settings.vue';
-import Notification from './Notification.vue';
-import Message from './Message.vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import type { Company } from '@/app/types/Company';
+import { InfoWraper, UserDropDown } from './auth-info-style';
 import { LogoutOutlined } from '@ant-design/icons-vue';
-import SearchBar from './Search.vue';
+import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAddNewCompanyPanelComposable';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+import { useUserComposable } from '@/app/composables/user/useUserComposable';
+import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
+import Message from './Message.vue';
+import Notification from './Notification.vue';
+import Settings from './Settings.vue';
+import EditCompanyForm from '@/app/components/company/EditCompanyForm.vue';
 
-const flag: any = 'english';
+const { sujetoIsEditable } = usePadronComposable();
+const { CompanyGetter, updateCompanyMutation, companyForm, setCompany } = useCompanyComposable();
 const { dispatch } = useStore();
+const { openAddNewCompanyPanel, openEditCompanyPanel, closeEditCompanyPanel, EditCompanyPanel } =
+	useAddNewCompanyPanelComposable();
 const { push } = useRouter();
+const { UserGetter, Avatar } = useUserComposable();
+
 const SignOut = (e: any) => {
 	e.preventDefault();
 	push('/auth/login');
 	dispatch('logOut');
 };
 
-const onFlagChangeHandle = (value: any) => {
-	flag.value = value;
+const handleCustomEvent = (data: Company) => {
+	console.log('🚀 ~ file: Info.vue:31 ~ handleCustomEvent ~ data:', data);
+	/* console.log('🚀  Estoy dentro de handleCustomEvent en aside para crear una compañía nueva');
+	updateCompanyMutation.mutateAsync(data); */
+	closeEditCompanyPanel();
+};
+
+const closeEditPanel = () => {
+	sujetoIsEditable.value = false;
+	closeEditCompanyPanel();
+};
+const openEditPanel = () => {
+	sujetoIsEditable.value = true;
+	setCompany(CompanyGetter.value);
+	openEditCompanyPanel();
 };
 </script>
 
 <template>
+	<a-drawer title="Editar datos de la compañía" width="80%" :visible="EditCompanyPanel" @close="closeEditPanel">
+		<EditCompanyForm @submitCompanyForm="handleCustomEvent" :loadingButton="!updateCompanyMutation.isLoading" />
+	</a-drawer>
 	<InfoWraper>
-		<SearchBar />
+		<!-- <SearchBar /> -->
+		<!-- <DarkMode /> -->
 		<Message />
 		<Notification />
 		<Settings />
 		<!-- <Support /> -->
-
 		<div class="ninjadash-nav-actions__item ninjadash-nav-actions__author">
 			<sdPopover placement="bottomRight" action="click">
 				<template v-slot:content>
 					<UserDropDown>
 						<div class="user-dropdown">
 							<figure class="user-dropdown__info">
-								<img :src="'/src/assets/img/avatar/chat-auth.png'" alt="" />
+								<a-avatar :src="Avatar" />
 								<figcaption>
-									<sdHeading as="h5">J. Watson</sdHeading>
-									<p>Support Engineer</p>
+									<sdHeading as="h5">{{ UserGetter.value.name }}</sdHeading>
+									<p v-if="CompanyGetter">{{ CompanyGetter.name }} {{ CompanyGetter.lastName }}</p>
 								</figcaption>
 							</figure>
 							<ul class="user-dropdown__links">
 								<li>
-									<a to="#"> <unicon name="user"></unicon> Profile </a>
+									<a to="#" @click.prevent="">
+										<unicon name="building"></unicon> Cambiar de Compañía
+									</a>
 								</li>
 								<li>
-									<a to="#"> <unicon name="setting"></unicon> Settings </a>
+									<a to="#" @click.prevent="openAddNewCompanyPanel">
+										<unicon name="building"></unicon> Ingresar una compañía
+									</a>
 								</li>
 								<li>
-									<a to="#"> <unicon name="dollar-sign"></unicon> Billing </a>
-								</li>
-								<li>
-									<a to="#"> <unicon name="users-alt"></unicon> Activity </a>
+									<a to="#" @click.prevent="openEditPanel">
+										<unicon name="building"></unicon> Editar compañía
+									</a>
 								</li>
 								<li>
 									<a to="#"> <unicon name="bell"></unicon> Help </a>
@@ -67,11 +95,19 @@ const onFlagChangeHandle = (value: any) => {
 					</UserDropDown>
 				</template>
 				<a to="#" class="ninjadash-nav-action-link">
-					<a-avatar :src="'/src/assets/img/avatar/chat-auth.png'" />
-					<span class="ninjadash-nav-actions__author--name">Watson</span>
+					<a-avatar :src="Avatar" />
+					<span class="ninjadash-nav-actions__author--name">{{ UserGetter.value.name }}</span>
 					<unicon name="angle-down"></unicon>
 				</a>
 			</sdPopover>
 		</div>
 	</InfoWraper>
 </template>
+<style>
+.avatar {
+	width: 64px;
+	height: 64px;
+	max-width: 64px;
+	max-height: 64px;
+}
+</style>

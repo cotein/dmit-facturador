@@ -20,14 +20,23 @@
 			>
 				Re-enviar petición de verificación
 			</sdButton> -->
-			<a-button
-				type="primary"
-				class="btn-create"
-				@click="resend"
-				:loading="sendVerificationSpinner"
-				:disabled="sendVerificationButtonDisabled"
-				>Re-enviar petición de verificación</a-button
-			>
+			<a-space>
+				<a-button
+					type="primary"
+					class="btn-create"
+					@click="resend"
+					:loading="sendVerificationSpinner"
+					:disabled="sendVerificationButtonDisabled"
+					>Re-enviar petición de verificación
+				</a-button>
+				<a-button
+					type="success"
+					class="btn-create"
+					@click="goToLogin"
+					:disabled="!sendVerificationButtonDisabled"
+					>Iniciar sesión en el Sistema
+				</a-button>
+			</a-space>
 		</MaintananceWrapper>
 	</div>
 </template>
@@ -39,6 +48,8 @@ import { onMounted } from 'vue';
 import { apiEmailVerification, apiEmailResendVerification } from './../../api/auth/email-verification-api';
 import { notification } from 'ant-design-vue';
 import { ref } from 'vue';
+import 'ant-design-vue/lib/message/style/index.css';
+import 'ant-design-vue/lib/notification/style/index.css';
 
 const router = useRouter();
 const spinning = ref<boolean>(false);
@@ -46,6 +57,9 @@ const sendVerificationSpinner = ref<boolean>(false);
 const sendVerificationButtonDisabled = ref<boolean>(true);
 const route = useRoute();
 
+const goToLogin = () => {
+	window.location.replace('http://localhost:5173/auth/login');
+};
 const resend = async () => {
 	const id = route.query.email_verify_url
 		?.toString()
@@ -55,6 +69,7 @@ const resend = async () => {
 
 	const { data } = await apiEmailResendVerification(id)
 		.catch((err) => {
+			console.log('🚀 ~ file: EmailVerification.vue:60 ~ resend ~ err:', err);
 			notification['error']({
 				message: 'Verificación de cuenta',
 				description: 'Ha ocurrido un error inesperado, por favor comuniquese al soporte técnico.',

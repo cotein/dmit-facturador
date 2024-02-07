@@ -9,7 +9,15 @@ import { theme } from './src/config/theme/themeVariables';
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
-		vue(),
+		vue({
+			template: {
+				compilerOptions: {
+					isCustomElement: (tag: string) => {
+						tag.startsWith('v-' || 'sd' || 'SearchOutlined');
+					},
+				},
+			},
+		}),
 		vueJsx(),
 		Components({
 			resolvers: [AntDesignVueResolver()],
