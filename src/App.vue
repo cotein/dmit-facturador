@@ -37,11 +37,7 @@ onMounted(() => {
 	>
 		<Suspense>
 			<template #default>
-				<router-view v-slot="{ Component }">
-					<transition name="fade" mode="out-in">
-						<component :is="Component" :key="$route.path"></component>
-					</transition>
-				</router-view>
+				<RouterView />
 			</template>
 			<template #fallback>
 				<div class="spin">

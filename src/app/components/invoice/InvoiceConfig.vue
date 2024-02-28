@@ -34,7 +34,7 @@
 					</a-form-item>
 				</a-col>
 			</a-row>
-			<a-row :gutter="16">
+			<!-- <a-row :gutter="16">
 				<a-col :span="24">
 					<a-form-item label="Detalle de la factura" name="type_details">
 						<a-radio-group v-model:value="invoice.type_details" name="radioGroup">
@@ -43,10 +43,10 @@
 						</a-radio-group>
 					</a-form-item>
 				</a-col>
-			</a-row>
+			</a-row> -->
 			<a-row :gutter="16">
 				<a-col :span="12">
-					<a-form-item label="Fecha Factura" name="date">
+					<a-form-item label="Fecha Factura" name="invoiceDate">
 						<a-date-picker
 							v-model:value="invoice.date"
 							style="width: 100%"
@@ -57,8 +57,16 @@
 						/>
 					</a-form-item>
 				</a-col>
+
 				<a-col :span="12">
-					<a-form-item label="Fecha Servicios" name="date" v-if="invoice.Concepto != '1'">
+					<a-form-item label="Condición de venta" name="saleCondition">
+						<SaleCondition />
+					</a-form-item>
+				</a-col>
+			</a-row>
+			<a-row :gutter="16" v-if="invoice.Concepto != '1'">
+				<a-col :span="12">
+					<a-form-item label="Fecha Servicios" name="servicesDate">
 						<a-range-picker
 							style="width: 100%"
 							:format="dateFormat"
@@ -69,8 +77,15 @@
 					</a-form-item>
 				</a-col>
 				<a-col :span="12">
-					<a-form-item label="Condición de venta" name="saleCondition">
-						<SaleCondition />
+					<a-form-item label="Fecha vencimiento de pago" name="vtoPagoDate">
+						<a-date-picker
+							v-model:value="vtoPago"
+							style="width: 100%"
+							showToday
+							format="DD-MM-YYYY"
+							placeholder="Vencimiento de pago"
+							@change="servicesDate"
+						/>
 					</a-form-item>
 				</a-col>
 			</a-row>
@@ -86,6 +101,7 @@
 </template>
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
+import { FECompUltimoAutorizado } from '@/api/afip/afip-factura-electronica';
 import { INVOICE_TYPE } from '@/app/types/Constantes';
 import { onMounted, ref, watch } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
@@ -100,7 +116,6 @@ import SearchCustomer from '../customer/SearchCustomer.vue';
 import type { Dayjs } from 'dayjs';
 import type { Rule } from 'ant-design-vue/es/form';
 import VoucherSelect from './VoucherSelect.vue';
-import { FECompUltimoAutorizado } from '@/api/afip/afip-factura-electronica';
 
 const { selectedCustomer } = useCustomerComposable();
 
@@ -123,6 +138,8 @@ const getDateTodayInArgentinaFormat = () => {
 	return `${day}-${month}-${year}`;
 };
 
+const vtoPago = ref<Dayjs>();
+
 const dateFormat = 'DD/MM/YYYY';
 
 const serviceDate = ref<[Dayjs, Dayjs]>([
@@ -130,14 +147,20 @@ const serviceDate = ref<[Dayjs, Dayjs]>([
 	dayjs(getDateTodayInArgentinaFormat(), dateFormat),
 ]);
 
-const rules: Record<string, Rule[]> = {
+const rules = ref({
 	Concepto: [{ required: true, message: 'Debe seleccionar un concepto de facturación' }],
 	date: [{ required: true, message: 'Debe seleccionar la fecha del servicio' }],
 	type_details: [{ required: true, message: 'Debe seleccionar el tipo de detalle de la factura' }],
 	type: [{ required: true, message: 'Please choose the type' }],
 	approver: [{ required: true, message: 'Please choose the approver' }],
 	description: [{ required: true, message: 'Please enter url description' }],
-};
+	vtoPagoDate: [
+		{
+			required: invoice.value.Concepto === '2' || invoice.value.Concepto === '3' ? true : false,
+			message: 'Si factura servicios la fecha vencimiento de pago es requerida',
+		},
+	],
+});
 
 const visible = ref<boolean>(false);
 
@@ -145,7 +168,14 @@ const showDrawer = () => {
 	visible.value = true;
 };
 
-const afterVisibleChange = () => {};
+const afterVisibleChange = (visible: boolean) => {
+	if (visible) {
+		const date = dayjs(new Date());
+
+		invoice.value.date = date;
+		invoice.value.CbteFch = date.format('YYYYMMDD').toString();
+	}
+};
 const onClose = () => {
 	visible.value = false;
 };
@@ -181,13 +211,16 @@ const servDates = (date: any): void => {
 		} else {
 			month_1 = `${date[1].$M + 1}`;
 		}
-	}
 
-	invoice.value.FchServDesde = `${date[0].$y}${month_0}${day_0}`;
-	invoice.value.FchServHasta = `${date[1].$y}${month_1}${day_1}`;
+		invoice.value.FchServDesde = `${date[0].$y}${month_0}${day_0}`;
+		invoice.value.FchServHasta = `${date[1].$y}${month_1}${day_1}`;
+	} else {
+		invoice.value.FchServDesde = '';
+		invoice.value.FchServHasta = '';
+	}
 };
 
-const setDate = (date: string | string[]) => {
+const setDate = (date: any) => {
 	let day = null;
 
 	if (date.$D < 10) {
@@ -202,7 +235,23 @@ const setDate = (date: string | string[]) => {
 		invoice.value.CbteFch = `${date.$y}${date.$M + 1}${day}`;
 	}
 };
-const changeDate = (date: string | string[]) => {
+
+const servicesDate = (date: any) => {
+	let day = null;
+
+	if (date.$D < 10) {
+		day = '0' + date.$D;
+	} else {
+		day = date.$D;
+	}
+
+	if (date.$M + 1 < 10) {
+		invoice.value.FchVtoPago = `${date.$y}0${date.$M + 1}${day}`;
+	} else {
+		invoice.value.FchVtoPago = `${date.$y}${date.$M + 1}${day}`;
+	}
+};
+const changeDate = (date: any) => {
 	setDate(date);
 };
 
@@ -234,7 +283,7 @@ watch(visible, async (visible) => {
 			invoice.value.CbteNro = FECompUltimoAutorizadoResult.CbteNro + 1;
 		}
 
-		if (
+		/* if (
 			[
 				INVOICE_TYPE.NOTA_CREDITO_A,
 				INVOICE_TYPE.NOTA_CREDITO_B,
@@ -245,16 +294,50 @@ watch(visible, async (visible) => {
 			].includes(invoice.value.CbteTipo)
 		) {
 			console.log('🚀 ~ onClose ~ includes wwwwwwwwwwwwwwwwwwwwwwwwww:', invoice.value.CbteTipo);
-		}
+		} */
 	}
 });
 
+watch(
+	() => invoice.value.Concepto,
+	(newValue) => {
+		if (newValue === '2' || newValue === '3') {
+			const d = dayjs(new Date());
+
+			serviceDate.value[0] = d.subtract(1, 'month').startOf('M');
+
+			serviceDate.value[1] = d.subtract(1, 'month').endOf('M');
+
+			invoice.value.FchServDesde = d.subtract(1, 'month').startOf('M').format('YYYYMMDD').toString();
+
+			invoice.value.FchServHasta = d.subtract(1, 'month').endOf('M').format('YYYYMMDD').toString();
+
+			invoice.value.FchVtoPago = d.add(invoice.value.SaleCondition.days, 'day').format('YYYYMMDD').toString();
+		} else {
+			invoice.value.FchServDesde = '';
+			invoice.value.FchServHasta = '';
+			invoice.value.FchVtoPago = '';
+		}
+	},
+	{ deep: true },
+);
+
+watch(
+	() => invoice.value.SaleCondition,
+	(newValue) => {
+		const date = dayjs(new Date());
+		vtoPago.value = date.add(newValue.days, 'day');
+	},
+	{ immediate: true },
+);
+
 onMounted(() => {
 	const date = moment();
+
 	if (invoice && invoice.value) {
-		invoice.value.Concepto = String(CompanyGetter.value.billing_concept);
-		invoice.value.company_id = CompanyGetter.value.id;
-		invoice.value.PtoVta = Number(CompanyGetter.value.pto_vta_fe);
+		invoice.value.Concepto = String(CompanyGetter!.value.billing_concept);
+		invoice.value.company_id = CompanyGetter!.value.id;
+		invoice.value.PtoVta = Number(CompanyGetter!.value.pto_vta_fe);
 
 		let day = null;
 
@@ -269,7 +352,6 @@ onMounted(() => {
 		} else {
 			invoice.value.CbteFch = `${date.year()}${date.month() + 1}${day}`;
 		}
-		invoice.value.date = date;
 	}
 });
 </script>

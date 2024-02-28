@@ -1,5 +1,5 @@
 import type { InvoicePdf } from './../../app/types/Pdf';
-import type { CustomerInvoice } from './../../app/types/Customer';
+import type { CustomerInvoice, CustomerOnSaleInvoice } from './../../app/types/Customer';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { ApiHttp } from '../base-api';
 import { message } from 'ant-design-vue';
@@ -9,7 +9,7 @@ import type {
 	FEUltimoAutorizado,
 	FeCabReq,
 } from '@/app/types/Afip';
-import type { ProductOnInvoiceTable } from '@/app/types/Product';
+import type { ProductForNotaCredito, ProductOnInvoiceTable } from '@/app/types/Product';
 
 const URL = '/api/afip';
 
@@ -20,10 +20,11 @@ export const FECAESolicitar = async (
 	company_cuit: string,
 	company_id: string,
 	user_id: string,
-	products: ProductOnInvoiceTable[],
+	products: ProductOnInvoiceTable[] | ProductForNotaCredito[],
 	saleCondition: { days: number; id: number },
-	customer: CustomerInvoice,
+	customer: CustomerInvoice | CustomerOnSaleInvoice,
 	comments: string,
+	parent?: number,
 ): Promise<AxiosResponse<InvoicePdf> | undefined> => {
 	try {
 		const response = await ApiHttp.post<InvoicePdf>(`${URL}/FECAESolicitar`, {
@@ -37,6 +38,7 @@ export const FECAESolicitar = async (
 			saleCondition,
 			customer,
 			comments,
+			parent,
 		});
 
 		return response;

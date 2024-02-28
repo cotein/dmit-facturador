@@ -18,7 +18,7 @@ export const useInvoiceListComposable = () => {
 		['invoice-list', currentPage, itemsPerPage, customer, status_id, from, to],
 		() =>
 			getInvoiceList(
-				CompanyGetter.value?.id,
+				CompanyGetter!.value.id,
 				customer.value?.value,
 				status_id.value,
 				from.value,

@@ -55,3 +55,16 @@ export type ProductTransformer = {
 		percentage: number;
 	};
 };
+
+export type ProductForNotaCredito = {
+	id: number;
+	key: number;
+	name: string;
+	quantity: number;
+	neto_import: number;
+	iva_import: number;
+	iva_id: number;
+	iva_afip_code: string;
+	unit_price: number;
+	total: number;
+};

@@ -2,11 +2,13 @@ import { FactoryInvoiceBuilder } from './Clases/FactoryInvoiceBuilder';
 import { storeToRefs } from 'pinia';
 import { useInvoiceStore } from '@/app/store/invoice/useInvoiceStore';
 import type { AfipInvoiceBaseBuilder } from './Clases/AfipInvoiceBaseBuilder';
+import type { AfipInvoice } from '@/app/types/Afip';
+import type { ProductOnInvoiceTable, ProductForNotaCredito } from '@/app/types/Product';
 
 const { invoiceType } = storeToRefs(useInvoiceStore());
 
 export const useInvoiceBuilderComposable = () => {
-	const createBuilder = (
+	const createConcreteInvoiceBuilder = (
 		invoiceType: number,
 		inscriptionCompany: number,
 		inscriptionCustomer: number,
@@ -22,67 +24,42 @@ export const useInvoiceBuilderComposable = () => {
 
 	const createInvoiceBuilder = (
 		builder: AfipInvoiceBaseBuilder,
-		CantReg: any,
-		PtoVta: any,
-		CbteTipo: any,
-		Concepto: any,
-		DocTipo: any,
-		DocNro: any,
-		CbteDesde: any,
-		CbteHasta: any,
-		CbteFch: any,
-		SaleConditionDays: any,
-		ImpTotal: any,
-		ImpTotConc: any,
-		ImpNeto: any,
-		ImpOpEx: any,
-		ImpIVA: any,
-		ImpTrib: any,
-		FchServDesde: any,
-		FchServHasta: any,
-		MonId: any,
-		MonCotiz: any,
-		IvaAarray: any,
-		CbtesAsoc: any,
-		Tributos: any,
-		Opcionales: any,
-		Compradores: any,
-		PeriodoAsoc: any,
-		Actividades: any,
+		invoice: AfipInvoice,
+		invoiceTableData: ProductOnInvoiceTable[] | ProductForNotaCredito[],
 	) => {
 		const concreteInvoiceBuilder = new builder() as AfipInvoiceBaseBuilder;
-		concreteInvoiceBuilder.setCantReg(CantReg);
-		concreteInvoiceBuilder.setPtoVta(PtoVta);
-		concreteInvoiceBuilder.setCbteTipo(CbteTipo);
-		concreteInvoiceBuilder.setConcepto(Concepto);
-		concreteInvoiceBuilder.setDocTipo(DocTipo);
-		concreteInvoiceBuilder.setDocNro(DocNro);
-		concreteInvoiceBuilder.setCbteDesde(CbteDesde);
-		concreteInvoiceBuilder.setCbteHasta(CbteHasta);
-		concreteInvoiceBuilder.setCbteFch(CbteFch);
-		concreteInvoiceBuilder.setImpTotal(ImpTotal);
-		concreteInvoiceBuilder.setImpTotConc(ImpTotConc);
-		concreteInvoiceBuilder.setImpNeto(ImpNeto);
-		concreteInvoiceBuilder.setImpOpEx(ImpOpEx);
-		concreteInvoiceBuilder.setImpIVA(ImpIVA);
-		concreteInvoiceBuilder.setImpTrib(ImpTrib);
-		concreteInvoiceBuilder.setFchServDesde(FchServDesde);
-		concreteInvoiceBuilder.setFchServHasta(FchServHasta);
-		concreteInvoiceBuilder.setFchVtoPago(CbteFch, SaleConditionDays);
-		concreteInvoiceBuilder.setMonId(MonId);
-		concreteInvoiceBuilder.setMonCotiz(MonCotiz);
-		concreteInvoiceBuilder.setIvaAarray(IvaAarray);
-		concreteInvoiceBuilder.setCbtesAsoc(CbtesAsoc);
-		concreteInvoiceBuilder.setTributos(Tributos);
-		concreteInvoiceBuilder.setOpcionales(Opcionales);
-		concreteInvoiceBuilder.setCompradores(Compradores);
-		concreteInvoiceBuilder.setPeriodoAsoc(PeriodoAsoc);
-		concreteInvoiceBuilder.setActividades(Actividades);
+		concreteInvoiceBuilder.setCantReg(invoice.CantReg);
+		concreteInvoiceBuilder.setPtoVta(invoice.PtoVta);
+		concreteInvoiceBuilder.setCbteTipo(invoice.CbteTipo);
+		concreteInvoiceBuilder.setConcepto(invoice.Concepto);
+		concreteInvoiceBuilder.setDocTipo(invoice.customer);
+		concreteInvoiceBuilder.setDocNro(invoice.customer);
+		concreteInvoiceBuilder.setCbteDesde(invoice.CbteNro);
+		concreteInvoiceBuilder.setCbteHasta(invoice.CbteNro);
+		concreteInvoiceBuilder.setCbteFch(invoice.CbteFch);
+		concreteInvoiceBuilder.setImpTotal(invoiceTableData);
+		concreteInvoiceBuilder.setImpTotConc(invoiceTableData);
+		concreteInvoiceBuilder.setImpNeto(invoiceTableData);
+		concreteInvoiceBuilder.setImpOpEx(invoiceTableData);
+		concreteInvoiceBuilder.setImpIVA(invoiceTableData);
+		concreteInvoiceBuilder.setImpTrib(invoiceTableData);
+		concreteInvoiceBuilder.setFchServDesde(invoice.FchServDesde);
+		concreteInvoiceBuilder.setFchServHasta(invoice.FchServHasta);
+		concreteInvoiceBuilder.setFchVtoPago(invoice.FchVtoPago!);
+		concreteInvoiceBuilder.setMonId('PES');
+		concreteInvoiceBuilder.setMonCotiz(1);
+		concreteInvoiceBuilder.setIvaAarray(invoiceTableData);
+		concreteInvoiceBuilder.setCbtesAsoc(invoice.CbtesAsoc);
+		concreteInvoiceBuilder.setTributos();
+		concreteInvoiceBuilder.setOpcionales();
+		concreteInvoiceBuilder.setCompradores();
+		concreteInvoiceBuilder.setPeriodoAsoc();
+		concreteInvoiceBuilder.setActividades();
 
 		const result = concreteInvoiceBuilder.build();
 
 		return result;
 	};
 
-	return { createBuilder, createInvoiceBuilder, invoiceType };
+	return { createConcreteInvoiceBuilder, createInvoiceBuilder, invoiceType };
 };

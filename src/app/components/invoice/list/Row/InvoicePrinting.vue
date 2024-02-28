@@ -1,19 +1,22 @@
 <template>
-	<a-tooltip title="Editar">
-		<a-button type="default" @click="printPdf">
+	<a class="ant-dropdown-link" @click.prevent="printPdf">
+		<PrinterFilled style="color: black" />
+		Imprimir comprobante
+		<!-- <a-button type="default" @click="printPdf">
 			<template #icon>
 				<PrinterFilled />
 			</template>
-		</a-button>
-	</a-tooltip>
+			Imprimir comprobante
+		</a-button> -->
+	</a>
 </template>
 
 <script setup lang="ts">
-import type { InvoiceList } from '@/app/types/Invoice';
 import { PrinterFilled } from '@ant-design/icons-vue';
-import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
 import type { Invoice } from '@/app/pdf/invoices/Invoice';
+import type { InvoiceList } from '@/app/types/Invoice';
 
 const { CompanyGetter } = useCompanyComposable();
 const { getPdfInvoice } = usePrinterPdfComposable();
@@ -41,8 +44,4 @@ const printPdf = () => {
 };
 </script>
 
-<style scoped>
-.ant-tooltip-inner {
-	background-color: red;
-}
-</style>
+<style scoped></style>

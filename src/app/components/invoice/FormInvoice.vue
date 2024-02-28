@@ -1,27 +1,30 @@
-<script setup lang="tsx">
-import { InvoiceHeader, InvoiceLetterBox } from './Style';
-import InvoiceConfig from './InvoiceConfig.vue';
-import { Main } from '../../styled';
-import { computed, onMounted, onUnmounted, watch } from 'vue';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
-import { useVoucherComposable } from '@/app/composables/voucher/useVoucherComposable';
-import { useSaleConditionComposable } from '@/app/composables/sale-condition/useSaleConditionComposable';
-import { useDrawerPtoVtaStore } from '@/app/store/panels/useDrawerPtoVtaStore';
+<script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
-import ProductTable from './ProductTable.vue';
-import moment from 'moment';
-import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
-import DrawerPtoVta from './DrawerPtoVta.vue';
+import { computed, onMounted, onUnmounted, watch } from 'vue';
+import { InvoiceHeader, InvoiceLetterBox } from './Style';
+import { Main } from '../../styled';
 import { storeToRefs } from 'pinia';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useDrawerPtoVtaStore } from '@/app/store/panels/useDrawerPtoVtaStore';
+import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
+import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
+import { useSaleConditionComposable } from '@/app/composables/sale-condition/useSaleConditionComposable';
+import { useVoucherComposable } from '@/app/composables/voucher/useVoucherComposable';
+import { useInvoiceListComposable } from '@/app/composables/invoice/useInvoiceListComposable';
+import DrawerPtoVta from './DrawerPtoVta.vue';
+import InvoiceConfig from './InvoiceConfig.vue';
+import moment from 'moment';
+import ProductTable from './ProductTable.vue';
+import InvoiceTable from './list/InvoiceTable.vue';
 
-const { InvoiceGetter } = useInvoiceComposable();
+const { invoiceList, isLoading } = useInvoiceListComposable();
 const { CompanyGetter } = useCompanyComposable();
-const { fetchVouchers } = useVoucherComposable();
-const { fetchSaleConditions } = useSaleConditionComposable();
-const { openDrawerPtoVta } = useDrawerPtoVtaStore();
-const { invoice } = useInvoiceComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
+const { fetchSaleConditions } = useSaleConditionComposable();
+const { fetchVouchers } = useVoucherComposable();
+const { invoice, isSale } = useInvoiceComposable();
+const { InvoiceGetter } = useInvoiceComposable();
+const { openDrawerPtoVta } = useDrawerPtoVtaStore();
 
 const VoucherDate = computed(() => {
 	if (InvoiceGetter.value.CbteFch != '') {
@@ -44,7 +47,6 @@ watch(
 			newValue?.pto_vta_fe === undefined ||
 			newValue?.pto_vta_fe === null
 		) {
-			console.log('🚀 ~ file: FormInvoice.vue:44 ~ openDrawerPtoVta:', 'openDrawerPtoVta');
 			openDrawerPtoVta();
 		}
 	},
@@ -162,15 +164,16 @@ onUnmounted(() => {
 					<br />
 					<br />
 					<!-- Facturo por productos -->
-					<ProductTable />
+					<ProductTable v-if="isSale" />
+					<!-- Facturo por nota de crédito / débito -->
 					<InvoiceTable
+						v-if="!isSale"
 						:list="invoiceList"
 						:loading="isLoading"
 						:viewButtonsColumn="false"
-						:viewSearch="false"
+						:viewSearch="true"
+						:isSale="isSale"
 					/>
-					<!-- Facturo por texto libre -->
-					<!-- <FreeText /> -->
 				</sdCards>
 			</a-col>
 		</a-row>

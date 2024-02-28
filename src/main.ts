@@ -19,7 +19,6 @@ import { NavTitle } from './app/layout/style';
 import moment from 'moment';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-import DatePicker from 'ant-design-vue/es/date-picker/moment';
 
 const pinia = createPinia();
 app.component('SearchOutlined', SearchOutlined);

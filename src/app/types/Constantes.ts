@@ -1,3 +1,5 @@
+import type { Iva } from './Iva';
+
 export const COMPANY_MODEL: string = 'App/Model/Company';
 
 export const CUIT_ID: number = 25;
@@ -61,3 +63,16 @@ export enum AFIP_VOUCHERS {
 	CINCO = 9,
 	DOS_COMA_CINCO = 10,
 }
+
+export const AFIP_IVA: Iva[] = [
+	{ code: '0', name: 'No Corresponde', percentage: 0 },
+	{ code: '1', name: 'No Gravado', percentage: 0 },
+	{ code: '2', name: 'Exento', percentage: 0 },
+	{ code: '3', name: '0%', percentage: 0 },
+	{ code: '4', name: '10,50%', percentage: 10.5 },
+	{ code: '5', name: '21%', percentage: 21 },
+	{ code: '6', name: '27%', percentage: 27 },
+	{ code: '7', name: 'Gravado', percentage: 0 },
+	{ code: '8', name: '5%', percentage: 5 },
+	{ code: '9', name: '2,50%', percentage: 2.5 },
+];

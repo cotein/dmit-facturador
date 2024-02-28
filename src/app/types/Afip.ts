@@ -1,3 +1,4 @@
+import type { Dayjs } from 'dayjs';
 import type { Customer } from './Customer';
 import type { SaleCondition } from './SaleCondition';
 
@@ -122,16 +123,16 @@ export type FEUltimoAutorizado = {
 
 export type AfipInvoice = {
 	CantReg: number;
-	CbteDesde: number | null;
+	CbteDesde: number;
 	CbteFch: string;
-	CbteHasta: number | null;
-	CbteNro: number | null;
-	CbtesAsoc?: CbtesAsoc | null;
+	CbteHasta: number;
+	CbteNro: number;
+	CbtesAsoc?: CbtesAsoc;
 	CbteTipo: number | null;
 	company_id: number | undefined;
-	Concepto: string | null | number;
+	Concepto: string;
 	customer: Customer | null;
-	date: string | null | [];
+	date: Dayjs;
 	DocTipo: number | null;
 	FchVtoPago?: string;
 	FchServDesde: string;
@@ -157,7 +158,7 @@ export type AfipInvoice = {
 		id: number | null;
 		name: string | null;
 	};
-	comments: string | null;
+	comments?: string | null;
 };
 
 export type FeCabReq = {

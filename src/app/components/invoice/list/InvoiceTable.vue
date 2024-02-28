@@ -5,6 +5,7 @@
 				<template #title>
 					<div class="ninjadash-card-title-wrap">
 						<span class="ninjadash-card-title-text"> Ventas </span>
+						<DrawerNotaCredito :invoice-list="invoiceForNotaCredito" />
 					</div>
 				</template>
 				<template #button>
@@ -30,7 +31,7 @@
 				</template>
 				<TopToolBox>
 					<a-row :gutter="15" class="justify-content-center" v-if="props.viewSearch">
-						<a-col :xxl="6" :lg="6" :xs="24">
+						<a-col :xxl="6" :lg="6" :xs="24" v-if="props.isSale">
 							<SearchCustomer :multiple="false" />
 						</a-col>
 						<a-col :xxl="9" :lg="9" :xs="24">
@@ -54,7 +55,7 @@
 						<a-col :xxl="7" :lg="7" :xs="24">
 							<BetweenDaysRangePicker />
 						</a-col>
-						<a-col :xxl="2" :lg="2" :xs="24">
+						<a-col :xxl="2" :lg="2" :xs="24" v-if="props.isSale">
 							<div class="table-toolbox-actions text-right">
 								<sdButton
 									size="sm"
@@ -77,7 +78,13 @@
 								:dataSource="props.list"
 								:pagination="false"
 								:loading="props.loading"
+								:rowSelection="!props.isSale ? rowSelection : null"
+								:showSorterTooltip="{ title: 'Clic para ordenar' }"
 							>
+								<template #headerCell="{ title }">
+									<div style="text-align: center">{{ title }}</div>
+								</template>
+
 								<template #bodyCell="{ column, record, index }">
 									<template v-if="column.key === 'row'">
 										<RowNumber :index="index" />
@@ -105,6 +112,28 @@
 						</div>
 					</TopSellerWrap>
 				</TableDefaultStyle>
+				<div class="wrap-pagination">
+					<a-pagination
+						:total="totalPages"
+						v-model:current="currentPage"
+						v-model:page-size="itemsPerPage"
+						:page-size-options="pageSizeOptions"
+						show-size-changer
+						@showSizeChange="onShowSizeChange"
+						@change="changeCurrentPage"
+						:show-total="showTotal"
+					>
+						<template #buildOptionText="props">
+							<span v-if="props.value !== '50'">{{ props.value }} Comprobantes por pág.</span>
+							<span v-else></span>
+						</template>
+						<template #itemRender="{ type, originalElement }">
+							<a v-if="type === 'prev'">Ant.</a>
+							<a v-else-if="type === 'next'">Sig.</a>
+							<component :is="originalElement" v-else></component>
+						</template>
+					</a-pagination>
+				</div>
 			</Cards>
 		</BorderLessHeading>
 	</div>
@@ -113,9 +142,15 @@
 <script setup lang="ts">
 import { BorderLessHeading, TableDefaultStyle } from '../../../styled';
 import { ExcelService } from '@/app/excel/ExcelService';
+import { getInvoiceList } from '@/api/invoice/invoice-api';
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { TopSellerWrap } from '../../../../views/dashboard/style';
 import { TopToolBox } from '../Style';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
+import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
+import { useInvoiceListStore } from '@/app/store/invoice/useInvoiceListStore';
 import BetweenDaysRangePicker from '../../shared/BetweenDaysRangePicker.vue';
 import Cards from '../../../components/cards/frame/CardsFrame.vue';
 import InvoiceActions from './Row/InvoiceActions.vue';
@@ -126,14 +161,12 @@ import InvoiceNumber from './Row/InvoiceNumber.vue';
 import InvoiceStatus from './Row/InvoiceStatus.vue';
 import RowNumber from '../../shared/RowNumber.vue';
 import SearchCustomer from '../../customer/SearchCustomer.vue';
+import DrawerNotaCredito from '@/app/components/invoice/DrawerNotaCredito.vue';
 import type { InvoiceList } from '@/app/types/Invoice';
-import { getInvoiceList } from '@/api/invoice/invoice-api';
-import { useInvoiceListStore } from '@/app/store/invoice/useInvoiceListStore';
-import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
-import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
-import { storeToRefs } from 'pinia';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
+import dayjs from 'dayjs';
 
+const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
@@ -144,6 +177,7 @@ type Props = {
 	loading: boolean;
 	viewSearch: boolean;
 	viewButtonsColumn: boolean;
+	isSale: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -151,13 +185,14 @@ const props = withDefaults(defineProps<Props>(), {
 	loading: false,
 	viewSearch: true,
 	viewButtonsColumn: true,
+	isSale: true,
 });
 
 type InvoiceTableColumn = {
 	title: string;
 	dataIndex: string;
 	key: string;
-	align: string;
+	sorter?: any;
 };
 
 const filterKey = ref(['Adeudada', 'Parcialmente Cancelada', 'Cancelada']);
@@ -169,7 +204,7 @@ const dataExcel = ref([]);
 const print = async () => {
 	const print = 'yes';
 	const resp = await getInvoiceList(
-		CompanyGetter.value?.id,
+		CompanyGetter!.value.id,
 		customer.value?.value,
 		status_id.value,
 		from.value,
@@ -188,45 +223,102 @@ const invoiceTableColumns: InvoiceTableColumn[] = [
 		title: '#',
 		dataIndex: 'row',
 		key: 'row',
-		align: 'center',
 	},
 	{
 		title: 'Cliente',
 		dataIndex: 'customer',
 		key: 'customer',
-		align: 'center',
+		sorter: {
+			compare: (a: InvoiceList, b: InvoiceList) => {
+				const nameA = `${a.customer.name} ${a.customer.last_name}`;
+
+				const nameB = `${b.customer.name} ${b.customer.last_name}`;
+
+				if (nameA < nameB) {
+					return -1;
+				}
+
+				if (nameA > nameB) {
+					return 1;
+				}
+
+				return 0;
+			},
+			multiple: 1,
+		},
 	},
 	{
 		title: 'Fecha',
 		dataIndex: 'date',
 		key: 'date',
-		align: 'center',
+		sorter: {
+			compare: (a: InvoiceList, b: InvoiceList) => {
+				const dayA = dayjs(a.voucher.cbte_fch);
+
+				const dayB = dayjs(b.voucher.cbte_fch);
+
+				if (dayA.isBefore(dayB)) {
+					return -1;
+				} else {
+					return 1;
+				}
+			},
+			multiple: 3,
+		},
 	},
 	{
 		title: 'Número',
 		dataIndex: 'number',
 		key: 'number',
-		align: 'center',
 	},
 	{
 		title: 'Importe',
 		dataIndex: 'value',
 		key: 'value',
-		align: 'center',
+		sorter: {
+			compare: (a: InvoiceList, b: InvoiceList) => {
+				if (a.voucher.total < b.voucher.total) {
+					return -1;
+				}
+
+				if (a.voucher.total > b.voucher.total) {
+					return 1;
+				}
+
+				return 0;
+			},
+			multiple: 2,
+		},
 	},
 	{
 		title: 'Estado',
 		dataIndex: 'status',
 		key: 'status',
-		align: 'center',
 	},
-	{
+];
+
+if (props.isSale) {
+	invoiceTableColumns.push({
 		title: 'Acción',
 		dataIndex: 'actions',
 		key: 'actions',
-		align: 'center',
-	},
-];
+	});
+}
+
+const showTotal = (totalPages: number, range: any) => {
+	console.log('🚀 ~ showTotal ~ range:', range, totalPages);
+	return `${range[0]}-${range[1]} de ${totalPages} comprobantes`;
+};
+
+const changeCurrentPage = (current: number, pageSize: number) => {
+	currentPage.value = current;
+	itemsPerPage.value = pageSize;
+};
+
+const onShowSizeChange = (current: number, pageSize: number) => {
+	console.log(current, pageSize);
+	itemsPerPage.value = pageSize;
+};
 
 const handleChangeForFilter = (e: any): void => {
 	stateValue.value = e.target.value;
@@ -242,18 +334,29 @@ const handleChangeForFilter = (e: any): void => {
 	status_id.value = statusesArray[index].value;
 };
 
-const rowSelection = ref({
-	checkStrictly: false,
+const rowSelection = {
 	hideSelectAll: true,
-	onSelect: (record: InvoiceList, selected: boolean, selectedRows: InvoiceList[]) => {
-		console.log(record);
-		console.log(selected);
-		console.log(selectedRows);
+	onChange: (selectedRowKeys: (string | number)[], selectedRows: InvoiceList) => {
+		invoiceForNotaCredito.value = selectedRows;
 	},
-	onChange: (selectedRowKeys: (string | number)[], selectedRows: InvoiceList[]) => {
-		console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+	onSelect: (record: any, selected: boolean, selectedRows: InvoiceList) => {
+		invoiceForNotaCredito.value = selectedRows;
 	},
-});
+	onSelectAll: (selected: boolean, selectedRows: InvoiceList, changeRows: any[]) => {
+		invoiceForNotaCredito.value = selectedRows;
+	},
+};
 </script>
 
-<style scoped></style>
+<style scoped>
+.selected-row {
+	background-color: yellow;
+}
+.centered-header {
+	text-align: center;
+}
+.wrap-pagination {
+	padding: 3rem;
+	text-align: center;
+}
+</style>

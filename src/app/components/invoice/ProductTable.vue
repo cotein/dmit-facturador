@@ -51,9 +51,9 @@
 						shape="round"
 						@click="generateInvoice"
 						:loading="loading"
-						:disabled="loading"
+						:disabled="loading || invoiceTableData.length == 0"
 					>
-						<template #icon>
+						<template #icon v-if="invoiceTableData.length">
 							<CloudUploadOutlined />
 						</template>
 						Facturar
@@ -69,7 +69,8 @@ import { CloudUploadOutlined } from '@ant-design/icons-vue';
 import { InvoiceAction, ProductTable } from './Style';
 import { Main, TableWrapper } from '../../styled';
 import { message } from 'ant-design-vue';
-import { ref } from 'vue';
+import { ref, onUnmounted } from 'vue';
+import { SELECT_INVOICE_TYPE } from '@/app/types/Constantes';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
@@ -83,23 +84,17 @@ import Subtotal from './product/Subtotal.vue';
 import Total from './product/Total.vue';
 import Totals from './Totals.vue';
 import Unit from './product/Unit.vue';
-import { SELECT_INVOICE_TYPE, INVOICE_CANT_REG } from '@/app/types/Constantes';
 
 const { getPdfInvoice } = usePrinterPdfComposable();
-const {
-	invoiceTableData,
-	createInvoiceMutation,
-	invoiceInitialStatus,
-	InvoiceGetter,
-	invoice,
-	TotalComprobante,
-	ImpTotConc,
-} = useInvoiceComposable();
+const { invoiceTableData, createInvoiceMutation, invoiceInitialStatus, InvoiceGetter, invoice, TotalComprobante } =
+	useInvoiceComposable();
 
-const { createBuilder, createInvoiceBuilder, invoiceType } = useInvoiceBuilderComposable();
+const { createConcreteInvoiceBuilder, createInvoiceBuilder, invoiceType } = useInvoiceBuilderComposable();
 
 const { CompanyGetter } = useCompanyComposable();
+
 const loading = ref<boolean>(false);
+
 const productTableColumns = [
 	{
 		title: '#',
@@ -151,36 +146,22 @@ const productTableColumns = [
 const generateInvoice = async () => {
 	//const builder = await createInvoiceBuilder();
 
-	const builder = createBuilder(
+	const builder = createConcreteInvoiceBuilder(
 		SELECT_INVOICE_TYPE[invoiceType.value],
 		CompanyGetter.value?.inscription_id,
 		invoice.value.customer.afip_inscription.id,
 	);
 
-	const invoiceBuilder = createInvoiceBuilder(
-		builder,
-		INVOICE_CANT_REG,
-		CompanyGetter.value?.pto_vta_fe,
-		builder.CbteTipo,
-		invoice.value.Concepto,
-		parseInt(invoice.value.customer.afip_document.afip_code),
-		invoice.value.customer.cuit,
-		invoice.CbteNro,
-		invoice.CbteNro,
-		invoice.CbteFch,
-		invoice.SaleCondition.days,
-		TotalComprobante.value,
-		ImpTotConc.value,
-	);
+	const FECAESolicitar = createInvoiceBuilder(builder, invoice.value, invoiceTableData.value);
 
 	loading.value = true;
 
-	if (invoiceBuilder.FECAEDetRequest.Concepto === 2 || invoiceBuilder.FECAEDetRequest.Concepto === 3) {
+	if (FECAESolicitar.FECAEDetRequest.Concepto === 2 || FECAESolicitar.FECAEDetRequest.Concepto === 3) {
 		if (
-			invoiceBuilder.FECAEDetRequest.FchServDesde === '' ||
-			invoiceBuilder.FECAEDetRequest.FchServDesde === null ||
-			invoiceBuilder.FECAEDetRequest.FchServHasta === '' ||
-			invoiceBuilder.FECAEDetRequest.FchServHasta === null
+			FECAESolicitar.FECAEDetRequest.FchServDesde === '' ||
+			FECAESolicitar.FECAEDetRequest.FchServDesde === null ||
+			FECAESolicitar.FECAEDetRequest.FchServHasta === '' ||
+			FECAESolicitar.FECAEDetRequest.FchServHasta === null
 		) {
 			message.error({ content: 'Si factura servicios debe ingresar las fechas en que se desarrolló el mismo.' });
 			loading.value = false;
@@ -188,15 +169,15 @@ const generateInvoice = async () => {
 		}
 	}
 
-	if (invoiceBuilder.FECAEDetRequest.ImpTotal === 0) {
+	if (FECAESolicitar.FECAEDetRequest.ImpTotal === 0) {
 		message.error({ content: 'No se permite emitir un comprobante en cero.' });
 		loading.value = false;
 		return false;
 	}
 
 	const params = {
-		FeCabReq: invoiceBuilder.FeCabReq,
-		FECAEDetRequest: invoiceBuilder.FECAEDetRequest,
+		FeCabReq: FECAESolicitar.FeCabReq,
+		FECAEDetRequest: FECAESolicitar.FECAEDetRequest,
 		environment: CompanyGetter.value?.afip_environment,
 		company_cuit: CompanyGetter.value?.cuit,
 		company_id: CompanyGetter.value?.id,
@@ -216,7 +197,6 @@ const generateInvoice = async () => {
 		.finally(() => (loading.value = false));
 
 	if (result) {
-		console.log('🚀 ~ file: ProductTable.vue:161 ~ generateInvoice ~ result:', result);
 		message.success({
 			content: 'Factura generada correctamente',
 			duration: 3,
@@ -238,6 +218,12 @@ const generateInvoice = async () => {
 		pdf.print();
 	}
 };
+
+onUnmounted(() => {
+	console.log('🚀 ~ onUnmounted ~ onUnmounted:');
+	invoiceInitialStatus();
+	invoiceTableData.value = [];
+});
 </script>
 
 <style scoped></style>

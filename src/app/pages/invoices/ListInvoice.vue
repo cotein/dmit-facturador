@@ -3,7 +3,7 @@
 		<sdPageHeader title="Listado de comprobantes de venta" class="ninjadash-page-header-main"> </sdPageHeader>
 		<Main>
 			<InvoiceTable :list="invoiceList" :loading="isLoading" />
-			<a-pagination
+			<!-- <a-pagination
 				:total="totalPages"
 				v-model:current="currentPage"
 				v-model:page-size="itemsPerPage"
@@ -22,7 +22,7 @@
 					<a v-else-if="type === 'next'">Sig.</a>
 					<component :is="originalElement" v-else></component>
 				</template>
-			</a-pagination>
+			</a-pagination> -->
 		</Main>
 	</div>
 </template>
@@ -42,13 +42,13 @@ const showTotal = (totalPages: number, range: any) => {
 	return `${range[0]}-${range[1]} de ${totalPages} comprobantes`;
 };
 
-const onShowSizeChange = (current: number, pageSize: number) => {
+/* const onShowSizeChange = (current: number, pageSize: number) => {
 	console.log(current, pageSize);
 	itemsPerPage.value = pageSize;
-};
+}; */
 
-const changeCurrentPage = (current: number, pageSize: number) => {
+/* const changeCurrentPage = (current: number, pageSize: number) => {
 	currentPage.value = current;
 	itemsPerPage.value = pageSize;
-};
+}; */
 </script>

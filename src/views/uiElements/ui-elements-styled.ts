@@ -30,7 +30,7 @@ const DropdownIconStyleWrapper = Styled.div`
     align-items: center;
     padding: 0 8px;
     ${({ theme }) => (!theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-  theme['border-color-normal']};
+	theme['border-color-normal']};
   }
 `;
 
@@ -254,7 +254,7 @@ const BadgeDynamicStyle = Styled.div`
       &:first-child{
         z-index: 22;
         ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-  theme['border-color-normal']};
+	theme['border-color-normal']};
       }
     }
 
@@ -502,7 +502,7 @@ const TimelineNormalWrap = Styled.div`
     .ant-timeline-item-content{
       margin: ${({ theme }) => (theme.rtl ? '0 32px 0 0' : '0 0 0 32px')};
       font-size: 14px !important;
-			color: ${({theme}) => theme[theme.mainContent]['dark-text']};
+			color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
       .timeline-content-inner{
         .timeline-content-time{
           min-width: 65px;
@@ -516,7 +516,7 @@ const TimelineNormalWrap = Styled.div`
     }
     .ant-timeline-item-head-custom{
       padding: 0px 1px;
-			background: ${({theme}) => theme[theme.mainContent]['darker-background2']};
+			background: ${({ theme }) => theme[theme.mainContent]['darker-background2']};
     }
   }
 `;
@@ -601,7 +601,7 @@ const CheckboxGroupStyle = Styled.div`
 const DashboardBaseStyleWrap = Styled.div`
     h1{
         margin-bottom: 30px;
-        color: ${({theme}) => theme[theme.mainContent]['dark-text']};
+        color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
     }
     .ant-row{
         margin: -5px 0;
@@ -628,25 +628,25 @@ const ProgressBarStyle = Styled.div`
 `;
 
 export {
-  ProgressBarStyle,
-  DashboardBaseStyleWrap,
-  CheckboxGroupStyle,
-  DropdownStyle,
-  DropdownIconStyleWrapper,
-  SpinerWraperStyle,
-  CarouselStyleWraper,
-  AvatarWraperStyle,
-  BadgeWraperStyle,
-  BadgeStandAloneStyle,
-  BadgeOverflowStyle,
-  BreadcrumbWrapperStyle,
-  BadgeRedStyle,
-  BadgeDynamicStyle,
-  CardStyleWrapper,
-  CasCaderStyleWrapper,
-  SelectWrapperStyle,
-  SelectRadioStyle,
-  TimeLinePointerIconWrap,
-  TimelineNormalWrap,
-  TimelineBoxWrap,
+	ProgressBarStyle,
+	DashboardBaseStyleWrap,
+	CheckboxGroupStyle,
+	DropdownStyle,
+	DropdownIconStyleWrapper,
+	SpinerWraperStyle,
+	CarouselStyleWraper,
+	AvatarWraperStyle,
+	BadgeWraperStyle,
+	BadgeStandAloneStyle,
+	BadgeOverflowStyle,
+	BreadcrumbWrapperStyle,
+	BadgeRedStyle,
+	BadgeDynamicStyle,
+	CardStyleWrapper,
+	CasCaderStyleWrapper,
+	SelectWrapperStyle,
+	SelectRadioStyle,
+	TimeLinePointerIconWrap,
+	TimelineNormalWrap,
+	TimelineBoxWrap,
 };

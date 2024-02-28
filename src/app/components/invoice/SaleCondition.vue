@@ -6,6 +6,7 @@
 		:default-active-first-option="false"
 		:field-names="{ label: 'name', value: 'id' }"
 		:options="saleConditions"
+		size="large"
 		@select="select"
 	></a-select>
 </template>

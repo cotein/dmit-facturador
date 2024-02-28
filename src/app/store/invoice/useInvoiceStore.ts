@@ -7,6 +7,8 @@ import { computed, reactive, ref, type UnwrapRef } from 'vue';
 export const useInvoiceStore = defineStore('invoice', () => {
 	const invoiceType = ref<number>();
 
+	const isSale = ref<boolean>(true);
+
 	const invoiceList = ref<InvoiceList>();
 
 	const invoice: UnwrapRef<AfipInvoice> = reactive({
@@ -92,7 +94,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
 
 	const invoiceTableData = ref<ProductOnInvoiceTable[]>([]);
 
-	const productOnInvoiceTable = reactive<ProductOnInvoiceTable>({
+	const productOnInvoiceTable = ref<ProductOnInvoiceTable>({
 		key: '',
 		row: '',
 		product: {
@@ -119,15 +121,16 @@ export const useInvoiceStore = defineStore('invoice', () => {
 	};
 
 	return {
-		invoice,
 		details,
-		openSearchProduct,
-		invoiceTableData,
-		productOnInvoiceTable,
-		invoiceInitialStatus,
-		setInitialData,
+		invoice,
 		InvoiceGetter: computed(() => invoice),
+		invoiceInitialStatus,
 		invoiceList,
+		invoiceTableData,
 		invoiceType,
+		isSale,
+		openSearchProduct,
+		productOnInvoiceTable,
+		setInitialData,
 	};
 });

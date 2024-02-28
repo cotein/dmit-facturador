@@ -27,6 +27,7 @@ export type Customer = {
 	fantasy_name: string;
 	cuit: string;
 	afipInscription: string;
+	afipInscription_id: number;
 	afipDocument: string;
 	afipDocTipo: number;
 	address: Address;
@@ -40,11 +41,17 @@ export type Voucher = {
 	cae: string;
 	cae_fch_vto: string;
 	sale_conditions: string;
+	sale_conditions_id: number;
 	voucher_type: number;
 	status: number;
 	concepto: number;
 	cbteAsoc: CbteAsoc;
 	total: number;
+	typeNotaCredito: number;
+	typeNotaDebito: number;
+	isNotaCredito: boolean;
+	isNotaDebito: boolean;
+	parents: [];
 };
 
 export type Item = {

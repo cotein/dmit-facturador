@@ -1,33 +1,45 @@
-import type { AfipInvoiceBaseBuilder } from './Clases/AfipInvoiceBaseBuilder';
-import type { CustomerInvoice } from '@/app/types/Customer';
+import type { CustomerInvoice, CustomerOnSaleInvoice } from '@/app/types/Customer';
 import type { FECAEDetRequest, FeCabReq, Ivas } from '@/app/types/Afip';
-import type { ProductOnInvoiceTable } from '@/app/types/Product';
+import type { ProductForNotaCredito, ProductOnInvoiceTable } from '@/app/types/Product';
 
 import { computed } from 'vue';
-import { FactoryInvoiceBuilder } from './Clases/FactoryInvoiceBuilder';
 import { FECAESolicitar } from '@/api/afip/afip-factura-electronica';
 import { storeToRefs } from 'pinia';
 import { useCompanyComposable } from '../company/useCompanyComposable';
 import { useInvoiceStore } from '@/app/store/invoice/useInvoiceStore';
 import { useMutation } from '@tanstack/vue-query';
+import { INVOICE_TYPE } from '@/app/types/Constantes';
+import { message } from 'ant-design-vue';
 
-const { invoice, InvoiceGetter, details, openSearchProduct, invoiceTableData, productOnInvoiceTable } = storeToRefs(
-	useInvoiceStore(),
-);
+const { invoice, InvoiceGetter, details, openSearchProduct, invoiceTableData, productOnInvoiceTable, isSale } =
+	storeToRefs(useInvoiceStore());
 
 const { invoiceInitialStatus } = useInvoiceStore();
+
 const invoiceStore = useInvoiceStore();
 
-invoiceStore.$subscribe(
-	() => {
-		invoiceTableData.value.forEach((item: ProductOnInvoiceTable) => {
-			item.subtotal = item.unit * item.quantity - item.discount;
-			item.iva_import = (item.subtotal * item.iva.percentage) / 100;
-			item.total = item.subtotal + item.iva_import;
-		});
-	},
-	{ detached: true },
-);
+invoiceStore.$subscribe(() => {
+	invoiceTableData.value.forEach((item: ProductOnInvoiceTable) => {
+		item.subtotal = item.unit * item.quantity - item.discount;
+		item.iva_import = (item.subtotal * item.iva.percentage) / 100;
+		item.total = item.subtotal + item.iva_import;
+	});
+
+	if (
+		[
+			INVOICE_TYPE.NOTA_CREDITO_A,
+			INVOICE_TYPE.NOTA_CREDITO_B,
+			INVOICE_TYPE.NOTA_CREDITO_C,
+			INVOICE_TYPE.NOTA_DEBITO_A,
+			INVOICE_TYPE.NOTA_DEBITO_B,
+			INVOICE_TYPE.NOTA_DEBITO_C,
+		].includes(invoice.value.voucher.id)
+	) {
+		isSale.value = false;
+	} else {
+		isSale.value = true;
+	}
+});
 
 const Subtotal = computed(() => {
 	return invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
@@ -104,10 +116,11 @@ export const useInvoiceComposable = () => {
 			company_cuit: string;
 			company_id: string;
 			user_id: string;
-			products: ProductOnInvoiceTable[];
+			products: ProductOnInvoiceTable[] | ProductForNotaCredito[];
 			saleCondition: { days: number; id: number };
-			customer: CustomerInvoice;
+			customer: CustomerInvoice | CustomerOnSaleInvoice;
 			comments: string;
+			parent?: number;
 		}) => {
 			const response = await FECAESolicitar(
 				params.FeCabReq,
@@ -120,19 +133,19 @@ export const useInvoiceComposable = () => {
 				params.saleCondition,
 				params.customer,
 				params.comments,
+				params.parent,
 			);
 
 			return response;
 		},
 		{
 			onSuccess: (data) => {
-				console.log('🚀 ~ file: useInvoiceComposable.ts:88 ~ useInvoiceComposable ~ data:', data);
+				message.success({ content: 'Comprobante emitido correctamente', duration: 3 });
 			},
 		},
 	);
 
-	const createInvoiceBuilder = async () => {
-		//const invoiceType = invoice.value.CbteTipo as number;
+	/* const createInvoiceBuilder = async () => {
 		const invoiceType = 1; //factura
 
 		const inscriptionCompany = CompanyGetter.value.inscription_id as number;
@@ -180,14 +193,14 @@ export const useInvoiceComposable = () => {
 		console.log('🚀 ~ file: useInvoiceComposable.ts:142 ~ createInvoiceBuilder ~ result:', result);
 
 		return result;
-	};
+	}; */
 
 	const insertProductOnInvoiceTable = (productOnInvoiceTable: ProductOnInvoiceTable) => {
 		invoiceTableData.value.push(productOnInvoiceTable);
 	};
 
 	return {
-		createInvoiceBuilder,
+		//createInvoiceBuilder,
 		createInvoiceMutation,
 		details,
 		Discount,
@@ -196,6 +209,7 @@ export const useInvoiceComposable = () => {
 		InvoiceGetter,
 		invoiceInitialStatus,
 		invoiceTableData,
+		isSale,
 		IVA,
 		IVAS,
 		openSearchProduct,

@@ -1,5 +1,5 @@
 <template>
-	<a-tooltip title="Anular por nota de crédito">
+	<a-tooltip>
 		<a-popconfirm
 			title="¿Emitir nota de crédito?"
 			@confirm="openFirstModal"
@@ -7,12 +7,11 @@
 			:okButtonProps="{ loading: popConfirmLoading }"
 			@visibleChange="popConfirmIsVisible"
 		>
-			<template #icon><question-circle-outlined style="color: red" /></template>
-			<a-button type="danger">
-				<template #icon>
-					<DeleteFilled />
-				</template>
-			</a-button>
+			<template #icon><question-circle-outlined /></template>
+			<a class="ant-dropdown-link" @click.prevent="openDrawer">
+				<DeleteFilled />
+				Anular por nota de crédito
+			</a>
 		</a-popconfirm>
 	</a-tooltip>
 	<a-modal
@@ -35,19 +34,21 @@
 </template>
 
 <script setup lang="ts">
-import type { InvoiceList } from '@/app/types/Invoice';
 import { DeleteFilled, QuestionCircleOutlined } from '@ant-design/icons-vue';
-import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
+import { FECompUltimoAutorizado } from '@/api/afip/afip-factura-electronica';
 import { INVOICE_TYPE, INVOICE_CANT_REG } from '@/app/types/Constantes';
-import type { AfipInvoiceBaseBuilder } from '@/app/composables/invoice/Clases/AfipInvoiceBaseBuilder';
-import { onMounted, ref, h, watch } from 'vue';
 import { message } from 'ant-design-vue';
 import { Modal } from 'ant-design-vue';
+import { onMounted, ref, h, watch } from 'vue';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
+import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
 import dayjs, { Dayjs } from 'dayjs';
-import { FECompUltimoAutorizado } from '@/api/afip/afip-factura-electronica';
+import type { AfipInvoiceBaseBuilder } from '@/app/composables/invoice/Clases/AfipInvoiceBaseBuilder';
+import type { InvoiceList } from '@/app/types/Invoice';
+import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
 
+const { openDrawerNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { createBuilder, createInvoiceBuilder } = useInvoiceBuilderComposable();
 
@@ -66,6 +67,10 @@ const popConfirmLoading = ref<boolean>(false);
 const notUse = ref();
 const CbteFch = ref('');
 const CbteDesde = ref<number>();
+
+const openDrawer = () => {
+	openDrawerNotaCredito.value = true;
+};
 
 const openFirstModal = async (e: MouseEvent) => {
 	const invoices = {
@@ -201,8 +206,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.ant-tooltip-inner {
-	background-color: red;
-}
-</style>
+<style scoped></style>

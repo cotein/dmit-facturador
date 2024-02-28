@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 <style scoped>
 div {
-	text-align: right;
+	text-align: center;
 	width: 100%;
 }
 </style>

@@ -1,4 +1,6 @@
+import type { AfipInvoice } from '@/app/types/Afip';
 import { AfipInvoiceBaseBuilder } from './AfipInvoiceBaseBuilder';
+import type { ProductOnInvoiceTable } from '@/app/types/Product';
 
 export class AfipInvoiceCBuilder extends AfipInvoiceBaseBuilder {
 	constructor() {
@@ -21,8 +23,24 @@ export class AfipInvoiceCBuilder extends AfipInvoiceBaseBuilder {
 		this.FECAEDetRequest.ImpIVA = 0;
 	}
 
-	setImpNeto(ImpNeto: number): void {
-		this.FECAEDetRequest.ImpNeto = ImpNeto;
+	setImpNeto(invoiceTableData: ProductOnInvoiceTable[]): void {
+		const impNeto = invoiceTableData.reduce((acc, item) => {
+			return acc + item.subtotal;
+		}, 0);
+
+		this.FECAEDetRequest.ImpNeto = impNeto;
+	}
+
+	setImpTotal(invoiceTableData: ProductOnInvoiceTable[]): void {
+		const total = invoiceTableData.reduce((acc, item) => {
+			return acc + item.total;
+		}, 0);
+
+		this.FECAEDetRequest.ImpTotal = total;
+	}
+
+	setImpTrib(invoiceTableData: ProductOnInvoiceTable[]): void {
+		delete this.FECAEDetRequest.Tributos;
 	}
 
 	setIvaAarray(): void {
