@@ -21,8 +21,11 @@ import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 const pinia = createPinia();
+
 app.component('SearchOutlined', SearchOutlined);
+
 app.component('NavTitle', NavTitle);
+
 app.config.globalProperties.$filters = {
 	timeAgo(date: any) {
 		return moment(date).fromNow();

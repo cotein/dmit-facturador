@@ -1,10 +1,11 @@
 import type { Item } from '@/app/types/Pdf';
 import { Invoice } from './Invoice';
+import dayjs from 'dayjs';
 
 export class C extends Invoice {
-	public typeC: string = 'C';
+	public typeB: string = 'C';
 
-	headers_invoice_data() {
+	printColumnNames() {
 		this.write_text(
 			['CANTIDAD'],
 			true,
@@ -58,33 +59,26 @@ export class C extends Invoice {
 			this.margin_bottom - this.one_cm() * 2.5,
 			this.interline(),
 		);
-
-		this.verticalLine(this.margin_left + 15, 103, this.margin_left + 15, this.margin_bottom - this.one_cm() * 4);
-		this.verticalLine(this.margin_right - 63, 103, this.margin_right - 64, this.margin_bottom - this.one_cm() * 4);
-		this.verticalLine(this.margin_right - 42, 103, this.margin_right - 42, this.margin_bottom - this.one_cm() * 4);
-		this.verticalLine(this.margin_right - 21, 103, this.margin_right - 21, this.margin_bottom - this.one_cm() * 4);
 	}
 
-	details_of_product() {
-		let height_position = this.first_line_where_write_details; //desde 103 a 220, en ese rango se imprimwn los detalles
+	printInternalVerticalsLines(yCoordinate: number) {
+		//this.verticalLine(this.margin_left + 15, 103, this.margin_left + 15, this.margin_bottom - this.one_cm() * 4);
+		this.verticalLine(this.margin_left + 15, 103, this.margin_left + 15, yCoordinate);
+		this.verticalLine(this.margin_right - 63, 103, this.margin_right - 63, yCoordinate);
+		this.verticalLine(this.margin_right - 42, 103, this.margin_right - 42, yCoordinate);
+		this.verticalLine(this.margin_right - 21, 103, this.margin_right - 21, yCoordinate);
+	}
 
-		let current_page = 1;
-
-		let width_position = 0;
-
-		let options = {};
-
-		this.numberOfPages(current_page);
-
-		this.invoice_original('title');
+	printProducts() {
+		this.height_position = this.first_line_where_write_details; //desde 103 a 220, en ese rango se imprimwn los detalles
 
 		this.items?.forEach((product: Item, index: number) => {
-			height_position = height_position + 4;
+			this.height_position = this.height_position + 3;
 
 			//##### QUANTITY ######
-			width_position = 14;
+			this.width_position = 14;
 
-			options = {
+			this.options = {
 				lineHeightFactor: 1.7,
 				maxWidth: 15,
 				align: 'center',
@@ -93,14 +87,14 @@ export class C extends Invoice {
 			this.pdf.setFontSize(8);
 
 			const quantity = product.quantity;
-			this.pdf.text(String(quantity), width_position, height_position, options);
+			this.pdf.text(String(quantity), this.width_position, this.height_position, this.options);
 
 			//##### DESCRIPTION ######
 			this.pdf.setFontSize(8);
 
-			width_position = 24;
+			this.width_position = 24;
 
-			options = {
+			this.options = {
 				lineHeightFactor: 1.7,
 				maxWidth: 150,
 				align: 'left',
@@ -111,17 +105,19 @@ export class C extends Invoice {
 			const productsNameText = this.productNameWidth(product.name as string, arrayProductNameText);
 
 			productsNameText.forEach((line: string, i: number) => {
-				this.pdf.text(line, width_position, height_position, options);
+				this.pdf.text(line, this.width_position, this.height_position, this.options);
+
 				const textDimention = this.pdf.getTextDimensions(line);
-				if (textDimention.w + width_position > this.invoiceProductMaxWidth) {
-					height_position = height_position + 4;
+
+				if (textDimention.w + this.width_position > this.invoiceProductMaxWidth) {
+					this.height_position = this.height_position + 3;
 				}
 			});
 
 			//##### UNIT PRICE ######
-			width_position = 156;
+			this.width_position = 156;
 
-			options = {
+			this.options = {
 				lineHeightFactor: 1.7,
 				maxWidth: 23,
 				align: 'right',
@@ -129,14 +125,14 @@ export class C extends Invoice {
 
 			this.pdf.text(
 				this.CurrencyFormat((product.unit_price as number) + product.iva_import),
-				width_position,
-				height_position,
-				options,
+				this.width_position,
+				this.height_position,
+				this.options,
 			);
 
-			width_position = 170;
+			this.width_position = 170;
 
-			options = {
+			this.options = {
 				lineHeightFactor: 1.7,
 				maxWidth: 23,
 				align: 'right',
@@ -145,19 +141,19 @@ export class C extends Invoice {
 			//##### DISCOUNT ######
 			this.pdf.setFontSize(8);
 
-			width_position = 178;
+			this.width_position = 178;
 
-			options = {
+			this.options = {
 				lineHeightFactor: 1.7,
 				maxWidth: 23,
 				align: 'right',
 			};
 
-			this.pdf.text(this.CurrencyFormat(0), width_position, height_position, options);
+			this.pdf.text(this.CurrencyFormat(0), this.width_position, this.height_position, this.options);
 
-			width_position = 200;
+			this.width_position = 200;
 
-			options = {
+			this.options = {
 				lineHeightFactor: 1.7,
 				maxWidth: 23,
 				align: 'right',
@@ -166,9 +162,9 @@ export class C extends Invoice {
 			//##### TOTAL ######
 			this.pdf.setFontSize(8);
 
-			this.pdf.text(this.CurrencyFormat(product.total), width_position, height_position, options);
+			this.pdf.text(this.CurrencyFormat(product.total), this.width_position, this.height_position, this.options);
 
-			if (height_position > 208) {
+			if (this.height_position > 208) {
 				const nextIndex = this.items?.findIndex((_, i) => i > index);
 
 				const hasNext = nextIndex !== -1;
@@ -176,73 +172,52 @@ export class C extends Invoice {
 				if (hasNext) {
 					this.pdf.addPage();
 
-					height_position = 103;
+					this.height_position = 103;
 
-					this.invoice_original('title');
+					this.current_page++;
 
-					current_page = current_page + 1;
+					this.pageWithProducts++;
 
-					this.numberOfPages(current_page);
-
-					//////////////////////////
 					this.lines();
 
-					this.headers_invoice_data();
-					this.invoice_type(this.typeC);
+					this.printColumnNames();
+
+					this.invoice_type(this.typeB);
 
 					this.invoice_original();
+
 					this.leftHeaderCompanyData();
+
 					this.rightHeaderCompanyData();
+
 					this.invoice_type_name();
+
 					this.customer_data();
 				}
 			}
+
+			this.yCoordinateInternalverticalLines = this.height_position;
 		});
-
-		if (this.comment != '' && this.comment != null) {
-			const arrayCommentResult: string[] = [];
-
-			const commentText = this.productNameWidth(this.comment as string, arrayCommentResult);
-
-			options = {
-				lineHeightFactor: 1.7,
-				maxWidth: this.invoiceProductMaxWidth,
-				align: 'left',
-			};
-
-			commentText.forEach((line: string, i: number) => {
-				height_position = height_position + 4;
-
-				const cleanedString = line.replace(/<[^>]+>/g, '');
-				this.pdf.text(cleanedString, 24, height_position, options);
-
-				const textDimention = this.pdf.getTextDimensions(cleanedString);
-
-				if (textDimention.w + 24 > this.invoiceProductMaxWidth) {
-					height_position = height_position + 4;
-				}
-			});
-		}
 	}
 
-	details_of_totals() {
-		let height_position = this.margin_bottom - 40;
+	printTotals() {
+		this.height_position = this.margin_bottom - 40;
 
 		this.pdf.setFontSize(12);
 
 		this.pdf.setFont('Helvetica', 'bold');
 
-		height_position = height_position + 5;
+		this.height_position = this.height_position + 5;
 
-		let options = {
+		this.options = {
 			lineHeightFactor: 1.2,
 			maxWidth: 100,
 			align: 'right',
 		};
 
-		this.pdf.text('TOTAL', this.first_column_text() * 8.5, height_position, options);
+		this.pdf.text('TOTAL', this.first_column_text() * 8.5, this.height_position, this.options);
 
-		options = {
+		this.options = {
 			lineHeightFactor: 1.2,
 			maxWidth: 100,
 			align: 'right',
@@ -251,27 +226,50 @@ export class C extends Invoice {
 		const totalInvoice = this.items?.reduce((total: number, item: Item) => {
 			return total + (item.total ?? 0);
 		}, 0);
-		this.pdf.text(this.CurrencyFormat(totalInvoice), this.first_column_text() * 11.5, height_position, options);
 
-		this.totalToWords(totalInvoice);
+		this.pdf.text(
+			this.CurrencyFormat(totalInvoice),
+			this.first_column_text() * 11.5,
+			this.height_position,
+			this.options,
+		);
+
+		this.totalToWords(totalInvoice!);
 	}
 
-	print(): void {
-		this.lines();
+	async print(): Promise<void> {
+		this.printStructure(this.typeB);
 
-		this.headers_invoice_data();
-		this.invoice_type(this.typeC);
+		this.printProducts();
 
-		this.invoice_original();
+		this.printHorizontalLineAfterLastProduct();
 
-		this.leftHeaderCompanyData();
+		if (this.comment != '' && this.comment != null) {
+			await this.convertCommentsToImage(this.comment);
+		}
 
-		this.rightHeaderCompanyData();
-		this.invoice_type_name();
-		this.customer_data();
-		this.details_of_product();
-		this.details_of_totals();
+		this.printPageNumber(this.typeB);
 
-		this.pdf.save('nombre del archivo.pdf');
+		this.printAfipQr(
+			1,
+			dayjs(this.voucher!.cbte_fch).format('YYYY-MM-DD'),
+			parseInt(this.company!.cuit, 10),
+			parseInt(this.voucher!.pto_vta, 10),
+			this.voucher!.voucher_type,
+			parseInt(this.voucher!.cbte_desde, 10),
+			this.voucher!.total,
+			'PES',
+			1,
+			this.customer!.afipDocTipo,
+			parseInt(this.customer!.cuit, 10),
+			'A',
+			parseInt(this.voucher!.cae, 10),
+		);
+
+		await this.printCommentImage(this.typeB);
+
+		this.pdf.save(`${this.customer?.cuit} ${this.voucher?.pto_vta}-${this.voucher?.cbte_desde}.pdf`);
+
+		this.cleanTempDivsWithCommentsToConverterImages();
 	}
 }

@@ -1,18 +1,29 @@
 import type { CustomerInvoice, CustomerOnSaleInvoice } from '@/app/types/Customer';
 import type { FECAEDetRequest, FeCabReq, Ivas } from '@/app/types/Afip';
 import type { ProductForNotaCredito, ProductOnInvoiceTable } from '@/app/types/Product';
-
-import { computed } from 'vue';
+import type { InvoiceList } from '@/app/types/Invoice';
+import { computed, isProxy } from 'vue';
 import { FECAESolicitar } from '@/api/afip/afip-factura-electronica';
 import { storeToRefs } from 'pinia';
-import { useCompanyComposable } from '../company/useCompanyComposable';
-import { useInvoiceStore } from '@/app/store/invoice/useInvoiceStore';
 import { useMutation } from '@tanstack/vue-query';
 import { INVOICE_TYPE } from '@/app/types/Constantes';
 import { message } from 'ant-design-vue';
+import { useInvoiceStore } from '@/app/store/invoice/useInvoiceStore';
+import { useInvoiceListComposable } from './useInvoiceListComposable';
+import { useQueryClient } from '@tanstack/vue-query';
 
-const { invoice, InvoiceGetter, details, openSearchProduct, invoiceTableData, productOnInvoiceTable, isSale } =
-	storeToRefs(useInvoiceStore());
+const EFECTIVO: number = 1;
+
+const {
+	invoice,
+	InvoiceGetter,
+	details,
+	openSearchProduct,
+	invoiceTableData,
+	productOnInvoiceTable,
+	isSale,
+	invoiceConfigIsValidated,
+} = storeToRefs(useInvoiceStore());
 
 const { invoiceInitialStatus } = useInvoiceStore();
 
@@ -20,8 +31,12 @@ const invoiceStore = useInvoiceStore();
 
 invoiceStore.$subscribe(() => {
 	invoiceTableData.value.forEach((item: ProductOnInvoiceTable) => {
-		item.subtotal = item.unit * item.quantity - item.discount;
-		item.iva_import = (item.subtotal * item.iva.percentage) / 100;
+		const subtotal = (item.unit * item.quantity - item.discount).toFixed(2);
+		item.subtotal = parseFloat(subtotal);
+
+		const iva_import = ((item.subtotal * item.iva.percentage) / 100).toFixed(2);
+		item.iva_import = parseFloat(iva_import);
+
 		item.total = item.subtotal + item.iva_import;
 	});
 
@@ -33,7 +48,7 @@ invoiceStore.$subscribe(() => {
 			INVOICE_TYPE.NOTA_DEBITO_A,
 			INVOICE_TYPE.NOTA_DEBITO_B,
 			INVOICE_TYPE.NOTA_DEBITO_C,
-		].includes(invoice.value.voucher.id)
+		].includes(invoice.value.voucher)
 	) {
 		isSale.value = false;
 	} else {
@@ -42,43 +57,36 @@ invoiceStore.$subscribe(() => {
 });
 
 const Subtotal = computed(() => {
-	return invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
+	const subtotal = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
 		return total + item.subtotal;
 	}, 0);
+
+	return parseFloat(subtotal.toFixed(2));
 });
 
 const Discount = computed(() => {
-	return invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
+	const discount = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
 		return total + item.discount;
 	}, 0);
+
+	return parseFloat(discount.toFixed(2));
 });
 
 const IVA = computed(() => {
-	return invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
+	const iva = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
 		return total + item.iva_import;
 	}, 0);
+
+	return parseFloat(iva.toFixed(2));
 });
 
 const TotalComprobante = computed(() => {
-	return invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
+	const totalComprobante = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
 		return total + item.total;
 	}, 0);
+
+	return parseFloat(totalComprobante.toFixed(2));
 });
-
-/* const ImpTotConc = computed(() => {
-	return invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
-		if (item.iva.id === AFIP_IVA.NO_GRAVADO) return total + item.iva_import;
-		return total;
-	}, 0);
-}); */
-
-/* const ImporteNeto = computed(() => {
-	return invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
-		if (invoice.value.CbteTipo) {
-		}
-		return total;
-	}, 0);
-}); */
 
 const IVAS = computed(() => {
 	const ivas: Ivas[] = [];
@@ -86,6 +94,7 @@ const IVAS = computed(() => {
 	if (invoiceTableData && invoiceTableData.value.length) {
 		invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
 			const index = ivas.findIndex((el) => el.name === item.iva.name);
+
 			if (index < 0) {
 				ivas.push({
 					id: item.iva.id,
@@ -106,7 +115,8 @@ const IVAS = computed(() => {
 });
 
 export const useInvoiceComposable = () => {
-	const { CompanyGetter } = useCompanyComposable();
+	const queryClient = useQueryClient();
+	const { invoiceList } = useInvoiceListComposable();
 
 	const createInvoiceMutation = useMutation(
 		async (params: {
@@ -117,9 +127,10 @@ export const useInvoiceComposable = () => {
 			company_id: string;
 			user_id: string;
 			products: ProductOnInvoiceTable[] | ProductForNotaCredito[];
-			saleCondition: { days: number; id: number };
+			saleCondition: number;
 			customer: CustomerInvoice | CustomerOnSaleInvoice;
 			comments: string;
+			paymentType: number;
 			parent?: number;
 		}) => {
 			const response = await FECAESolicitar(
@@ -133,74 +144,61 @@ export const useInvoiceComposable = () => {
 				params.saleCondition,
 				params.customer,
 				params.comments,
+				params.paymentType,
 				params.parent,
 			);
 
 			return response;
 		},
 		{
-			onSuccess: (data) => {
-				message.success({ content: 'Comprobante emitido correctamente', duration: 3 });
+			onSuccess: (data, vars, context) => {
+				if (isProxy(invoiceList.value)) {
+					const list = JSON.parse(JSON.stringify(invoiceList.value));
+
+					list.unshift(data!.data.invoice[0]);
+
+					invoiceList.value = list;
+				} else {
+					invoiceList.value.unshift(data.data.invoice[0]);
+				}
 			},
 		},
 	);
 
-	/* const createInvoiceBuilder = async () => {
-		const invoiceType = 1; //factura
-
-		const inscriptionCompany = CompanyGetter.value.inscription_id as number;
-
-		const inscriptionCustomer = invoice.value.customer.afip_inscription.id as number;
-
-		const invoiceBuilder = FactoryInvoiceBuilder.getInvoiceBuilder(
-			invoiceType,
-			inscriptionCompany,
-			inscriptionCustomer,
+	const insertProductOnInvoiceTable = (productOnInvoiceTable: ProductOnInvoiceTable) => {
+		const index = invoiceTableData.value.findIndex(
+			(item) => item.product.id === productOnInvoiceTable.product.id && item.unit === productOnInvoiceTable.unit,
 		);
 
-		const concreteInvoiceBuilder = new invoiceBuilder() as AfipInvoiceBaseBuilder;
+		if (index !== -1) {
+			invoiceTableData.value[index].quantity += productOnInvoiceTable.quantity;
+		} else {
+			invoiceTableData.value.push(productOnInvoiceTable);
+		}
+	};
 
-		concreteInvoiceBuilder.setCantReg(1);
-		concreteInvoiceBuilder.setPtoVta(CompanyGetter.value.pto_vta_fe);
-		concreteInvoiceBuilder.setCbteTipo(concreteInvoiceBuilder.CbteTipo);
+	const addInvoiceToCache = (invoice: InvoiceList) => {
+		let paramsCache = null;
 
-		concreteInvoiceBuilder.setConcepto(invoice.value.Concepto);
-		concreteInvoiceBuilder.setDocTipo(invoice.value.customer.afip_document.afip_code);
-		concreteInvoiceBuilder.setDocNro(invoice.value.customer.cuit);
-		concreteInvoiceBuilder.setCbteDesde(invoice.value.CbteNro);
-		concreteInvoiceBuilder.setCbteHasta(invoice.value.CbteNro);
-		concreteInvoiceBuilder.setCbteFch(invoice.value.CbteFch);
-		concreteInvoiceBuilder.setImpTotal(Total.value);
-		concreteInvoiceBuilder.setImpTotConc(0);
-		concreteInvoiceBuilder.setImpNeto(Subtotal.value, Total.value);
-		concreteInvoiceBuilder.setImpOpEx(0);
-		concreteInvoiceBuilder.setImpIVA(IVA.value);
-		concreteInvoiceBuilder.setImpTrib(0);
-		concreteInvoiceBuilder.setFchServDesde(invoice.value.FchServDesde);
-		concreteInvoiceBuilder.setFchServHasta(invoice.value.FchServHasta);
-		concreteInvoiceBuilder.setFchVtoPago(invoice.value.CbteFch, invoice.value.SaleCondition.days);
-		concreteInvoiceBuilder.setMonId('PES');
-		concreteInvoiceBuilder.setMonCotiz(1);
-		concreteInvoiceBuilder.setIvaAarray(IVAS.value);
-		concreteInvoiceBuilder.setCbtesAsoc();
-		concreteInvoiceBuilder.setTributos();
-		concreteInvoiceBuilder.setOpcionales();
-		concreteInvoiceBuilder.setCompradores();
-		concreteInvoiceBuilder.setPeriodoAsoc();
-		concreteInvoiceBuilder.setActividades();
+		const cacheName: string = 'invoice-list';
 
-		const result = concreteInvoiceBuilder.build();
-		console.log('🚀 ~ file: useInvoiceComposable.ts:142 ~ createInvoiceBuilder ~ result:', result);
+		const queryCache = queryClient.getQueryCache();
 
-		return result;
-	}; */
+		queryCache.getAll().map((query) => {
+			query.queryKey.forEach((key) => {
+				if (key === cacheName) {
+					paramsCache = query.queryKey;
+					queryClient.setQueryData(paramsCache, (old: any) => {
+						if (!old) return invoice;
 
-	const insertProductOnInvoiceTable = (productOnInvoiceTable: ProductOnInvoiceTable) => {
-		invoiceTableData.value.push(productOnInvoiceTable);
+						return [...old.data.data, invoice];
+					});
+				}
+			});
+		});
 	};
 
 	return {
-		//createInvoiceBuilder,
 		createInvoiceMutation,
 		details,
 		Discount,
@@ -216,6 +214,7 @@ export const useInvoiceComposable = () => {
 		productOnInvoiceTable,
 		Subtotal,
 		TotalComprobante,
-		//ImpTotConc,
+		addInvoiceToCache,
+		invoiceConfigIsValidated,
 	};
 };

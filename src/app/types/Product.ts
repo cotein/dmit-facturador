@@ -31,11 +31,13 @@ export type ProductOnInvoiceTable = {
 		name: string;
 	};
 	unit: number;
+	price_base: number;
 	quantity: number;
 	iva: {
 		id: number;
 		name: string;
 		percentage: number;
+		afip_code: number;
 	};
 	iva_import: number;
 	discount: number;
@@ -43,6 +45,10 @@ export type ProductOnInvoiceTable = {
 	total: number;
 	actions: {};
 	priceList: PriceListFromDataBase;
+	aditional: {
+		percentage: number;
+		value: number;
+	};
 };
 
 export type ProductTransformer = {
@@ -53,6 +59,11 @@ export type ProductTransformer = {
 		id: number;
 		name: string;
 		percentage: number;
+		afip_code: number;
+	};
+	aditional: {
+		percentage: number;
+		value: number;
 	};
 };
 

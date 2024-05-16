@@ -37,6 +37,12 @@
 								<span class="summary-list-text">{{ $filters.formatCurrency(iva.import) }}</span>
 							</li>
 						</template>
+						<!-- <template v-if="Aditional">
+							<li>
+								<span class="summary-list-title">Adicional {{ AditionalPercentage }}</span>
+								<span class="summary-list-text">{{ $filters.formatCurrency(Aditional) }}</span>
+							</li>
+						</template> -->
 					</ul>
 					<sdHeading class="summary-total" as="h4">
 						<span class="summary-total-label">Total : </span>
@@ -49,12 +55,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { OrderSummary } from './Style';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
+import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
+
 const { invoice, Subtotal, Discount, TotalComprobante, IVAS } = useInvoiceComposable();
 
+const { PaymentTypesGetter } = usePaymentTypeComposable();
 const openEditor = ref<boolean>(false);
+
+const Aditional = computed(() => {
+	if (Subtotal.value > 0) {
+		const paymentTypeId = invoice.value.paymentType;
+		const paymentType = PaymentTypesGetter.value.find((pt) => pt.id === paymentTypeId);
+		return (Subtotal.value * paymentType.percentage) / 100;
+	}
+	return 0;
+});
+
+const AditionalPercentage = computed(() => {
+	const paymentTypeId = invoice.value.paymentType;
+	const paymentType = PaymentTypesGetter.value.find((pt) => pt.id === paymentTypeId);
+	return `${paymentType.percentage}%:`;
+});
 
 watch(openEditor, (value) => {
 	if (!value) {

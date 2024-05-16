@@ -34,6 +34,7 @@
 				</div>
 			</ProductTable>
 		</TableWrapper>
+		<FreeText />
 		<Totals />
 		<a-row justify="end">
 			<a-col :lg="12" :md="18" :sm="24" :offset="0">
@@ -51,7 +52,7 @@
 						shape="round"
 						@click="generateInvoice"
 						:loading="loading"
-						:disabled="loading || invoiceTableData.length == 0"
+						:disabled="loading || invoiceTableData.length == 0 || !invoiceConfigIsValidated"
 					>
 						<template #icon v-if="invoiceTableData.length">
 							<CloudUploadOutlined />
@@ -61,6 +62,7 @@
 				</InvoiceAction>
 			</a-col>
 		</a-row>
+		<Html2CanvasPdf />
 	</Main>
 </template>
 
@@ -75,6 +77,8 @@ import { useCompanyComposable } from '@/app/composables/company/useCompanyCompos
 import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
+
+import Html2CanvasPdf from '@/app/pdf/Html2CanvasPdf.vue';
 import Actions from './product/Actions.vue';
 import Discount from './product/Discount.vue';
 import Iva from './product/Iva.vue';
@@ -84,10 +88,18 @@ import Subtotal from './product/Subtotal.vue';
 import Total from './product/Total.vue';
 import Totals from './Totals.vue';
 import Unit from './product/Unit.vue';
+import FreeText from './FreeText.vue';
 
-const { getPdfInvoice } = usePrinterPdfComposable();
-const { invoiceTableData, createInvoiceMutation, invoiceInitialStatus, InvoiceGetter, invoice, TotalComprobante } =
-	useInvoiceComposable();
+const { printPdf } = usePrinterPdfComposable();
+
+const {
+	invoiceTableData,
+	createInvoiceMutation,
+	invoiceInitialStatus,
+	InvoiceGetter,
+	invoice,
+	invoiceConfigIsValidated,
+} = useInvoiceComposable();
 
 const { createConcreteInvoiceBuilder, createInvoiceBuilder, invoiceType } = useInvoiceBuilderComposable();
 
@@ -144,17 +156,15 @@ const productTableColumns = [
 ];
 
 const generateInvoice = async () => {
-	//const builder = await createInvoiceBuilder();
-
 	const builder = createConcreteInvoiceBuilder(
 		SELECT_INVOICE_TYPE[invoiceType.value],
 		CompanyGetter.value?.inscription_id,
 		invoice.value.customer.afip_inscription.id,
 	);
 
-	const FECAESolicitar = createInvoiceBuilder(builder, invoice.value, invoiceTableData.value);
-
 	loading.value = true;
+
+	const FECAESolicitar = createInvoiceBuilder(builder, invoice.value, invoiceTableData.value);
 
 	if (FECAESolicitar.FECAEDetRequest.Concepto === 2 || FECAESolicitar.FECAEDetRequest.Concepto === 3) {
 		if (
@@ -163,7 +173,9 @@ const generateInvoice = async () => {
 			FECAESolicitar.FECAEDetRequest.FchServHasta === '' ||
 			FECAESolicitar.FECAEDetRequest.FchServHasta === null
 		) {
-			message.error({ content: 'Si factura servicios debe ingresar las fechas en que se desarrolló el mismo.' });
+			message.error({
+				content: 'Si factura servicios debe ingresar las fechas en que se desarrolló el mismo.',
+			});
 			loading.value = false;
 			return false;
 		}
@@ -186,17 +198,18 @@ const generateInvoice = async () => {
 		saleCondition: InvoiceGetter.value.SaleCondition,
 		customer: InvoiceGetter.value?.customer,
 		comments: InvoiceGetter.value?.comments,
+		paymentType: InvoiceGetter.value?.paymentType,
 	};
 
 	const result = await createInvoiceMutation
 		.mutateAsync(params)
 		.catch((err) => {
 			console.log('🚀 ~ file: ProductTable.vue:160 ~ generateInvoice ~ err:', err);
-			console.log('🚀 ~ file: ProductTable.vue:158 ~ generateInvoice ~ params:', params);
 		})
 		.finally(() => (loading.value = false));
 
 	if (result) {
+		console.log('🚀 ~ generateInvoice ~ result:', result);
 		message.success({
 			content: 'Factura generada correctamente',
 			duration: 3,
@@ -207,24 +220,34 @@ const generateInvoice = async () => {
 		invoice.value.CbteHasta = parseInt(result.data.invoice[0]!.voucher.cbte_desde) + 1; //sumo uno al mismo tipo de voucher para no consultar la api de afip
 		invoice.value.CbteNro = parseInt(result.data.invoice[0]!.voucher.cbte_desde) + 1; //sumo uno al mismo tipo de voucher para no consultar la api de afip
 		//invoiceInitialStatus();
-		const invoiceClass = getPdfInvoice(result.data.CbteTipo);
-		const pdf = new invoiceClass(
-			result.data.invoice[0]?.company,
-			result.data.invoice[0]?.customer,
-			result.data.invoice[0]?.voucher,
-			result.data.invoice[0]?.items,
-			result.data.invoice[0]?.comment,
-		);
-		pdf.print();
+		invoice.value.comments = '';
+
+		console.log('🚀 ~ generateInvoice ~ result.data.invoice[0]:', result.data.invoice[0]);
+		printPdf(result.data.invoice[0]);
+	}
+};
+
+const removeIvaColumn = () => {
+	const index = productTableColumns.findIndex((objeto) => objeto.key === 'iva');
+	console.log('🚀 ~ removeIvaColumn ~ index:', index);
+
+	if (index !== -1) {
+		productTableColumns.splice(index, 1);
+	}
+};
+
+const addIvaColumn = (indexIva: number) => {
+	const index = productTableColumns.findIndex((objeto) => objeto.key === 'iva');
+
+	if (index !== -1) {
+		productTableColumns.splice(indexIva, 0, iva);
 	}
 };
 
 onUnmounted(() => {
-	console.log('🚀 ~ onUnmounted ~ onUnmounted:');
 	invoiceInitialStatus();
 	invoiceTableData.value = [];
 });
 </script>
 
 <style scoped></style>
-printerPdf

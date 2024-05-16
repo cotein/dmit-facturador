@@ -29,10 +29,13 @@ export type Company = {
 
 export type Item = {
 	id: number;
+	key: number;
 	name: string;
 	quantity: number;
 	neto_import: number;
 	iva_import: number;
+	iva_afip_code: string;
+	iva_id: number;
 	unit_price: number;
 	total: number;
 };

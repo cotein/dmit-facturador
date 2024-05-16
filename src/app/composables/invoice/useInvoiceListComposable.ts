@@ -13,12 +13,11 @@ const { currentPage, itemsPerPage, totalPages, invoiceList, status_id } = storeT
 
 export const useInvoiceListComposable = () => {
 	const { CompanyGetter } = useCompanyComposable();
-
 	const { isLoading, data } = useQuery(
 		['invoice-list', currentPage, itemsPerPage, customer, status_id, from, to],
-		() =>
-			getInvoiceList(
-				CompanyGetter!.value.id,
+		async () =>
+			await getInvoiceList(
+				CompanyGetter.value?.id,
 				customer.value?.value,
 				status_id.value,
 				from.value,
@@ -29,13 +28,15 @@ export const useInvoiceListComposable = () => {
 	);
 
 	watch(data, (invoices) => {
-		const invoicesList = invoices?.data.data;
+		if (invoices) {
+			const list = invoices.data.data;
 
-		console.log('🚀 ~ watch ~ pagination:', invoices?.data.pagination.current_page);
+			invoiceList.value = list;
 
-		invoiceList.value = invoicesList;
-		//currentPage.value = invoices?.data.pagination.current_page;
-		totalPages.value = invoices?.data.pagination.total;
+			currentPage.value = invoices?.data.pagination.currentPage;
+
+			totalPages.value = invoices!.data.pagination.total;
+		}
 	});
 
 	return { currentPage, itemsPerPage, totalPages, invoiceList, isLoading, data, status_id };

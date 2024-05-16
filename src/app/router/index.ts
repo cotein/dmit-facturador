@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 import authRoutes from './authRoutes';
 import systemRoutes from './systemRoutes';
+import customerRoutes from './customer';
 import { useUserStore } from '@/app/store/user/user-store';
 import { useStoreCompany } from '@/app/store/company/store-company';
 import { useOpenCompanyPanelStore } from '@/app/store/panels/useOpenCompanyPanelStore';
@@ -35,7 +36,7 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'panel',
 		path: '/sistema',
 		component: () => import('@/app/layout/AdminLayout.vue'),
-		children: [...systemRoutes],
+		children: [...systemRoutes, ...customerRoutes],
 		meta: { auth: true },
 	},
 ];

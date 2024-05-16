@@ -1,3 +1,4 @@
+import type { RFC_2822 } from 'moment';
 import type { Iva } from './Iva';
 
 export const COMPANY_MODEL: string = 'App/Model/Company';
@@ -52,27 +53,30 @@ export const SELECT_INVOICE_TYPE = {
 	[INVOICE_TYPE.NOTA_CREDITO_C]: INVOICE_TYPE.NOTA_DE_CREDITO,
 };
 
-export enum AFIP_VOUCHERS {
-	NO_GRAVADO = 2, //son los ids
-	EXENTO = 3,
-	ZERO_PORCIENTO = 4,
-	DIEZ_COMA_CINCO = 5,
-	VEINTI_UNO = 6,
-	VEINTI_SIETE = 7,
-	GRAVADO = 8,
-	CINCO = 9,
-	DOS_COMA_CINCO = 10,
+export enum AFIP_IVAS {
+	AFIP_CODE_CERO = 3,
+	AFIP_CODE_DIEZ_COMA_CINCO = 4,
+	AFIP_CODE_VEINTI_UNO = 5,
+	AFIP_CODE_VEINTI_SIETE = 6,
+	AFIP_CODE_CINCO = 8,
+	AFIP_CODE_DOS_COMA_CINCO = 9,
 }
 
 export const AFIP_IVA: Iva[] = [
-	{ code: '0', name: 'No Corresponde', percentage: 0 },
-	{ code: '1', name: 'No Gravado', percentage: 0 },
-	{ code: '2', name: 'Exento', percentage: 0 },
 	{ code: '3', name: '0%', percentage: 0 },
 	{ code: '4', name: '10,50%', percentage: 10.5 },
 	{ code: '5', name: '21%', percentage: 21 },
 	{ code: '6', name: '27%', percentage: 27 },
-	{ code: '7', name: 'Gravado', percentage: 0 },
 	{ code: '8', name: '5%', percentage: 5 },
 	{ code: '9', name: '2,50%', percentage: 2.5 },
 ];
+
+// SE UTILIZA PARA DEFINIR EL HEIGHT Y WIDTH DEL DIV DONDE SE
+// IMPRIMIRAN LOS COMENTARIOS DE LOS COMPROBANTES DE VENTAS
+export const HTML2CANVAS_SCALE = {
+	scale_02: {
+		scale: 0.2,
+		width: '910px',
+		height: '500px',
+	},
+};

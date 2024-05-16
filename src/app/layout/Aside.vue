@@ -118,6 +118,9 @@ const handleCustomEvent = (data: CompanyRawData) => {
 			<a-menu-item @click="toggleCollapsed" key="customers-new">
 				<router-link :to="{ name: 'NewCustomer' }"> Alta </router-link>
 			</a-menu-item>
+			<a-menu-item @click="toggleCollapsed" key="customers-cuentas-corrientes">
+				<router-link :to="{ name: 'ListCuentasCorrientes' }"> Cuentas Corrientes </router-link>
+			</a-menu-item>
 		</a-sub-menu>
 
 		<a-sub-menu key="categories">

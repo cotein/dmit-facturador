@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useInvoiceListStore = defineStore('invoice-list', () => {
-	const invoiceList = ref<InvoiceList>();
+	const invoiceList = ref<InvoiceList[]>([]);
 
 	const currentPage = ref<number>();
 

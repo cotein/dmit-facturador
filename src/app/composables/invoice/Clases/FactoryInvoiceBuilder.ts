@@ -55,19 +55,19 @@ export class FactoryInvoiceBuilder {
 		},
 
 		{
-			invoiceType: INVOICE_TYPE.NOTA_CREDITO_A,
+			invoiceType: INVOICE_TYPE.NOTA_DE_CREDITO,
 			inscriptionCompany: AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO,
 			inscriptionCustomer: AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO,
 			class: AfipNotaCreditoABuiler,
 		},
 		{
-			invoiceType: INVOICE_TYPE.NOTA_CREDITO_B,
+			invoiceType: INVOICE_TYPE.NOTA_DE_CREDITO,
 			inscriptionCompany: AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO,
 			inscriptionCustomer: AFIP_INSCRIPTION.CONSUMIDOR_FINAL,
 			class: AfipNotaCreditoBBuiler,
 		},
 		{
-			invoiceType: INVOICE_TYPE.NOTA_CREDITO_B,
+			invoiceType: INVOICE_TYPE.NOTA_DE_CREDITO,
 			inscriptionCompany: AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO,
 			inscriptionCustomer: AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO,
 			class: AfipNotaCreditoBBuiler,

@@ -1,4 +1,6 @@
-const routes = [
+import type { RouteRecordRaw } from 'vue-router';
+
+const routes: Array<RouteRecordRaw> = [
 	{
 		name: 'Dashboard',
 		path: 'dashboard',
@@ -13,11 +15,6 @@ const routes = [
 		name: 'ListInvoice',
 		path: 'list/invoice',
 		component: () => import('@/app/pages/invoices/ListInvoice.vue'),
-	},
-	{
-		name: 'NewCustomer',
-		path: 'cliente',
-		component: () => import('@/app/pages/NewCustomer.vue'),
 	},
 	{
 		name: 'AddCategory',

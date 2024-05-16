@@ -22,6 +22,7 @@ export const useSaleConditionComposable = () => {
 			staleTime: 1000 * 60 * 60,
 		});
 	};
+
 	return {
 		saleConditions,
 		fetchSaleConditions,

@@ -21,9 +21,10 @@ export const FECAESolicitar = async (
 	company_id: string,
 	user_id: string,
 	products: ProductOnInvoiceTable[] | ProductForNotaCredito[],
-	saleCondition: { days: number; id: number },
+	saleCondition: number,
 	customer: CustomerInvoice | CustomerOnSaleInvoice,
 	comments: string,
+	paymentType: number,
 	parent?: number,
 ): Promise<AxiosResponse<InvoicePdf> | undefined> => {
 	try {
@@ -38,6 +39,7 @@ export const FECAESolicitar = async (
 			saleCondition,
 			customer,
 			comments,
+			paymentType,
 			parent,
 		});
 

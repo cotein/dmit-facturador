@@ -54,7 +54,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const price = ref();
+
 const product = ref();
+
 const { CompanyGetter } = useCompanyComposable();
 
 const options = ref<Product[]>([]);
@@ -65,8 +67,11 @@ const selectProduct = (id: number, product: ProductTransformer) => {
 	productOnInvoiceTable.value.iva.id = product.iva.id;
 	productOnInvoiceTable.value.iva.name = product.iva.name;
 	productOnInvoiceTable.value.iva.percentage = product.iva.percentage;
+	productOnInvoiceTable.value.iva.afip_code = product.iva.afip_code;
 	productOnInvoiceTable.value.quantity = 1;
 	productOnInvoiceTable.value.discount = 0;
+	productOnInvoiceTable.value.aditional.percentage = 0;
+	productOnInvoiceTable.value.aditional.value = 0;
 	priceList.value = product.price_list;
 };
 
@@ -76,6 +81,7 @@ const selectPriceList = (id: number, _: any) => {
 	productOnInvoiceTable.value.priceList = priceList.value[index];
 
 	productOnInvoiceTable.value.unit = priceList.value[index].sale_price;
+	productOnInvoiceTable.value.price_base = priceList.value[index].sale_price;
 	productOnInvoiceTable.value.subtotal = priceList.value[index].sale_price * productOnInvoiceTable.value.quantity;
 	productOnInvoiceTable.value.iva_import =
 		(priceList.value[index].sale_price *
@@ -96,18 +102,17 @@ const fetchProducts = async (name: string) => {
 };
 
 const setInitalDataOnSelectComponents = () => {
-	price.value = null;
+	price.value = undefined;
 	product.value = null;
 };
 
 const closeModal = (event: KeyboardEvent) => {
 	let isInserting = false;
 
-	if (event.key === 'Enter' && !isInserting) {
+	if (event.key === 'Enter' && !isInserting && price.value !== undefined) {
 		event.preventDefault();
 
 		const clonedProduct = JSON.parse(JSON.stringify(productOnInvoiceTable.value));
-		console.log('🚀 ~ file: SearchProduct.vue:109 ~ closeModal ~ clonedProduct:', clonedProduct);
 
 		insertProductOnInvoiceTable(clonedProduct);
 
@@ -116,11 +121,12 @@ const closeModal = (event: KeyboardEvent) => {
 		isInserting = true;
 
 		priceList.value = [];
+
 		setInitalDataOnSelectComponents();
 
 		setTimeout(() => {
 			isInserting = false;
-		}, 500);
+		}, 250);
 	}
 
 	if (event.key === 'Escape') {

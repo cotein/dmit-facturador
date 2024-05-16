@@ -9,7 +9,9 @@ export const useInvoiceStore = defineStore('invoice', () => {
 
 	const isSale = ref<boolean>(true);
 
-	const invoiceList = ref<InvoiceList>();
+	const invoiceConfigIsValidated = ref<boolean>(false);
+
+	const invoiceList = ref<InvoiceList[]>([]);
 
 	const invoice: UnwrapRef<AfipInvoice> = reactive({
 		CantReg: 1,
@@ -23,6 +25,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		Concepto: '1',
 		customer: null,
 		date: null,
+		dateVtoPago: null,
 		DocTipo: null,
 		FchServDesde: '',
 		FchServHasta: '',
@@ -36,23 +39,18 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		Iva: null,
 		MonCotiz: 1,
 		MonId: 'pesos',
+		paymentType: 1,
 		percepIIBB: 0,
 		percepIva: 0,
 		products: [],
 		PtoVta: null,
-		SaleCondition: {
-			id: 1,
-			name: 'Contado',
-			days: 0,
-		},
+		PeriodoAsoc: [],
+		SaleCondition: 1,
 		Tributos: null,
 		type_details: '1',
-		voucher: {
-			afip_code: null,
-			id: null,
-			name: null,
-		},
+		voucher: null,
 		comments: null,
+		aditional_percentage: 0,
 	});
 
 	const invoiceInitialStatus = (): void => {
@@ -60,6 +58,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		invoice.CbteFch = '';
 		invoice.CbtesAsoc = null;
 		invoice.date = null;
+		invoice.dateVtoPago = null;
 		invoice.DocTipo = null;
 		invoice.FchServDesde = '';
 		invoice.FchServHasta = '';
@@ -77,15 +76,13 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		invoice.percepIva = 0;
 		invoice.products = [];
 		invoice.PtoVta = null;
-		invoice.SaleCondition.id = 1;
-		invoice.SaleCondition.name = 'Contado';
-		invoice.SaleCondition.days = 0;
+		invoice.SaleCondition = 1;
 		invoice.Tributos = null;
+		invoice.PeriodoAsoc = [];
 		invoice.type_details = '1';
-		invoice.voucher.afip_code = null;
-		invoice.voucher.id = null;
-		invoice.voucher.name = null;
+		invoice.voucher = null;
 		invoice.comments = null;
+		invoice.aditional_percentage = 0;
 	};
 
 	const details = ref<[]>([]);
@@ -101,6 +98,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
 			id: undefined,
 			name: '',
 		},
+		price_base: 0,
 		unit: 0,
 		quantity: 1,
 		iva: {
@@ -113,6 +111,10 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		total: 0,
 		actions: {},
 		priceList: undefined,
+		aditional: {
+			percentage: 0,
+			value: 0,
+		},
 	});
 
 	const setInitialData = () => {
@@ -132,5 +134,6 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		openSearchProduct,
 		productOnInvoiceTable,
 		setInitialData,
+		invoiceConfigIsValidated,
 	};
 });

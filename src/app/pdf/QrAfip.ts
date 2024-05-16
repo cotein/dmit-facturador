@@ -1,4 +1,3 @@
-import QrCodeBase from '../QrCodeBase';
 import QRious from 'qrious';
 import moment from 'moment';
 
@@ -106,13 +105,16 @@ class QrAfip {
 		console.log('objJsonStr');
 		console.log(objJsonStr);
 		console.log('objJsonStr');
-		return Buffer.from(objJsonStr).toString('base64');
+		const base64Browser = btoa(objJsonStr);
+
+		return base64Browser;
 	}
 
 	generate_qr() {
 		const qr = new QRious({
 			value: this.url_afip + this.generate_base_64(),
 		});
+
 		return qr.toDataURL();
 	}
 }

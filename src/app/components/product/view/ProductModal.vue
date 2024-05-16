@@ -15,25 +15,31 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import ProductInfo from './ProductInfo.vue';
-import { useProductComposable } from '@/app/composables/product/useProductComposable';
 import { defineEmits } from 'vue';
 import { message } from 'ant-design-vue';
+import { useProductComposable } from '@/app/composables/product/useProductComposable';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 
 const emit = defineEmits(['initialStepsProductEvent']);
+
+const { CompanyGetter } = useCompanyComposable();
 
 const emitEvent = () => {
 	emit('initialStepsProductEvent', true);
 };
 
 const loading = ref<boolean>(false);
+
 const { productStore, saveProduct } = useProductComposable();
 
 const storeProduct = async () => {
 	loading.value = true;
+
 	const payload = {
-		company_id: 1,
+		company_id: CompanyGetter.value?.id,
 		product: productStore.product,
 	};
+
 	const data = await saveProduct(payload)
 		.catch((err) => {
 			message.error({

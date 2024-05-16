@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
 	onlyCuit: false,
 });
 
-const { sujeto, clearSujetoData, sujetoIsEditable } = usePadronComposable();
+const { sujeto, sujetoIsEditable } = usePadronComposable();
 
 const validateCuit = (rule: any, value: any) => {
 	return new Promise((resolve, reject) => {
@@ -61,7 +61,12 @@ const setAfipInscriptionType = (personaReturn: any) => {
 };
 
 const setAfipAddress = (address: DomicilioFiscal) => {
-	addressStore.address.city = address.localidad;
+	if (addressStore.address.hasOwnProperty('localidad')) {
+		addressStore.address.city = address.localidad;
+	} else {
+		addressStore.address.city = address.descripcionProvincia;
+	}
+
 	addressStore.address.cp = address.codPostal;
 	addressStore.address.state_id = address.idProvincia;
 	addressStore.address.street = address.direccion;

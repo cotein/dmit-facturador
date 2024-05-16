@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
-import { computed, onMounted, onUnmounted, watch } from 'vue';
+import { computed, onUnmounted, watch, onBeforeMount } from 'vue';
 import { InvoiceHeader, InvoiceLetterBox } from './Style';
 import { Main } from '../../styled';
 import { storeToRefs } from 'pinia';
@@ -10,21 +10,21 @@ import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFil
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { useSaleConditionComposable } from '@/app/composables/sale-condition/useSaleConditionComposable';
 import { useVoucherComposable } from '@/app/composables/voucher/useVoucherComposable';
-import { useInvoiceListComposable } from '@/app/composables/invoice/useInvoiceListComposable';
+import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
 import DrawerPtoVta from './DrawerPtoVta.vue';
+import AditionalPayment from './AditionalPayment.vue';
 import InvoiceConfig from './InvoiceConfig.vue';
 import moment from 'moment';
 import ProductTable from './ProductTable.vue';
-import InvoiceTable from './list/InvoiceTable.vue';
 
-const { invoiceList, isLoading } = useInvoiceListComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
 const { fetchSaleConditions } = useSaleConditionComposable();
-const { fetchVouchers } = useVoucherComposable();
+const { Vouchers } = useVoucherComposable();
 const { invoice, isSale } = useInvoiceComposable();
 const { InvoiceGetter } = useInvoiceComposable();
 const { openDrawerPtoVta } = useDrawerPtoVtaStore();
+const { fetchPaymentTypes } = usePaymentTypeComposable();
 
 const VoucherDate = computed(() => {
 	if (InvoiceGetter.value.CbteFch != '') {
@@ -34,6 +34,16 @@ const VoucherDate = computed(() => {
 		const year = String(date).substring(0, 4);
 
 		return `${day}-${month}-${year}`;
+	}
+
+	return '';
+});
+
+const VoucherName = computed(() => {
+	if (InvoiceGetter.value.voucher) {
+		const index = Vouchers.value.findIndex((v) => v.id === InvoiceGetter.value.voucher);
+
+		return Vouchers.value[index].name;
 	}
 
 	return '';
@@ -53,8 +63,9 @@ watch(
 	{ deep: true, immediate: true },
 );
 
-onMounted(async () => {
-	fetchVouchers(CompanyGetter.value.id);
+onBeforeMount(() => {
+	//fetchVouchers(CompanyGetter.value.id);
+	fetchPaymentTypes(CompanyGetter.value.id);
 	fetchSaleConditions();
 });
 
@@ -94,9 +105,7 @@ onUnmounted(() => {
 								<a-col :lg="12" :xs="24">
 									<article class="invoice-author">
 										<sdHeading class="invoice-customer__title" as="h5">
-											{{
-												InvoiceGetter && InvoiceGetter.voucher ? InvoiceGetter.voucher.name : ''
-											}}</sdHeading
+											{{ InvoiceGetter && InvoiceGetter.voucher ? VoucherName : '' }}</sdHeading
 										>
 										<p>
 											{{
@@ -162,18 +171,11 @@ onUnmounted(() => {
 					</InvoiceLetterBox>
 
 					<br />
+					<AditionalPayment v-if="InvoiceGetter" />
 					<br />
 					<!-- Facturo por productos -->
 					<ProductTable v-if="isSale" />
 					<!-- Facturo por nota de crédito / débito -->
-					<InvoiceTable
-						v-if="!isSale"
-						:list="invoiceList"
-						:loading="isLoading"
-						:viewButtonsColumn="false"
-						:viewSearch="true"
-						:isSale="isSale"
-					/>
 				</sdCards>
 			</a-col>
 		</a-row>

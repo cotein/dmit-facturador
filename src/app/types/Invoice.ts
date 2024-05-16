@@ -1,4 +1,4 @@
-import type { CbteAsoc } from './Afip';
+import type { CbteAsoc, PeriodoAsoc } from './Afip';
 
 export type Address = {
 	city: string;
@@ -34,24 +34,31 @@ export type Customer = {
 };
 
 export type Voucher = {
-	name: string;
-	pto_vta: string;
+	cae_fch_vto: string;
+	cae: string;
 	cbte_desde: string;
 	cbte_fch: string;
-	cae: string;
-	cae_fch_vto: string;
-	sale_conditions: string;
-	sale_conditions_id: number;
-	voucher_type: number;
-	status: number;
-	concepto: number;
 	cbteAsoc: CbteAsoc;
+	children: [];
+	concepto: number;
+	fch_serv_desde: string;
+	fch_serv_hasta: string;
+	fch_vto_pago: string;
+	isNotaCredito: boolean;
+	isNotaDebito: boolean;
+	name: string;
+	nota_credito_o_debito_text: string;
+	parents: [];
+	periodoAsoc: PeriodoAsoc;
+	pto_vta: string;
+	sale_conditions_id: number;
+	sale_conditions: string;
+	status: number;
 	total: number;
 	typeNotaCredito: number;
 	typeNotaDebito: number;
-	isNotaCredito: boolean;
-	isNotaDebito: boolean;
-	parents: [];
+	voucher_type: number;
+	voucher_id: number;
 };
 
 export type Item = {
@@ -71,4 +78,18 @@ export type InvoiceList = {
 	voucher: Voucher;
 	items: Item[];
 	comment: string;
+};
+
+export type Pagination = {
+	total?: number;
+	perPage?: number;
+	currentPage?: number;
+	lastPage?: number;
+	from?: number;
+	to?: number;
+};
+
+export type InvoiceListWithPagination = {
+	data: InvoiceList[];
+	pagination: Pagination;
 };

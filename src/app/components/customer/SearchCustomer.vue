@@ -12,7 +12,9 @@
 		@search="handleSearch"
 		@select="select"
 		@change="change"
+		@dropdownVisibleChange="cleanVouchers"
 		:mode="props.multiple ? 'multiple' : ''"
+		v-model:value="defaultCustomer"
 	>
 		<template v-if="fetching" #notFoundContent>
 			<a-spin size="small" />
@@ -21,17 +23,19 @@
 </template>
 <script setup lang="ts">
 import { getCustomers } from '@/api/customer/customer-api';
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
 import type { CustomerSelectComponent } from '@/app/types/Customer';
 import { storeToRefs } from 'pinia';
+import { getVouchers } from '@/api/voucher/voucher-api';
+import { useVoucherStore } from '@/app/store/voucher/useVoucherStore';
 
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
 const { CompanyGetter } = useCompanyComposable();
 const { invoice } = useInvoiceComposable();
-
+const { setVouchers } = useVoucherStore();
 const fetching = ref(false);
 const options = ref<{ value: any; label: string }[]>([]);
 
@@ -43,9 +47,19 @@ const props = withDefaults(defineProps<Props>(), {
 	multiple: false,
 });
 
+const defaultCustomer = computed({
+	get() {
+		return invoice.value.customer;
+	},
+	set(val) {
+		invoice.value.customer = val;
+	},
+});
+
 const handleSearch = async (name: string) => {
 	if (name != '') {
 		fetching.value = true;
+
 		const resp = await getCustomers(CompanyGetter.value.id, name);
 
 		options.value = resp.map((customer: any) => {
@@ -61,9 +75,12 @@ const handleSearch = async (name: string) => {
 		fetching.value = false;
 	}
 };
-const select = (e: any, option: CustomerSelectComponent): void => {
+
+const select = async (e: any, option: CustomerSelectComponent): void => {
 	invoice.value.customer = option;
 	customer.value = option;
+	const vouchers = await getVouchers(CompanyGetter.value?.inscription_id, customer.value.afip_inscription.id);
+	setVouchers(vouchers);
 };
 
 const change = (e: any, option: CustomerSelectComponent): void => {
@@ -71,5 +88,10 @@ const change = (e: any, option: CustomerSelectComponent): void => {
 		invoice.value.customer = null;
 		customer.value = { value: null, label: '', cuit: '' };
 	}
+};
+
+const cleanVouchers = (w: any) => {
+	setVouchers([]);
+	invoice.value.voucher = null;
 };
 </script>

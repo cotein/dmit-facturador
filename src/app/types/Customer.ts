@@ -77,3 +77,13 @@ export type AfipInscription = {
 	id: number;
 	name: string;
 };
+
+export type CustomerCuentaCorrienteType = {
+	company: string;
+	cuotaables: string;
+	customer: string;
+	id: number;
+	number: number;
+	pay: string;
+	sale: string;
+};

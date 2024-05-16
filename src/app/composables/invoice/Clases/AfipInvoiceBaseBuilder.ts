@@ -1,4 +1,4 @@
-import type { CbteAsoc } from './../../../types/Afip';
+import type { CbteAsoc, PeriodoAsoc } from './../../../types/Afip';
 import type { FECAEDetRequest, FeCabReq } from '@/app/types/Afip';
 import type { CustomerInvoice, CustomerOnSaleInvoice } from '@/app/types/Customer';
 import type { ProductForNotaCredito, ProductOnInvoiceTable } from '@/app/types/Product';
@@ -375,7 +375,7 @@ export abstract class AfipInvoiceBaseBuilder {
 	 * identificar
 	 * @param value
 	 */
-	abstract setPeriodoAsoc(value?: any): void;
+	abstract setPeriodoAsoc(periodoAsoc?: PeriodoAsoc): void;
 
 	/**
 	 * Array para informar las actividades

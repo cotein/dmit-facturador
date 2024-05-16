@@ -1,17 +1,17 @@
-import { useStoreCompany } from '@/app/store/company/store-company';
-import { storeToRefs } from 'pinia';
+import 'ant-design-vue/lib/message/style/index.css';
+import 'ant-design-vue/lib/notification/style/index.css';
+import { notification } from 'ant-design-vue';
 import { ref, reactive } from 'vue';
+import { saveCompany, updateCompany } from '@/api/company/company-api';
+import { storeToRefs } from 'pinia';
+import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAddNewCompanyPanelComposable';
 import { useAddressStore } from '@/app/store/address/address-store';
 import { useMutation } from '@tanstack/vue-query';
-import { saveCompany, updateCompany } from '@/api/company/company-api';
+import { useStoreCompany } from '@/app/store/company/store-company';
 import { useUserComposable } from '../user/useUserComposable';
-import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAddNewCompanyPanelComposable';
-import 'ant-design-vue/lib/notification/style/index.css';
-import 'ant-design-vue/lib/message/style/index.css';
-import { notification } from 'ant-design-vue';
 
 const { CompanyGetter, companyForm, company } = storeToRefs(useStoreCompany());
-const { UserGetter, setUserCompanies } = useUserComposable();
+const { setUserCompanies } = useUserComposable();
 const { setCompanyToWork, setCompany } = useStoreCompany();
 const { closeAddNewCompanyPanel } = useAddNewCompanyPanelComposable();
 
@@ -138,7 +138,6 @@ export const useCompanyComposable = () => {
 		mutationFn: saveCompany,
 
 		onSuccess: (response) => {
-			console.log('🚀 ~ file: useCompanyComposable.ts:134 ~ useCompanyComposable ~ www:', response.data);
 			setUserCompanies(response.data);
 			if (response.data.length === 1) {
 				setCompanyToWork(response.data[0]);
@@ -158,9 +157,7 @@ export const useCompanyComposable = () => {
 
 	const updateCompanyMutation = useMutation({
 		mutationFn: updateCompany,
-		onSuccess: (company) => {
-			console.log('🚀 ~ file: useCompanyComposable.ts:162 ~ useCompanyComposable ~ company:', company);
-		},
+		onSuccess: (company) => {},
 	});
 
 	return {

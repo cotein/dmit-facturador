@@ -10,9 +10,7 @@
 			>
 			<ul class="info-list">
 				<li>
-					<span class="info-title">{{
-						props.record.customer.fantasy_name ? props.record.customer.fantasy_name : ''
-					}}</span>
+					<span class="info-title">{{ props.record.customer.fantasy_name ?? '' }}</span>
 				</li>
 			</ul>
 		</div>

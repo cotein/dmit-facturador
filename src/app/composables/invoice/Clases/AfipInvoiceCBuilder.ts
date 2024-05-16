@@ -11,7 +11,7 @@ export class AfipInvoiceCBuilder extends AfipInvoiceBaseBuilder {
 		this.FeCabReq.CbteTipo = CbteTipo;
 	}
 
-	setImpTotConc(): void {
+	setImpTotConc(invoiceTableData: ProductOnInvoiceTable[]): void {
 		this.FECAEDetRequest.ImpTotConc = 0;
 	}
 
@@ -28,7 +28,7 @@ export class AfipInvoiceCBuilder extends AfipInvoiceBaseBuilder {
 			return acc + item.subtotal;
 		}, 0);
 
-		this.FECAEDetRequest.ImpNeto = impNeto;
+		this.FECAEDetRequest.ImpNeto = parseFloat(impNeto.toFixed(2));
 	}
 
 	setImpTotal(invoiceTableData: ProductOnInvoiceTable[]): void {
@@ -36,7 +36,7 @@ export class AfipInvoiceCBuilder extends AfipInvoiceBaseBuilder {
 			return acc + item.total;
 		}, 0);
 
-		this.FECAEDetRequest.ImpTotal = total;
+		this.FECAEDetRequest.ImpTotal = parseFloat(total.toFixed(2));
 	}
 
 	setImpTrib(invoiceTableData: ProductOnInvoiceTable[]): void {

@@ -6,6 +6,7 @@
 		@close="onClose"
 		:bodyStyle="bodyStyle"
 		:footer-style="footerStyle"
+		:maskClosable="false"
 	>
 		<template #extra>
 			<a-date-picker
@@ -29,8 +30,8 @@
 						<address class="invoice-customer">
 							<sdHeading class="invoice-customer__title" as="h5"> Facturar a: </sdHeading>
 							<p>
-								{{ invoiceForNotaCredito?.customer.name }} {{ invoiceForNotaCredito?.customer.last_name
-								}}<br />
+								{{ invoiceForNotaCredito?.customer.name }}
+								{{ invoiceForNotaCredito?.customer.last_name }}<br />
 								<template v-if="invoiceForNotaCredito?.customer.fantasy_name">
 									{{ invoiceForNotaCredito?.customer.fantasy_name }}
 								</template>
@@ -44,14 +45,13 @@
 					<a-col :lg="12" :xs="24">
 						<sdHeading class="invoice-customer__title" as="h5">
 							Sobre: {{ invoiceForNotaCredito?.voucher.name }}
-							{{ invoiceForNotaCredito?.voucher.pto_vta }}-{{
-								invoiceForNotaCredito?.voucher.cbte_desde
-							}}</sdHeading
-						>
+							{{ invoiceForNotaCredito?.voucher.pto_vta }}-{{ invoiceForNotaCredito?.voucher.cbte_desde }}
+						</sdHeading>
 					</a-col>
 				</a-row>
 			</div>
 		</InvoiceLetterBox>
+		<InvoiceHasNotaCredito :children="invoiceForNotaCredito?.voucher.children" />
 		<div class="invoice--body">
 			<a-table
 				:columns="columns"
@@ -69,36 +69,42 @@
 					<template v-if="column.key === 'quantity'">
 						<QuantityProductNotaCredito :record="record" :index="index" />
 					</template>
+					<template v-if="column.key === 'unit_price'">
+						{{ $filters.formatCurrency(parseFloat(record.unit_price)) }}
+					</template>
+					<template v-if="column.key === 'total'">
+						{{ $filters.formatCurrency(record.total) }}
+					</template>
 				</template>
 			</a-table>
 		</div>
 		<template #footer>
 			<sdHeading class="invoice-customer__title" as="h5">
-				Se va a generar una Nota de Crédito por : {{ $filters.formatCurrency(totalNotaCredito) }}</sdHeading
+				Se va a generar una Nota de Crédito por :
+				{{ $filters.formatCurrency(totalNotaCredito) }}</sdHeading
 			>
 		</template>
 	</a-drawer>
 </template>
 <script setup lang="ts">
-import dayjs, { Dayjs } from 'dayjs';
-import type { ProductForNotaCredito } from '@/app/types/Product';
-import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
-import QuantityProductNotaCredito from './QuantityProductNotaCredito.vue';
-import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { FECompUltimoAutorizado } from '@/api/afip/afip-factura-electronica';
 import { ref, onMounted, watch } from 'vue';
-import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { SELECT_INVOICE_TYPE } from '@/app/types/Constantes';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
+import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
+import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
+import dayjs, { Dayjs } from 'dayjs';
+import InvoiceHasNotaCredito from '@/app/components/invoice/notaCredito/InvoiceHasNotaCredito.vue';
+import QuantityProductNotaCredito from '@/app/components/invoice/notaCredito/QuantityProductNotaCredito.vue';
+import type { ProductForNotaCredito } from '@/app/types/Product';
 
+const { CompanyGetter } = useCompanyComposable();
 const { invoice, createInvoiceMutation } = useInvoiceComposable();
-
 const { openDrawerNotaCredito, invoiceForNotaCredito, titleNotaCredito, productsForNotaCredito, totalNotaCredito } =
 	useInvoiceNotaCreditoComposable();
 
 const { createInvoiceBuilder, createConcreteInvoiceBuilder } = useInvoiceBuilderComposable();
-
-const { CompanyGetter } = useCompanyComposable();
 
 const onClose = () => {
 	openDrawerNotaCredito.value = false;
@@ -131,6 +137,7 @@ watch(
 	},
 	{ immediate: true },
 );
+
 const columns = [
 	{
 		title: '#',
@@ -173,6 +180,29 @@ const rowSelection = {
 	onSelectAll: (selected: boolean, selectedRows: ProductForNotaCredito[], changeRows: ProductForNotaCredito[]) => {
 		productsForNotaCredito.value = selectedRows;
 	},
+	getCheckboxProps: (record: ProductForNotaCredito) => {
+		return {
+			disabled: disableCheckbox(record),
+		};
+	},
+};
+
+const disableCheckbox = (record: ProductForNotaCredito): boolean => {
+	let productInNotaCredito: number = 0;
+
+	if (invoiceForNotaCredito.value?.voucher.children.length) {
+		const matchedItems = invoiceForNotaCredito.value.voucher.children
+			.flatMap((invoice) => invoice.items)
+			.filter((item) => record.name === item.name);
+
+		productInNotaCredito = matchedItems.reduce((total, item) => total + item.quantity, 0);
+	}
+
+	if (productInNotaCredito < record.quantity) {
+		return false;
+	}
+
+	return true;
 };
 
 const spinner = ref<boolean>(false);
@@ -192,12 +222,10 @@ const generate = async () => {
 		invoiceForNotaCredito.value!.customer.afipInscription_id,
 	);
 
-	console.log('🚀 ~ generate ~ builder:', builder);
-
 	const ultimoAutorizado = await FECompUltimoAutorizado(
 		invoiceType,
 		invoiceForNotaCredito.value!.voucher.pto_vta,
-		CompanyGetter.value.afip_environment,
+		CompanyGetter!.value.afip_environment,
 		CompanyGetter.value!.cuit,
 		CompanyGetter.value!.id,
 		CompanyGetter.value!.user_id,
@@ -211,6 +239,12 @@ const generate = async () => {
 		invoice.value.customer = invoiceForNotaCredito.value!.customer;
 		invoice.value.CbtesAsoc = invoiceForNotaCredito.value!.voucher.cbteAsoc;
 
+		if (invoiceForNotaCredito.value.voucher.concepto > 1) {
+			invoice.value.FchServDesde = dayjs(invoiceForNotaCredito.value!.voucher.fch_serv_desde).format('YYYYMMDD');
+			invoice.value.FchServHasta = dayjs(invoiceForNotaCredito.value!.voucher.fch_serv_hasta).format('YYYYMMDD');
+			invoice.value.FchVtoPago = dayjs().add(10, 'day').format('YYYYMMDD');
+		}
+
 		const FECAESolicitarObjetc = createInvoiceBuilder(builder, invoice.value, productsForNotaCredito.value);
 
 		const params = {
@@ -221,20 +255,22 @@ const generate = async () => {
 			company_id: CompanyGetter.value?.id,
 			user_id: CompanyGetter.value?.user_id,
 			products: productsForNotaCredito.value,
-			saleCondition: { days: 300000, id: 5 },
+			saleCondition: 5, //{ days: 300000, id: 5 },
+			paymentType: 1, //1 = Contado,
 			customer: invoice.value?.customer,
-			comments: 'InvoiceGetter.value?.comments',
+			comments: invoiceForNotaCredito.value?.voucher.nota_credito_o_debito_text,
 			parent: invoiceForNotaCredito.value?.id,
 		};
+		console.log('🚀 ~ generate ~ params:', params);
 
-		const nota = await createInvoiceMutation.mutateAsync(params);
+		const nota = await createInvoiceMutation.mutateAsync(params).finally(() => {
+			spinner.value = false;
+		});
 
 		if (nota) {
 			openDrawerNotaCredito.value = false;
 		}
 	}
-
-	spinner.value = false;
 };
 
 onMounted(() => {
@@ -251,9 +287,9 @@ const footerStyle = { height: '3rem' };
 	border-radius: 7px;
 }
 .invoice--body {
-	margin-top: 3rem;
+	margin-top: 1rem;
 	background-color: white;
-	padding: 3rem;
+	padding: 1rem;
 	border-radius: 7px;
 }
 </style>

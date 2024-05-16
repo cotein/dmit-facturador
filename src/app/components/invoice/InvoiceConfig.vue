@@ -9,10 +9,11 @@
 		:visible="visible"
 		:body-style="{ paddingBottom: '80px' }"
 		:footer-style="{ textAlign: 'right' }"
+		:maskClosable="false"
 		@close="onClose"
 		@afterVisibleChange="afterVisibleChange"
 	>
-		<a-form :model="invoice" :rules="rules" layout="vertical">
+		<a-form :model="invoice" :rules="rules" layout="vertical" ref="invoiceConfigForm" @submit="onClose">
 			<a-row :gutter="16">
 				<a-col :span="24">
 					<a-form-item label="Buscar cliente" name="customer">
@@ -46,7 +47,7 @@
 			</a-row> -->
 			<a-row :gutter="16">
 				<a-col :span="12">
-					<a-form-item label="Fecha Factura" name="invoiceDate">
+					<a-form-item label="Fecha Factura" name="date">
 						<a-date-picker
 							v-model:value="invoice.date"
 							style="width: 100%"
@@ -59,8 +60,15 @@
 				</a-col>
 
 				<a-col :span="12">
-					<a-form-item label="Condición de venta" name="saleCondition">
+					<a-form-item label="Condición de venta" name="SaleCondition">
 						<SaleCondition />
+					</a-form-item>
+				</a-col>
+			</a-row>
+			<a-row :gutter="16">
+				<a-col :span="12">
+					<a-form-item label="Modo de pago" name="paymentType">
+						<PaymentTypes />
 					</a-form-item>
 				</a-col>
 			</a-row>
@@ -72,37 +80,35 @@
 							:format="dateFormat"
 							v-model:value="serviceDate"
 							:placeholder="['Fecha inicial', 'Fecha final']"
-							@change="servDates"
+							@change="servDatesMethod"
 						/>
 					</a-form-item>
 				</a-col>
 				<a-col :span="12">
-					<a-form-item label="Fecha vencimiento de pago" name="vtoPagoDate">
+					<a-form-item label="Fecha vencimiento de pago" name="FchVtoPago">
 						<a-date-picker
-							v-model:value="vtoPago"
+							v-model:value="invoice.dateVtoPago"
 							style="width: 100%"
 							showToday
-							format="DD-MM-YYYY"
+							:format="dateFormat"
 							placeholder="Vencimiento de pago"
-							@change="servicesDate"
+							@change="servicesDateFchVtoPago"
 						/>
 					</a-form-item>
 				</a-col>
 			</a-row>
-		</a-form>
-		<template #extra>
 			<a-space>
-				<a-button @click="onClose">Cancelar</a-button>
+				<a-button @click="onCloseCancel">Cancelar</a-button>
 				<a-button type="primary" @click="onClose">Aceptar</a-button>
 			</a-space>
-		</template>
+		</a-form>
+		<template #extra> </template>
 	</a-drawer>
 	<DrawerAddCustomer />
 </template>
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
 import { FECompUltimoAutorizado } from '@/api/afip/afip-factura-electronica';
-import { INVOICE_TYPE } from '@/app/types/Constantes';
 import { onMounted, ref, watch } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
@@ -114,22 +120,24 @@ import moment from 'moment';
 import SaleCondition from './SaleCondition.vue';
 import SearchCustomer from '../customer/SearchCustomer.vue';
 import type { Dayjs } from 'dayjs';
-import type { Rule } from 'ant-design-vue/es/form';
 import VoucherSelect from './VoucherSelect.vue';
-
+import PaymentTypes from '@/app/components/paymentType/PaymentTypes.vue';
+import type { Rule } from 'ant-design-vue/lib/form';
 const { selectedCustomer } = useCustomerComposable();
 
-const { invoice } = useInvoiceComposable();
+const { invoice, invoiceConfigIsValidated } = useInvoiceComposable();
 
 const { CompanyGetter } = useCompanyComposable();
 
+const invoiceConfigForm = ref();
+
+// Agrega un cero al inicio del número si es menor a 10
+const appendZero = function (number: number) {
+	return Number(number) < 10 ? '0' + number : number;
+};
+
 const getDateTodayInArgentinaFormat = () => {
 	const date = new Date();
-
-	// Agrega un cero al inicio del número si es menor a 10
-	const appendZero = function (number: number) {
-		return Number(number) < 10 ? '0' + number : number;
-	};
 
 	const day = appendZero(date.getDate());
 	const month = appendZero(date.getMonth() + 1);
@@ -138,29 +146,84 @@ const getDateTodayInArgentinaFormat = () => {
 	return `${day}-${month}-${year}`;
 };
 
-const vtoPago = ref<Dayjs>();
+const dateFormat = 'DD-MM-YYYY';
 
-const dateFormat = 'DD/MM/YYYY';
+const serviceDate = ref<[Dayjs, Dayjs]>([dayjs('2015/01/01', dateFormat), dayjs('2015/01/01', dateFormat)]);
 
-const serviceDate = ref<[Dayjs, Dayjs]>([
-	dayjs(getDateTodayInArgentinaFormat(), dateFormat),
-	dayjs(getDateTodayInArgentinaFormat(), dateFormat),
-]);
+const invoiceDateValidator = (rule: Rule, value: any) => {
+	return new Promise((resolve, reject) => {
+		if (value === null) {
+			reject('La fecha del comprobante no puede estar vacía');
+		} else {
+			resolve(true);
+		}
+	});
+};
+
+const invoiceVoucherValidator = (rule: Rule, value: any) => {
+	return new Promise((resolve, reject) => {
+		if (value === null) {
+			reject('Debe seleccionar un comprobante a emitir');
+		} else {
+			resolve(true);
+		}
+	});
+};
+
+const vtoPagoValidator = (rule: Rule, value: Dayjs) => {
+	return new Promise((resolve, reject) => {
+		console.log('🚀 ~ value:', value);
+		console.log('🚀 ~ rule:', rule);
+		if (invoice.value.Concepto === '2' || invoice.value.Concepto === '3') {
+			if (value) {
+				resolve(true);
+			} else {
+				reject('Si la factura es de servicios, la fecha de vencimiento de pago es requerida');
+			}
+		}
+	});
+};
 
 const rules = ref({
 	Concepto: [{ required: true, message: 'Debe seleccionar un concepto de facturación' }],
-	date: [{ required: true, message: 'Debe seleccionar la fecha del servicio' }],
-	type_details: [{ required: true, message: 'Debe seleccionar el tipo de detalle de la factura' }],
-	type: [{ required: true, message: 'Please choose the type' }],
-	approver: [{ required: true, message: 'Please choose the approver' }],
-	description: [{ required: true, message: 'Please enter url description' }],
-	vtoPagoDate: [
+	customer: [{ required: true, message: 'Debe buscar un cliente' }],
+	SaleCondition: [{ required: true, message: 'La condición de venta es requerida' }],
+	voucher: [
 		{
-			required: invoice.value.Concepto === '2' || invoice.value.Concepto === '3' ? true : false,
-			message: 'Si factura servicios la fecha vencimiento de pago es requerida',
+			required: true,
+			validator: invoiceVoucherValidator,
+		},
+	],
+	//type_details: [{ required: true, message: 'Debe seleccionar el tipo de detalle de la factura' }],
+	FchVtoPago: [
+		{
+			validator: vtoPagoValidator,
+		},
+	],
+	paymentType: [{ required: true, message: 'El modo de pago es requerido' }],
+	date: [
+		{
+			required: true,
+			validator: invoiceDateValidator,
 		},
 	],
 });
+
+const onCloseCancel = () => (visible.value = false);
+
+const onClose = async (e: Event) => {
+	const isValid = await invoiceConfigForm.value.validate().catch((error: any) => {
+		invoiceConfigIsValidated.value = false;
+		return false;
+	});
+
+	if (isValid) {
+		invoiceConfigIsValidated.value = true;
+		visible.value = false;
+	} else {
+		invoiceConfigIsValidated.value = false;
+	}
+};
 
 const visible = ref<boolean>(false);
 
@@ -173,14 +236,12 @@ const afterVisibleChange = (visible: boolean) => {
 		const date = dayjs(new Date());
 
 		invoice.value.date = date;
+
 		invoice.value.CbteFch = date.format('YYYYMMDD').toString();
 	}
 };
-const onClose = () => {
-	visible.value = false;
-};
 
-const servDates = (date: any): void => {
+const servDatesMethod = (date: any): void => {
 	console.log('🚀 ~ servDates ~ date:', date);
 	let day_0 = null;
 	let day_1 = null;
@@ -236,7 +297,8 @@ const setDate = (date: any) => {
 	}
 };
 
-const servicesDate = (date: any) => {
+const servicesDateFchVtoPago = (date: any) => {
+	console.log('🚀 ~ servicesDateFchVtoPago ~ date:', date);
 	let day = null;
 
 	if (date.$D < 10) {
@@ -264,10 +326,9 @@ watch(
 );
 
 watch(visible, async (visible) => {
-	console.log('🚀 ~ visible:', visible, invoice.value.voucher.afip_code);
 	if (!visible) {
 		const resp = await FECompUltimoAutorizado(
-			invoice.value.voucher.id,
+			invoice.value.voucher,
 			CompanyGetter.value!.pto_vta_fe ?? '',
 			CompanyGetter.value?.afip_environment ?? '',
 			CompanyGetter.value?.cuit ?? '',
@@ -282,19 +343,6 @@ watch(visible, async (visible) => {
 			invoice.value.PtoVta = FECompUltimoAutorizadoResult.PtoVta;
 			invoice.value.CbteNro = FECompUltimoAutorizadoResult.CbteNro + 1;
 		}
-
-		/* if (
-			[
-				INVOICE_TYPE.NOTA_CREDITO_A,
-				INVOICE_TYPE.NOTA_CREDITO_B,
-				INVOICE_TYPE.NOTA_CREDITO_C,
-				INVOICE_TYPE.NOTA_DEBITO_A,
-				INVOICE_TYPE.NOTA_DEBITO_B,
-				INVOICE_TYPE.NOTA_DEBITO_C,
-			].includes(invoice.value.CbteTipo)
-		) {
-			console.log('🚀 ~ onClose ~ includes wwwwwwwwwwwwwwwwwwwwwwwwww:', invoice.value.CbteTipo);
-		} */
 	}
 });
 
@@ -319,14 +367,15 @@ watch(
 			invoice.value.FchVtoPago = '';
 		}
 	},
-	{ deep: true },
+	{ deep: true, immediate: true },
 );
 
 watch(
 	() => invoice.value.SaleCondition,
 	(newValue) => {
+		console.log('🚀 ~ newValue:', newValue);
 		const date = dayjs(new Date());
-		vtoPago.value = date.add(newValue.days, 'day');
+		//fchVtoPago.value = date.add(newValue.days, 'day');
 	},
 	{ immediate: true },
 );

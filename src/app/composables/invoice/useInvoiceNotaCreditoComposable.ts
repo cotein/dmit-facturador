@@ -8,9 +8,11 @@ const { invoiceForNotaCredito, openDrawerNotaCredito, titleNotaCredito, totalNot
 const invoiceListForNotaCreditoStore = useInvoiceNotaCreditoStore();
 
 invoiceListForNotaCreditoStore.$subscribe((m, state) => {
-	totalNotaCredito.value = productsForNotaCredito.value.reduce((acc, item: ProductForNotaCredito) => {
-		return acc + item.quantity * item.unit_price;
+	const totalNota = productsForNotaCredito.value.reduce((acc, item: ProductForNotaCredito) => {
+		return acc + item.neto_import + item.iva_import;
 	}, 0);
+
+	totalNotaCredito.value = parseFloat(totalNota.toFixed(2));
 });
 
 export const useInvoiceNotaCreditoComposable = () => {

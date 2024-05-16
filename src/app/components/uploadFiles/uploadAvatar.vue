@@ -48,7 +48,6 @@ const handleChange = (info: UploadChangeParam) => {
 		return;
 	}
 	if (info.file.status === 'done') {
-		console.log('🚀 ~ file: uploadAvatar.vue:51 ~ handleChange ~ info.file:', info.file);
 		// Get this url from response in real world.
 		getBase64(info.file.originFileObj, (base64Url: string) => {
 			imageUrl.value = base64Url;

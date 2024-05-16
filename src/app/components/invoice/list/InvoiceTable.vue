@@ -124,8 +124,7 @@
 						:show-total="showTotal"
 					>
 						<template #buildOptionText="props">
-							<span v-if="props.value !== '50'">{{ props.value }} Comprobantes por pág.</span>
-							<span v-else></span>
+							<span>{{ props.value }} Comprobantes por pág.</span>
 						</template>
 						<template #itemRender="{ type, originalElement }">
 							<a v-if="type === 'prev'">Ant.</a>
@@ -136,6 +135,7 @@
 				</div>
 			</Cards>
 		</BorderLessHeading>
+		<Html2CanvasPdf />
 	</div>
 </template>
 
@@ -151,8 +151,8 @@ import { useCompanyComposable } from '@/app/composables/company/useCompanyCompos
 import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
 import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
 import { useInvoiceListStore } from '@/app/store/invoice/useInvoiceListStore';
-import BetweenDaysRangePicker from '../../shared/BetweenDaysRangePicker.vue';
 import Cards from '../../../components/cards/frame/CardsFrame.vue';
+import BetweenDaysRangePicker from '../../shared/BetweenDaysRangePicker.vue';
 import InvoiceActions from './Row/InvoiceActions.vue';
 import InvoiceCustomer from './Row/InvoiceCustomer.vue';
 import InvoiceDate from './Row/InvoiceDate.vue';
@@ -161,16 +161,17 @@ import InvoiceNumber from './Row/InvoiceNumber.vue';
 import InvoiceStatus from './Row/InvoiceStatus.vue';
 import RowNumber from '../../shared/RowNumber.vue';
 import SearchCustomer from '../../customer/SearchCustomer.vue';
-import DrawerNotaCredito from '@/app/components/invoice/DrawerNotaCredito.vue';
+import DrawerNotaCredito from '@/app/components/invoice/notaCredito/DrawerNotaCredito.vue';
 import type { InvoiceList } from '@/app/types/Invoice';
 import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
 import dayjs from 'dayjs';
+import Html2CanvasPdf from '@/app/pdf/Html2CanvasPdf.vue';
 
 const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
-const { currentPage, itemsPerPage, totalPages, invoiceList, status_id } = storeToRefs(useInvoiceListStore());
+const { currentPage, itemsPerPage, totalPages, status_id } = storeToRefs(useInvoiceListStore());
 
 type Props = {
 	list: InvoiceList | [];
@@ -194,7 +195,7 @@ type InvoiceTableColumn = {
 	key: string;
 	sorter?: any;
 };
-
+const pageSizeOptions = ref<string[]>(['10', '20', '30', '40', '50', '100']);
 const filterKey = ref(['Adeudada', 'Parcialmente Cancelada', 'Cancelada']);
 const stateValue = ref('');
 const sortDefault = ref();
@@ -305,8 +306,7 @@ if (props.isSale) {
 	});
 }
 
-const showTotal = (totalPages: number, range: any) => {
-	console.log('🚀 ~ showTotal ~ range:', range, totalPages);
+const showTotal = (totalPages: number, range: [number, number]) => {
 	return `${range[0]}-${range[1]} de ${totalPages} comprobantes`;
 };
 
@@ -316,7 +316,6 @@ const changeCurrentPage = (current: number, pageSize: number) => {
 };
 
 const onShowSizeChange = (current: number, pageSize: number) => {
-	console.log(current, pageSize);
 	itemsPerPage.value = pageSize;
 };
 

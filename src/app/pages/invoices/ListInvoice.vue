@@ -29,26 +29,8 @@
 
 <script setup lang="ts">
 import { Main } from '@/app/components/invoice/product/styled';
-import { ref } from 'vue';
 import { useInvoiceListComposable } from '@/app/composables/invoice/useInvoiceListComposable';
 import InvoiceTable from '@/app/components/invoice/list/InvoiceTable.vue';
 
-const { currentPage, itemsPerPage, totalPages, invoiceList, isLoading } = useInvoiceListComposable();
-
-const pageSizeOptions = ref<string[]>(['10', '20', '30', '40', '50']);
-
-const showTotal = (totalPages: number, range: any) => {
-	console.log('🚀 ~ showTotal ~ range:', range, totalPages);
-	return `${range[0]}-${range[1]} de ${totalPages} comprobantes`;
-};
-
-/* const onShowSizeChange = (current: number, pageSize: number) => {
-	console.log(current, pageSize);
-	itemsPerPage.value = pageSize;
-}; */
-
-/* const changeCurrentPage = (current: number, pageSize: number) => {
-	currentPage.value = current;
-	itemsPerPage.value = pageSize;
-}; */
+const { invoiceList, isLoading } = useInvoiceListComposable();
 </script>
