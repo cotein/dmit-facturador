@@ -52,3 +52,9 @@ app.use(VueQueryPlugin);
 app.use(router);
 app.component('QuillEditor', QuillEditor);
 app.mount('#app');
+
+if (import.meta.env.MODE === 'development') {
+	console.log('Estamos en el entorno de desarrollo');
+} else if (import.meta.env.MODE === 'production') {
+	console.log('Estamos en el entorno de producción');
+}
