@@ -838,11 +838,11 @@ const ProfileCardWrapper = Styled.figure`
   `}
 `;
 export {
-  OverviewCard,
-  ProfileCardWrapper,
-  CourseCardWrap,
-  BlogCardStyleWrap,
-  OverviewCardMeshWrap,
-  InfoCardStyle,
-  NewsletterStyle,
+	OverviewCard,
+	ProfileCardWrapper,
+	CourseCardWrap,
+	BlogCardStyleWrap,
+	OverviewCardMeshWrap,
+	InfoCardStyle,
+	NewsletterStyle,
 };

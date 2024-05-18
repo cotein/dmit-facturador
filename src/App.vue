@@ -3,15 +3,15 @@ import { RouterView } from 'vue-router';
 import { ThemeProvider } from 'vue3-styled-components';
 import { themeColor } from './config/theme/themeVariables';
 import { computed, onMounted } from 'vue';
-import { useStore } from 'vuex';
+import { useAppStore } from './app/store/app/useAppStore';
 import 'v-calendar/dist/style.css';
 
-const { state } = useStore();
-const rtl = computed(() => state.themeLayout.rtlData);
-const isLoading = computed(() => state.themeLayout.loading);
-const darkMode = computed(() => state.themeLayout.data);
-const topMenu = computed(() => state.themeLayout.topMenu);
-const mainContent = computed(() => state.themeLayout.main);
+const { state } = useAppStore();
+const rtl = computed(() => state.rtlData);
+const isLoading = false;
+const darkMode = computed(() => state.data);
+const topMenu = computed(() => state.topMenu);
+const mainContent = computed(() => state.main);
 
 onMounted(() => {
 	window.addEventListener('load', () => {

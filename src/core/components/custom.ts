@@ -29,11 +29,11 @@ import {
 } from '../../components/charts/GoogleChart.vue';
 
 const components = [
-	Cards,
-	Heading,
+	//Cards,
+	//AutoComplete,
+	/* Heading,
 	Dropdown,
 	Popover,
-	AutoComplete,
 	Modal,
 	CreateProject,
 	FeatherIcons,
@@ -63,9 +63,9 @@ const components = [
 	Drawer,
 	CalendarButton,
 	ExportButton,
-	ShareButton,
+	ShareButton, */
 ];
 
-components.forEach((c) => {
+/* components.forEach((c) => {
 	app.component(`sd${c.name}`, c);
-});
+}); */

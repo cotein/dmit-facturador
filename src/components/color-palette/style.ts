@@ -1,24 +1,24 @@
 import Styled from 'vue3-styled-components';
 
 const borderd = (type: any) => {
-  return `
+	return `
         background: #ffffff;
         color: #5A5F7D;
         border: 1px solid ${type};
     `;
 };
 const content = () => {
-  return `
+	return `
         justify-content: space-around;
     `;
 };
 const bg = () => {
-  return `
+	return `
         color: #5A5F7D;
       `;
 };
 const grad = (type: any, direction: any) => {
-  return `
+	return `
          background-image: linear-gradient(${direction}, ${type[0]}, ${type[1]});
          height: 100px;
         `;

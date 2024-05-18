@@ -371,6 +371,4 @@ const BlogDetailsStyle = Styled.div`
         }
     }
 `;
-export {
-    BlogDetailsStyle,
-};
+export { BlogDetailsStyle };

@@ -10,14 +10,14 @@ const isLoading = computed(() => state.email.sLoading);
 </script>
 
 <template>
-  <p v-if="isLoading">Loading</p>
-  <Content
-    v-else
-    :email="
+	<p v-if="isLoading">Loading</p>
+	<Content
+		v-else
+		:email="
       email.filter((value: any) => {
         return value.stared;
       })
     "
-    :searchData="searchData"
-  />
+		:searchData="searchData"
+	/>
 </template>

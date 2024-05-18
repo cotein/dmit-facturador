@@ -94,9 +94,9 @@ const Main = Styled.div`
 
     .ant-skeleton.ant-skeleton-active .ant-skeleton-content .ant-skeleton-title, .ant-skeleton.ant-skeleton-active .ant-skeleton-content .ant-skeleton-paragraph > li {
         background: ${({ theme }) =>
-          theme.darkMode
-            ? 'linear-gradient(90deg,#323541 25%,#494B55 37%,#323541 63%)'
-            : 'linear-gradient(90deg, #F1F2F6 25%, #e5e6ea 37%, #F1F2F6 63%)'};
+			theme.darkMode
+				? 'linear-gradient(90deg,#323541 25%,#494B55 37%,#323541 63%)'
+				: 'linear-gradient(90deg, #F1F2F6 25%, #e5e6ea 37%, #F1F2F6 63%)'};
     }
 
     .ant-statistic-content, .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title {
@@ -477,11 +477,11 @@ const Main = Styled.div`
     .card-grid-wrap{
         .ant-card-grid{
             box-shadow: 1px 0 0 0 ${({ theme }) => theme[theme.mainContent]['border-color-default']}30, 0 1px 0 0 ${({
-  theme,
+	theme,
 }) => theme[theme.mainContent]['border-color-default']}, 1px 1px 0 0 ${({ theme }) =>
-  theme[theme.mainContent]['border-color-default']}, 1px 0 0 0 ${({ theme }) =>
-  theme[theme.mainContent]['border-color-default']} inset, 0 1px 0 0 ${({ theme }) =>
-  theme[theme.mainContent]['border-color-default']} inset;
+	theme[theme.mainContent]['border-color-default']}, 1px 0 0 0 ${({ theme }) =>
+	theme[theme.mainContent]['border-color-default']} inset, 0 1px 0 0 ${({ theme }) =>
+	theme[theme.mainContent]['border-color-default']} inset;
             @media only screen and (max-width: 575px){
                 width: 50% !important
             }
@@ -1114,7 +1114,7 @@ const Main = Styled.div`
                 padding: 25px;
             }
             ${({ theme }) => (theme.rtl ? 'border-right' : 'border-left')}: 1px solid ${({ theme }) =>
-  theme[theme.mainContent]['border-color-default']};
+	theme[theme.mainContent]['border-color-default']};
         }
     }
     .editor-compose > div {
@@ -2402,7 +2402,7 @@ const DragDropStyle = Styled.div`
                 &:not(:last-child){
                     td{
                          border-bottom: 1px solid ${({ theme }) =>
-                           theme[theme.mainContent]['border-color-default']} !important;
+								theme[theme.mainContent]['border-color-default']} !important;
                     }
                  }
                  &:hover{
@@ -2944,31 +2944,31 @@ const TopToolBox = Styled.div`
 `;
 
 export {
-  Main,
-  BorderLessHeading,
-  TableDefaultStyle,
-  ButtonsGroupWrapper,
-  BlockButtonsWrapper,
-  ButtonSizeWrapper,
-  BtnWithIcon,
-  AlertList,
-  AutoCompleteWrapper,
-  CalendarWrapper,
-  DatePickerWrapper,
-  NotificationListWrapper,
-  TagInput,
-  PageHeaderWrapper,
-  MessageStyleWrapper,
-  BasicFormWrapper,
-  CardToolbox,
-  FormGroupWrapper,
-  DragDropStyle,
-  BannerCardStyleWrap,
-  FileCardWrapper,
-  TableWrapper,
-  ImportStyleWrap,
-  ExportStyleWrap,
-  ChartPointHorizontal,
-  CollapseStyleWrap,
-  TopToolBox,
+	Main,
+	BorderLessHeading,
+	TableDefaultStyle,
+	ButtonsGroupWrapper,
+	BlockButtonsWrapper,
+	ButtonSizeWrapper,
+	BtnWithIcon,
+	AlertList,
+	AutoCompleteWrapper,
+	CalendarWrapper,
+	DatePickerWrapper,
+	NotificationListWrapper,
+	TagInput,
+	PageHeaderWrapper,
+	MessageStyleWrapper,
+	BasicFormWrapper,
+	CardToolbox,
+	FormGroupWrapper,
+	DragDropStyle,
+	BannerCardStyleWrap,
+	FileCardWrapper,
+	TableWrapper,
+	ImportStyleWrap,
+	ExportStyleWrap,
+	ChartPointHorizontal,
+	CollapseStyleWrap,
+	TopToolBox,
 };

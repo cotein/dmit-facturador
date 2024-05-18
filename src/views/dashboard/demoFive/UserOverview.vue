@@ -14,85 +14,91 @@ const isLoading = ref(false);
 
 /* Tab Activation */
 const handleTabActivation = (value: any) => {
-  isLoading.value = true;
-  overviewTab.value = value;
-  setTimeout(() => {
-    isLoading.value = false;
-  }, 0);
+	isLoading.value = true;
+	overviewTab.value = value;
+	setTimeout(() => {
+		isLoading.value = false;
+	}, 0);
 };
 const height = window.innerWidth <= 575 ? 180 : 105;
 const userOverviewDataset = computed(() => [
-  {
-    data: userOverviewData[overviewTab.value].target,
-    backgroundColor: 'rgba(130, 49, 211, 0.5)',
-    hoverBackgroundColor: '#8231D3',
-    label: 'target',
-    maxBarThickness: 10,
-    barThickness: 12,
-  },
-  {
-    data: userOverviewData[overviewTab.value].gained,
-    backgroundColor: 'rgba(0, 170, 255, 0.5)',
-    hoverBackgroundColor: '#00AAFF',
-    label: 'gained',
-    maxBarThickness: 10,
-    barThickness: 12,
-  },
+	{
+		data: userOverviewData[overviewTab.value].target,
+		backgroundColor: 'rgba(130, 49, 211, 0.5)',
+		hoverBackgroundColor: '#8231D3',
+		label: 'target',
+		maxBarThickness: 10,
+		barThickness: 12,
+	},
+	{
+		data: userOverviewData[overviewTab.value].gained,
+		backgroundColor: 'rgba(0, 170, 255, 0.5)',
+		hoverBackgroundColor: '#00AAFF',
+		label: 'gained',
+		maxBarThickness: 10,
+		barThickness: 12,
+	},
 ]);
 </script>
 
 <template>
-  <BorderLessHeading v-if="userOverviewData[overviewTab] !== null">
-    <UserOverviewStyle>
-      <ChartContainer>
-        <sdCards title="User Overview">
-          <template #button>
-            <div class="ninjadash-card-nav">
-              <ul>
-                <li :class="overviewTab === 'today' ? 'ninjadash-active' : 'ninjadash-today'">
-                  <router-link @click="(e: any) => handleTabActivation('today')" to="#"> Today </router-link>
-                </li>
-                <li :class="overviewTab === 'week' ? 'ninjadash-active' : 'ninjadash-week'">
-                  <router-link @click="(e: any) => handleTabActivation('week')" to="#"> Week </router-link>
-                </li>
-                <li :class="overviewTab === 'month' ? 'ninjadash-active' : 'ninjadash-month'">
-                  <router-link @click="(e: any) => handleTabActivation('month')" to="#"> Month </router-link>
-                </li>
-              </ul>
-            </div>
-          </template>
-          <CardBarChart class="ninjadash-chart-container">
-            <ul class="ninjadash-chartdata-list">
-              <template v-if="userOverviewDataset">
-                <li v-for="(item, key) in userOverviewDataset" :key="key + 1">
-                  <span
-                    :style="{
-                      width: '7px',
-                      height: '7px',
-                      display: 'flex',
-                      backgroundColor: item.hoverBackgroundColor,
-                      borderRadius: '50%',
-                      margin: '0px 6.5px',
-                    }"
-                  />
-                  {{ item.label }}
-                </li>
-              </template>
-            </ul>
-            <DashboardChart
-              v-if="!isLoading"
-              className="userChanrt"
-              id="userCharts"
-              :labels="userOverviewData[overviewTab].labels"
-              :datasets="userOverviewDataset"
-              :height="height"
-              :layout="{
-                padding: {
-                  top: 20,
-                },
-              }"
-              type="bar"
-              :scales="{
+	<BorderLessHeading v-if="userOverviewData[overviewTab] !== null">
+		<UserOverviewStyle>
+			<ChartContainer>
+				<sdCards title="User Overview">
+					<template #button>
+						<div class="ninjadash-card-nav">
+							<ul>
+								<li :class="overviewTab === 'today' ? 'ninjadash-active' : 'ninjadash-today'">
+									<router-link @click="(e: any) => handleTabActivation('today')" to="#">
+										Today
+									</router-link>
+								</li>
+								<li :class="overviewTab === 'week' ? 'ninjadash-active' : 'ninjadash-week'">
+									<router-link @click="(e: any) => handleTabActivation('week')" to="#">
+										Week
+									</router-link>
+								</li>
+								<li :class="overviewTab === 'month' ? 'ninjadash-active' : 'ninjadash-month'">
+									<router-link @click="(e: any) => handleTabActivation('month')" to="#">
+										Month
+									</router-link>
+								</li>
+							</ul>
+						</div>
+					</template>
+					<CardBarChart class="ninjadash-chart-container">
+						<ul class="ninjadash-chartdata-list">
+							<template v-if="userOverviewDataset">
+								<li v-for="(item, key) in userOverviewDataset" :key="key + 1">
+									<span
+										:style="{
+											width: '7px',
+											height: '7px',
+											display: 'flex',
+											backgroundColor: item.hoverBackgroundColor,
+											borderRadius: '50%',
+											margin: '0px 6.5px',
+										}"
+									/>
+									{{ item.label }}
+								</li>
+							</template>
+						</ul>
+						<DashboardChart
+							v-if="!isLoading"
+							className="userChanrt"
+							id="userCharts"
+							:labels="userOverviewData[overviewTab].labels"
+							:datasets="userOverviewDataset"
+							:height="height"
+							:layout="{
+								padding: {
+									top: 20,
+								},
+							}"
+							type="bar"
+							:scales="{
                 y: {
                   grid: {
                     color: '#485e9029',
@@ -130,7 +136,7 @@ const userOverviewDataset = computed(() => [
                   },
                 },
               }"
-              :tooltip="{
+							:tooltip="{
                 external: customTooltips,
                 callbacks: {
                   label(t: any) {
@@ -146,10 +152,10 @@ const userOverviewDataset = computed(() => [
                   },
                 },
               }"
-            />
-          </CardBarChart>
-        </sdCards>
-      </ChartContainer>
-    </UserOverviewStyle>
-  </BorderLessHeading>
+						/>
+					</CardBarChart>
+				</sdCards>
+			</ChartContainer>
+		</UserOverviewStyle>
+	</BorderLessHeading>
 </template>

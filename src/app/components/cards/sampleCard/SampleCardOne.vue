@@ -32,27 +32,27 @@ const CardWrapper = Styled.figure`
 `;
 
 const props = defineProps({
-  item: {
-    type: Object,
-    default: () => ({
-      id: 1,
-      title: 'Technology Change the World',
-      content: 'Lorem Ipsum is simply dummy text of the printer took a galley of type and scrambled',
-      img: 'assets/img/sampleCards/1.png',
-    }),
-  },
+	item: {
+		type: Object,
+		default: () => ({
+			id: 1,
+			title: 'Technology Change the World',
+			content: 'Lorem Ipsum is simply dummy text of the printer took a galley of type and scrambled',
+			img: 'assets/img/sampleCards/1.png',
+		}),
+	},
 });
 const { item } = toRefs(props);
 const { id, title, content, img } = item.value;
 </script>
 
 <template>
-  <CardWrapper>
-    <img :src="`/src/${img}`" alt="" />
-    <figcaption>
-      <h2>{{ title }}</h2>
-      <p>{{ content }}</p>
-      <sdButton type="primary" size="lg"> View More </sdButton>
-    </figcaption>
-  </CardWrapper>
+	<CardWrapper>
+		<img :src="`/src/${img}`" alt="" />
+		<figcaption>
+			<h2>{{ title }}</h2>
+			<p>{{ content }}</p>
+			<sdButton type="primary" size="lg"> View More </sdButton>
+		</figcaption>
+	</CardWrapper>
 </template>

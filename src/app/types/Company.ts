@@ -33,7 +33,7 @@ export enum TypeCompany {
 	FISICA = 2,
 }
 
-export type Company = {
+export type Company = CompanyRawData & {
 	id?: number;
 	name?: string;
 	lastName?: string;

@@ -1,6 +1,5 @@
 import app from './config/configApp';
 import router from './app/router';
-import store from './vuex/store';
 //import 'ant-design-vue/dist/antd.css';
 import './assets/main.css';
 // Vue 3rd party plugins
@@ -46,7 +45,6 @@ app.config.globalProperties.$filters = {
 };
 
 //app.use(DatePicker);
-app.use(store);
 app.use(pinia);
 app.use(VueQueryPlugin);
 app.use(router);

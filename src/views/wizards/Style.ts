@@ -257,11 +257,11 @@ const ProductTable = Styled.div`
                         border-bottom: 1px solid ${({ theme }) => theme['border-color-light']};
                         &:first-child{
                             ${({ theme }) => (!theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-  theme['border-color-light']};
+	theme['border-color-light']};
                         }
                         &:last-child{
                             ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-  theme['border-color-light']};
+	theme['border-color-light']};
                             text-align: ${({ theme }) => (theme.rtl ? 'left' : 'right')};
                         }
                     }
@@ -898,7 +898,7 @@ const WizardWrapper = Styled.div`
 			.btn-prev{
                 border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
 				svg{
-					fill: ${({theme}) => theme['gray-color']} !important;
+					fill: ${({ theme }) => theme['gray-color']} !important;
 				}
 			}
 		}
@@ -1138,7 +1138,7 @@ const WizardWrapper = Styled.div`
             font-size: 20px;
             font-weight: 500;
             margin-bottom: 46px;
-            color: ${({theme}) => theme[theme.mainContent]['dark-text']};
+            color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
             @media only screen and (max-width: 991px){
                 font-size: 18px;
                 margin-bottom: 22px;
@@ -1204,9 +1204,9 @@ const WizardWrapper = Styled.div`
            .shipping-selection__card{
                .wrapperCard {
                     .ant-card-body {
-                        background-color: ${({theme}) => theme[theme.mainContent]['white-background']};
+                        background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
                         border-radius: 20px;
-                        border: 1px solid ${({theme}) => theme[theme.mainContent]['border-color-default']};
+                        border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
                     }
                }
                .ant-card .ant-card{
@@ -1338,9 +1338,9 @@ const WizardWrapper = Styled.div`
 
        .wrapperCard_order {
             .ant-card-body {
-                background-color: ${({theme}) => theme[theme.mainContent]['white-background']};
+                background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
                 border-radius: 20px;
-                border: 1px solid ${({theme}) => theme[theme.mainContent]['border-color-default']};
+                border: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
             }
         }
 
@@ -2092,21 +2092,21 @@ const WizardBlock = Styled.div`
 `;
 
 export {
-  FigureWizards,
-  NotFoundWrapper,
-  ProductCard,
-  ProductTable,
-  CouponForm,
-  OrderSummary,
-  AddProductForm,
-  InvoiceHeader,
-  InvoiceLetterBox,
-  InvoiceAction,
-  WizardWrapper,
-  WizardTwo,
-  WizardThree,
-  WizardFour,
-  WizardFive,
-  WizardSix,
-  WizardBlock,
+	FigureWizards,
+	NotFoundWrapper,
+	ProductCard,
+	ProductTable,
+	CouponForm,
+	OrderSummary,
+	AddProductForm,
+	InvoiceHeader,
+	InvoiceLetterBox,
+	InvoiceAction,
+	WizardWrapper,
+	WizardTwo,
+	WizardThree,
+	WizardFour,
+	WizardFive,
+	WizardSix,
+	WizardBlock,
 };

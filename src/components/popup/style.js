@@ -1,5 +1,5 @@
 import Styled from 'vue3-styled-components';
-const Contents = Styled.div `
+const Contents = Styled.div`
   a, .span {
       display: block;
       color: #888;
@@ -15,7 +15,7 @@ const Contents = Styled.div `
   }
 
 `;
-const TitleStyle = Styled.p `
+const TitleStyle = Styled.p`
   text-align: ${({ theme }) => (theme.rtl ? 'right' : 'left')};
   margin: 0;
 `;

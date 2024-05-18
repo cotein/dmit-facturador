@@ -521,7 +521,7 @@ const BannerCtaWrap = Styled.div`
             h2{
                 font-size: 30px;
                 font-weight: 600;
-								color: ${({theme}) => theme[theme.mainContent]['dark-text']};
+								color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
             }
             button{
                 margin-top: 10px;
@@ -618,16 +618,16 @@ const PageHeader = Styled.figure`
 `;
 
 export {
-  Figure2,
-  Figure8,
-  Figure3,
-  Figure6,
-  Figure7,
-  BannerWrapper,
-  BannerNormal,
-  BannerCarouselWrap,
-  BannerLongWrap,
-  BannerCardWrap,
-  BannerCtaWrap,
-  PageHeader
+	Figure2,
+	Figure8,
+	Figure3,
+	Figure6,
+	Figure7,
+	BannerWrapper,
+	BannerNormal,
+	BannerCarouselWrap,
+	BannerLongWrap,
+	BannerCardWrap,
+	BannerCtaWrap,
+	PageHeader,
 };

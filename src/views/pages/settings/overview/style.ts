@@ -422,10 +422,10 @@ const NotificationWrapper = Styled.div`
 `;
 
 export {
-  ProfileAuthorBox,
-  SettingWrapper,
-  AccountWrapper,
-  ChangePasswordWrapper,
-  SocialProfileForm,
-  NotificationWrapper,
+	ProfileAuthorBox,
+	SettingWrapper,
+	AccountWrapper,
+	ChangePasswordWrapper,
+	SocialProfileForm,
+	NotificationWrapper,
 };

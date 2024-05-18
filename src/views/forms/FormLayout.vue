@@ -8,26 +8,26 @@ import MultiColumnForm from './overview/MultiColumnForm.vue';
 </script>
 
 <template>
-  <div>
-    <sdPageHeader title="Form Layout" class="ninjadash-page-header-main"> </sdPageHeader>
-    <Main>
-      <a-row :gutter="25">
-        <a-col :lg="12" :xs="24">
-          <HorizontalForm />
-        </a-col>
-        <a-col :lg="12" :xs="24">
-          <HorizontalIconForm />
-        </a-col>
-        <a-col :lg="12" :xs="24">
-          <VerticalForm />
-        </a-col>
-        <a-col :lg="12" :xs="24">
-          <VerticalIconForm />
-        </a-col>
-        <a-col :xs="24">
-          <MultiColumnForm />
-        </a-col>
-      </a-row>
-    </Main>
-  </div>
+	<div>
+		<sdPageHeader title="Form Layout" class="ninjadash-page-header-main"> </sdPageHeader>
+		<Main>
+			<a-row :gutter="25">
+				<a-col :lg="12" :xs="24">
+					<HorizontalForm />
+				</a-col>
+				<a-col :lg="12" :xs="24">
+					<HorizontalIconForm />
+				</a-col>
+				<a-col :lg="12" :xs="24">
+					<VerticalForm />
+				</a-col>
+				<a-col :lg="12" :xs="24">
+					<VerticalIconForm />
+				</a-col>
+				<a-col :xs="24">
+					<MultiColumnForm />
+				</a-col>
+			</a-row>
+		</Main>
+	</div>
 </template>

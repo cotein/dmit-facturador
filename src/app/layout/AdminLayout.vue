@@ -9,7 +9,7 @@ import TopMenu from './TopMenuItems.vue';
 
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
-import { useStore } from 'vuex';
+import { useAppStore } from '../store/app/useAppStore';
 import { useCompanyComposable } from '../composables/company/useCompanyComposable';
 const { CompanyGetter } = useCompanyComposable();
 
@@ -18,11 +18,11 @@ const collapsed = ref(false);
 const hide = ref(true);
 const searchHide = ref(true);
 
-const { dispatch, state } = useStore();
+const { state } = useAppStore();
 
-const rtl = computed(() => state.themeLayout.rtlData);
-const darkMode = computed(() => state.themeLayout.data);
-const topMenu = computed(() => state.themeLayout.topMenu);
+const rtl = computed(() => state.rtlData);
+const darkMode = computed(() => state.data);
+const topMenu = computed(() => state.topMenu);
 const innerWidth: number = window.innerWidth;
 collapsed.value = window.innerWidth <= 1200 && true;
 
@@ -56,7 +56,7 @@ if (innerWidth <= 990) {
 }
 
 const modeChangeSideNav = () => {
-	dispatch('changeMenuMode', false);
+	//dispatch('changeMenuMode', false);
 };
 
 const onEventChange = {
@@ -150,7 +150,7 @@ const onEventChange = {
 					<a-col :md="0" :sm="24" :xs="24">
 						<div class="small-screen-headerRight">
 							<SmallScreenSearch :hide="searchHide" :darkMode="darkMode">
-								<HeaderSearch />
+								<!-- <HeaderSearch /> -->
 							</SmallScreenSearch>
 							<SmallScreenAuthInfo :hide="hide" :darkMode="darkMode">
 								<AuthInfo :rtl="rtl" />

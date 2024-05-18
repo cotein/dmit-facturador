@@ -1,5 +1,5 @@
 import Styled from 'vue3-styled-components';
-const Contents = Styled.div `
+const Contents = Styled.div`
     background: ${({ theme }) => theme[theme.mainContent]['main-background']};
     box-shadow: 0px 10px 15px #22222210 !important;
     a i, a svg, a img {

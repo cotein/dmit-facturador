@@ -1,11 +1,11 @@
 <template>
-  <router-view></router-view>
+	<router-view></router-view>
 </template>
 <script>
 import { defineComponent } from 'vue';
 
 const Blog = defineComponent({
-  name: 'Blog',
+	name: 'Blog',
 });
 
 export default Blog;

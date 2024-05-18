@@ -17,85 +17,85 @@ const MemberProgress = defineAsyncComponent(() => import('@/views/dashboard/demo
 </script>
 
 <template>
-  <div>
-    <sdPageHeader title="Tables" class="ninjadash-page-header-main"> </sdPageHeader>
-    <Main>
-      <a-row :gutter="15">
-        <a-col :xs="24">
-          <Suspense>
-            <template #fallback>
-              <sdCards headless>
-                <a-skeleton active />
-              </sdCards>
-            </template>
-            <template #default>
-              <sdCards title="Basic Usage">
-                <BasicTable />
-              </sdCards>
-            </template>
-          </Suspense>
-        </a-col>
-        <a-col :xs="24">
-          <Suspense>
-            <template #fallback>
-              <sdCards headless>
-                <a-skeleton active />
-              </sdCards>
-            </template>
-            <template #default> <DragAndDropTable /> </template>
-          </Suspense>
-        </a-col>
-        <a-col :lg="12" :xs="24">
-          <Suspense>
-            <template #fallback>
-              <sdCards headless>
-                <a-skeleton active />
-              </sdCards>
-            </template>
-            <template #default> <TopSellingProduct /> </template>
-          </Suspense>
-        </a-col>
-        <a-col :lg="12" :xs="24">
-          <Suspense>
-            <template #fallback>
-              <sdCards headless>
-                <a-skeleton active />
-              </sdCards>
-            </template>
-            <template #default> <BrowserState /> </template>
-          </Suspense>
-        </a-col>
-        <a-col :lg="12" :xs="24">
-          <Suspense>
-            <template #fallback>
-              <sdCards headless>
-                <a-skeleton active />
-              </sdCards>
-            </template>
-            <template #default> <ActiveUser /> </template>
-          </Suspense>
-        </a-col>
-        <a-col :lg="12" :xs="24">
-          <Suspense>
-            <template #fallback>
-              <sdCards headless>
-                <a-skeleton active />
-              </sdCards>
-            </template>
-            <template #default> <TopProduct /> </template>
-          </Suspense>
-        </a-col>
-        <a-col :lg="12" :xs="24">
-          <Suspense>
-            <template #fallback>
-              <sdCards headless>
-                <a-skeleton active />
-              </sdCards>
-            </template>
-            <template #default> <MemberProgress /> </template>
-          </Suspense>
-        </a-col>
-      </a-row>
-    </Main>
-  </div>
+	<div>
+		<sdPageHeader title="Tables" class="ninjadash-page-header-main"> </sdPageHeader>
+		<Main>
+			<a-row :gutter="15">
+				<a-col :xs="24">
+					<Suspense>
+						<template #fallback>
+							<sdCards headless>
+								<a-skeleton active />
+							</sdCards>
+						</template>
+						<template #default>
+							<sdCards title="Basic Usage">
+								<BasicTable />
+							</sdCards>
+						</template>
+					</Suspense>
+				</a-col>
+				<a-col :xs="24">
+					<Suspense>
+						<template #fallback>
+							<sdCards headless>
+								<a-skeleton active />
+							</sdCards>
+						</template>
+						<template #default> <DragAndDropTable /> </template>
+					</Suspense>
+				</a-col>
+				<a-col :lg="12" :xs="24">
+					<Suspense>
+						<template #fallback>
+							<sdCards headless>
+								<a-skeleton active />
+							</sdCards>
+						</template>
+						<template #default> <TopSellingProduct /> </template>
+					</Suspense>
+				</a-col>
+				<a-col :lg="12" :xs="24">
+					<Suspense>
+						<template #fallback>
+							<sdCards headless>
+								<a-skeleton active />
+							</sdCards>
+						</template>
+						<template #default> <BrowserState /> </template>
+					</Suspense>
+				</a-col>
+				<a-col :lg="12" :xs="24">
+					<Suspense>
+						<template #fallback>
+							<sdCards headless>
+								<a-skeleton active />
+							</sdCards>
+						</template>
+						<template #default> <ActiveUser /> </template>
+					</Suspense>
+				</a-col>
+				<a-col :lg="12" :xs="24">
+					<Suspense>
+						<template #fallback>
+							<sdCards headless>
+								<a-skeleton active />
+							</sdCards>
+						</template>
+						<template #default> <TopProduct /> </template>
+					</Suspense>
+				</a-col>
+				<a-col :lg="12" :xs="24">
+					<Suspense>
+						<template #fallback>
+							<sdCards headless>
+								<a-skeleton active />
+							</sdCards>
+						</template>
+						<template #default> <MemberProgress /> </template>
+					</Suspense>
+				</a-col>
+			</a-row>
+		</Main>
+	</div>
 </template>

@@ -940,16 +940,16 @@ const AddProductForm = Styled.div`
 `;
 
 export {
-  JobLandingStyle,
-  FigureCart,
-  Sidebar,
-  NotFoundWrapper,
-  SidebarSingle,
-  JobsCard,
-  JobDetailsWrap,
-  AdditionalInfoStyle,
-  JobApplicationWrap,
-  PaginationWrapper,
-  ProductDetailsWrapper,
-  AddProductForm,
+	JobLandingStyle,
+	FigureCart,
+	Sidebar,
+	NotFoundWrapper,
+	SidebarSingle,
+	JobsCard,
+	JobDetailsWrap,
+	AdditionalInfoStyle,
+	JobApplicationWrap,
+	PaginationWrapper,
+	ProductDetailsWrapper,
+	AddProductForm,
 };

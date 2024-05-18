@@ -1,6 +1,6 @@
 import Styled from 'vue3-styled-components';
 const props = ['darkMode'];
-const InfoWraper = Styled('div', props) `
+const InfoWraper = Styled('div', props)`
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -193,7 +193,7 @@ const InfoWraper = Styled('div', props) `
         }
     }
 `;
-const SettingDropdown = Styled.div `
+const SettingDropdown = Styled.div`
     .setting-dropdown{
         max-width: 700px;
         padding: 4px 0;
@@ -240,7 +240,7 @@ const SettingDropdown = Styled.div `
         }
     }
 `;
-const NestedDropdown = Styled.div `
+const NestedDropdown = Styled.div`
     .support-dropdown{
         padding: 10px 15px;
         text-align: ${({ theme }) => (!theme.rtl ? 'left' : 'right')};
@@ -267,7 +267,7 @@ const NestedDropdown = Styled.div `
         }
     }
 `;
-const UserDropDown = Styled.div `
+const UserDropDown = Styled.div`
     .user-dropdown{
         max-width: 280px;
         .user-dropdown__info{
@@ -345,7 +345,7 @@ const UserDropDown = Styled.div `
         }
     }
 `;
-const NinjadashTopDropdown = Styled.div `
+const NinjadashTopDropdown = Styled.div`
     .ninjadash-top-dropdown__title .title-text {
         ${({ theme }) => (!theme.rtl ? 'margin-right' : 'margin-left')}: 10px;
 		color: ${({ theme }) => theme[theme.mainContent]['dark-color']};
@@ -416,7 +416,7 @@ const NinjadashTopDropdown = Styled.div `
         text-align: ${({ theme }) => (!theme.rtl ? 'left' : 'right')}
     }
 `;
-const NavAuth = Styled.span `
+const NavAuth = Styled.span`
     i, svg, img {
         ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 8px;
     }

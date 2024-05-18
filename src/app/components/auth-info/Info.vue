@@ -5,7 +5,6 @@ import { LogoutOutlined } from '@ant-design/icons-vue';
 import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAddNewCompanyPanelComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 import { useUserComposable } from '@/app/composables/user/useUserComposable';
 import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
 import Message from './Message.vue';
@@ -14,8 +13,7 @@ import Settings from './Settings.vue';
 import EditCompanyForm from '@/app/components/company/EditCompanyForm.vue';
 
 const { sujetoIsEditable } = usePadronComposable();
-const { CompanyGetter, updateCompanyMutation, companyForm, setCompany } = useCompanyComposable();
-const { dispatch } = useStore();
+const { CompanyGetter, updateCompanyMutation, setCompany } = useCompanyComposable();
 const { openAddNewCompanyPanel, openEditCompanyPanel, closeEditCompanyPanel, EditCompanyPanel } =
 	useAddNewCompanyPanelComposable();
 const { push } = useRouter();
@@ -24,7 +22,6 @@ const { UserGetter, Avatar } = useUserComposable();
 const SignOut = (e: any) => {
 	e.preventDefault();
 	push('/auth/login');
-	dispatch('logOut');
 };
 
 const handleCustomEvent = (data: Company) => {
@@ -40,7 +37,9 @@ const closeEditPanel = () => {
 };
 const openEditPanel = () => {
 	sujetoIsEditable.value = true;
-	setCompany(CompanyGetter.value);
+	if (CompanyGetter.value) {
+		setCompany(CompanyGetter.value);
+	}
 	openEditCompanyPanel();
 };
 </script>

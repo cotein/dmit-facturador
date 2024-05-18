@@ -144,7 +144,8 @@ const ProjectSorting = Styled.div`
             li{
                 ${({ theme }) => (theme.rtl ? 'padding-left' : 'padding-right')}: 12px;
                 ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 11px;
-                ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
+                ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
+	theme[theme.mainContent]['border-color-default']};
                 &:last-child{
                     ${({ theme }) => (theme.rtl ? 'padding-left' : 'padding-right')}: 0;
                     ${({ theme }) => (theme.rtl ? 'margin-left' : 'margin-right')}: 0;
@@ -500,11 +501,13 @@ const ProjectList = Styled.div`
     }
     .ant-table-container table > thead > tr th:first-child {
         border-radius: ${({ theme }) => (theme.rtl ? '0 10px 10px 0' : '10px 0 0 10px')} !important;
-        ${({ theme }) => (!theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
+        ${({ theme }) => (!theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
+	theme[theme.mainContent]['border-color-default']};
     }
     .ant-table-container table > thead > tr th:last-child {
         border-radius: ${({ theme }) => (!theme.rtl ? '0 10px 10px 0' : '10px 0 0 10px')} !important;
-        ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) => theme[theme.mainContent]['border-color-default']};
+        ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
+	theme[theme.mainContent]['border-color-default']};
     }
     .project-action {
         svg{
@@ -616,7 +619,7 @@ const ProjectDetailsWrapper = Styled.div`
     }
     .about-project-wrapper{
         min-height: 485px;
-        background-color: ${({theme}) => theme[theme.mainContent]['white-background']};
+        background-color: ${({ theme }) => theme[theme.mainContent]['white-background']};
         border-radius: 10px;
         margin-bottom: 25px;
     }
@@ -1085,16 +1088,16 @@ const ProjectModalFooter = Styled.div`
 `;
 
 export {
-  ProjectHeader,
-  ProjectSorting,
-  ProjectCard,
-  ProjectPagination,
-  ProjectListTitle,
-  ProjectListAssignees,
-  ProjectList,
-  ProjectDetailsWrapper,
-  TaskLists,
-  TasklistAction,
-  ActivitiesWrapper,
-  ProjectModalFooter,
+	ProjectHeader,
+	ProjectSorting,
+	ProjectCard,
+	ProjectPagination,
+	ProjectListTitle,
+	ProjectListAssignees,
+	ProjectList,
+	ProjectDetailsWrapper,
+	TaskLists,
+	TasklistAction,
+	ActivitiesWrapper,
+	ProjectModalFooter,
 };

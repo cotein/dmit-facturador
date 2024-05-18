@@ -1,19 +1,19 @@
 <template>
-  <div>
-    <sdPageHeader class="ninjadash-page-header-main" title="Upload"> </sdPageHeader>
-    <Main>
-      <a-row :gutter="15">
-        <a-col :md="12" :sm="24" :xs="24">
-          <sdCards title="Basic"> <basic-upload /></sdCards>
-          <sdCards title="Avatar"> <avatar-upload /></sdCards>
-        </a-col>
-        <a-col :md="12" :sm="24" :xs="24">
-          <sdCards title="Complete Control"><complete-control-upload /></sdCards>
-          <sdCards title="Upload Default"> <default-upload /></sdCards>
-        </a-col>
-      </a-row>
-    </Main>
-  </div>
+	<div>
+		<sdPageHeader class="ninjadash-page-header-main" title="Upload"> </sdPageHeader>
+		<Main>
+			<a-row :gutter="15">
+				<a-col :md="12" :sm="24" :xs="24">
+					<sdCards title="Basic"> <basic-upload /></sdCards>
+					<sdCards title="Avatar"> <avatar-upload /></sdCards>
+				</a-col>
+				<a-col :md="12" :sm="24" :xs="24">
+					<sdCards title="Complete Control"><complete-control-upload /></sdCards>
+					<sdCards title="Upload Default"> <default-upload /></sdCards>
+				</a-col>
+			</a-row>
+		</Main>
+	</div>
 </template>
 
 <script setup lang="ts">

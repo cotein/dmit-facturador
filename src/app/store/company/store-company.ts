@@ -87,45 +87,45 @@ export const useStoreCompany = defineStore('company', () => {
 		company.value = value;
 	};
 
-	const setCompany = (data: CompanyRawData) => {
-		companyForm.activity_init = moment(data.activity_init);
-		/* companyForm.address.addressable_id = data.address.addressable_id;
-		companyForm.address.addressable_type = data.address.addressable_type;
-		companyForm.address.between_streets = data.address.between_streets;
-		companyForm.address.city = data.address.city;
-		companyForm.address.cp = data.address.cp;
-		companyForm.address.number = data.address.number;
-		companyForm.address.obs = data.address.obs;
-		companyForm.address.state_id = data.address.state_id;
-		companyForm.address.street = data.address.street; */
+	const setCompany = (company: Company) => {
+		companyForm.activity_init = moment(company.activity_init);
+		/* companyForm.address.addressable_id = company.address.addressable_id;
+		companyForm.address.addressable_type = company.address.addressable_type;
+		companyForm.address.between_streets = company.address.between_streets;
+		companyForm.address.city = company.address.city;
+		companyForm.address.cp = company.address.cp;
+		companyForm.address.number = company.address.number;
+		companyForm.address.obs = company.address.obs;
+		companyForm.address.state_id = company.address.state_id;
+		companyForm.address.street = company.address.street; */
 
-		addressStore.address.state_id = data.address.state_id;
-		addressStore.address.city = data.address.city;
-		addressStore.address.street = data.address.street;
-		addressStore.address.cp = data.address.cp;
-		addressStore.address.number = data.address.number;
-		addressStore.address.obs = data.address.obs;
-		addressStore.address.between_streets = data.address.between_streets;
-		addressStore.address.addressable_id = data.address.addressable_id;
-		addressStore.address.addressable_type = data.address.addressable_type;
+		addressStore.address.state_id = company.address.state_id;
+		addressStore.address.city = company.address.city;
+		addressStore.address.street = company.address.street;
+		addressStore.address.cp = company.address.cp;
+		addressStore.address.number = company.address.number;
+		addressStore.address.obs = company.address.obs;
+		addressStore.address.between_streets = company.address.between_streets;
+		addressStore.address.addressable_id = company.address.addressable_id;
+		addressStore.address.addressable_type = company.address.addressable_type;
 
 		companyForm.afip_data = {};
-		companyForm.afip_environment = data.afip_environment;
-		companyForm.billing_concept = String(data.billing_concept);
-		companyForm.cuit = data.cuit;
-		companyForm.cuit_id = data.cuit_id;
-		companyForm.fantasy_name = data.fantasy_name;
-		companyForm.iibb = data.iibb;
-		companyForm.inscription = data.inscription;
-		companyForm.lastName = data.lastName;
-		companyForm.name = data.name;
-		companyForm.number = data.number;
-		companyForm.perception_iibb = data.perception_iibb;
-		companyForm.perception_iva = data.perception_iva;
-		companyForm.pto_vta_fe = data.pto_vta_fe;
-		companyForm.pto_vta_recibo = data.pto_vta_recibo;
-		companyForm.pto_vta_remito = data.pto_vta_remito;
-		companyForm.type_company = data.type_company;
+		companyForm.afip_environment = company.afip_environment;
+		companyForm.billing_concept = String(company.billing_concept);
+		companyForm.cuit = company.cuit;
+		companyForm.cuit_id = company.cuit_id;
+		companyForm.fantasy_name = company.fantasy_name;
+		companyForm.iibb = company.iibb;
+		companyForm.inscription = company.inscription;
+		companyForm.lastName = company.lastName;
+		companyForm.name = company.name;
+		companyForm.number = company.number;
+		companyForm.perception_iibb = company.perception_iibb;
+		companyForm.perception_iva = company.perception_iva;
+		companyForm.pto_vta_fe = company.pto_vta_fe;
+		companyForm.pto_vta_recibo = company.pto_vta_recibo;
+		companyForm.pto_vta_remito = company.pto_vta_remito;
+		companyForm.type_company = company.type_company;
 	};
 
 	return {
