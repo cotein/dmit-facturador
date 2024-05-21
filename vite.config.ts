@@ -40,8 +40,8 @@ export default defineConfig({
 	},
 	base:
 		process.env.NODE_ENV === 'production'
-			? process.env.VITE_SUB_ROUTE
-				? process.env.VITE_SUB_ROUTE
-				: process.env.VITE_SUB_ROUTE
+			? process.env.VITE_URL_BASE_API
+				? process.env.VITE_URL_BASE_API
+				: process.env.VITE_URL_BASE_API
 			: 'http://localhost:8001',
 });
