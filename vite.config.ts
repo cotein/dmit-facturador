@@ -42,6 +42,6 @@ export default defineConfig({
 		process.env.NODE_ENV === 'production'
 			? process.env.VITE_SUB_ROUTE
 				? process.env.VITE_SUB_ROUTE
-				: 'http://localhost:8001'
+				: process.env.VITE_SUB_ROUTE
 			: 'http://localhost:8001',
 });
