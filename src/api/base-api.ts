@@ -2,7 +2,8 @@ import type { UserTokenGetterType } from '@/app/types/User';
 import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:8001';
+axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
+console.log('🚀 ~ import.meta.env.VITE_URL_BASE_API:', import.meta.env.VITE_URL_BASE_API);
 
 const userStore = useUserStore();
 
