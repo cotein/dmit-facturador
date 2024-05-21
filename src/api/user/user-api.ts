@@ -4,7 +4,7 @@ import type { AxiosResponse } from 'axios';
 
 export const getMyData = async (): Promise<any> => {
 	try {
-		const response = await ApiHttp.get<AxiosResponse<LoggedUser>>('http://localhost:8001/api/users');
+		const response = await ApiHttp.get<AxiosResponse<LoggedUser>>('http://api.dmit.ar/api/users');
 
 		return response;
 	} catch (error) {
