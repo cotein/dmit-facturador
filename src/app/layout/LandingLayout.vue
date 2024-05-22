@@ -389,15 +389,21 @@ import 'aos/dist/aos.css';
 const loading = ref<boolean>(true);
 
 onBeforeMount(() => {
+	let path = '';
+	if (import.meta.env.MODE === 'development') {
+		path = '/src/assets';
+	} else {
+		path = '/assets';
+	}
 	const css: string[] = [
 		'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i',
-		'/src/assets/vendor/bootstrap/css/bootstrap.min.css',
-		'/src/assets/vendor/bootstrap-icons/bootstrap-icons.css',
-		'/src/assets/vendor/boxicons/css/boxicons.min.css',
-		//'/src/assets/vendor/glightbox/css/glightbox.min.css',
-		'/src/assets/vendor/remixicon/remixicon.css',
-		'/src/assets/vendor/swiper/swiper-bundle.min.css',
-		'/src/assets/css/style.css',
+		`${path}/vendor/bootstrap/css/bootstrap.min.css`,
+		`${path}/vendor/bootstrap-icons/bootstrap-icons.css`,
+		`${path}/vendor/boxicons/css/boxicons.min.css`,
+		//`${path}/vendor/glightbox/css/glightbox.min.css`,
+		`${path}/vendor/remixicon/remixicon.css`,
+		`${path}/vendor/swiper/swiper-bundle.min.css`,
+		`${path}/css/style.css`,
 	];
 
 	css.forEach((c) => {
@@ -408,13 +414,13 @@ onBeforeMount(() => {
 	});
 
 	const script: string[] = [
-		'/src/assets/vendor/bootstrap/js/bootstrap.bundle.min.js',
-		//'/src/assets/vendor/glightbox/js/glightbox.min.js',
-		'/src/assets/vendor/isotope-layout/isotope.pkgd.min.js',
-		'/src/assets/vendor/php-email-form/validate.js',
-		'/src/assets/vendor/swiper/swiper-bundle.min.js',
-		'/src/assets/vendor/waypoints/noframework.waypoints.js',
-		'/src/assets/js/main.js',
+		`${path}/vendor/bootstrap/js/bootstrap.bundle.min.js`,
+		//${path}s/vendor/glightbox/js/glightbox.min.js`,
+		`${path}/vendor/isotope-layout/isotope.pkgd.min.js`,
+		`${path}/vendor/php-email-form/validate.js`,
+		`${path}/vendor/swiper/swiper-bundle.min.js`,
+		`${path}/vendor/waypoints/noframework.waypoints.js`,
+		`${path}/js/main.js`,
 	];
 
 	script.forEach((s) => {
