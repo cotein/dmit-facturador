@@ -4,8 +4,8 @@ import { Main } from '../../styled';
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
-import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
+/* import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'; */
 
 const { state } = useStore();
 const match = computed(() => useRoute().matched[1]);

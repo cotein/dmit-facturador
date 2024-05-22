@@ -18,7 +18,8 @@ import { NavTitle } from './app/layout/style';
 import moment from 'moment';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
-
+import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
+import 'vue3-perfect-scrollbar/style.css';
 const pinia = createPinia();
 
 app.component('SearchOutlined', SearchOutlined);
@@ -45,6 +46,7 @@ app.config.globalProperties.$filters = {
 };
 
 //app.use(DatePicker);
+app.use(PerfectScrollbarPlugin);
 app.use(pinia);
 app.use(VueQueryPlugin);
 app.use(router);

@@ -7,8 +7,8 @@ import AuthInfo from '@/app/components/auth-info/Info.vue';
 import AsideItems from './Aside.vue';
 import TopMenu from './TopMenuItems.vue';
 
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
-import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
+/* import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'; */
 import { useAppStore } from '../store/app/useAppStore';
 import { useCompanyComposable } from '../composables/company/useCompanyComposable';
 const { CompanyGetter } = useCompanyComposable();

@@ -391,18 +391,17 @@ const loading = ref<boolean>(true);
 onBeforeMount(() => {
 	let path = '';
 	if (import.meta.env.MODE === 'development') {
-		path = '/src/assets';
+		path = '/src/assets/vendor';
 	} else {
 		path = '/assets';
 	}
 	const css: string[] = [
 		'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i',
-		`${path}/vendor/bootstrap/css/bootstrap.min.css`,
-		`${path}/vendor/bootstrap-icons/bootstrap-icons.css`,
-		`${path}/vendor/boxicons/css/boxicons.min.css`,
-		//`${path}/vendor/glightbox/css/glightbox.min.css`,
-		`${path}/vendor/remixicon/remixicon.css`,
-		`${path}/vendor/swiper/swiper-bundle.min.css`,
+		`${path}/bootstrap/css/bootstrap.min.css`,
+		`${path}/bootstrap-icons/bootstrap-icons.css`,
+		`${path}/boxicons/css/boxicons.min.css`,
+		`${path}/remixicon/remixicon.css`,
+		`${path}/swiper/swiper-bundle.min.css`,
 		`${path}/css/style.css`,
 	];
 
@@ -414,12 +413,11 @@ onBeforeMount(() => {
 	});
 
 	const script: string[] = [
-		`${path}/vendor/bootstrap/js/bootstrap.bundle.min.js`,
-		//${path}s/vendor/glightbox/js/glightbox.min.js`,
-		`${path}/vendor/isotope-layout/isotope.pkgd.min.js`,
-		`${path}/vendor/php-email-form/validate.js`,
-		`${path}/vendor/swiper/swiper-bundle.min.js`,
-		`${path}/vendor/waypoints/noframework.waypoints.js`,
+		`${path}/bootstrap/js/bootstrap.bundle.min.js`,
+		`${path}/isotope-layout/isotope.pkgd.min.js`,
+		`${path}/php-email-form/validate.js`,
+		`${path}/swiper/swiper-bundle.min.js`,
+		`${path}/waypoints/noframework.waypoints.js`,
 		`${path}/js/main.js`,
 	];
 

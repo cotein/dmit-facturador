@@ -35,6 +35,6 @@
 		"allowSyntheticDefaultImports": true
 	},
 	"files": [
-		"env.d.ts"
+		"env.d.ts",
 	]
 }

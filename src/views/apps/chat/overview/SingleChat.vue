@@ -6,8 +6,8 @@ import { computed, onMounted, ref } from 'vue';
 import { message } from 'ant-design-vue';
 import { useRoute } from 'vue-router';
 import EmojiPicker from '@/components/utilities/Emoji.vue';
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
-import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
+/* import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'; */
 import PropTypes from 'vue-types';
 
 const props = defineProps({

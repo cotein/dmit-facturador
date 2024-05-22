@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
-import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css';
+/* import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'; */
 import { NinjadashTopDropdown } from './auth-info-style';
 </script>
 
