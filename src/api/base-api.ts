@@ -2,7 +2,7 @@ import type { UserTokenGetterType } from '@/app/types/User';
 import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://api.dmit.ar';
+axios.defaults.baseURL = 'https://api.dmit.ar';
 
 const userStore = useUserStore();
 
