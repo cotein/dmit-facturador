@@ -399,6 +399,8 @@ onBeforeMount(() => {
 		'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i',
 		`${path}/bootstrap/css/bootstrap.min.css`,
 		`${path}/bootstrap-icons/bootstrap-icons.css`,
+		`${path}/bootstrap-icons/fonts/bootstrap-icons.woff`,
+		`${path}/bootstrap-icons/fonts/bootstrap-icons.woff2`,
 		`${path}/boxicons/css/boxicons.min.css`,
 		`${path}/remixicon/remixicon.css`,
 		`${path}/swiper/swiper-bundle.min.css`,

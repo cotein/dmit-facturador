@@ -29,7 +29,8 @@ export default defineConfig({
 			resolvers: [AntDesignVueResolver()],
 		}),
 		copy({
-			targets: [
+			targets: [{ src: 'src/assets/*', dest: 'dist/assets' }],
+			/* targets: [
 				{
 					src: 'src/assets/vendor/bootstrap/css/bootstrap.min.css',
 					dest: 'dist/assets/vendor/bootstrap/css',
@@ -37,6 +38,18 @@ export default defineConfig({
 				{
 					src: 'src/assets/vendor/bootstrap-icons/bootstrap-icons.css',
 					dest: 'dist/assets/vendor/bootstrap-icons',
+				},
+				{
+					src: 'src/assets/vendor/bootstrap-icons/fonts/bootstrap-icons.woff',
+					dest: 'dist/assets/vendor/bootstrap-icons/fonts',
+				},
+				{
+					src: 'src/assets/vendor/bootstrap-icons/fonts/bootstrap-icons.woff2',
+					dest: 'dist/assets/vendor/bootstrap-icons/fonts',
+				},
+				{
+					src: 'src/assets/vendor/boxicons/css/boxicons.min.css',
+					dest: 'dist/assets/vendor/boxicons/css',
 				},
 				{
 					src: 'src/assets/vendor/boxicons/css/boxicons.min.css',
@@ -69,7 +82,7 @@ export default defineConfig({
 					dest: 'dist/assets/vendor/waypoints',
 				},
 				{ src: 'src/assets/vendor/js/main.js', dest: 'dist/assets/js' },
-			],
+			], */
 			hook: 'writeBundle', // ensure the files are copied before the bundle is written
 		}),
 	],
