@@ -58,7 +58,8 @@ const sendVerificationButtonDisabled = ref<boolean>(true);
 const route = useRoute();
 
 const goToLogin = () => {
-	window.location.replace('http://localhost:5173/auth/login');
+	//window.location.replace('http://localhost:5173/auth/login');
+	window.location.replace(`${import.meta.env.VITE_URL}/auth/login`);
 };
 const resend = async () => {
 	const id = route.query.email_verify_url
@@ -69,7 +70,6 @@ const resend = async () => {
 
 	const { data } = await apiEmailResendVerification(id)
 		.catch((err) => {
-			console.log('🚀 ~ file: EmailVerification.vue:60 ~ resend ~ err:', err);
 			notification['error']({
 				message: 'Verificación de cuenta',
 				description: 'Ha ocurrido un error inesperado, por favor comuniquese al soporte técnico.',
@@ -100,7 +100,6 @@ onMounted(async () => {
 	const url = `${route.query.email_verify_url}&hash=${route.query.hash}&signature=${route.query.signature}`;
 
 	const { data } = await apiEmailVerification(url).catch((err) => {
-		console.log('🚀 ~ file: EmailVerification.vue:37 ~ onMounted ~ err:', err);
 		if (err.response) {
 			if (err.response.status === 403) {
 				notification['error']({
