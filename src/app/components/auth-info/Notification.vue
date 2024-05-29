@@ -122,7 +122,7 @@ import { NinjadashTopDropdown } from './auth-info-style';
 			</template>
 			<a-badge dot :offset="[-8, -5]">
 				<a to="#" class="ninjadash-nav-action-link">
-					<img :src="'/src/assets/img/icon/alarm.svg'" />
+					<img :src="$environment.VITE_SRC_ASSETS + '/img/icon/alarm.svg'" />
 				</a>
 			</a-badge>
 		</sdPopover>

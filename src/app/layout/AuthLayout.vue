@@ -11,7 +11,7 @@ import { AuthenticationWrap } from './style';
 		<div class="ninjadash-authentication-wrap">
 			<div class="ninjadash-authentication-brand">
 				<!-- <img src="/src/assets/img/Logo_Dark.svg" alt="" /> -->
-				<img src="/src/assets/dmit-logo.png" alt="" />
+				<img :src="$environment.VITE_SRC_ASSETS + '/dmit-logo.png'" alt="" />
 			</div>
 			<router-view></router-view>
 		</div>

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<MaintananceWrapper>
-			<img :src="`/src/assets/img/email/verify-email.svg`" alt="verify-email" />
+			<img :src="$environment.VITE_SRC_ASSETS + `/img/email/verify-email.svg`" alt="verify-email" />
 			<a-spin size="large" :spinning="spinning" />
 			<br />
 			<sdHeading as="h3">Espere unos instantes, estamos verificando su correo electrónico.</sdHeading>

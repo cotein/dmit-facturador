@@ -24,7 +24,7 @@
 							<FaqSupportBox>
 								<sdCards headless>
 									<figure>
-										<img :src="'/src/assets/img/pages/support.svg'" alt="" />
+										<img :src="$environment.VITE_SRC_ASSETS + '/img/pages/support.svg'" alt="" />
 									</figure>
 									<figcaption>
 										<sdHeading as="h5"

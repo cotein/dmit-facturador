@@ -11,6 +11,7 @@
 						<li><a class="nav-link scrollto active" href="#hero">Home</a></li>
 						<li><a class="nav-link scrollto" href="#delegate">Delegar servicio</a></li>
 						<li><a class="nav-link scrollto" href="#services">Ventajas</a></li>
+						<li><a class="nav-link scrollto" href="#faq">Preguntas frecuentes</a></li>
 						<router-link class="getstarted scrollto" :to="{ name: 'login' }">Login</router-link>
 					</ul>
 					<i class="bi bi-list mobile-nav-toggle"></i>
@@ -41,7 +42,11 @@
 						</div>
 					</div>
 					<div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
-						<img src="/src/assets/img/hero-img.png" class="img-fluid animated" alt="" />
+						<img
+							:src="$environment.VITE_SRC_ASSETS + '/img/hero-img.png'"
+							class="img-fluid animated"
+							alt=""
+						/>
 					</div>
 				</div>
 			</div>
@@ -72,7 +77,7 @@
 								<ul>
 									<li>
 										<a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1"
-											><span>01</span> Non consectetur a erat nam at lectus urna duis?
+											><span>01</span> ¿Qué es el web service de factura electrónica de AFIP?
 											<i class="bx bx-chevron-down icon-show"></i
 											><i class="bx bx-chevron-up icon-close"></i
 										></a>
@@ -82,9 +87,9 @@
 											data-bs-parent=".accordion-list"
 										>
 											<p>
-												Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat
-												lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla
-												urna porttitor rhoncus dolor purus non.
+												El web service de factura electrónica de AFIP es una herramienta que
+												permite a los contribuyentes emitir facturas electrónicas en forma
+												automática.
 											</p>
 										</div>
 									</li>
@@ -94,17 +99,17 @@
 											data-bs-toggle="collapse"
 											data-bs-target="#accordion-list-2"
 											class="collapsed"
-											><span>02</span> Feugiat scelerisque varius morbi enim nunc?
-											<i class="bx bx-chevron-down icon-show"></i
+											><span>02</span> ¿Qué significa delegar el web service de factura
+											electrónica de AFIP? <i class="bx bx-chevron-down icon-show"></i
 											><i class="bx bx-chevron-up icon-close"></i
 										></a>
 										<div id="accordion-list-2" class="collapse" data-bs-parent=".accordion-list">
 											<p>
-												Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi.
-												Id interdum velit laoreet id donec ultrices. Fringilla phasellus
-												faucibus scelerisque eleifend donec pretium. Est pellentesque elit
-												ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa
-												tincidunt dui.
+												Delegar el web service de factura electrónica de AFIP significa que un
+												tercero autorizado (DMIT Facturación en línea) se encargará de emitir
+												las facturas electrónicas en tu nombre. Esto te permite ahorrar tiempo y
+												esfuerzo, y asegurarte de que tus facturas cumplen con todas las normas
+												de AFIP.
 											</p>
 										</div>
 									</li>
@@ -114,18 +119,14 @@
 											data-bs-toggle="collapse"
 											data-bs-target="#accordion-list-3"
 											class="collapsed"
-											><span>03</span> Dolor sit amet consectetur adipiscing elit?
-											<i class="bx bx-chevron-down icon-show"></i
+											><span>03</span> ¿Cuáles son los beneficios de delegar el web service de
+											factura electrónica de AFIP? <i class="bx bx-chevron-down icon-show"></i
 											><i class="bx bx-chevron-up icon-close"></i
 										></a>
 										<div id="accordion-list-3" class="collapse" data-bs-parent=".accordion-list">
-											<p>
-												Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis
-												orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam
-												sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus
-												urna duis convallis convallis tellus. Urna molestie at elementum eu
-												facilisis sed odio morbi quis
-											</p>
+											<p>Ahorra tiempo y esfuerzo</p>
+											<p>Cumple con las normas de AFIP</p>
+											<p>Evita errores</p>
 										</div>
 									</li>
 								</ul>
@@ -230,11 +231,7 @@
 				<div class="container" data-aos="fade-up">
 					<div class="section-title">
 						<h2>Preguntas frecuentes</h2>
-						<p>
-							Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem.
-							Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit
-							alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.
-						</p>
+						<p>¡Resuelve todas tus dudas! Preguntas frecuentes sobre la factura electrónica de AFIP</p>
 					</div>
 
 					<div class="faq-list">
@@ -242,15 +239,14 @@
 							<li data-aos="fade-up" data-aos-delay="100">
 								<i class="bx bx-help-circle icon-help"></i>
 								<a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-1"
-									>Non consectetur a erat nam at lectus urna duis?
-									<i class="bx bx-chevron-down icon-show"></i
+									>¿Qué es la factura electrónica de AFIP? <i class="bx bx-chevron-down icon-show"></i
 									><i class="bx bx-chevron-up icon-close"></i
 								></a>
 								<div id="faq-list-1" class="collapse show" data-bs-parent=".faq-list">
 									<p>
-										Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus
-										laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor
-										rhoncus dolor purus non.
+										La factura electrónica de AFIP es un comprobante digital que tiene la misma
+										validez legal que la factura en papel. Se emite y recibe en formato electrónico,
+										y permite agilizar y transparentar el proceso de facturación.
 									</p>
 								</div>
 							</li>
@@ -258,16 +254,18 @@
 							<li data-aos="fade-up" data-aos-delay="200">
 								<i class="bx bx-help-circle icon-help"></i>
 								<a data-bs-toggle="collapse" data-bs-target="#faq-list-2" class="collapsed"
-									>Feugiat scelerisque varius morbi enim nunc?
+									>¿Quiénes están obligados a emitir facturas electrónicas?
 									<i class="bx bx-chevron-down icon-show"></i
 									><i class="bx bx-chevron-up icon-close"></i
 								></a>
 								<div id="faq-list-2" class="collapse" data-bs-parent=".faq-list">
 									<p>
-										Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id
-										interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus
-										scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim.
-										Mauris ultrices eros in cursus turpis massa tincidunt dui.
+										La obligación de emitir facturas electrónicas depende de la categoría fiscal del
+										contribuyente, la actividad que desarrolla y el monto de sus facturaciones.
+										Puedes consultar si estás obligado en el sitio web de AFIP:
+										<a-typography-link href="https://www.afip.gob.ar/fe/" target="_blank">
+											AFIP - Facturación Electrónica
+										</a-typography-link>
 									</p>
 								</div>
 							</li>
@@ -275,16 +273,15 @@
 							<li data-aos="fade-up" data-aos-delay="300">
 								<i class="bx bx-help-circle icon-help"></i>
 								<a data-bs-toggle="collapse" data-bs-target="#faq-list-3" class="collapsed"
-									>Dolor sit amet consectetur adipiscing elit?
+									>¿Cómo puedo emitir facturas electrónicas?
 									<i class="bx bx-chevron-down icon-show"></i
 									><i class="bx bx-chevron-up icon-close"></i
 								></a>
 								<div id="faq-list-3" class="collapse" data-bs-parent=".faq-list">
 									<p>
-										Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci.
-										Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl
-										suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis
-										convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis
+										Puedes emitir facturas electrónicas utilizando un software de facturación
+										electrónica homologado por AFIP, o a través de un proveedor de servicios de
+										facturación electrónica (DMIT Facturación en línea).
 									</p>
 								</div>
 							</li>
@@ -292,16 +289,15 @@
 							<li data-aos="fade-up" data-aos-delay="400">
 								<i class="bx bx-help-circle icon-help"></i>
 								<a data-bs-toggle="collapse" data-bs-target="#faq-list-4" class="collapsed"
-									>Tempus quam pellentesque nec nam aliquam sem et tortor consequat?
+									>¿Qué necesito para emitir facturas electrónicas?
 									<i class="bx bx-chevron-down icon-show"></i
 									><i class="bx bx-chevron-up icon-close"></i
 								></a>
 								<div id="faq-list-4" class="collapse" data-bs-parent=".faq-list">
 									<p>
-										Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim
-										suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan.
-										Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit
-										turpis cursus in.
+										Para emitir facturas electrónicas necesitas: Un certificado digital de AFIP, un
+										software de facturación electrónica homologado o un proveedor de servicios de
+										facturación electrónica y una conexión a internet.
 									</p>
 								</div>
 							</li>
@@ -309,17 +305,90 @@
 							<li data-aos="fade-up" data-aos-delay="500">
 								<i class="bx bx-help-circle icon-help"></i>
 								<a data-bs-toggle="collapse" data-bs-target="#faq-list-5" class="collapsed"
-									>Tortor vitae purus faucibus ornare. Varius vel pharetra vel turpis nunc eget lorem
-									dolor? <i class="bx bx-chevron-down icon-show"></i
+									>¿Cómo puedo obtener un certificado digital de AFIP?
+									<i class="bx bx-chevron-down icon-show"></i
 									><i class="bx bx-chevron-up icon-close"></i
 								></a>
 								<div id="faq-list-5" class="collapse" data-bs-parent=".faq-list">
 									<p>
-										Laoreet sit amet cursus sit amet dictum sit amet justo. Mauris vitae ultricies
-										leo integer malesuada nunc vel. Tincidunt eget nullam non nisi est sit amet.
-										Turpis nunc eget lorem dolor sed. Ut venenatis tellus in metus vulputate eu
-										scelerisque.
+										No necesitas obtener un certificado digital de AFIP para emitir facturas,
+										nosotros lo hacemos por ti.
 									</p>
+								</div>
+							</li>
+							<li data-aos="fade-up" data-aos-delay="500">
+								<i class="bx bx-help-circle icon-help"></i>
+								<a data-bs-toggle="collapse" data-bs-target="#faq-list-6" class="collapsed"
+									>¿Qué es el Código de Autorización Electrónico (CAE)?
+									<i class="bx bx-chevron-down icon-show"></i
+									><i class="bx bx-chevron-up icon-close"></i
+								></a>
+								<div id="faq-list-6" class="collapse" data-bs-parent=".faq-list">
+									<p>
+										El Código de Autorización Electrónico (CAE) es un código único que se genera
+										para cada factura electrónica. Es obligatorio incluir el CAE en la factura
+										electrónica para que sea válida.
+									</p>
+								</div>
+							</li>
+							<li data-aos="fade-up" data-aos-delay="500">
+								<i class="bx bx-help-circle icon-help"></i>
+								<a data-bs-toggle="collapse" data-bs-target="#faq-list-7" class="collapsed"
+									>¿Qué debo hacer si tengo problemas para emitir facturas electrónicas?
+									<i class="bx bx-chevron-down icon-show"></i
+									><i class="bx bx-chevron-up icon-close"></i
+								></a>
+								<div id="faq-list-7" class="collapse" data-bs-parent=".faq-list">
+									<p>
+										Si tienes problemas para emitir facturas electrónicas, puedes consultar la ayuda
+										online de AFIP o contactarte con el soporte técnico de tu proveedor de software
+										o servicios de facturación electrónica.
+									</p>
+								</div>
+							</li>
+							<li data-aos="fade-up" data-aos-delay="500">
+								<i class="bx bx-help-circle icon-help"></i>
+								<a data-bs-toggle="collapse" data-bs-target="#faq-list-8" class="collapsed"
+									>¿Cómo puedo consultar el estado de mis facturas electrónicas?
+									<i class="bx bx-chevron-down icon-show"></i
+									><i class="bx bx-chevron-up icon-close"></i
+								></a>
+								<div id="faq-list-8" class="collapse" data-bs-parent=".faq-list">
+									<p>
+										Puedes consultar el estado de tus facturas electrónicas en el sitio web de AFIP:
+										<a-typography-link
+											href="https://serviciosweb.afip.gob.ar/genericos/comprobantes/default.aspx"
+											target="_blank"
+										>
+											CONSTATACIÓN DE COMPROBANTES
+										</a-typography-link>
+									</p>
+								</div>
+							</li>
+							<li data-aos="fade-up" data-aos-delay="500">
+								<i class="bx bx-help-circle icon-help"></i>
+								<a data-bs-toggle="collapse" data-bs-target="#faq-list-9" class="collapsed"
+									>Recursos adicionales: <i class="bx bx-chevron-down icon-show"></i
+									><i class="bx bx-chevron-up icon-close"></i
+								></a>
+								<div id="faq-list-9" class="collapse" data-bs-parent=".faq-list">
+									<ul>
+										<li>
+											AFIP - Facturación Electrónica:
+											<a-typography-link href="https://www.afip.gob.ar/fe/" target="_blank">
+												AFIP - Facturación Electrónica
+											</a-typography-link>
+										</li>
+										<li>
+											Preguntas frecuentes sobre la factura electrónica:
+											<a-typography-link
+												href="https://www.afip.gob.ar/facturacion/ayuda/"
+												target="_blank"
+											>
+												AFIP - Ayuda Facturación Electrónica
+											</a-typography-link>
+										</li>
+									</ul>
 								</div>
 							</li>
 						</ul>
@@ -343,15 +412,26 @@
 						<div class="col-lg-3 col-md-6 footer-links">
 							<h4>Useful Links</h4>
 							<ul>
-								<li><i class="bx bx-chevron-right"></i> <a href="#">Inicio</a></li>
-								<li><i class="bx bx-chevron-right"></i> <a href="#">Ventajas</a></li>
+								<li><i class="bx bx-chevron-right"></i> <a href="#hero">Inicio</a></li>
+								<li>
+									<i class="bx bx-chevron-right"></i>
+									<a href="#delegate">Delegar servicio</a>
+								</li>
+								<li><i class="bx bx-chevron-right"></i> <a href="#services">Ventajas</a></li>
+								<li>
+									<i class="bx bx-chevron-right"></i>
+									<a href="#faq">Preguntas frecuentes</a>
+								</li>
 							</ul>
 						</div>
 
 						<div class="col-lg-3 col-md-6 footer-links">
 							<h4>Nuestros Servicios</h4>
 							<ul>
-								<li><i class="bx bx-chevron-right"></i> <a href="#">Desarrollo Web</a></li>
+								<li>
+									<i class="bx bx-chevron-right"></i>
+									<a href="#">DMIT - Facturación electrónica</a>
+								</li>
 							</ul>
 						</div>
 
@@ -369,8 +449,7 @@
 			</div>
 			<div class="container footer-bottom clearfix">
 				<div class="copyright">
-					&copy; Copyright <strong><span>Arsha</span></strong
-					>. All Rights Reserved
+					<strong><span>DMIT</span></strong>
 				</div>
 			</div>
 		</footer>
@@ -441,3 +520,9 @@ onBeforeMount(() => {
 	});
 });
 </script>
+<style scoped>
+#faq-list-9 ul li {
+	margin: 2px;
+	padding: 2px;
+}
+</style>

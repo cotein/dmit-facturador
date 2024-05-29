@@ -25,7 +25,6 @@ const SignOut = (e: any) => {
 };
 
 const handleCustomEvent = (data: Company) => {
-	console.log('🚀 ~ file: Info.vue:31 ~ handleCustomEvent ~ data:', data);
 	/* console.log('🚀  Estoy dentro de handleCustomEvent en aside para crear una compañía nueva');
 	updateCompanyMutation.mutateAsync(data); */
 	closeEditCompanyPanel();
@@ -51,12 +50,12 @@ const openEditPanel = () => {
 	<InfoWraper>
 		<!-- <SearchBar /> -->
 		<!-- <DarkMode /> -->
-		<Message />
-		<Notification />
+		<!-- <Message />
+		<Notification /> -->
 		<Settings />
 		<!-- <Support /> -->
 		<div class="ninjadash-nav-actions__item ninjadash-nav-actions__author">
-			<sdPopover placement="bottomRight" action="click">
+			<a-popover placement="bottomRight" action="click">
 				<template v-slot:content>
 					<UserDropDown>
 						<div class="user-dropdown">
@@ -68,7 +67,7 @@ const openEditPanel = () => {
 								</figcaption>
 							</figure>
 							<ul class="user-dropdown__links">
-								<li>
+								<!-- <li>
 									<a to="#" @click.prevent="">
 										<unicon name="building"></unicon> Cambiar de Compañía
 									</a>
@@ -77,18 +76,18 @@ const openEditPanel = () => {
 									<a to="#" @click.prevent="openAddNewCompanyPanel">
 										<unicon name="building"></unicon> Ingresar una compañía
 									</a>
-								</li>
+								</li> -->
 								<li>
 									<a to="#" @click.prevent="openEditPanel">
 										<unicon name="building"></unicon> Editar compañía
 									</a>
 								</li>
-								<li>
+								<!-- <li>
 									<a to="#"> <unicon name="bell"></unicon> Help </a>
-								</li>
+								</li> -->
 							</ul>
 							<a @click="SignOut" class="user-dropdown__bottomAction" href="#">
-								<LogoutOutlined /> Sign Out
+								<LogoutOutlined /> Cerrar sesión
 							</a>
 						</div>
 					</UserDropDown>
@@ -98,7 +97,7 @@ const openEditPanel = () => {
 					<span class="ninjadash-nav-actions__author--name">{{ UserGetter.value.name }}</span>
 					<unicon name="angle-down"></unicon>
 				</a>
-			</sdPopover>
+			</a-popover>
 		</div>
 	</InfoWraper>
 </template>

@@ -25,7 +25,10 @@ import { NinjadashTopDropdown } from './auth-info-style';
 								<li>
 									<a to="#">
 										<figure class="ninjadash-top-dropdown__content">
-											<img :src="'/src/assets/img/avatar/NoPath.png'" alt="" />
+											<img
+												:src="$environment.VITE_SRC_ASSETS + '/img/avatar/NoPath.png'"
+												alt=""
+											/>
 											<figcaption>
 												<sdHeading as="h5">
 													Software <span class="color-success">3 hrs ago </span>
@@ -45,7 +48,10 @@ import { NinjadashTopDropdown } from './auth-info-style';
 								<li>
 									<a to="#">
 										<figure class="ninjadash-top-dropdown__content">
-											<img :src="'/src/assets/img/avatar/NoPath.png'" alt="" />
+											<img
+												:src="$environment.VITE_SRC_ASSETS + '/img/avatar/NoPath.png'"
+												alt=""
+											/>
 											<figcaption>
 												<sdHeading as="h5">
 													Software <span class="color-success">3 hrs ago</span>
@@ -65,7 +71,10 @@ import { NinjadashTopDropdown } from './auth-info-style';
 								<li>
 									<a to="#">
 										<figure class="ninjadash-top-dropdown__content">
-											<img :src="'/src/assets/img/avatar/NoPath.png'" alt="" />
+											<img
+												:src="$environment.VITE_SRC_ASSETS + '/img/avatar/NoPath.png'"
+												alt=""
+											/>
 											<figcaption>
 												<sdHeading as="h5">
 													Software <span class="color-success">3 hrs ago</span>
@@ -85,7 +94,10 @@ import { NinjadashTopDropdown } from './auth-info-style';
 								<li>
 									<a to="#">
 										<figure class="ninjadash-top-dropdown__content">
-											<img :src="'/src/assets/img/avatar/NoPath.png'" alt="" />
+											<img
+												:src="$environment.VITE_SRC_ASSETS + '/img/avatar/NoPath.png'"
+												alt=""
+											/>
 											<figcaption>
 												<sdHeading as="h5">
 													Software <span class="color-success">3 hrs ago</span>
@@ -105,7 +117,10 @@ import { NinjadashTopDropdown } from './auth-info-style';
 								<li>
 									<a to="#">
 										<figure class="ninjadash-top-dropdown__content">
-											<img :src="'/src/assets/img/avatar/NoPath.png'" alt="" />
+											<img
+												:src="$environment.VITE_SRC_ASSETS + '/img/avatar/NoPath.png'"
+												alt=""
+											/>
 											<figcaption>
 												<sdHeading as="h5">
 													Software <span class="color-success">3 hrs ago</span>
@@ -131,7 +146,7 @@ import { NinjadashTopDropdown } from './auth-info-style';
 			</template>
 			<a-badge dot :offset="[-8, -5]" status="success">
 				<a to="#" class="ninjadash-nav-action-link">
-					<img :src="'/src/assets/img/icon/message2.svg'" />
+					<img :src="$environment.VITE_SRC_ASSETS + '/img/icon/message2.svg'" />
 				</a>
 			</a-badge>
 		</sdPopover>

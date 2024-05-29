@@ -12,7 +12,10 @@ import { SettingDropdown } from './auth-info-style';
 							<a-col :sm="12">
 								<router-link :to="{ name: 'delegate-afip-service' }">
 									<figure class="setting-dropdown__single d-flex">
-										<img :src="'/src/assets/img/icon/013-document-1.png'" alt="" />
+										<img
+											:src="$environment.VITE_SRC_ASSETS + '/img/icon/013-document-1.png'"
+											alt=""
+										/>
 										<figcaption>
 											<sdHeading as="h5">Factura electrónica</sdHeading>
 											<p>Delegar servicio</p>
@@ -22,7 +25,10 @@ import { SettingDropdown } from './auth-info-style';
 							</a-col>
 							<a-col :sm="12">
 								<figure class="setting-dropdown__single d-flex">
-									<img :src="'/src/assets/img/icon/015-color-palette.png'" alt="" />
+									<img
+										:src="$environment.VITE_SRC_ASSETS + '/img/icon/015-color-palette.png'"
+										alt=""
+									/>
 									<figcaption>
 										<sdHeading as="h5">Themes</sdHeading>
 										<p>Third party themes that are compatible</p>
@@ -34,7 +40,7 @@ import { SettingDropdown } from './auth-info-style';
 				</SettingDropdown>
 			</template>
 			<a to="#" class="ninjadash-nav-action-link">
-				<img :src="'/src/assets/img/icon/setting.png'" />
+				<img :src="$environment.VITE_SRC_ASSETS + '/img/icon/setting.png'" />
 			</a>
 		</sdPopover>
 	</div>

@@ -149,7 +149,7 @@ onUnmounted(() => {
 										<sdCards class="invoice-card" headless>
 											<img
 												style="width: 100%"
-												:src="'/src/assets/img/barcode.png'"
+												:src="$environment.VITE_SRC_ASSETS + '/img/barcode.png'"
 												alt="barcode"
 											/>
 											<p>8364297359912267</p>

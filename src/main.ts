@@ -20,6 +20,7 @@ import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
+
 const pinia = createPinia();
 
 app.component('SearchOutlined', SearchOutlined);
@@ -44,6 +45,8 @@ app.config.globalProperties.$filters = {
 		return `$${formattedValue}`;
 	},
 };
+
+app.config.globalProperties.$environment = import.meta.env;
 
 //app.use(DatePicker);
 app.use(PerfectScrollbarPlugin);

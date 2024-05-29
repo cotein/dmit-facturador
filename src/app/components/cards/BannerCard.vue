@@ -150,7 +150,7 @@ const { id, content, icon, title, authorName, authorImg, type, bgImage } = item.
 		<ImageUrl :class="`banner-card banner-card-${type}`" :bgUrl="bgImage">
 			<div class="banner-card__top align-center-v justify-content-between">
 				<h4 class="banner-card__title">
-					<img :src="`/src/assets/img/icon/${icon}`" alt="StrikingDash Banner" />
+					<img :src="$environment.VITE_SRC_ASSETS + `/img/icon/${icon}`" alt="StrikingDash Banner" />
 					<span>{{ title }}</span>
 				</h4>
 				<div class="banner-card__action">
@@ -173,7 +173,7 @@ const { id, content, icon, title, authorName, authorImg, type, bgImage } = item.
 			</div>
 			<div class="banner-card__bottom align-center-v justify-content-between">
 				<div class="card-author">
-					<img :src="`/src/assets/img/users/${authorImg}`" alt="" />
+					<img :src="$environment.VITE_SRC_ASSETS + `/img/users/${authorImg}`" alt="" />
 					<span class="author-name">{{ authorName }}</span>
 				</div>
 				<div class="card-meta">

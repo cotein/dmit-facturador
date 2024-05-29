@@ -97,7 +97,7 @@ const { id, title, content, img } = item.value;
 			<p>{{ content }}</p>
 			<div class="feedbackSection">
 				<div class="author">
-					<img :src="'/src/assets/img/chat-author/t1.jpg'" alt="" />
+					<img :src="$environment.VITE_SRC_ASSETS + '/img/chat-author/t1.jpg'" alt="" />
 					<span>Burns Marks</span>
 				</div>
 				<div class="feedback">

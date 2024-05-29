@@ -10,7 +10,7 @@ import { NewsletterStyle } from './style';
 			<sdButton type="primary" size="sm">Subscribe</sdButton>
 		</div>
 		<div class="newsletter-shape">
-			<img :src="'/src/assets/img/new-message.png'" alt="" />
+			<img :src="$environment.VITE_SRC_ASSETS + '/img/new-message.png'" alt="" />
 		</div>
 	</NewsletterStyle>
 </template>

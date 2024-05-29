@@ -28,7 +28,11 @@ const props = defineProps({
 	<BlogCardStyleWrap>
 		<figure :class="`ninjadash-blog ninjadash-blog-${theme}`">
 			<div class="ninjadash-blog-thumb">
-				<img class="ninjadash-blog__image" :src="`/src/assets/img/blogs/${item.img}`" alt="ninjadash Blog" />
+				<img
+					class="ninjadash-blog__image"
+					:src="$environment.VITE_SRC_ASSETS + `/img/blogs/${item.img}`"
+					alt="ninjadash Blog"
+				/>
 			</div>
 			<figcaption>
 				<div v-if="theme === 'style-1'" :class="`ninjadash-blog-meta ninjadash-blog-meta-theme-1`">
@@ -52,7 +56,11 @@ const props = defineProps({
 				<p class="ninjadash-blog__text">{{ item.content }}</p>
 				<div class="ninjadash-blog__bottom">
 					<div class="ninjadash-blog__author">
-						<img class="ninjadash-blog__author-img" :src="'/src/assets/img/chat-author/t1.jpg'" alt="" />
+						<img
+							class="ninjadash-blog__author-img"
+							:src="$environment.VITE_SRC_ASSETS + '/img/chat-author/t1.jpg'"
+							alt=""
+						/>
 						<span class="ninjadash-blog__author-name">Burns Marks</span>
 					</div>
 					<ul class="ninjadash-blog__meta">

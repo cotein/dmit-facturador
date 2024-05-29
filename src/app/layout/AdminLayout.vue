@@ -3,7 +3,7 @@ import { Layout } from 'ant-design-vue';
 import { Div, SmallScreenSearch, SmallScreenAuthInfo, TopMenuSearch } from './style';
 import { computed, ref } from 'vue';
 import HeaderSearch from '@/components/header-search/HeaderSearch.vue';
-import AuthInfo from '@/app/components/auth-info/Info.vue';
+import AuthInfo from '@/app/components/auth-info/InfoAuth.vue';
 import AsideItems from './Aside.vue';
 import TopMenu from './TopMenuItems.vue';
 
@@ -41,7 +41,9 @@ const onShowHide = (h: any) => {
 
 const toggleCollapsedMobile = () => {
 	const aside = document.querySelector('.ps--active-y');
-	aside.scrollTop = 0;
+	if (aside) {
+		aside.scrollTop = 0;
+	}
 
 	if (innerWidth <= 990) {
 		collapsed.value = !collapsed.value;
@@ -84,13 +86,18 @@ const onEventChange = {
 							>
 								<img
 									:src="
-										!darkMode ? `/src/assets/img/Logo_Dark.svg` : `/src/assets/img/Logo_White.svg`
+										!darkMode
+											? $environment.VITE_SRC_ASSETS + `/img/Logo_Dark.svg`
+											: $environment.VITE_SRC_ASSETS + `/img/Logo_White.svg`
 									"
 									alt="logo"
 								/>
 							</router-link>
 							<sdButton v-if="!topMenu || innerWidth <= 991" @click="toggleCollapsed" type="white">
-								<img :src="`/src/assets/img/icon/align-center-alt.svg`" alt="menu" />
+								<img
+									:src="$environment.VITE_SRC_ASSETS + `/img/icon/align-center-alt.svg`"
+									alt="menu"
+								/>
 							</sdButton>
 						</div>
 					</div>

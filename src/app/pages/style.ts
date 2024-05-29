@@ -1662,14 +1662,14 @@ const TestimonialStyleWrapper = Styled.div`
         left: 10px;
         &:before{
           font-family: ${({ theme }) => theme['font-family']};
-          content: url('/src/assets/img/icon/arrow-left.svg');
+          content: url($environment.VITE_SRC_ASSETS + '/img/icon/arrow-left.svg');
         }
       }
       .swiper-button-next{
         right: 10px;
         &:before{
           font-family: ${({ theme }) => theme['font-family']};
-          content: url('/src/assets/img/icon/arrow-right.svg');
+          content: url($environment.VITE_SRC_ASSETS + '/img/icon/arrow-right.svg');
         }
       }
       .swiper-pagination{
@@ -1772,7 +1772,7 @@ const TestimonialStyleWrapper = Styled.div`
         }
         &:before{
           font-family: ${({ theme }) => theme['font-family']};
-          content: url('/src/assets/img/icon/arrow-left.svg');
+          content: url($environment.VITE_SRC_ASSETS + '/img/icon/arrow-left.svg');
         }
       }
       .swiper-button-next{
@@ -1785,7 +1785,7 @@ const TestimonialStyleWrapper = Styled.div`
         }
         &:before{
           font-family: ${({ theme }) => theme['font-family']};
-          content: url('/src/assets/img/icon/arrow-right.svg');
+          content: url($environment.VITE_SRC_ASSETS + '/img/icon/arrow-right.svg');
         }
       }
       .swiper-container{
@@ -1980,7 +1980,7 @@ const TestimonialStyleWrapper = Styled.div`
         }
         &:before{
           font-family: ${({ theme }) => theme['font-family']};
-          content: url('/src/assets/img/icon/arrow-left.svg');
+          content: url($environment.VITE_SRC_ASSETS + '/img/icon/arrow-left.svg');
         }
       }
       .swiper-button-next{
@@ -1993,7 +1993,7 @@ const TestimonialStyleWrapper = Styled.div`
         }
         &:before{
           font-family: ${({ theme }) => theme['font-family']};
-          content: url('/src/assets/img/icon/arrow-right.svg');
+          content: url($environment.VITE_SRC_ASSETS + '/img/icon/arrow-right.svg');
         }
       }
       .swiper-container{
