@@ -47,7 +47,7 @@ app.config.globalProperties.$filters = {
 };
 
 app.config.globalProperties.$environment = import.meta.env;
-
+import.meta.env;
 //app.use(DatePicker);
 app.use(PerfectScrollbarPlugin);
 app.use(pinia);
@@ -57,6 +57,7 @@ app.component('QuillEditor', QuillEditor);
 app.mount('#app');
 
 if (import.meta.env.MODE === 'development') {
+	console.log(import.meta.env);
 	console.log('Estamos en el entorno de desarrollo');
 } else if (import.meta.env.MODE === 'production') {
 	console.log('Estamos en el entorno de producción');
