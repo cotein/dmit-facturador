@@ -59,5 +59,7 @@ if (import.meta.env.MODE === 'development') {
 	console.log(import.meta.env);
 	console.log('Estamos en el entorno de desarrollo');
 } else if (import.meta.env.MODE === 'production') {
+	console.log(import.meta.env);
+
 	console.log('Estamos en el entorno de producción');
 }
