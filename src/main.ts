@@ -47,7 +47,6 @@ app.config.globalProperties.$filters = {
 };
 
 app.config.globalProperties.$environment = import.meta.env;
-import.meta.env;
 //app.use(DatePicker);
 app.use(PerfectScrollbarPlugin);
 app.use(pinia);
