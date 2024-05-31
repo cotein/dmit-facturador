@@ -1,6 +1,6 @@
 <template>
 	<ProductTable>
-		<a-row :gutter="15">
+		<a-row :gutter="15" class="margins">
 			<a-col :md="24">
 				<quill-editor
 					theme="snow"
@@ -22,4 +22,8 @@ import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceCompos
 const { invoice } = useInvoiceComposable();
 </script>
 
-<style scoped></style>
+<style scoped>
+.margins {
+	margin: 2rem 0;
+}
+</style>

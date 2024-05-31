@@ -1,45 +1,51 @@
 <template>
 	<Main>
-		<TableWrapper>
-			<ProductTable>
-				<div class="table-invoice table-responsive">
-					<a-table :dataSource="invoiceTableData" :columns="productTableColumns" :pagination="false">
-						<template #bodyCell="{ column, record, index }">
-							<template v-if="column.key === 'product'">
-								<ProductItem :record="record" :index="index" />
-							</template>
-							<template v-if="column.key === 'unit'">
-								<Unit :record="record" :index="index" />
-							</template>
-							<template v-if="column.key === 'quantity'">
-								<Quantity :record="record" :index="index" />
-							</template>
-							<template v-if="column.key === 'iva'">
-								<Iva :record="record" :index="index" />
-							</template>
-							<template v-if="column.key === 'discount'">
-								<Discount :record="record" :index="index" />
-							</template>
-							<template v-if="column.key === 'subtotal'">
-								<Subtotal :record="record" :index="index" />
-							</template>
-							<template v-if="column.key === 'total'">
-								<Total :record="record" :index="index" />
-							</template>
-							<template v-if="column.key === 'actions'">
-								<Actions :record="record" :index="index" />
-							</template>
-						</template>
-					</a-table>
+		<Cards>
+			<template #title>
+				<div class="ninjadash-card-title-wrap">
+					<span class="ninjadash-card-title-text"> Detalle </span>
 				</div>
-			</ProductTable>
-		</TableWrapper>
-		<FreeText />
-		<Totals />
-		<a-row justify="end">
-			<a-col :lg="12" :md="18" :sm="24" :offset="0">
-				<InvoiceAction>
-					<!-- <sdButton size="sm" shape="round" type="default">
+			</template>
+			<TableWrapper>
+				<ProductTable>
+					<div class="table-invoice table-responsive">
+						<a-table :dataSource="invoiceTableData" :columns="productTableColumns" :pagination="false">
+							<template #bodyCell="{ column, record, index }">
+								<template v-if="column.key === 'product'">
+									<ProductItem :record="record" :index="index" />
+								</template>
+								<template v-if="column.key === 'unit'">
+									<Unit :record="record" :index="index" />
+								</template>
+								<template v-if="column.key === 'quantity'">
+									<Quantity :record="record" :index="index" />
+								</template>
+								<template v-if="column.key === 'iva'">
+									<Iva :record="record" :index="index" />
+								</template>
+								<template v-if="column.key === 'discount'">
+									<Discount :record="record" :index="index" />
+								</template>
+								<template v-if="column.key === 'subtotal'">
+									<Subtotal :record="record" :index="index" />
+								</template>
+								<template v-if="column.key === 'total'">
+									<Total :record="record" :index="index" />
+								</template>
+								<template v-if="column.key === 'actions'">
+									<Actions :record="record" :index="index" />
+								</template>
+							</template>
+						</a-table>
+					</div>
+				</ProductTable>
+			</TableWrapper>
+			<FreeText />
+			<Totals />
+			<a-row justify="end">
+				<a-col :lg="12" :md="18" :sm="24" :offset="0">
+					<InvoiceAction>
+						<!-- <sdButton size="sm" shape="round" type="default">
 						<unicon name="print" width="14"></unicon>
 						<span>Print</span>
 					</sdButton>
@@ -47,21 +53,22 @@
 						<unicon name="message" width="14"></unicon>
 						<span>Send Invoice</span>
 					</sdButton> -->
-					<a-button
-						type="primary"
-						shape="round"
-						@click="generateInvoice"
-						:loading="loading"
-						:disabled="loading || invoiceTableData.length == 0 || !invoiceConfigIsValidated"
-					>
-						<template #icon v-if="invoiceTableData.length">
-							<CloudUploadOutlined />
-						</template>
-						Facturar
-					</a-button>
-				</InvoiceAction>
-			</a-col>
-		</a-row>
+						<a-button
+							type="primary"
+							shape="round"
+							@click="generateInvoice"
+							:loading="loading"
+							:disabled="loading || invoiceTableData.length == 0 || !invoiceConfigIsValidated"
+						>
+							<template #icon v-if="invoiceTableData.length">
+								<CloudUploadOutlined />
+							</template>
+							Facturar
+						</a-button>
+					</InvoiceAction>
+				</a-col>
+			</a-row>
+		</Cards>
 		<Html2CanvasPdf />
 	</Main>
 </template>
@@ -77,6 +84,7 @@ import { useCompanyComposable } from '@/app/composables/company/useCompanyCompos
 import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
+import Cards from '@/components/cards/frame/CardsFrame.vue';
 
 import Html2CanvasPdf from '@/app/pdf/Html2CanvasPdf.vue';
 import Actions from './product/Actions.vue';
@@ -227,7 +235,7 @@ const generateInvoice = async () => {
 	}
 };
 
-const removeIvaColumn = () => {
+/* const removeIvaColumn = () => {
 	const index = productTableColumns.findIndex((objeto) => objeto.key === 'iva');
 	console.log('🚀 ~ removeIvaColumn ~ index:', index);
 
@@ -242,7 +250,7 @@ const addIvaColumn = (indexIva: number) => {
 	if (index !== -1) {
 		productTableColumns.splice(indexIva, 0, iva);
 	}
-};
+}; */
 
 onUnmounted(() => {
 	invoiceInitialStatus();

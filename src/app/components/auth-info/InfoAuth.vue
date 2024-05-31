@@ -7,8 +7,6 @@ import { useCompanyComposable } from '@/app/composables/company/useCompanyCompos
 import { useRouter } from 'vue-router';
 import { useUserComposable } from '@/app/composables/user/useUserComposable';
 import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
-import Message from './Message.vue';
-import Notification from './Notification.vue';
 import Settings from './Settings.vue';
 import EditCompanyForm from '@/app/components/company/EditCompanyForm.vue';
 

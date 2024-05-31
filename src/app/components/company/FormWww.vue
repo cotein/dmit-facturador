@@ -121,7 +121,7 @@ watch(
 								layout="vertical"
 							>
 								<a-row :gutter="30">
-									<a-col :md="8" :xs="24">
+									<a-col :md="8" :xs="24" :sm="24">
 										<GetInfoByCuit :only-cuit="true" />
 									</a-col>
 									<a-col :md="lastNameIsRequired ? 8 : 16" :xs="24">
@@ -133,7 +133,7 @@ watch(
 											<a-input v-model:value="companyForm.name" placeholder="Nombre" />
 										</a-form-item>
 									</a-col>
-									<a-col :md="8" :xs="24" v-if="lastNameIsRequired">
+									<a-col :md="8" :xs="24" :sm="24" v-if="lastNameIsRequired">
 										<a-form-item ref="lastName" name="lastName" label="Apellido">
 											<a-input v-model:value="companyForm.lastName" placeholder="Apellido" />
 										</a-form-item>
@@ -146,7 +146,7 @@ watch(
 											/>
 										</a-form-item>
 									</a-col>
-									<a-col :md="8" :xs="24">
+									<a-col :md="8" :xs="24" :sm="24">
 										<a-form-item ref="inscription" name="inscription" label="Inscripción en AFIP">
 											<a-select
 												v-model:value="companyForm.inscription"
@@ -170,7 +170,7 @@ watch(
 											</a-select>
 										</a-form-item>
 									</a-col>
-									<a-col :md="6" :xs="24">
+									<a-col :md="6" :xs="24" :sm="24">
 										<a-form-item
 											ref="activity_init"
 											label="Inicio de actividades"
@@ -187,12 +187,12 @@ watch(
 											</DatePickerWrapper>
 										</a-form-item>
 									</a-col>
-									<a-col :md="6" :xs="24">
+									<a-col :md="6" :xs="24" :sm="24">
 										<a-form-item ref="iibb" name="iibb" label="N° de Ingresos Brutos">
 											<a-input v-model:value="companyForm.iibb" placeholder="IIBB" />
 										</a-form-item>
 									</a-col>
-									<a-col :md="4" :xs="24">
+									<a-col :md="4" :xs="24" :sm="24">
 										<a-form-item ref="type_company" name="type_company" label="Tipo de Empresa">
 											<a-select
 												v-model:value="companyForm.type_company"
@@ -211,7 +211,7 @@ watch(
 											</a-select>
 										</a-form-item>
 									</a-col>
-									<a-col :md="12" :xs="24">
+									<a-col :md="12" :xs="24" :sm="24">
 										<a-form-item
 											ref="billing_concept"
 											name="billing_concept"
@@ -239,7 +239,7 @@ watch(
 								<a-divider class="divider" />
 								<a-typography-title :level="4">Domicilio</a-typography-title>
 								<a-row :gutter="30">
-									<a-col :md="4" :xs="24">
+									<a-col :md="4" :xs="24" :sm="24">
 										<a-form-item
 											ref="address"
 											name="address"
@@ -261,11 +261,11 @@ watch(
 								<a-typography-title :level="4">Percepciones</a-typography-title>
 
 								<a-row :gutter="25" justify="center">
-									<a-col :md="12" :xs="24">
+									<a-col :md="12" :xs="24" :sm="24">
 										Realiza perceción de Ingresos Brutos
 										<a-switch v-model:checked="companyForm.perception_iibb" />
 									</a-col>
-									<a-col :md="12" :xs="24">
+									<a-col :md="12" :xs="24" :sm="24">
 										Realiza perceción de IVA
 										<a-switch v-model:checked="companyForm.perception_iva" />
 									</a-col>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, type UnwrapRef } from 'vue';
+import { reactive, ref, computed,type UnwrapRef } from 'vue';
 import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
 import { apiAfipGetCompanyDataByCuit } from '@/api/afip/afip-padron';
 import { message } from 'ant-design-vue';
@@ -169,59 +169,92 @@ const rules = ref({
 		},
 	],
 });
+
+const buttonSize = computed(() => window.innerWidth <= 500 ? 'small' : 'large');
 </script>
 <template>
-	<a-form
-		class="flex-container"
-		name="ninjadash_validation-form"
-		ref="afipGetPersonForm"
-		:model="sujeto"
-		:rules="rules"
-		layout="vertical"
-	>
-		<a-form-item name="cuit" ref="cuit" label="CUIT" has-feedback class="space--cuit--button">
-			<a-input
-				:disabled="sujetoIsEditable"
-				v-model:value="sujeto.cuit"
-				autocomplete="off"
-				@change="(e:any) => e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"
-				v-if="!hasMoreThanOneResult"
-			/>
-			<a-select v-else ref="select" v-model:value="sujeto.cuit" style="width: 213px" open>
-				<a-select-option v-for="number in listPerson" :value="number" :key="number">{{
-					number
-				}}</a-select-option>
-			</a-select>
-		</a-form-item>
-		<a-form-item>
-			<a-tooltip placement="right" color="lightgrey">
-				<template #title>
-					<span>Buscar datos del CUIT</span>
-				</template>
-				<a-button
-					type="primary"
-					shape="round"
-					size="large"
-					@click.prevent="getInfo"
-					style="margin-top: 2rem"
-					:loading="search"
-					:disabled="sujetoIsEditable"
-				>
-					<template #icon>
-						<SearchOutlined />
-					</template>
-					<span>Buscar</span>
-				</a-button>
-			</a-tooltip>
-		</a-form-item>
-	</a-form>
+  <a-form
+    class="flex-container"
+    name="ninjadash_validation-form"
+    ref="afipGetPersonForm"
+    :model="sujeto"
+    :rules="rules"
+    layout="vertical"
+  >
+    <a-row justify="center" align="middle" :gutter="10">
+      <a-col :md="18" :sm="24" :xs="24">
+        <a-form-item
+          name="cuit"
+          ref="cuit"
+          label="CUIT"
+          has-feedback
+          class="space--cuit--button"
+        >
+          <a-input
+            :disabled="sujetoIsEditable"
+            v-model:value="sujeto.cuit"
+            autocomplete="off"
+            @change="(e:any) => e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"
+            v-if="!hasMoreThanOneResult"
+          />
+          <a-select
+            v-else
+            ref="select"
+            v-model:value="sujeto.cuit"
+            style="width: 213px"
+            open
+          >
+            <a-select-option v-for="number in listPerson" :value="number" :key="number">{{
+              number
+            }}</a-select-option>
+          </a-select>
+        </a-form-item>
+      </a-col>
+      <a-col :md="6" :sm="24" :xs="24">
+        <a-form-item class="button-parent">
+          <a-tooltip placement="right" color="lightgrey">
+            <template #title>
+              <span>Buscar datos del CUIT</span>
+            </template>
+            <a-button
+              type="primary"
+              shape="round"
+              :size="buttonSize"
+              @click.prevent="getInfo"
+              class="search-button"
+              :loading="search"
+              :disabled="sujetoIsEditable"
+            >
+              <template #icon>
+                <SearchOutlined />
+              </template>
+              <span>Buscar</span>
+            </a-button>
+          </a-tooltip>
+        </a-form-item>
+      </a-col>
+    </a-row>
+  </a-form>
 </template>
 <style scoped>
 .flex-container {
-	display: flex;
-	justify-content: start;
+  display: flex;
+  justify-content: start;
 }
 .space--cuit--button {
-	margin-right: 2rem;
+  margin-right: 2rem;
+}
+.search-button {
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .search-button {
+    margin-top: 0.1rem;
+  }
+  .button-parent {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>
