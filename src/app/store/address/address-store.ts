@@ -3,12 +3,12 @@ import { defineStore, storeToRefs } from 'pinia';
 import { computed, reactive, ref } from 'vue';
 import { useAfipStateStore } from '../afip/states-store';
 
-export const useAddressStore = defineStore('address', () => {
+export const useAddressStore = defineStore( 'address', () => {
 	const provincias = useAfipStateStore();
 
-	const { StatesGetter } = storeToRefs(provincias);
+	const { StatesGetter } = storeToRefs( provincias );
 
-	const address = reactive<Address>({
+	const addressInStore = ref<Address>( {
 		state_id: '',
 		city: '',
 		street: '',
@@ -18,17 +18,17 @@ export const useAddressStore = defineStore('address', () => {
 		between_streets: '',
 		addressable_id: '',
 		addressable_type: '',
-	});
+	} );
 
-	const isValid = ref<boolean>(false);
+	const isValid = ref<boolean>( false );
 
 	return {
 		//State properties
-		address,
+		addressInStore,
 		isValid,
 		//Actions
 		//Getters
-		Address: computed(() => address),
+		//Address: computed( () => address ),
 		StatesGetter,
 	};
-});
+} );

@@ -1,4 +1,5 @@
 import type { Address } from './Address';
+import type { PersonaReturn } from './Afip';
 
 export type Sujeto = {
 	name: string | undefined;
@@ -8,7 +9,7 @@ export type Sujeto = {
 	inscription: '' | number;
 	number: string;
 	address: Address;
-	afip_data: Object;
+	afip_data: PersonaReturn;
 	fantasy_name?: string;
 	type_customer?: number | null;
 };

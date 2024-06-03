@@ -9,17 +9,18 @@ import { useAddressStore } from '@/app/store/address/address-store';
 import { useMutation } from '@tanstack/vue-query';
 import { useStoreCompany } from '@/app/store/company/store-company';
 import { useUserComposable } from '../user/useUserComposable';
+import type { Rule } from '@/app/types/ValidationRule';
 
-const { CompanyGetter, companyForm, company } = storeToRefs(useStoreCompany());
+const { CompanyGetter, companyForm, company } = storeToRefs( useStoreCompany() );
 const { setUserCompanies } = useUserComposable();
 const { setCompanyToWork, setCompany } = useStoreCompany();
 const { closeAddNewCompanyPanel } = useAddNewCompanyPanelComposable();
 
 const addressStore = useAddressStore();
 
-const lastNameIsRequired = ref<boolean>(true);
+const lastNameIsRequired = ref<boolean>( true );
 
-const rules = reactive({
+const rules = reactive<Record<string, Rule[]>>( {
 	name: [
 		{
 			required: true,
@@ -35,7 +36,7 @@ const rules = reactive({
 	],
 	lastName: [
 		{
-			required: lastNameIsRequired,
+			required: lastNameIsRequired.value,
 			message: 'El Apellido es requerido',
 			trigger: 'blur',
 		},
@@ -54,9 +55,9 @@ const rules = reactive({
 		},
 		{
 			message: 'La CUIT debe poseer sólo números',
-			validator: (_: any, value: any) => {
-				const number = Number(value);
-				if (Number.isNaN(number)) {
+			validator: ( _: any, value: any ) => {
+				const number = Number( value );
+				if ( Number.isNaN( number ) ) {
 					return Promise.reject();
 				}
 				return Promise.resolve();
@@ -103,62 +104,41 @@ const rules = reactive({
 			required: true,
 			message: 'Debe ingresar un domicilio válido',
 			validator: () => {
-				if (addressStore.isValid) {
+				if ( addressStore.isValid ) {
 					return Promise.resolve();
 				}
 				return Promise.reject();
 			},
 		},
 	],
-	/* pto_vta_fe: [
-		{
-			required: true,
-			message: 'El punto de venta de Factura Electrónica es requerido',
-			trigger: 'blur',
-		},
-	],
-	pto_vta_remito: [
-		{
-			required: true,
-			message: 'El punto de venta del remito es requerido',
-			trigger: 'blur',
-		},
-	],
-	pto_vta_recibo: [
-		{
-			required: true,
-			message: 'El punto de venta del recibo es requerido',
-			trigger: 'blur',
-		},
-	], */
-});
+} );
 
 export const useCompanyComposable = () => {
-	const createCompanyMutation = useMutation({
+	const createCompanyMutation = useMutation( {
 		mutationFn: saveCompany,
 
-		onSuccess: (response) => {
-			setUserCompanies(response.data);
-			if (response.data.length === 1) {
-				setCompanyToWork(response.data[0]);
+		onSuccess: ( response ) => {
+			setUserCompanies( response.data );
+			if ( response.data.length === 1 ) {
+				setCompanyToWork( response.data[ 0 ] );
 			}
 
-			setTimeout(() => {
+			setTimeout( () => {
 				closeAddNewCompanyPanel();
-			}, 2000);
+			}, 2000 );
 
-			notification['success']({
+			notification[ 'success' ]( {
 				message: 'COMPAÑIA',
 				description: 'Creada correctamente',
 				duration: 2,
-			});
+			} );
 		},
-	});
+	} );
 
-	const updateCompanyMutation = useMutation({
+	const updateCompanyMutation = useMutation( {
 		mutationFn: updateCompany,
-		onSuccess: (company) => {},
-	});
+		onSuccess: ( company ) => { },
+	} );
 
 	return {
 		company,

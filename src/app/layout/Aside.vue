@@ -7,6 +7,7 @@ import { useUserComposable } from "../composables/user/useUserComposable";
 import { useCompanyComposable } from "../composables/company/useCompanyComposable";
 import type { CompanyRawData } from "../types/Company";
 import { CONCEPTO } from "../types/Constantes";
+import { onMounted } from "vue";
 const {
   IHaveMoreThanOneCompany,
   IHaveOneCompany,
@@ -45,6 +46,7 @@ const onClick = (item: { keyPath: any }) => {
 };
 
 const visible = ref<boolean>(false);
+const isMobile = ref<boolean>(false);
 
 const onClose = () => {
   visible.value = !visible.value;
@@ -55,8 +57,15 @@ const { AddNewCompany, closeAddNewCompanyPanel } = useAddNewCompanyPanelComposab
 const { OpenPanelWithMyCompanies } = useOpenCompanyPanelStore();
 
 const handleCustomEvent = (data: CompanyRawData) => {
+  console.log("🚀 ~ handleCustomEvent ~ data:", data);
   createCompanyMutation.mutateAsync(data);
 };
+
+onMounted(() => {
+  if (window.innerWidth <= 768) {
+    isMobile.value = true;
+  }
+});
 </script>
 
 <template>
@@ -66,11 +75,13 @@ const handleCustomEvent = (data: CompanyRawData) => {
         ? 'Debe cargar una compañía para administrar'
         : 'Agregar nueva compañía para administrar'
     "
-    width="80%"
+    :width="isMobile ? '100%' : '80%'"
+    :height="isMobile ? '100%' : '80%'"
     @close="IHaventGotCompanies ? null : closeAddNewCompanyPanel"
     :visible="AddNewCompany"
     :closable="IHaventGotCompanies ? false : true"
     :mask="IHaventGotCompanies ? true : false"
+    :placement="isMobile ? 'top' : 'right'"
   >
     <CreateCompanyForm
       @submitCompanyForm="handleCustomEvent"
@@ -80,11 +91,12 @@ const handleCustomEvent = (data: CompanyRawData) => {
 
   <a-drawer
     title="Debe seleccionar la compañía con la que trabajará"
-    width="80%"
+    :width="isMobile ? '100%' : '80%'"
     :visible="OpenPanelWithMyCompanies"
     @close="onClose"
     :closable="false"
     :mask="true"
+    :placement="isMobile ? 'top' : 'right'"
   >
     ppppppppppppppppppppppppppp
   </a-drawer>

@@ -5,12 +5,12 @@ import { defineStore, storeToRefs } from 'pinia';
 import { ref, computed, reactive, type UnwrapRef } from 'vue';
 import { useAddressStore } from '../address/address-store';
 
-export const useStoreCompany = defineStore('company', () => {
+export const useStoreCompany = defineStore( 'company', () => {
 	const company = ref<Company>();
 
 	const addressStore = useAddressStore();
 
-	const companyForm: UnwrapRef<CompanyRawData> = reactive({
+	const companyForm: UnwrapRef<CompanyRawData> = reactive( {
 		name: '',
 		lastName: '',
 		cuit: '',
@@ -40,7 +40,7 @@ export const useStoreCompany = defineStore('company', () => {
 		},
 		afip_data: {},
 		fantasy_name: '',
-	});
+	} );
 
 	const clearCompanyForm = () => {
 		companyForm.activity_init = '';
@@ -83,12 +83,12 @@ export const useStoreCompany = defineStore('company', () => {
 		companyForm.type_company = null;
 	};
 
-	const setCompanyToWork = (value: Company) => {
+	const setCompanyToWork = ( value: Company ) => {
 		company.value = value;
 	};
 
-	const setCompany = (company: Company) => {
-		companyForm.activity_init = moment(company.activity_init);
+	const setCompany = ( company: Company ) => {
+		companyForm.activity_init = moment( company.activity_init );
 		/* companyForm.address.addressable_id = company.address.addressable_id;
 		companyForm.address.addressable_type = company.address.addressable_type;
 		companyForm.address.between_streets = company.address.between_streets;
@@ -111,7 +111,7 @@ export const useStoreCompany = defineStore('company', () => {
 
 		companyForm.afip_data = {};
 		companyForm.afip_environment = company.afip_environment;
-		companyForm.billing_concept = String(company.billing_concept);
+		companyForm.billing_concept = String( company.billing_concept );
 		companyForm.cuit = company.cuit;
 		companyForm.cuit_id = company.cuit_id;
 		companyForm.fantasy_name = company.fantasy_name;
@@ -136,7 +136,7 @@ export const useStoreCompany = defineStore('company', () => {
 		setCompanyToWork,
 		setCompany,
 		//Getters
-		CompanyGetter: computed(() => company.value),
+		CompanyGetter: computed( () => company.value ),
 		clearCompanyForm,
 	};
-});
+} );

@@ -30,7 +30,7 @@ const EXENTO = 4;
 const hasMoreThanOneResult = ref<boolean>(false);
 
 const listPerson = ref<number[]>([]);
-const search = ref<boolean>(false);
+const loading = ref<boolean>(false);
 const afipGetPersonForm = ref();
 
 const props = withDefaults(defineProps<Props>(), {
@@ -61,21 +61,21 @@ const setAfipInscriptionType = (personaReturn: any) => {
 };
 
 const setAfipAddress = (address: DomicilioFiscal) => {
-	if (addressStore.address.hasOwnProperty('localidad')) {
-		addressStore.address.city = address.localidad;
+	if (addressStore.addressInStore.hasOwnProperty('localidad')) {
+		addressStore.addressInStore.city = address.localidad;
 	} else {
-		addressStore.address.city = address.descripcionProvincia;
+		addressStore.addressInStore.city = address.descripcionProvincia;
 	}
 
-	addressStore.address.cp = address.codPostal;
-	addressStore.address.state_id = address.idProvincia;
-	addressStore.address.street = address.direccion;
+	addressStore.addressInStore.cp = address.codPostal;
+	addressStore.addressInStore.state_id = address.idProvincia + 1;
+	addressStore.addressInStore.street = address.direccion;
 	addressStore.isValid = true;
 };
 
 const getInfo = () => {
 	afipGetPersonForm.value.validate().then(async () => {
-		search.value = true;
+		loading.value = true;
 
 		if (hasMoreThanOneResult.value) {
 			hasMoreThanOneResult.value = false;
@@ -83,10 +83,11 @@ const getInfo = () => {
 		}
 
 		const personaReturn = await apiAfipGetCompanyDataByCuit(sujeto.value.cuit).catch((err) => {
-			search.value = false;
-			const { data } = err.response.data;
+			console.log("🚀 ~ afipGetPersonForm.value.validate ~ err:", err)
+			loading.value = false;
+			err.response.data;
 			message.error({
-				content: () => data.message,
+				content: () => err.response.data.message,
 				duration: 6,
 				style: {
 					color: 'red',
@@ -96,7 +97,7 @@ const getInfo = () => {
 		});
 
 		if (personaReturn) {
-			search.value = false;
+			loading.value = false;
 
 			if (personaReturn.idPersonaListReturn) {
 				hasMoreThanOneResult.value = true;
@@ -158,6 +159,9 @@ const getInfo = () => {
 			sujeto.value.afip_data = personaReturn.personaReturn;
 			setAfipAddress(personaReturn.personaReturn.datosGenerales.domicilioFiscal);
 		}
+	}).catch((error: any) => {
+		loading.value = false;
+		console.log('error', error);
 	});
 };
 
@@ -222,7 +226,7 @@ const buttonSize = computed(() => window.innerWidth <= 500 ? 'small' : 'large');
               :size="buttonSize"
               @click.prevent="getInfo"
               class="search-button"
-              :loading="search"
+              :loading="loading"
               :disabled="sujetoIsEditable"
             >
               <template #icon>

@@ -92,14 +92,12 @@ export type Metadata = {
 };
 
 export type PersonaReturn = {
-	personaReturn: {
-		idPersonaListReturn?: IdPersonaListReturn;
-		errorConstancia?: ErrorConstancia;
-		datosGenerales: DatosGenerales;
-		datosMonotributo?: DatosMonotributo;
-		datosRegimenGeneral: DatosRegimenGeneral;
-		metaData: Metadata;
-	};
+	idPersonaListReturn?: IdPersonaListReturn;
+	errorConstancia?: ErrorConstancia;
+	datosGenerales: DatosGenerales;
+	datosMonotributo?: DatosMonotributo;
+	datosRegimenGeneral: DatosRegimenGeneral;
+	metaData: Metadata;
 };
 
 export type ErrorConstancia = {
@@ -153,7 +151,7 @@ export type AfipInvoice = {
 	paymentType: number;
 	percepIIBB: number | null;
 	percepIva: number | null;
-	periodoAsoc?: [FchDesde: string, FchHasta: string];
+	periodoAsoc?: [ FchDesde: string, FchHasta: string ];
 	products: [] | null;
 	PtoVta: number | null;
 	SaleCondition: number;
