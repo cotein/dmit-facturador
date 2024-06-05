@@ -3,29 +3,18 @@ import { reactive, ref, computed,type UnwrapRef } from 'vue';
 import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
 import { apiAfipGetCompanyDataByCuit } from '@/api/afip/afip-padron';
 import { message } from 'ant-design-vue';
-import { TypeCompany } from '@/app/types/Company';
-import type { DomicilioFiscal, Impuesto } from '@/app/types/Afip';
+import { TypeCompany, type Sujeto } from '@/app/types/Company';
+import type { DomicilioFiscal, IdPersonaListReturn, Impuesto, PersonaReturn } from '@/app/types/Afip';
 import { useAddressStore } from '@/app/store/address/address-store';
+import { onUnmounted } from 'vue';
+import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
+import { showMessage } from '@/app/helpers/mesaages';
 
 const addressStore = useAddressStore();
 
 interface Props {
 	onlyCuit: boolean;
 }
-type persona = {
-	cuit: number | string;
-};
-const hombre: UnwrapRef<persona> = reactive({
-	cuit: '',
-});
-
-const RESPONSABLE_INSCRIPTO = 1;
-
-const MONOTRIBUTO = 6;
-
-const CONSUMIDOR_FINAL = 5;
-
-const EXENTO = 4;
 
 const hasMoreThanOneResult = ref<boolean>(false);
 
@@ -37,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 	onlyCuit: false,
 });
 
-const { sujeto, sujetoIsEditable } = usePadronComposable();
+const { sujeto, sujetoIsEditable, clearSujetoData } = usePadronComposable();
 
 const validateCuit = (rule: any, value: any) => {
 	return new Promise((resolve, reject) => {
@@ -49,13 +38,20 @@ const validateCuit = (rule: any, value: any) => {
 	});
 };
 
+/**
+ * Sets the AFIP inscription type based on the returned persona data.
+ * @param {Object} personaReturn - The returned persona data.
+ */
 const setAfipInscriptionType = (personaReturn: any) => {
 	personaReturn.datosRegimenGeneral.impuesto.map((impuesto: Impuesto) => {
-		if (impuesto.descripcionImpuesto === 'IVA') {
-			sujeto.value.inscription = RESPONSABLE_INSCRIPTO;
-		}
-		if (impuesto.descripcionImpuesto === 'IVA EXENTO') {
-			sujeto.value.inscription = EXENTO;
+		switch (impuesto.descripcionImpuesto) {
+			case 'IVA':
+				sujeto.value.inscription = AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO;
+				break;
+			case 'IVA EXENTO':
+				sujeto.value.inscription = AFIP_INSCRIPTION.IVA_SUJETO_EXENTO;
+				break;
+			// puedes agregar más casos aquí si es necesario
 		}
 	});
 };
@@ -73,98 +69,115 @@ const setAfipAddress = (address: DomicilioFiscal) => {
 	addressStore.isValid = true;
 };
 
+const handleErrors = (err:any) => {
+	loading.value = false;
+
+	showMessage('error', err.response.data.message, 6);
+};
+
+const handlePersonaReturn = (personaReturn:PersonaReturn) => {
+	loading.value = false;
+
+	if ('idPersona' in personaReturn) {
+
+		if (Array.isArray(personaReturn.idPersona)) {
+			hasMoreThanOneResult.value = true;
+			listPerson.value = Array.isArray(personaReturn.idPersona)
+				? personaReturn.idPersona
+				: [personaReturn.idPersona];
+
+				showMessage('info', 'Se encontraron más de un resultado, seleccione uno',3);
+
+		}else{
+			const cuil:number = personaReturn.idPersona as any;
+			sujeto.value.cuit = cuil.toString();
+			showMessage('info', 'Se encontró el CUIL del DNI ingresado, presione el botón de búsqueda para obtener los datos.',3);
+		}
+
+		return
+	}
+
+	if ('errorConstancia' in personaReturn) {
+		handlePersonaReturnError(personaReturn);
+		return;
+	}
+
+	handlePersonaReturnData(personaReturn);
+};
+
+const handlePersonaReturnError = (personaReturn:PersonaReturn) => {
+
+		showMessage('error', personaReturn.errorConstancia!.error, 6);
+
+		if (personaReturn.errorConstancia?.error != 'La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa') {
+			sujeto.value.name = (personaReturn.errorConstancia!.nombre) ? personaReturn.errorConstancia!.nombre : personaReturn.errorConstancia!.apellido;
+			sujeto.value.lastName = (personaReturn.errorConstancia!.nombre && personaReturn.errorConstancia!.apellido) ? personaReturn.errorConstancia!.apellido : '';
+			sujeto.value.inscription = AFIP_INSCRIPTION.CONSUMIDOR_FINAL;
+			sujeto.value.cuit_id = 86;
+			sujeto.value.afip_data = personaReturn;
+			sujeto.value.cuit = personaReturn.errorConstancia!.idPersona.toString();
+			sujeto.value.type_company = TypeCompany.FISICA;
+		}
+
+};
+
+const handlePersonaReturnData = (personaReturn:PersonaReturn) => {
+
+	if (personaReturn.datosGenerales.tipoPersona === 'FISICA') {
+		sujeto.value.name = personaReturn.datosGenerales.nombre ?? '';
+		sujeto.value.type_company = TypeCompany.FISICA;
+		sujeto.value.lastName = personaReturn.datosGenerales.apellido;
+		if ('datosMonotributo' in personaReturn) {
+			sujeto.value.inscription = AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO;
+		} else if ('datosRegimenGeneral' in personaReturn) {
+			setAfipInscriptionType(personaReturn);
+		}
+	}
+
+	if (personaReturn.datosGenerales.tipoPersona === 'JURIDICA') {
+		sujeto.value.type_company = TypeCompany.JURIDICA;
+		sujeto.value.name = personaReturn.datosGenerales.razonSocial ?? '';
+
+		if ('datosRegimenGeneral' in personaReturn) {
+			setAfipInscriptionType(personaReturn);
+		}
+	}
+
+	sujeto.value.cuit = personaReturn.datosGenerales.idPersona.toString();
+	sujeto.value.cuit_id = 80;
+	sujeto.value.afip_data = personaReturn;
+	setAfipAddress(personaReturn.datosGenerales.domicilioFiscal);
+};
+
+/**
+ * Fetches information from the AFIP API based on the CUIT.
+ * Validates the form, handles loading states, and processes the returned data.
+ */
 const getInfo = () => {
 	afipGetPersonForm.value.validate().then(async () => {
 		loading.value = true;
-
 		if (hasMoreThanOneResult.value) {
 			hasMoreThanOneResult.value = false;
 			listPerson.value = [];
 		}
 
-		const personaReturn = await apiAfipGetCompanyDataByCuit(sujeto.value.cuit).catch((err) => {
-			console.log("🚀 ~ afipGetPersonForm.value.validate ~ err:", err)
-			loading.value = false;
-			err.response.data;
-			message.error({
-				content: () => err.response.data.message,
-				duration: 6,
-				style: {
-					color: 'red',
-					fontSize: 'large',
-				},
-			});
-		});
+		const response = await apiAfipGetCompanyDataByCuit(sujeto.value.cuit).catch(handleErrors);
 
-		if (personaReturn) {
-			loading.value = false;
+		if (response) {
+			if ('idPersonaListReturn' in response) {
+				const personaReturn = (response as any).idPersonaListReturn as PersonaReturn;
+				handlePersonaReturn(personaReturn);
 
-			if (personaReturn.idPersonaListReturn) {
-				hasMoreThanOneResult.value = true;
-				Array.isArray(personaReturn.idPersonaListReturn.idPersona)
-					? (listPerson.value = personaReturn.idPersonaListReturn.idPersona)
-					: listPerson.value.push(personaReturn.idPersonaListReturn.idPersona);
-
-				return;
+			} else if ('personaReturn' in response) {
+				const personaReturn = (response as any).personaReturn as PersonaReturn;
+				handlePersonaReturn(personaReturn);
 			}
-
-			if ('errorConstancia' in personaReturn.personaReturn) {
-				message.error({
-					content: () => personaReturn.personaReturn.errorConstancia?.error,
-					duration: 6,
-					style: {
-						color: 'red',
-						fontSize: 'large',
-					},
-				});
-
-				if (
-					personaReturn.personaReturn.errorConstancia?.error !=
-					'La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa'
-				) {
-					sujeto.value.name = personaReturn.personaReturn.errorConstancia!.nombre;
-					sujeto.value.lastName = personaReturn.personaReturn.errorConstancia!.apellido;
-					sujeto.value.inscription = CONSUMIDOR_FINAL;
-					sujeto.value.cuit_id = 86;
-					sujeto.value.afip_data = personaReturn.personaReturn;
-					sujeto.value.cuit = personaReturn.personaReturn.errorConstancia!.idPersona;
-				}
-
-				return;
-			}
-
-			if (personaReturn.personaReturn.datosGenerales.tipoPersona === 'FISICA') {
-				sujeto.value.name = personaReturn.personaReturn.datosGenerales.nombre;
-				sujeto.value.type_company = TypeCompany.FISICA;
-				sujeto.value.lastName = personaReturn.personaReturn.datosGenerales.apellido;
-				if ('datosMonotributo' in personaReturn.personaReturn) {
-					sujeto.value.inscription = MONOTRIBUTO;
-				} else if ('datosRegimenGeneral' in personaReturn.personaReturn) {
-					setAfipInscriptionType(personaReturn.personaReturn);
-				}
-			}
-
-			if (personaReturn.personaReturn.datosGenerales.tipoPersona === 'JURIDICA') {
-				//lastNameIsRequired.value = false;
-				sujeto.value.type_company = TypeCompany.JURIDICA;
-				sujeto.value.name = personaReturn.personaReturn.datosGenerales.razonSocial;
-
-				if ('datosRegimenGeneral' in personaReturn.personaReturn) {
-					setAfipInscriptionType(personaReturn.personaReturn);
-				}
-			}
-
-			sujeto.value.cuit = personaReturn.personaReturn.datosGenerales.idPersona;
-			sujeto.value.cuit_id = 80;
-			sujeto.value.afip_data = personaReturn.personaReturn;
-			setAfipAddress(personaReturn.personaReturn.datosGenerales.domicilioFiscal);
 		}
+
 	}).catch((error: any) => {
 		loading.value = false;
-		console.log('error', error);
 	});
 };
-
 const rules = ref({
 	cuit: [
 		{
@@ -174,7 +187,16 @@ const rules = ref({
 	],
 });
 
+onUnmounted(() => {
+	clearSujetoData();
+});
+
 const buttonSize = computed(() => window.innerWidth <= 500 ? 'small' : 'large');
+
+const onlyNumeric = (event:KeyboardEvent) => {
+	const key = event.key;
+	if (key < '0' || key > '9') event.preventDefault();
+}
 </script>
 <template>
   <a-form
@@ -194,10 +216,14 @@ const buttonSize = computed(() => window.innerWidth <= 500 ? 'small' : 'large');
           has-feedback
           class="space--cuit--button"
         >
+          <template #help>
+            <span class="help--message">Sólo se permiten números</span>
+          </template>
           <a-input
             :disabled="sujetoIsEditable"
             v-model:value="sujeto.cuit"
             autocomplete="off"
+            @keypress="onlyNumeric"
             @change="(e:any) => e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"
             v-if="!hasMoreThanOneResult"
           />
@@ -247,6 +273,10 @@ const buttonSize = computed(() => window.innerWidth <= 500 ? 'small' : 'large');
 }
 .space--cuit--button {
   margin-right: 2rem;
+}
+
+.help--message {
+  color: #808080;
 }
 .search-button {
   margin-top: 2rem;

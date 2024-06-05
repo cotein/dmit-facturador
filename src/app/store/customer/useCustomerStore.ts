@@ -1,19 +1,20 @@
+import type { Sujeto } from './../../types/Company';
 import { CUIT_ID } from '@/app/types/Constantes';
 import type { CustomerForm, CustomerSelectComponent } from '@/app/types/Customer';
 
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
 
-export const useCustomerStore = defineStore('customer', () => {
-	const lastNameIsRequired = ref<boolean>(true);
+export const useCustomerStore = defineStore( 'customer', () => {
+	const lastNameIsRequired = ref<boolean>( true );
 
-	const customers = ref([]);
+	const customers = ref( [] );
 
-	const setCustomers = (value: any) => (customers.value = value);
+	const setCustomers = ( value: any ) => ( customers.value = value );
 
 	const selectedCustomer = ref<CustomerSelectComponent>();
 
-	const customerForm: UnwrapRef<CustomerForm> = reactive({
+	const customerForm: UnwrapRef<CustomerForm> = reactive( {
 		name: '',
 		lastName: '',
 		cuit: '',
@@ -31,11 +32,11 @@ export const useCustomerStore = defineStore('customer', () => {
 			addressable_id: '',
 			addressable_type: '',
 		},
-		afip_data: {},
+		afip_data: undefined,
 		fantasy_name: '',
 		type_customer: null,
 		company_id: null,
-	});
+	} );
 
 	const clearData = () => {
 		customerForm.name = '';
@@ -50,7 +51,7 @@ export const useCustomerStore = defineStore('customer', () => {
 		customerForm.address.between_streets = '';
 		customerForm.address.addressable_id = '';
 		customerForm.address.addressable_type = '';
-		customerForm.afip_data = {};
+		customerForm.afip_data = undefined;
 		customerForm.fantasy_name = '';
 	};
 
@@ -62,8 +63,8 @@ export const useCustomerStore = defineStore('customer', () => {
 		selectedCustomer,
 		lastNameIsRequired,
 		setCustomers,
-		CustomersGetter: computed(() => customers.value),
+		CustomersGetter: computed( () => customers.value ),
 		//Actions
 		//Getters
 	};
-});
+} );

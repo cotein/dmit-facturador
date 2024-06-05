@@ -1,3 +1,5 @@
+import type { Sujeto } from "./Company";
+
 export type CustomerForm = {
 	name: any;
 	lastName: any;
@@ -16,7 +18,7 @@ export type CustomerForm = {
 		addressable_id: any;
 		addressable_type: any;
 	};
-	afip_data: {};
+	afip_data: Sujeto | undefined;
 	fantasy_name: any;
 	type_customer: any;
 	company_id: any;

@@ -38,33 +38,25 @@ export const useStoreCompany = defineStore( 'company', () => {
 			addressable_id: '',
 			addressable_type: '',
 		},
-		afip_data: {},
+		afip_data: undefined,
 		fantasy_name: '',
 	} );
 
-	const clearCompanyForm = () => {
+	/* const clearCompanyForm = () => {
 		companyForm.activity_init = '';
-		/* companyForm.address.addressable_id = '';
-		companyForm.address.addressable_type = '';
-		companyForm.address.between_streets = '';
-		companyForm.address.city = '';
-		companyForm.address.cp = '';
-		companyForm.address.number = '';
-		companyForm.address.obs = '';
-		companyForm.address.state_id = '';
-		companyForm.address.street = ''; */
 
-		addressStore.address.state_id = '';
-		addressStore.address.city = '';
-		addressStore.address.street = '';
-		addressStore.address.cp = '';
-		addressStore.address.number = '';
-		addressStore.address.obs = '';
-		addressStore.address.between_streets = '';
-		addressStore.address.addressable_id = '';
-		addressStore.address.addressable_type = '';
 
-		companyForm.afip_data = {};
+		addressStore.addressInStore.state_id = '';
+		addressStore.addressInStore.city = '';
+		addressStore.addressInStore.street = '';
+		addressStore.addressInStore.cp = '';
+		addressStore.addressInStore.number = '';
+		addressStore.addressInStore.obs = '';
+		addressStore.addressInStore.between_streets = '';
+		addressStore.addressInStore.addressable_id = '';
+		addressStore.addressInStore.addressable_type = '';
+
+		companyForm.afip_data = undefined;
 		companyForm.afip_environment = 'production';
 		companyForm.billing_concept = '1';
 		companyForm.cuit = '';
@@ -81,35 +73,27 @@ export const useStoreCompany = defineStore( 'company', () => {
 		companyForm.pto_vta_recibo = null;
 		companyForm.pto_vta_remito = null;
 		companyForm.type_company = null;
-	};
+	}; */
 
-	const setCompanyToWork = ( value: Company ) => {
+	/* const setCompanyToWork = ( value: Company ) => {
 		company.value = value;
-	};
+	}; */
 
-	const setCompany = ( company: Company ) => {
+	/* const setCompany = ( company: Company ) => {
 		companyForm.activity_init = moment( company.activity_init );
-		/* companyForm.address.addressable_id = company.address.addressable_id;
-		companyForm.address.addressable_type = company.address.addressable_type;
-		companyForm.address.between_streets = company.address.between_streets;
-		companyForm.address.city = company.address.city;
-		companyForm.address.cp = company.address.cp;
-		companyForm.address.number = company.address.number;
-		companyForm.address.obs = company.address.obs;
-		companyForm.address.state_id = company.address.state_id;
-		companyForm.address.street = company.address.street; */
 
-		addressStore.address.state_id = company.address.state_id;
-		addressStore.address.city = company.address.city;
-		addressStore.address.street = company.address.street;
-		addressStore.address.cp = company.address.cp;
-		addressStore.address.number = company.address.number;
-		addressStore.address.obs = company.address.obs;
-		addressStore.address.between_streets = company.address.between_streets;
-		addressStore.address.addressable_id = company.address.addressable_id;
-		addressStore.address.addressable_type = company.address.addressable_type;
 
-		companyForm.afip_data = {};
+		addressStore.addressInStore.state_id = company.address.state_id;
+		addressStore.addressInStore.city = company.address.city;
+		addressStore.addressInStore.street = company.address.street;
+		addressStore.addressInStore.cp = company.address.cp;
+		addressStore.addressInStore.number = company.address.number;
+		addressStore.addressInStore.obs = company.address.obs;
+		addressStore.addressInStore.between_streets = company.address.between_streets;
+		addressStore.addressInStore.addressable_id = company.address.addressable_id;
+		addressStore.addressInStore.addressable_type = company.address.addressable_type;
+
+		companyForm.afip_data = undefined;
 		companyForm.afip_environment = company.afip_environment;
 		companyForm.billing_concept = String( company.billing_concept );
 		companyForm.cuit = company.cuit;
@@ -126,8 +110,85 @@ export const useStoreCompany = defineStore( 'company', () => {
 		companyForm.pto_vta_recibo = company.pto_vta_recibo;
 		companyForm.pto_vta_remito = company.pto_vta_remito;
 		companyForm.type_company = company.type_company;
+	}; */
+
+	const defaultCompanyForm = {
+		activity_init: '',
+		afip_data: undefined,
+		afip_environment: 'production',
+		billing_concept: '1',
+		cuit: '',
+		cuit_id: CUIT_ID,
+		fantasy_name: '',
+		iibb: '',
+		inscription: '',
+		lastName: '',
+		name: '',
+		number: '',
+		perception_iibb: false,
+		perception_iva: false,
+		pto_vta_fe: null,
+		pto_vta_recibo: null,
+		pto_vta_remito: null,
+		type_company: null,
 	};
 
+	const defaultAddressInStore = {
+		state_id: '',
+		city: '',
+		street: '',
+		cp: '',
+		number: '',
+		obs: '',
+		between_streets: '',
+		addressable_id: '',
+		addressable_type: '',
+	};
+
+	const clearCompanyForm = () => {
+		Object.assign( companyForm, defaultCompanyForm );
+		Object.assign( addressStore.addressInStore, defaultAddressInStore );
+	};
+
+	const setCompanyToWork = ( value: Company ) => {
+		company.value = value;
+	};
+
+	const setCompany = ( company: Company ) => {
+		Object.assign( companyForm, {
+			...defaultCompanyForm,
+			activity_init: moment( company.activity_init ),
+			afip_environment: company.afip_environment,
+			billing_concept: String( company.billing_concept ),
+			cuit: company.cuit,
+			cuit_id: company.cuit_id,
+			fantasy_name: company.fantasy_name,
+			iibb: company.iibb,
+			inscription: company.inscription,
+			lastName: company.lastName,
+			name: company.name,
+			number: company.number,
+			perception_iibb: company.perception_iibb,
+			perception_iva: company.perception_iva,
+			pto_vta_fe: company.pto_vta_fe,
+			pto_vta_recibo: company.pto_vta_recibo,
+			pto_vta_remito: company.pto_vta_remito,
+			type_company: company.type_company,
+		} );
+
+		Object.assign( addressStore.addressInStore, {
+			...defaultAddressInStore,
+			state_id: company.address.state_id,
+			city: company.address.city,
+			street: company.address.street,
+			cp: company.address.cp,
+			number: company.address.number,
+			obs: company.address.obs,
+			between_streets: company.address.between_streets,
+			addressable_id: company.address.addressable_id,
+			addressable_type: company.address.addressable_type,
+		} );
+	};
 	return {
 		//State properties
 		companyForm,

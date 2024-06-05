@@ -4,25 +4,21 @@ import { Main, DatePickerWrapper } from '@/views/styled';
 import { ref, watch, defineEmits, onMounted } from 'vue';
 import locale from 'ant-design-vue/es/date-picker/locale/es_ES';
 import AddressForm from '../address/AddressForm.vue';
-
-import { message, notification } from 'ant-design-vue';
-import { saveCompany } from '@/api/company/company-api';
 import { TypeCompany, type CompanyRawData, type Sujeto } from '@/app/types/Company';
 import 'ant-design-vue/lib/message/style/index.css';
 import 'ant-design-vue/lib/notification/style/index.css';
 import GetInfoByCuit from '../afip/GetInfoByCuit.vue';
 import { usePadronAfipStore } from '@/app/store/afip/usePadronAfipStore';
-/** COMPOSABLES */
 import { useUserComposable } from '@/app/composables/user/useUserComposable';
 import { useAddressComposable } from '@/app/composables/address/useAddressComposable';
 import { useInscriptionsComposable } from '@/app/composables/afip/useInscriptionsComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAddNewCompanyPanelComposable';
 import type { PersonaReturn } from '@/app/types/Afip';
 import type { Impuesto } from '@/app/types/Afip';
 import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
 import { useAddressStore } from '@/app/store/address/address-store';
 import { storeToRefs } from 'pinia';
+import { showMessage } from '@/app/helpers/mesaages';
 
 const { sujeto } = usePadronAfipStore();
 const { lastNameIsRequired, rules, companyForm } = useCompanyComposable();
@@ -77,7 +73,7 @@ watch(
 		companyForm.value.cuit_id = newValue.cuit_id;
 		companyForm.value.lastName = newValue.lastName;
 		//companyForm.value.inscription = newValue.inscription;
-		companyForm.value.afip_data = newValue.afip_data as PersonaReturn;
+		companyForm.value.afip_data = afipData;
 		companyForm.value.type_customer = newValue.type_company;
 
 		if (newValue.type_company === 1) {
@@ -116,14 +112,7 @@ watch(
 
 		if (newValue.inscription === CONSUMIDOR_FINAL) {
 			resetForm();
-			message.error({
-				content: () => 'El dato ingresado es una CUIL, debe ingresar una CUIT',
-				duration: 6,
-				style: {
-					color: 'red',
-					fontSize: 'large',
-				},
-			});
+			showMessage('warning', 'La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa', 5);
 		}
 	},
 	{ deep: true },

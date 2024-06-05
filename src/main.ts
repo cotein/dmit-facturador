@@ -23,43 +23,39 @@ import 'vue3-perfect-scrollbar/style.css';
 
 const pinia = createPinia();
 
-app.component('SearchOutlined', SearchOutlined);
+app.component( 'SearchOutlined', SearchOutlined );
 
-app.component('NavTitle', NavTitle);
+app.component( 'NavTitle', NavTitle );
 
 app.config.globalProperties.$filters = {
-	timeAgo(date: any) {
-		return moment(date).fromNow();
+	timeAgo( date: any ) {
+		return moment( date ).fromNow();
 	},
-	argentinianDate(date: any) {
-		return moment(date).format('DD/MM/YYYY');
+	argentinianDate( date: any ) {
+		return moment( date ).format( 'DD/MM/YYYY' );
 	},
-	afipDate(date: any) {
-		return moment(date).format('YYYYMMDD');
+	afipDate( date: any ) {
+		return moment( date ).format( 'YYYYMMDD' );
 	},
-	formatCurrency(value: number): string {
+	formatCurrency( value: number ): string {
 		const formattedValue = value
-			.toFixed(2)
-			.replace(/\./g, ',')
-			.replace(/\d(?=(\d{3})+,)/g, '$&.');
+			.toFixed( 2 )
+			.replace( /\./g, ',' )
+			.replace( /\d(?=(\d{3})+,)/g, '$&.' );
 		return `$${formattedValue}`;
 	},
 };
 
 app.config.globalProperties.$environment = import.meta.env;
 //app.use(DatePicker);
-app.use(PerfectScrollbarPlugin);
-app.use(pinia);
-app.use(VueQueryPlugin);
-app.use(router);
-app.component('QuillEditor', QuillEditor);
-app.mount('#app');
+app.use( PerfectScrollbarPlugin );
+app.use( pinia );
+app.use( VueQueryPlugin );
+app.use( router );
+app.component( 'QuillEditor', QuillEditor );
+app.mount( '#app' );
 
-if (import.meta.env.MODE === 'development') {
-	console.log(import.meta.env);
-	console.log('Estamos en el entorno de desarrollo');
-} else if (import.meta.env.MODE === 'production') {
-	console.log(import.meta.env);
+if ( import.meta.env.MODE === 'development' ) {
+} else if ( import.meta.env.MODE === 'production' ) {
 
-	console.log('Estamos en el entorno de producción');
 }

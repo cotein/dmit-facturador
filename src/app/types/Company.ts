@@ -9,7 +9,7 @@ export type Sujeto = {
 	inscription: '' | number;
 	number: string;
 	address: Address;
-	afip_data: PersonaReturn;
+	afip_data: PersonaReturn | undefined;
 	fantasy_name?: string;
 	type_customer?: number | null;
 };
@@ -23,7 +23,7 @@ export type CompanyRawData = Sujeto & {
 	pto_vta_fe: number | null;
 	pto_vta_remito: number | null;
 	pto_vta_recibo: number | null;
-	type_company: number | null;
+	type_company: number;
 	billing_concept: string;
 };
 
