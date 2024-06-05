@@ -133,8 +133,8 @@ export type AfipInvoice = {
 	company_id: number | undefined;
 	Concepto: string;
 	customer: Customer | null;
-	date: Dayjs;
-	dateVtoPago: Dayjs;
+	date: Dayjs | undefined;
+	dateVtoPago: Dayjs | undefined;
 	DocTipo: number | null;
 	FchServDesde: string;
 	FchServHasta: string;
@@ -151,7 +151,7 @@ export type AfipInvoice = {
 	paymentType: number;
 	percepIIBB: number | null;
 	percepIva: number | null;
-	periodoAsoc?: [ FchDesde: string, FchHasta: string ];
+	periodoAsoc?: [ FchDesde: string, FchHasta: string ] | undefined;
 	products: [] | null;
 	PtoVta: number | null;
 	SaleCondition: number;

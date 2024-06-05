@@ -38,6 +38,9 @@ app.config.globalProperties.$filters = {
 		return moment( date ).format( 'YYYYMMDD' );
 	},
 	formatCurrency( value: number ): string {
+		if ( value === null ) {
+			return "";
+		}
 		const formattedValue = value
 			.toFixed( 2 )
 			.replace( /\./g, ',' )

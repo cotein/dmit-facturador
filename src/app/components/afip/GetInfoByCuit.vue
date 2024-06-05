@@ -9,6 +9,7 @@ import { useAddressStore } from '@/app/store/address/address-store';
 import { onUnmounted } from 'vue';
 import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
 import { showMessage } from '@/app/helpers/mesaages';
+import { onlyNumeric } from '@/app/helpers/onlyNumbers';
 
 const addressStore = useAddressStore();
 
@@ -192,11 +193,6 @@ onUnmounted(() => {
 });
 
 const buttonSize = computed(() => window.innerWidth <= 500 ? 'small' : 'large');
-
-const onlyNumeric = (event:KeyboardEvent) => {
-	const key = event.key;
-	if (key < '0' || key > '9') event.preventDefault();
-}
 </script>
 <template>
   <a-form

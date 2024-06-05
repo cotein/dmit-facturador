@@ -44,7 +44,7 @@ export type ProductOnInvoiceTable = {
 	subtotal: number;
 	total: number;
 	actions: {};
-	priceList: PriceListFromDataBase;
+	priceList: PriceListFromDataBase | undefined;
 	aditional: {
 		percentage: number;
 		value: number;

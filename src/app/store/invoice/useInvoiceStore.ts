@@ -4,28 +4,28 @@ import type { ProductOnInvoiceTable } from '@/app/types/Product';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
 
-export const useInvoiceStore = defineStore('invoice', () => {
+export const useInvoiceStore = defineStore( 'invoice', () => {
 	const invoiceType = ref<number>();
 
-	const isSale = ref<boolean>(true);
+	const isSale = ref<boolean>( true );
 
-	const invoiceConfigIsValidated = ref<boolean>(false);
+	const invoiceConfigIsValidated = ref<boolean>( false );
 
-	const invoiceList = ref<InvoiceList[]>([]);
+	const invoiceList = ref<InvoiceList[]>( [] );
 
-	const invoice: UnwrapRef<AfipInvoice> = reactive({
+	const invoice: UnwrapRef<AfipInvoice> = reactive( {
 		CantReg: 1,
-		CbteDesde: null,
+		CbteDesde: 0,
 		CbteFch: '',
-		CbteHasta: null,
-		CbteNro: null,
-		CbtesAsoc: null,
+		CbteHasta: 0,
+		CbteNro: 0,
+		CbtesAsoc: undefined,
 		CbteTipo: null,
 		company_id: undefined,
 		Concepto: '1',
 		customer: null,
-		date: null,
-		dateVtoPago: null,
+		date: undefined,
+		dateVtoPago: undefined,
 		DocTipo: null,
 		FchServDesde: '',
 		FchServHasta: '',
@@ -51,14 +51,14 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		voucher: null,
 		comments: null,
 		aditional_percentage: 0,
-	});
+	} );
 
 	const invoiceInitialStatus = (): void => {
 		invoice.CantReg = 1;
 		invoice.CbteFch = '';
-		invoice.CbtesAsoc = null;
-		invoice.date = null;
-		invoice.dateVtoPago = null;
+		invoice.CbtesAsoc = undefined;
+		invoice.date = undefined;
+		invoice.dateVtoPago = undefined;
 		invoice.DocTipo = null;
 		invoice.FchServDesde = '';
 		invoice.FchServHasta = '';
@@ -78,34 +78,36 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		invoice.PtoVta = null;
 		invoice.SaleCondition = 1;
 		invoice.Tributos = null;
-		invoice.PeriodoAsoc = [];
+		invoice.periodoAsoc = undefined;
 		invoice.type_details = '1';
 		invoice.voucher = null;
 		invoice.comments = null;
 		invoice.aditional_percentage = 0;
 	};
 
-	const details = ref<[]>([]);
+	const details = ref<[]>( [] );
 
-	const openSearchProduct = ref<boolean>(false);
+	const openSearchProduct = ref<boolean>( false );
 
-	const invoiceTableData = ref<ProductOnInvoiceTable[]>([]);
+	const invoiceTableData = ref<ProductOnInvoiceTable[]>( [] );
 
-	const productOnInvoiceTable = ref<ProductOnInvoiceTable>({
+	const productOnInvoiceTable = ref<ProductOnInvoiceTable>( {
 		key: '',
 		row: '',
 		product: {
-			id: undefined,
+			id: 1,
 			name: '',
 		},
 		price_base: 0,
 		unit: 0,
 		quantity: 1,
 		iva: {
-			id: undefined,
-			name: undefined,
-			percentage: '',
+			id: 1,
+			name: '',
+			percentage: 1,
+			afip_code: 1,
 		},
+		iva_import: 0,
 		discount: 0,
 		subtotal: 0,
 		total: 0,
@@ -115,7 +117,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
 			percentage: 0,
 			value: 0,
 		},
-	});
+	} );
 
 	const setInitialData = () => {
 		invoiceInitialStatus();
@@ -125,7 +127,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
 	return {
 		details,
 		invoice,
-		InvoiceGetter: computed(() => invoice),
+		InvoiceGetter: computed( () => invoice ),
 		invoiceInitialStatus,
 		invoiceList,
 		invoiceTableData,
@@ -136,4 +138,4 @@ export const useInvoiceStore = defineStore('invoice', () => {
 		setInitialData,
 		invoiceConfigIsValidated,
 	};
-});
+} );
