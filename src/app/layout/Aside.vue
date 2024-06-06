@@ -56,8 +56,8 @@ const { AddNewCompany, closeAddNewCompanyPanel } = useAddNewCompanyPanelComposab
 
 const { OpenPanelWithMyCompanies } = useOpenCompanyPanelStore();
 
-const handleCustomEvent = (data: CompanyRawData) => {
-  console.log("🚀 ~ handleCustomEvent ~ data:", data);
+const handleSubmitCompanyForm = (data: CompanyRawData) => {
+  console.log("🚀 ~ handleSubmitCompanyForm ~ data:", data);
   createCompanyMutation.mutateAsync(data);
 };
 
@@ -84,7 +84,7 @@ onMounted(() => {
     :placement="isMobile ? 'top' : 'right'"
   >
     <CreateCompanyForm
-      @submitCompanyForm="handleCustomEvent"
+      @submitCompanyForm="handleSubmitCompanyForm"
       :loadingButton="!createCompanyMutation.isLoading"
     />
   </a-drawer>

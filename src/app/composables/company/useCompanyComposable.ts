@@ -10,6 +10,7 @@ import { useMutation } from '@tanstack/vue-query';
 import { useStoreCompany } from '@/app/store/company/store-company';
 import { useUserComposable } from '../user/useUserComposable';
 import type { Rule } from '@/app/types/ValidationRule';
+import { showMessage } from '@/app/helpers/mesaages';
 
 const { CompanyGetter, companyForm, company } = storeToRefs( useStoreCompany() );
 const { setUserCompanies } = useUserComposable();
@@ -127,17 +128,20 @@ export const useCompanyComposable = () => {
 				closeAddNewCompanyPanel();
 			}, 2000 );
 
-			notification[ 'success' ]( {
-				message: 'COMPAÑIA',
-				description: 'Creada correctamente',
-				duration: 2,
-			} );
+			showMessage( 'success', 'Compañía creada correctamente', 2 );
 		},
 	} );
 
 	const updateCompanyMutation = useMutation( {
 		mutationFn: updateCompany,
-		onSuccess: ( company ) => { },
+		onSuccess: ( response ) => {
+			setUserCompanies( response.data );
+			setCompanyToWork( response.data[ 0 ] );
+			showMessage( 'success', 'Compañía actualizada correctamente', 2 );
+		},
+		onError: ( error: any ) => {
+			showMessage( 'error', `Error al actualizar la compañía: `, 2 );
+		},
 	} );
 
 	return {

@@ -29,10 +29,13 @@ const invoiceStore = useInvoiceStore();
 invoiceStore.$subscribe( () => {
 	invoiceTableData.value.forEach( ( item: ProductOnInvoiceTable ) => {
 		const unit = parseFloat( item.unit.toFixed( 2 ) );
+
 		const subtotal = ( unit * item.quantity - item.discount ).toFixed( 2 );
+
 		item.subtotal = parseFloat( subtotal );
 
 		const iva_import = ( ( item.subtotal * item.iva.percentage ) / 100 ).toFixed( 2 );
+
 		item.iva_import = parseFloat( iva_import );
 
 		item.total = item.subtotal + item.iva_import;

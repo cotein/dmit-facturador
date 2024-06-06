@@ -1,123 +1,144 @@
 <script setup lang="ts">
-import { FormValidationWrap, VerticalFormStyleWrap } from '@/views/forms/overview/Style';
-import { Main, DatePickerWrapper } from '@/views/styled';
-import { ref, watch, defineEmits, onMounted } from 'vue';
-import locale from 'ant-design-vue/es/date-picker/locale/es_ES';
-import AddressForm from '../address/AddressForm.vue';
-import { TypeCompany, type CompanyRawData, type Sujeto } from '@/app/types/Company';
-import 'ant-design-vue/lib/message/style/index.css';
-import 'ant-design-vue/lib/notification/style/index.css';
-import GetInfoByCuit from '../afip/GetInfoByCuit.vue';
-import { usePadronAfipStore } from '@/app/store/afip/usePadronAfipStore';
-import { useUserComposable } from '@/app/composables/user/useUserComposable';
-import { useAddressComposable } from '@/app/composables/address/useAddressComposable';
-import { useInscriptionsComposable } from '@/app/composables/afip/useInscriptionsComposable';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import type { PersonaReturn } from '@/app/types/Afip';
-import type { Impuesto } from '@/app/types/Afip';
-import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
-import { useAddressStore } from '@/app/store/address/address-store';
-import { storeToRefs } from 'pinia';
-import { showMessage } from '@/app/helpers/mesaages';
+import { FormValidationWrap, VerticalFormStyleWrap } from "@/views/forms/overview/Style";
+import { Main, DatePickerWrapper } from "@/views/styled";
+import { ref, watch, defineEmits, onMounted, computed } from "vue";
+import locale from "ant-design-vue/es/date-picker/locale/es_ES";
+import AddressForm from "../address/AddressForm.vue";
+import { TypeCompany } from "@/app/types/Company";
+import "ant-design-vue/lib/message/style/index.css";
+import "ant-design-vue/lib/notification/style/index.css";
+import GetInfoByCuit from "../afip/GetInfoByCuit.vue";
+import { usePadronAfipStore } from "@/app/store/afip/usePadronAfipStore";
+import { useUserComposable } from "@/app/composables/user/useUserComposable";
+import { useAddressComposable } from "@/app/composables/address/useAddressComposable";
+import { useInscriptionsComposable } from "@/app/composables/afip/useInscriptionsComposable";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import type { PersonaReturn } from "@/app/types/Afip";
+import type { Impuesto } from "@/app/types/Afip";
+import { AFIP_INSCRIPTION } from "@/app/types/Constantes";
+import { useAddressStore } from "@/app/store/address/address-store";
+import { storeToRefs } from "pinia";
+import { showMessage } from "@/app/helpers/mesaages";
+import { ComingsoonStyleWrapper } from "@/views/pages/style";
 
 const { sujeto } = usePadronAfipStore();
-const { lastNameIsRequired, rules, companyForm } = useCompanyComposable();
+const { lastNameIsRequired, rules, companyForm, CompanyGetter } = useCompanyComposable();
 const { UserGetter } = useUserComposable();
 const { isLoading: inscriptionLoading, store } = useInscriptionsComposable();
 const { isValid } = useAddressComposable();
-const {addressInStore} = storeToRefs(useAddressStore());
+const { addressInStore } = storeToRefs(useAddressStore());
 interface Props {
-	loadingButton: boolean;
-	isSaveButton: boolean;
+  loadingButton: boolean;
+  isSaveButton: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	loadingButton: false,
-	isSaveButton: true,
+  loadingButton: false,
+  isSaveButton: true,
 });
 
 const companyFormRef = ref();
-
-const emit = defineEmits(['submitCompanyForm']);
+const emit = defineEmits(["submitCompanyForm"]);
 
 /**METHODS */
 const onSubmit = async () => {
-	if (!lastNameIsRequired.value) {
-		delete rules.lastName;
-	}
-	const validate = await companyFormRef.value.validate().catch((error: any) => {
-		console.log('error wwwwwwwwwww', error);
-	});
+  if (!lastNameIsRequired.value) {
+    delete rules.lastName;
+  }
+  const validate = await companyFormRef.value.validate().catch((error: any) => {
+    console.log("error wwwwwwwwwww", error);
+  });
 
-	if (validate) {
-		companyForm.value.cuit = sujeto.cuit;
-		companyForm.value.address = addressInStore.value;
-		emit('submitCompanyForm', companyForm.value);
-	}
+  if (validate) {
+    companyForm.value.cuit = sujeto.cuit;
+    companyForm.value.address = addressInStore.value;
+    let inscription: any = companyForm.value.inscription;
+
+    if (!Number.isInteger(inscription)) {
+      inscription = CompanyGetter.value?.inscription_id;
+    }
+    const data = Object.assign(companyForm.value, {
+      id: CompanyGetter.value?.id,
+      inscription: inscription,
+    });
+    console.log("🚀 ~ onSubmit ~ www:", data);
+    emit("submitCompanyForm", data);
+  }
 };
 
 const resetForm = () => {
-	companyFormRef.value.resetFields();
+  companyFormRef.value.resetFields();
 };
 
 const getTipoPersona = (personaReturn: PersonaReturn): string => {
-  	return personaReturn.datosGenerales.tipoPersona;
-}
+  return personaReturn.datosGenerales.tipoPersona;
+};
 
 watch(
-	() => sujeto, //cuanod cambia el valor de sujeto (cuit)
-	(newValue) => {
-		const afipData = newValue.afip_data as PersonaReturn;
-		const CONSUMIDOR_FINAL = 5;
-		companyForm.value.name = newValue.name;
-		companyForm.value.cuit_id = newValue.cuit_id;
-		companyForm.value.lastName = newValue.lastName;
-		//companyForm.value.inscription = newValue.inscription;
-		companyForm.value.afip_data = afipData;
-		companyForm.value.type_customer = newValue.type_company;
+  () => sujeto, //cuanod cambia el valor de sujeto (cuit)
+  (newValue) => {
+    const afipData = newValue.afip_data as PersonaReturn;
+    const CONSUMIDOR_FINAL = 5;
+    companyForm.value.name = newValue.name;
+    companyForm.value.cuit_id = newValue.cuit_id;
+    companyForm.value.lastName = newValue.lastName;
+    //companyForm.value.inscription = newValue.inscription;
+    companyForm.value.afip_data = afipData;
+    companyForm.value.type_customer = newValue.type_company;
 
-		if (newValue.type_company === 1) {
-			lastNameIsRequired.value = false;
-		}
+    if (newValue.type_company === 1) {
+      lastNameIsRequired.value = false;
+    }
 
-		if (newValue.type_company === 2) {
-			lastNameIsRequired.value = true;
-		}
+    if (newValue.type_company === 2) {
+      lastNameIsRequired.value = true;
+    }
 
-		if (
-			afipData && afipData.datosGenerales &&
-			getTipoPersona(afipData) === 'FISICA'
-		) {
-			companyForm.value.type_company = TypeCompany.FISICA;
-		} else {
-			companyForm.value.type_company = TypeCompany.JURIDICA;
-		}
+    if (afipData && afipData.datosGenerales && getTipoPersona(afipData) === "FISICA") {
+      companyForm.value.type_company = TypeCompany.FISICA;
+    } else {
+      companyForm.value.type_company = TypeCompany.JURIDICA;
+    }
 
-		if (
-			afipData && afipData.datosMonotributo
-		) {
-			companyForm.value.inscription = AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO;
-		}else{
-			const impuestos = afipData.datosRegimenGeneral.impuesto;
+    if (afipData && afipData.datosMonotributo) {
+      companyForm.value.inscription = AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO;
+    } else {
+      const impuestos = afipData.datosRegimenGeneral.impuesto;
 
-			if (Array.isArray(impuestos)) {
-				impuestos.forEach((impuesto:Impuesto) => {
-					if (impuesto.descripcionImpuesto === 'IVA') {
-						companyForm.value.inscription = AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO;
-					}
-				});
-			}
+      if (Array.isArray(impuestos)) {
+        impuestos.forEach((impuesto: Impuesto) => {
+          if (impuesto.descripcionImpuesto === "IVA") {
+            companyForm.value.inscription = AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO;
+          }
+        });
+      }
+    }
 
-		}
-
-		if (newValue.inscription === CONSUMIDOR_FINAL) {
-			resetForm();
-			showMessage('warning', 'La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa', 5);
-		}
-	},
-	{ deep: true },
+    if (newValue.inscription === CONSUMIDOR_FINAL) {
+      resetForm();
+      showMessage(
+        "warning",
+        "La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa",
+        5
+      );
+    }
+  },
+  { deep: true }
 );
 const isMobile = ref<boolean>(false);
+
+const PerceptionIIBB = computed({
+  get() {
+    return companyForm.value.perception_iibb;
+  },
+  set(value) {
+    (companyForm.value.perception_iibb as boolean) === value ? true : false;
+  },
+});
+
+const PerceptionIVA = computed(() => {
+  return companyForm.value.perception_iva === true;
+});
 
 onMounted(() => {
   if (window.innerWidth <= 768) {
@@ -320,13 +341,13 @@ onMounted(() => {
 
                 <a-row :gutter="25" justify="center">
                   <a-col :md="12" :xs="24" :sm="24">
-                    <span v-if="isMobile">Percepción de IIBB</span>
-                    <span v-else>Realiza percepción de Ingresos Brutos</span>
+                    <span id="iibb" v-if="isMobile">Percepción de IIBB</span>
+                    <span id="iibb" v-else>Realiza percepción de Ingresos Brutos</span>
                     <a-switch v-model:checked="companyForm.perception_iibb" />
                   </a-col>
                   <a-col :md="12" :xs="24" :sm="24">
-                    <span v-if="isMobile">Percepción de Iva</span>
-                    <span v-else>Realiza percepción de Iva</span>
+                    <span id="iva" v-if="isMobile">Percepción de Iva</span>
+                    <span id="iva" v-else>Realiza percepción de Iva</span>
                     <a-switch v-model:checked="companyForm.perception_iva" />
                   </a-col>
                 </a-row>
@@ -388,5 +409,9 @@ onMounted(() => {
   .radio-group {
     flex-direction: column !important;
   }
+}
+#iibb,
+#iva {
+  margin-right: 7px;
 }
 </style>

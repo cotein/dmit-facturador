@@ -4,46 +4,38 @@ import type { Company, CompanyRawData } from '@/app/types/Company';
 
 const URL = '/api/company';
 
-export const saveCompany = async (company: CompanyRawData): Promise<AxiosResponse<Company[]>> => {
+export const saveCompany = async ( company: CompanyRawData ): Promise<AxiosResponse<Company[]>> => {
 	try {
-		const response = await ApiHttp.post<Company[]>(URL, { company });
+		const response = await ApiHttp.post<Company[]>( URL, { company } );
 
 		return response;
-	} catch (error) {
-		console.log('🚀 ~ file: login-api.ts:13 ~ Login ~ error:', error);
-		throw new Error('hubo un errrrrrrrrrrrrrrrrroooorrrrrrr');
+	} catch ( error ) {
+		throw error
 	}
 };
-export const updateCompany = async (company: Company): Promise<AxiosResponse<Company[]>> => {
+export const updateCompany = async ( company: Company ): Promise<AxiosResponse<Company[]>> => {
 	try {
-		const params = new URLSearchParams();
 
-		params.append('updateCompany', 'updateCompany');
-
-		const response = await ApiHttp.put<Company[]>(`${URL}/${company.id}`, { company }, { method: 'PUT' });
+		const response = await ApiHttp.put<Company[]>( `${URL}/${company.id}`, { company }, { method: 'PUT' } );
 		return response;
-	} catch (error) {
-		console.log('🚀 ~ file: login-api.ts:13 ~ Login ~ error:', error);
-		throw new Error('hubo un updateCompany');
+	} catch ( error ) {
+		throw error
 	}
 };
 
-export const updateCompanyPtoVta = async (company_id: number, pto_vta_fe: number): Promise<AxiosResponse<Company>> => {
+export const updateCompanyPtoVta = async ( company_id: number, pto_vta_fe: number ): Promise<AxiosResponse<Company>> => {
 	try {
 		const params = new URLSearchParams();
 
-		params.append('company_id', company_id.toString());
-		params.append('pto_vta_fe', pto_vta_fe.toString());
+		params.append( 'pto_vta_fe', pto_vta_fe.toString() );
 
-		const response = await ApiHttp.put<Company>(`${URL}/${company_id}`, {
-			company_id: company_id,
+		const response = await ApiHttp.put<Company>( `${URL}/${company_id}`, {
 			pto_vta_fe: pto_vta_fe,
-		});
+		} );
 
 		return response;
-	} catch (error) {
-		console.log('🚀 ~ file: company-api.ts:29 ~ updateCompanyPtoVta ~ error:', error);
-		throw new Error('hubo un errrrrrrrrrrrrrrrrroooorrrrrrr');
+	} catch ( error ) {
+		throw error
 	}
 };
 

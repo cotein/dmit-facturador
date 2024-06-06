@@ -8,78 +8,65 @@ export class AfipInvoiceBBuilder extends AfipInvoiceBaseBuilder {
 		super();
 	}
 
-	setCbteTipo(CbteTipo: any): void {
+	setCbteTipo( CbteTipo: any ): void {
 		this.FeCabReq.CbteTipo = CbteTipo;
 	}
 
-	setImpTotConc(invoiceTableData: ProductOnInvoiceTable[]): void {
-		/* const ImpTotConc = invoiceTableData.reduce((acc, item) => {
-			if (item.iva.id === AFIP_IVAS.ID_NO_GRAVADO) {
-				return acc + item.total;
-			}
-			return acc + 0;
-		}, 0);
+	setImpTotConc( invoiceTableData: ProductOnInvoiceTable[] ): void {
 
-		this.FECAEDetRequest.ImpTotConc = parseFloat(ImpTotConc.toFixed(2)); */
 		this.FECAEDetRequest.ImpTotConc = 0;
 	}
 
-	setImpOpEx(invoiceTableData: ProductOnInvoiceTable[]): void {
-		/* const ImpOpEx = invoiceTableData.reduce((acc, item) => {
-			if (item.iva.id === AFIP_IVAS.ID_EXENTO) {
-				return acc + item.total;
-			}
-			return acc + 0;
-		}, 0);
-		this.FECAEDetRequest.ImpOpEx = parseFloat(ImpOpEx.toFixed(2)); */
+	setImpOpEx( invoiceTableData: ProductOnInvoiceTable[] ): void {
+
 		this.FECAEDetRequest.ImpOpEx = 0;
 	}
 
-	setImpIVA(invoiceTableData: ProductOnInvoiceTable[]): void {
-		const ImpIVA = invoiceTableData.reduce((acc, item) => {
+	setImpIVA( invoiceTableData: ProductOnInvoiceTable[] ): void {
+		const ImpIVA = invoiceTableData.reduce( ( acc, item ) => {
 			return acc + item.iva_import;
-		}, 0);
+		}, 0 );
 
-		this.FECAEDetRequest.ImpIVA = parseFloat(ImpIVA.toFixed(2));
+		this.FECAEDetRequest.ImpIVA = parseFloat( ImpIVA.toFixed( 2 ) );
 	}
 
-	setImpNeto(invoiceTableData: ProductOnInvoiceTable[]): void {
-		const impNeto = invoiceTableData.reduce((acc, item) => {
+	setImpNeto( invoiceTableData: ProductOnInvoiceTable[] ): void {
+		const impNeto = invoiceTableData.reduce( ( acc, item ) => {
 			return acc + item.subtotal;
-		}, 0);
+		}, 0 );
 
-		this.FECAEDetRequest.ImpNeto = parseFloat(impNeto.toFixed(2));
+		this.FECAEDetRequest.ImpNeto = parseFloat( impNeto.toFixed( 2 ) );
 	}
 
-	setImpTotal(invoiceTableData: ProductOnInvoiceTable[]): void {
-		const total = invoiceTableData.reduce((acc, item) => {
+	setImpTotal( invoiceTableData: ProductOnInvoiceTable[] ): void {
+		const total = invoiceTableData.reduce( ( acc, item ) => {
 			return acc + item.total;
-		}, 0);
+		}, 0 );
 
-		this.FECAEDetRequest.ImpTotal = parseFloat(total.toFixed(2));
+		this.FECAEDetRequest.ImpTotal = parseFloat( total.toFixed( 2 ) );
 	}
 
-	setImpTrib(invoiceTableData: ProductOnInvoiceTable[]): void {
+	setImpTrib( invoiceTableData: ProductOnInvoiceTable[] ): void {
 		this.FECAEDetRequest.ImpTrib = 0;
 	}
 
-	setIvaAarray(invoiceTableData: ProductOnInvoiceTable[]): void {
+	setIvaAarray( invoiceTableData: ProductOnInvoiceTable[] ): void {
 		const ivas: AlicIva[] = [];
 
-		invoiceTableData.map((item: ProductOnInvoiceTable) => {
-			const index = ivas.findIndex((el) => el.Id === item.iva.afip_code);
+		invoiceTableData.map( ( item: ProductOnInvoiceTable ) => {
+			const index = ivas.findIndex( ( el ) => el.Id === item.iva.afip_code );
 
-			if (index < 0) {
-				ivas.push({
+			if ( index < 0 ) {
+				ivas.push( {
 					Id: item.iva.afip_code,
 					BaseImp: item.subtotal,
-					Importe: parseFloat(item.iva_import.toFixed(2)),
-				});
+					Importe: parseFloat( item.iva_import.toFixed( 2 ) ),
+				} );
 			} else {
-				ivas[index].BaseImp += item.subtotal;
-				ivas[index].Importe += parseFloat(item.iva_import.toFixed(2));
+				ivas[ index ].BaseImp += item.subtotal;
+				ivas[ index ].Importe += parseFloat( item.iva_import.toFixed( 2 ) );
 			}
-		});
+		} );
 
 		this.FECAEDetRequest.Iva = ivas;
 	}

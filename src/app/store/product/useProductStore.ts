@@ -1,9 +1,10 @@
+import { AFIP_IVAS } from '@/app/types/Constantes';
 import type { Product } from '@/app/types/Product';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
 
-export const useProductStore = defineStore('product', () => {
-	const product: UnwrapRef<Product> = reactive({
+export const useProductStore = defineStore( 'product', () => {
+	const product: UnwrapRef<Product> = reactive( {
 		apply_discount: false,
 		apply_discount_amount: 0,
 		apply_discount_percentage: 0,
@@ -13,7 +14,7 @@ export const useProductStore = defineStore('product', () => {
 		critical_stock: 1,
 		discount_amount: 0,
 		discount_percentage: 0,
-		iva: 6, // 6 => iva_id 21%
+		iva: AFIP_IVAS.AFIP_ID_VEINTI_UNO,
 		meters_by_unity: 0,
 		name: '',
 		pictures: [],
@@ -23,7 +24,7 @@ export const useProductStore = defineStore('product', () => {
 		quantity: 1,
 		sale_by_meter: false,
 		view_price: false,
-	});
+	} );
 
 	const productInitialState = () => {
 		product.apply_discount = false;
@@ -47,11 +48,11 @@ export const useProductStore = defineStore('product', () => {
 		product.view_price = false;
 	};
 
-	const selectedCategories = ref<number[]>([]);
+	const selectedCategories = ref<number[]>( [] );
 
-	const selectedPriceList = ref<string[]>([]);
+	const selectedPriceList = ref<string[]>( [] );
 
-	const openModalViewImg = ref<boolean>(false);
+	const openModalViewImg = ref<boolean>( false );
 
 	const openModalImg = (): void => {
 		openModalViewImg.value = !openModalViewImg.value;
@@ -67,6 +68,6 @@ export const useProductStore = defineStore('product', () => {
 		productInitialState,
 		openModalImg,
 		//Getters
-		ProdutGetter: computed(() => product),
+		ProdutGetter: computed( () => product ),
 	};
-});
+} );

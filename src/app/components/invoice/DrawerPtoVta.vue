@@ -12,6 +12,8 @@
     title="Se detectó que no posee un punto de venta asignado"
     @ok="handleOk"
     :maskClosable="false"
+    :footer="null"
+    :closable="false"
   >
     <a-row justify="space-between">
       <a-button type="primary" @click="fetchPtoVta" :loading="loading"

@@ -42,76 +42,6 @@ export const useStoreCompany = defineStore( 'company', () => {
 		fantasy_name: '',
 	} );
 
-	/* const clearCompanyForm = () => {
-		companyForm.activity_init = '';
-
-
-		addressStore.addressInStore.state_id = '';
-		addressStore.addressInStore.city = '';
-		addressStore.addressInStore.street = '';
-		addressStore.addressInStore.cp = '';
-		addressStore.addressInStore.number = '';
-		addressStore.addressInStore.obs = '';
-		addressStore.addressInStore.between_streets = '';
-		addressStore.addressInStore.addressable_id = '';
-		addressStore.addressInStore.addressable_type = '';
-
-		companyForm.afip_data = undefined;
-		companyForm.afip_environment = 'production';
-		companyForm.billing_concept = '1';
-		companyForm.cuit = '';
-		companyForm.cuit_id = CUIT_ID;
-		companyForm.fantasy_name = '';
-		companyForm.iibb = '';
-		companyForm.inscription = '';
-		companyForm.lastName = '';
-		companyForm.name = '';
-		companyForm.number = '';
-		companyForm.perception_iibb = false;
-		companyForm.perception_iva = false;
-		companyForm.pto_vta_fe = null;
-		companyForm.pto_vta_recibo = null;
-		companyForm.pto_vta_remito = null;
-		companyForm.type_company = null;
-	}; */
-
-	/* const setCompanyToWork = ( value: Company ) => {
-		company.value = value;
-	}; */
-
-	/* const setCompany = ( company: Company ) => {
-		companyForm.activity_init = moment( company.activity_init );
-
-
-		addressStore.addressInStore.state_id = company.address.state_id;
-		addressStore.addressInStore.city = company.address.city;
-		addressStore.addressInStore.street = company.address.street;
-		addressStore.addressInStore.cp = company.address.cp;
-		addressStore.addressInStore.number = company.address.number;
-		addressStore.addressInStore.obs = company.address.obs;
-		addressStore.addressInStore.between_streets = company.address.between_streets;
-		addressStore.addressInStore.addressable_id = company.address.addressable_id;
-		addressStore.addressInStore.addressable_type = company.address.addressable_type;
-
-		companyForm.afip_data = undefined;
-		companyForm.afip_environment = company.afip_environment;
-		companyForm.billing_concept = String( company.billing_concept );
-		companyForm.cuit = company.cuit;
-		companyForm.cuit_id = company.cuit_id;
-		companyForm.fantasy_name = company.fantasy_name;
-		companyForm.iibb = company.iibb;
-		companyForm.inscription = company.inscription;
-		companyForm.lastName = company.lastName;
-		companyForm.name = company.name;
-		companyForm.number = company.number;
-		companyForm.perception_iibb = company.perception_iibb;
-		companyForm.perception_iva = company.perception_iva;
-		companyForm.pto_vta_fe = company.pto_vta_fe;
-		companyForm.pto_vta_recibo = company.pto_vta_recibo;
-		companyForm.pto_vta_remito = company.pto_vta_remito;
-		companyForm.type_company = company.type_company;
-	}; */
-
 	const defaultCompanyForm = {
 		activity_init: '',
 		afip_data: undefined,
@@ -168,8 +98,8 @@ export const useStoreCompany = defineStore( 'company', () => {
 			lastName: company.lastName,
 			name: company.name,
 			number: company.number,
-			perception_iibb: company.perception_iibb,
-			perception_iva: company.perception_iva,
+			perception_iibb: Number( company.perception_iibb ) === 1 ? true : false,
+			perception_iva: Number( company.perception_iva ) === 1 ? true : false,
 			pto_vta_fe: company.pto_vta_fe,
 			pto_vta_recibo: company.pto_vta_recibo,
 			pto_vta_remito: company.pto_vta_remito,
