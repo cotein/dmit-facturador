@@ -521,7 +521,7 @@ onBeforeMount(() => {
 
     const script: string[] = [
         `${path}/js/main.js`,
-        //`${path}/bootstrap/js/bootstrap.bundle.min.js`,
+        `${path}/bootstrap/js/bootstrap.bundle.min.js`,
         `${path}/isotope-layout/isotope.pkgd.min.js`,
         //`${path}/php-email-form/validate.js`,
         //`${path}/swiper/swiper-bundle.min.js`,
