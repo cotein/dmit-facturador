@@ -497,6 +497,7 @@ onBeforeMount(() => {
         path = 'assets/vendor';
     }
     const css: string[] = [
+        `${path}/css/style.css`,
         'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i',
         `${path}/bootstrap/css/bootstrap.min.css`,
         `${path}/bootstrap-icons/bootstrap-icons.css`,
@@ -505,7 +506,6 @@ onBeforeMount(() => {
         `${path}/boxicons/css/boxicons.min.css`,
         `${path}/remixicon/remixicon.css`,
         `${path}/swiper/swiper-bundle.min.css`,
-        `${path}/css/style.css`,
     ];
 
     css.forEach((c) => {
@@ -552,49 +552,6 @@ onMounted(() => {
 });
 </script>
 <style scoped>
-#preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 9999;
-    overflow: hidden;
-    background: #37517e;
-}
-
-#preloader:before {
-    content: '';
-    position: fixed;
-    top: calc(50% - 30px);
-    left: calc(50% - 30px);
-    border: 6px solid #37517e;
-    border-top-color: #fff;
-    border-bottom-color: #fff;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    -webkit-animation: animate-preloader 1s linear infinite;
-    animation: animate-preloader 1s linear infinite;
-}
-
-@-webkit-keyframes animate-preloader {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes animate-preloader {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
 #faq-list-9 ul li {
     margin: 2px;
     padding: 2px;
