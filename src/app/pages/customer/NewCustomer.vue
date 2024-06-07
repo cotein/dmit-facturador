@@ -1,10 +1,10 @@
 <template>
-	<div>
-		<sdPageHeader title="Alta Clientes" class="ninjadash-page-header-main"> </sdPageHeader>
-		<Main>
-			<FormCustomer />
-		</Main>
-	</div>
+    <div>
+        <sdPageHeader title="Alta Clientes" class="ninjadash-page-header-main"> </sdPageHeader>
+        <Main>
+            <FormCustomer />
+        </Main>
+    </div>
 </template>
 
 <script setup lang="ts">

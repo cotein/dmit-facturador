@@ -3,9 +3,9 @@ import { useSearchProductStore } from './../../store/product/useSearchProductSto
 const { selectedProduct, priceList, sendProductToInvoice } = storeToRefs(useSearchProductStore());
 
 export const useSearchProductComposable = () => {
-	return {
-		selectedProduct,
-		priceList,
-		sendProductToInvoice,
-	};
+    return {
+        selectedProduct,
+        priceList,
+        sendProductToInvoice,
+    };
 };

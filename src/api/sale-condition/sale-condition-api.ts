@@ -5,15 +5,15 @@ import type { SaleCondition } from '@/app/types/SaleCondition';
 const URL = '/api/sale-condition';
 
 export const getSaleConditions = async (company_id: number): Promise<AxiosResponse<SaleCondition[]>> => {
-	try {
-		const params = new URLSearchParams();
+    try {
+        const params = new URLSearchParams();
 
-		params.append('company_id', company_id.toString());
+        params.append('company_id', company_id.toString());
 
-		const response = await ApiHttp.get<SaleCondition[]>(URL, { params });
+        const response = await ApiHttp.get<SaleCondition[]>(URL, { params });
 
-		return response;
-	} catch (error) {
-		throw new Error();
-	}
+        return response;
+    } catch (error) {
+        throw new Error();
+    }
 };

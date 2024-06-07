@@ -621,11 +621,11 @@ const Div = Styled('div', props)`
                             }
                             &:before{
                                 transform: rotate(45deg) ${({ theme }) =>
-									!theme.rtl ? 'translateY(-3px)' : 'translateY(3px)'};
+        !theme.rtl ? 'translateY(-3px)' : 'translateY(3px)'};
                             }
                             &:after{
                                 transform: rotate(-45deg) ${({ theme }) =>
-									theme.rtl ? 'translateY(-3px)' : 'translateY(3px)'};
+        theme.rtl ? 'translateY(-3px)' : 'translateY(3px)'};
                             }
                         }
                     }
@@ -708,7 +708,7 @@ const Div = Styled('div', props)`
 
     .ninjadash-main-layout{
         ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: ${({ theme }) =>
-	theme.topMenu ? 0 : '280px'};
+    theme.topMenu ? 0 : '280px'};
         margin-top: 64px;
         transition: 0.3s ease;
 
@@ -1291,14 +1291,14 @@ const AuthenticationWrap = Styled.div`
 `;
 
 export {
-	NavTitle,
-	Div,
-	SmallScreenAuthInfo,
-	SmallScreenSearch,
-	ModeSwitch,
-	TopMenuStyle,
-	TopMenuSearch,
-	Aside,
-	Content,
-	AuthenticationWrap,
+    NavTitle,
+    Div,
+    SmallScreenAuthInfo,
+    SmallScreenSearch,
+    ModeSwitch,
+    TopMenuStyle,
+    TopMenuSearch,
+    Aside,
+    Content,
+    AuthenticationWrap,
 };

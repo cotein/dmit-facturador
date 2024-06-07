@@ -14,46 +14,46 @@ const topMenu = computed(() => state.topMenu);
 const mainContent = computed(() => state.main);
 
 onMounted(() => {
-	window.addEventListener('load', () => {
-		const domHtml = document.getElementsByTagName('html')[0];
-		rtl.value ? domHtml.setAttribute('dir', 'rtl') : domHtml.setAttribute('dir', 'ltr');
-		darkMode.value ? document.body.classList.add('dark-mode') : '';
-	});
+    window.addEventListener('load', () => {
+        const domHtml = document.getElementsByTagName('html')[0];
+        rtl.value ? domHtml.setAttribute('dir', 'rtl') : domHtml.setAttribute('dir', 'ltr');
+        darkMode.value ? document.body.classList.add('dark-mode') : '';
+    });
 });
 </script>
 <template>
-	<div v-if="isLoading" class="spin">
-		<a-spin />
-	</div>
-	<ThemeProvider
-		v-else
-		:theme="{
-			rtl,
-			topMenu,
-			darkMode,
-			mainContent,
-			...themeColor,
-		}"
-	>
-		<Suspense>
-			<template #default>
-				<RouterView />
-			</template>
-			<template #fallback>
-				<div class="spin">
-					<a-spin />
-				</div>
-			</template>
-		</Suspense>
-	</ThemeProvider>
+    <div v-if="isLoading" class="spin">
+        <a-spin />
+    </div>
+    <ThemeProvider
+        v-else
+        :theme="{
+            rtl,
+            topMenu,
+            darkMode,
+            mainContent,
+            ...themeColor,
+        }"
+    >
+        <Suspense>
+            <template #default>
+                <RouterView />
+            </template>
+            <template #fallback>
+                <div class="spin">
+                    <a-spin />
+                </div>
+            </template>
+        </Suspense>
+    </ThemeProvider>
 </template>
 <style lang="css">
 .fade-enter-active,
 .fade-leave-active {
-	transition: opacity 1;
+    transition: opacity 1;
 }
 .fade-enter,
 .fade-leave-to {
-	transition: opacity 0;
+    transition: opacity 0;
 }
 </style>

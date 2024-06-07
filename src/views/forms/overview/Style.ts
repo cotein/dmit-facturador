@@ -224,10 +224,10 @@ const FormValidationWrap = Styled.div`
 `;
 
 export {
-	HorizontalFormStyleWrap,
-	VerticalFormStyleWrap,
-	CheckListWrap,
-	DropDownListComponents,
-	FormComponentsWrap,
-	FormValidationWrap,
+    HorizontalFormStyleWrap,
+    VerticalFormStyleWrap,
+    CheckListWrap,
+    DropDownListComponents,
+    FormComponentsWrap,
+    FormValidationWrap,
 };

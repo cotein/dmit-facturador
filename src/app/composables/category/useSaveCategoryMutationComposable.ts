@@ -8,25 +8,25 @@ import { useCategoryComposable } from './useCategoryComposable';
 const { transform_categories, setCategories } = useCategoryComposable();
 
 export const useSaveCategoryMutationComposable = (company_id: number) => {
-	const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
-	const { mutateAsync, isLoading } = useMutation(saveCategory, {
-		onSuccess: async (data) => {
-			queryClient.invalidateQueries({
-				queryKey: ['categories'],
-				exact: false,
-			});
+    const { mutateAsync, isLoading } = useMutation(saveCategory, {
+        onSuccess: async (data) => {
+            queryClient.invalidateQueries({
+                queryKey: ['categories'],
+                exact: false,
+            });
 
-			message.success('La categoría fue ingresada');
+            message.success('La categoría fue ingresada');
 
-			const res = await getCategories(company_id, 0);
+            const res = await getCategories(company_id, 0);
 
-			const categories = transform_categories(res.data);
+            const categories = transform_categories(res.data);
 
-			setCategories(categories);
-		},
+            setCategories(categories);
+        },
 
-		onSettled(data, error, variables, context) {},
-	});
-	return { mutateAsync, isLoading };
+        onSettled(data, error, variables, context) {},
+    });
+    return { mutateAsync, isLoading };
 };

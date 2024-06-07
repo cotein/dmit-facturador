@@ -30,7 +30,7 @@ const DropdownIconStyleWrapper = Styled.div`
     align-items: center;
     padding: 0 8px;
     ${({ theme }) => (!theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-	theme['border-color-normal']};
+    theme['border-color-normal']};
   }
 `;
 
@@ -254,7 +254,7 @@ const BadgeDynamicStyle = Styled.div`
       &:first-child{
         z-index: 22;
         ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-	theme['border-color-normal']};
+    theme['border-color-normal']};
       }
     }
 
@@ -628,25 +628,25 @@ const ProgressBarStyle = Styled.div`
 `;
 
 export {
-	ProgressBarStyle,
-	DashboardBaseStyleWrap,
-	CheckboxGroupStyle,
-	DropdownStyle,
-	DropdownIconStyleWrapper,
-	SpinerWraperStyle,
-	CarouselStyleWraper,
-	AvatarWraperStyle,
-	BadgeWraperStyle,
-	BadgeStandAloneStyle,
-	BadgeOverflowStyle,
-	BreadcrumbWrapperStyle,
-	BadgeRedStyle,
-	BadgeDynamicStyle,
-	CardStyleWrapper,
-	CasCaderStyleWrapper,
-	SelectWrapperStyle,
-	SelectRadioStyle,
-	TimeLinePointerIconWrap,
-	TimelineNormalWrap,
-	TimelineBoxWrap,
+    ProgressBarStyle,
+    DashboardBaseStyleWrap,
+    CheckboxGroupStyle,
+    DropdownStyle,
+    DropdownIconStyleWrapper,
+    SpinerWraperStyle,
+    CarouselStyleWraper,
+    AvatarWraperStyle,
+    BadgeWraperStyle,
+    BadgeStandAloneStyle,
+    BadgeOverflowStyle,
+    BreadcrumbWrapperStyle,
+    BadgeRedStyle,
+    BadgeDynamicStyle,
+    CardStyleWrapper,
+    CasCaderStyleWrapper,
+    SelectWrapperStyle,
+    SelectRadioStyle,
+    TimeLinePointerIconWrap,
+    TimelineNormalWrap,
+    TimelineBoxWrap,
 };

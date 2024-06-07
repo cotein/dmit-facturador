@@ -3,93 +3,91 @@ import { AfipInvoiceBaseBuilder } from './AfipInvoiceBaseBuilder';
 import type { ProductOnInvoiceTable } from '@/app/types/Product';
 
 export class AfipInvoiceABuilder extends AfipInvoiceBaseBuilder {
-	constructor() {
-		super();
-	}
+    constructor() {
+        super();
+    }
 
-	setCbteTipo( CbteTipo: any ): void {
-		this.FeCabReq.CbteTipo = CbteTipo;
-	}
+    setCbteTipo(CbteTipo: any): void {
+        this.FeCabReq.CbteTipo = CbteTipo;
+    }
 
-	setImpTotConc( invoiceTableData: ProductOnInvoiceTable[] ): void {
+    setImpTotConc(invoiceTableData: ProductOnInvoiceTable[]): void {
+        this.FECAEDetRequest.ImpTotConc = 0;
+    }
 
-		this.FECAEDetRequest.ImpTotConc = 0;
-	}
+    setImpOpEx(invoiceTableData: ProductOnInvoiceTable[]): void {
+        this.FECAEDetRequest.ImpOpEx = 0;
+    }
 
-	setImpOpEx( invoiceTableData: ProductOnInvoiceTable[] ): void {
+    setImpIVA(invoiceTableData: ProductOnInvoiceTable[]): void {
+        const ImpIVA = invoiceTableData.reduce((acc, item) => {
+            return acc + item.iva_import;
+        }, 0);
 
-		this.FECAEDetRequest.ImpOpEx = 0;
-	}
+        this.FECAEDetRequest.ImpIVA = parseFloat(ImpIVA.toFixed(2));
+    }
 
-	setImpIVA( invoiceTableData: ProductOnInvoiceTable[] ): void {
-		const ImpIVA = invoiceTableData.reduce( ( acc, item ) => {
-			return acc + item.iva_import;
-		}, 0 );
+    setImpNeto(invoiceTableData: ProductOnInvoiceTable[]): void {
+        const impNeto = invoiceTableData.reduce((acc, item) => {
+            return acc + item.subtotal;
+        }, 0);
 
-		this.FECAEDetRequest.ImpIVA = parseFloat( ImpIVA.toFixed( 2 ) );
-	}
+        this.FECAEDetRequest.ImpNeto = parseFloat(impNeto.toFixed(2));
+    }
 
-	setImpNeto( invoiceTableData: ProductOnInvoiceTable[] ): void {
-		const impNeto = invoiceTableData.reduce( ( acc, item ) => {
-			return acc + item.subtotal;
-		}, 0 );
+    setImpTotal(invoiceTableData: ProductOnInvoiceTable[]): void {
+        const total = invoiceTableData.reduce((acc, item) => {
+            return acc + item.total;
+        }, 0);
 
-		this.FECAEDetRequest.ImpNeto = parseFloat( impNeto.toFixed( 2 ) );
-	}
+        this.FECAEDetRequest.ImpTotal = parseFloat(total.toFixed(2));
+    }
 
-	setImpTotal( invoiceTableData: ProductOnInvoiceTable[] ): void {
-		const total = invoiceTableData.reduce( ( acc, item ) => {
-			return acc + item.total;
-		}, 0 );
+    setImpTrib(invoiceTableData: ProductOnInvoiceTable[]): void {
+        delete this.FECAEDetRequest.Tributos;
+    }
 
-		this.FECAEDetRequest.ImpTotal = parseFloat( total.toFixed( 2 ) );
-	}
+    setIvaAarray(invoiceTableData: ProductOnInvoiceTable[]): void {
+        const ivas: AlicIva[] = [];
+        invoiceTableData.map((item: ProductOnInvoiceTable) => {
+            const index = ivas.findIndex((el) => el.Id === item.iva.afip_code);
 
-	setImpTrib( invoiceTableData: ProductOnInvoiceTable[] ): void {
-		delete this.FECAEDetRequest.Tributos;
-	}
+            if (index < 0) {
+                ivas.push({
+                    Id: item.iva.afip_code,
+                    BaseImp: item.subtotal,
+                    Importe: item.iva_import,
+                });
+            } else {
+                ivas[index].BaseImp += item.subtotal;
+                ivas[index].Importe += item.iva_import;
+            }
+        });
 
-	setIvaAarray( invoiceTableData: ProductOnInvoiceTable[] ): void {
-		const ivas: AlicIva[] = [];
-		invoiceTableData.map( ( item: ProductOnInvoiceTable ) => {
-			const index = ivas.findIndex( ( el ) => el.Id === item.iva.afip_code );
+        this.FECAEDetRequest.Iva = ivas;
+    }
 
-			if ( index < 0 ) {
-				ivas.push( {
-					Id: item.iva.afip_code,
-					BaseImp: item.subtotal,
-					Importe: item.iva_import,
-				} );
-			} else {
-				ivas[ index ].BaseImp += item.subtotal;
-				ivas[ index ].Importe += item.iva_import;
-			}
-		} );
+    setCbtesAsoc(): void {
+        delete this.FECAEDetRequest.CbtesAsoc;
+    }
 
-		this.FECAEDetRequest.Iva = ivas;
-	}
+    setTributos(): void {
+        delete this.FECAEDetRequest.Tributos;
+    }
 
-	setCbtesAsoc(): void {
-		delete this.FECAEDetRequest.CbtesAsoc;
-	}
+    setOpcionales(): void {
+        delete this.FECAEDetRequest.Opcionales;
+    }
 
-	setTributos(): void {
-		delete this.FECAEDetRequest.Tributos;
-	}
+    setCompradores(): void {
+        delete this.FECAEDetRequest.Compradores;
+    }
 
-	setOpcionales(): void {
-		delete this.FECAEDetRequest.Opcionales;
-	}
+    setPeriodoAsoc(): void {
+        delete this.FECAEDetRequest.PeriodoAsoc;
+    }
 
-	setCompradores(): void {
-		delete this.FECAEDetRequest.Compradores;
-	}
-
-	setPeriodoAsoc(): void {
-		delete this.FECAEDetRequest.PeriodoAsoc;
-	}
-
-	setActividades(): void {
-		delete this.FECAEDetRequest.Actividades;
-	}
+    setActividades(): void {
+        delete this.FECAEDetRequest.Actividades;
+    }
 }

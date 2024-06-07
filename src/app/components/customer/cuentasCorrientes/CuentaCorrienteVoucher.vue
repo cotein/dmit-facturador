@@ -1,138 +1,138 @@
 <template>
-	<div class="voucher">
-		<span>{{ props.record.voucher }}</span>
-		<sdButton size="sm" type="dark" transparented @click="print"> Imprimir </sdButton>
-	</div>
+    <div class="voucher">
+        <span>{{ props.record.voucher }}</span>
+        <sdButton size="sm" type="dark" transparented @click="print"> Imprimir </sdButton>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { Receipt } from '@/app/pdf/receipts/Receipt';
 import jsPDF from 'jspdf';
 type Props = {
-	record: any;
+    record: any;
 };
 
 const props = withDefaults(defineProps<Props>(), {
-	record: undefined,
+    record: undefined,
 });
 
 const print = () => {
-	const array: { name: string; total: number }[] = [
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-		{
-			name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
-			total: 121,
-		},
-	];
-	const pdf = new Receipt();
+    const array: { name: string; total: number }[] = [
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+        {
+            name: 'wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww',
+            total: 121,
+        },
+    ];
+    const pdf = new Receipt();
 
-	for (let i = 0; i < pdf.howManyPagesDoINeed(array, array); i++) {
-		console.log('🚀 ~ print ~ i:', i);
-		pdf.drawMainRectangle();
-		console.log('🚀 ~ print ~ drawMainRectangle:', pdf.howManyPagesDoINeed(array, array));
+    for (let i = 0; i < pdf.howManyPagesDoINeed(array, array); i++) {
+        console.log('🚀 ~ print ~ i:', i);
+        pdf.drawMainRectangle();
+        console.log('🚀 ~ print ~ drawMainRectangle:', pdf.howManyPagesDoINeed(array, array));
 
-		pdf.drawCompanyRectangles();
-		pdf.drawClientRectangle();
-		pdf.writePaidReceipts();
-		pdf.writeClientData(
-			'Agustin Ariel',
-			'SANTOS LUGARES (1676) - 1676 - Buenos Aires - ARGENTINA',
-			'responsable inscripto',
-		);
-		pdf.drawInnerRectangle();
-		pdf.writeReceiptDetails(array);
-		pdf.pdf.addPage();
-	}
+        pdf.drawCompanyRectangles();
+        pdf.drawClientRectangle();
+        pdf.writePaidReceipts();
+        pdf.writeClientData(
+            'Agustin Ariel',
+            'SANTOS LUGARES (1676) - 1676 - Buenos Aires - ARGENTINA',
+            'responsable inscripto',
+        );
+        pdf.drawInnerRectangle();
+        pdf.writeReceiptDetails(array);
+        pdf.pdf.addPage();
+    }
 
-	pdf.savePDF('archivo.pdf');
-	/* const doc = new jsPDF();
+    pdf.savePDF('archivo.pdf');
+    /* const doc = new jsPDF();
 
 	let alturaDeEscrituraEnEjeX = 0; //lo puedo poner dentro de una funcion
 
@@ -182,8 +182,8 @@ const print = () => {
 
 <style scoped>
 div {
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-	<a class="ant-dropdown-link" @click.prevent="Pdf">
-		<PrinterFilled style="color: black" />
-		Imprimir comprobante
-	</a>
+    <a class="ant-dropdown-link" @click.prevent="Pdf">
+        <PrinterFilled style="color: black" />
+        Imprimir comprobante
+    </a>
 </template>
 
 <script setup lang="ts">
@@ -13,15 +13,15 @@ import type { InvoiceList } from '@/app/types/Invoice';
 const { printPdf } = usePrinterPdfComposable();
 
 type Props = {
-	data: InvoiceList;
+    data: InvoiceList;
 };
 
 const props = withDefaults(defineProps<Props>(), {
-	data: undefined,
+    data: undefined,
 });
 
 const Pdf = () => {
-	printPdf(props.data);
+    printPdf(props.data);
 };
 </script>
 

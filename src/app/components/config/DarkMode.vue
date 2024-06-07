@@ -1,19 +1,19 @@
 <template>
-	<a-popconfirm
-		title="Cambiar a modo oscuro"
-		ok-text="Sí"
-		cancel-text="No"
-		@confirm="setDarkMode"
-		@cancel="setDarkMode"
-	>
-		<a href="#">
-			<span>
-				<font-awesome-icon :icon="faSun" size="1x" />
-				<font-awesome-icon :icon="faArrowRight" size="1x" />
-				<font-awesome-icon :icon="faMoon" size="1x" />
-			</span>
-		</a>
-	</a-popconfirm>
+    <a-popconfirm
+        title="Cambiar a modo oscuro"
+        ok-text="Sí"
+        cancel-text="No"
+        @confirm="setDarkMode"
+        @cancel="setDarkMode"
+    >
+        <a href="#">
+            <span>
+                <font-awesome-icon :icon="faSun" size="1x" />
+                <font-awesome-icon :icon="faArrowRight" size="1x" />
+                <font-awesome-icon :icon="faMoon" size="1x" />
+            </span>
+        </a>
+    </a-popconfirm>
 </template>
 
 <script setup lang="ts">
@@ -28,6 +28,6 @@ const { setDarkMode, DarkModeGetter } = useDarkModeComposable();
 
 <style scoped>
 span svg {
-	padding: 0 0.1rem;
+    padding: 0 0.1rem;
 }
 </style>

@@ -14,14 +14,17 @@ import { message } from 'ant-design-vue';
  * showMessage('warning', 'Esto es una advertencia', 3);
  * showMessage('loading', 'Cargando...', 3);
  */
-export const showMessage = ( type: 'success' | 'error' | 'info' | 'warning' | 'loading', msg: string, duration: number ) => {
-	message[ type ]( {
-		content: () => msg,
-		duration: duration,
-		style: {
-			color: type === 'error' ? 'red' : '#808080',
-			fontSize: 'large',
-		},
-	} );
-}
-
+export const showMessage = (
+    type: 'success' | 'error' | 'info' | 'warning' | 'loading',
+    msg: string,
+    duration: number,
+) => {
+    message[type]({
+        content: () => msg,
+        duration: duration,
+        style: {
+            color: type === 'error' ? 'red' : '#808080',
+            fontSize: 'large',
+        },
+    });
+};

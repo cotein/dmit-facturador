@@ -1,16 +1,16 @@
 <template>
-	<div>
-		<sdPageHeader title="Mí Compañía" class="ninjadash-page-header-main"> </sdPageHeader>
+    <div>
+        <sdPageHeader title="Mí Compañía" class="ninjadash-page-header-main"> </sdPageHeader>
 
-		<Main>
-			<a-row :gutter="25">
-				<a-col :md="12" :sm="24" :xs="24">
-					<TotalInvoiced />
-				</a-col>
-				<a-col :md="12" :sm="24" :xs="24"> </a-col>
-			</a-row>
-		</Main>
-	</div>
+        <Main>
+            <a-row :gutter="25">
+                <a-col :md="12" :sm="24" :xs="24">
+                    <TotalInvoiced />
+                </a-col>
+                <a-col :md="12" :sm="24" :xs="24"> </a-col>
+            </a-row>
+        </Main>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -21,8 +21,8 @@ import { useVoucherComposable } from '../composables/voucher/useVoucherComposabl
 import TotalInvoiced from '../components/charts/dashboard/TotalInvoiced.vue';
 
 onBeforeMount(() => {
-	useIvaComposable();
-	useVoucherComposable();
+    useIvaComposable();
+    useVoucherComposable();
 });
 </script>
 <style scoped></style>

@@ -4,17 +4,17 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useSearchProductStore = defineStore('search-product', () => {
-	const selectedProduct = ref<Product>();
+    const selectedProduct = ref<Product>();
 
-	const priceList = ref<PriceListFromDataBase[]>([]);
+    const priceList = ref<PriceListFromDataBase[]>([]);
 
-	const sendProductToInvoice = ref<boolean>(false);
+    const sendProductToInvoice = ref<boolean>(false);
 
-	return {
-		//State properties
-		selectedProduct,
-		priceList,
-		sendProductToInvoice,
-		//Getters
-	};
+    return {
+        //State properties
+        selectedProduct,
+        priceList,
+        sendProductToInvoice,
+        //Getters
+    };
 });

@@ -4,7 +4,7 @@
  * @param {number} size
  */
 const ellipsis = (text: string, size: number) => {
-	return `${text.split(' ').slice(0, size).join(' ')}...`;
+    return `${text.split(' ').slice(0, size).join(' ')}...`;
 };
 
 /**
@@ -14,12 +14,12 @@ const ellipsis = (text: string, size: number) => {
  */
 
 const idGenerator = (data: any[], length: number = 1) => {
-	const arrayData: number[] = [];
-	data.map((data: any) => {
-		return arrayData.push(parseInt(data.id, 10));
-	});
-	const number = (Math.max(...arrayData) + 1).toString();
-	return number.length < length ? `${'0'.repeat(length - number.length)}${number}` : number;
+    const arrayData: number[] = [];
+    data.map((data: any) => {
+        return arrayData.push(parseInt(data.id, 10));
+    });
+    const number = (Math.max(...arrayData) + 1).toString();
+    return number.length < length ? `${'0'.repeat(length - number.length)}${number}` : number;
 };
 
 export { ellipsis, idGenerator };

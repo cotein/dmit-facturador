@@ -16,22 +16,22 @@ import BtnGroup from '../../components/buttons/ButtonGroup.vue';
 import Cascader from '../../components/cascader/Cascader.vue';
 import Drawer from '../../components/drawer/Drawer.vue';
 import {
-	GoogleBasicBarChart,
-	GoogleMaterialBarChart,
-	GoogleStackedChart,
-	GoogleCustomColorChart,
-	GoogleComboChart,
-	GoogleLineChart,
-	GoogleMultiLineChart,
-	GoogleBasicPieChart,
-	Google3dPieChart,
-	BubbleChart,
+    GoogleBasicBarChart,
+    GoogleMaterialBarChart,
+    GoogleStackedChart,
+    GoogleCustomColorChart,
+    GoogleComboChart,
+    GoogleLineChart,
+    GoogleMultiLineChart,
+    GoogleBasicPieChart,
+    Google3dPieChart,
+    BubbleChart,
 } from '../../components/charts/GoogleChart.vue';
 
 const components = [
-	//Cards,
-	//AutoComplete,
-	/* Heading,
+    //Cards,
+    //AutoComplete,
+    /* Heading,
 	Dropdown,
 	Popover,
 	Modal,

@@ -70,47 +70,47 @@ const CardWrapper = Styled.figure`
   }
 `;
 const props = defineProps({
-	item: {
-		type: Object,
-		default: () => ({
-			id: 1,
-			title: 'How to Use Apples Products',
-			content:
-				'Lorem Ipsum is simply dummy text of the printing printer took a galley of type and scrambled and typesetting industry.',
-			img: 'assets/img/sampleCards/6.png',
-		}),
-	},
+    item: {
+        type: Object,
+        default: () => ({
+            id: 1,
+            title: 'How to Use Apples Products',
+            content:
+                'Lorem Ipsum is simply dummy text of the printing printer took a galley of type and scrambled and typesetting industry.',
+            img: 'assets/img/sampleCards/6.png',
+        }),
+    },
 });
 const { item } = toRefs(props);
 const { id, title, content, img } = item.value;
 </script>
 
 <template>
-	<CardWrapper>
-		<img :src="`/src/${img}`" alt="" />
-		<figcaption>
-			<h4>
-				<span>Web Development</span>
-				<span>01 July 2021 </span>
-			</h4>
-			<h2>{{ title }}</h2>
-			<p>{{ content }}</p>
-			<div class="feedbackSection">
-				<div class="author">
-					<img :src="$environment.VITE_SRC_ASSETS + '/img/chat-author/t1.jpg'" alt="" />
-					<span>Burns Marks</span>
-				</div>
-				<div class="feedback">
-					<span class="like">
-						<unicon name="heart" width="14"></unicon>
-						70
-					</span>
-					<span class="view">
-						<unicon name="eye" width="14"></unicon>
-						120
-					</span>
-				</div>
-			</div>
-		</figcaption>
-	</CardWrapper>
+    <CardWrapper>
+        <img :src="`/src/${img}`" alt="" />
+        <figcaption>
+            <h4>
+                <span>Web Development</span>
+                <span>01 July 2021 </span>
+            </h4>
+            <h2>{{ title }}</h2>
+            <p>{{ content }}</p>
+            <div class="feedbackSection">
+                <div class="author">
+                    <img :src="$environment.VITE_SRC_ASSETS + '/img/chat-author/t1.jpg'" alt="" />
+                    <span>Burns Marks</span>
+                </div>
+                <div class="feedback">
+                    <span class="like">
+                        <unicon name="heart" width="14"></unicon>
+                        70
+                    </span>
+                    <span class="view">
+                        <unicon name="eye" width="14"></unicon>
+                        120
+                    </span>
+                </div>
+            </div>
+        </figcaption>
+    </CardWrapper>
 </template>

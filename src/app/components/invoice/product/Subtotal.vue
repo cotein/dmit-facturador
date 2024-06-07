@@ -1,12 +1,12 @@
 <template>
-	<div>
-		<span
-			v-if="invoice.customer.afip_inscription.id === AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO"
-			class="product-total-price"
-			>{{ $filters.formatCurrency(props.record.subtotal) }}</span
-		>
-		<span v-else class="product-total-price">{{ $filters.formatCurrency(props.record.total) }}</span>
-	</div>
+    <div>
+        <span
+            v-if="invoice.customer.afip_inscription.id === AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO"
+            class="product-total-price"
+            >{{ $filters.formatCurrency(props.record.subtotal) }}</span
+        >
+        <span v-else class="product-total-price">{{ $filters.formatCurrency(props.record.total) }}</span>
+    </div>
 </template>
 // ESTO ES EL NETO//
 
@@ -18,18 +18,18 @@ import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
 const { invoice } = useInvoiceComposable();
 
 type Props = {
-	record: ProductOnInvoiceTable;
-	index: number;
+    record: ProductOnInvoiceTable;
+    index: number;
 };
 const props = withDefaults(defineProps<Props>(), {
-	record: undefined,
-	index: undefined,
+    record: undefined,
+    index: undefined,
 });
 </script>
 
 <style scoped>
 div {
-	text-align: right;
-	width: 100%;
+    text-align: right;
+    width: 100%;
 }
 </style>

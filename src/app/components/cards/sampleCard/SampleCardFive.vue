@@ -55,33 +55,33 @@ const CardWrapper = Styled.figure`
 `;
 
 const props = defineProps({
-	item: {
-		type: Object,
-		default: () => ({
-			id: 1,
-			title: 'How to Use Apples Products',
-			content: 'Lorem Ipsum is simply dummy text of the printing ',
-			img: 'assets/img/sampleCards/6.png',
-			auth: '',
-		}),
-	},
+    item: {
+        type: Object,
+        default: () => ({
+            id: 1,
+            title: 'How to Use Apples Products',
+            content: 'Lorem Ipsum is simply dummy text of the printing ',
+            img: 'assets/img/sampleCards/6.png',
+            auth: '',
+        }),
+    },
 });
 const { item } = toRefs(props);
 const { id, title, content, img, auth } = item.value;
 </script>
 
 <template>
-	<CardWrapper>
-		<img :src="`/src/${img}`" alt="" />
-		<figcaption>
-			<h2>{{ title }}</h2>
-			<p>{{ content }}</p>
-			<div class="feedbackSection">
-				<div class="author">
-					<img :src="`/src/${auth}`" alt="" />
-					<span>Burns Marks</span>
-				</div>
-			</div>
-		</figcaption>
-	</CardWrapper>
+    <CardWrapper>
+        <img :src="`/src/${img}`" alt="" />
+        <figcaption>
+            <h2>{{ title }}</h2>
+            <p>{{ content }}</p>
+            <div class="feedbackSection">
+                <div class="author">
+                    <img :src="`/src/${auth}`" alt="" />
+                    <span>Burns Marks</span>
+                </div>
+            </div>
+        </figcaption>
+    </CardWrapper>
 </template>

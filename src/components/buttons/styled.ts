@@ -5,26 +5,26 @@ import { Button } from 'ant-design-vue';
 const ButtonGroup = Button.Group;
 
 const props = defineProps([
-	'type',
-	'shape',
-	'icon',
-	'size',
-	'outlined',
-	'ghost',
-	'transparent',
-	'raised',
-	'squared',
-	'color',
-	'social',
-	'loading',
+    'type',
+    'shape',
+    'icon',
+    'size',
+    'outlined',
+    'ghost',
+    'transparent',
+    'raised',
+    'squared',
+    'color',
+    'social',
+    'loading',
 ]);
 
 const outline = (theme: any, type: string) => {
-	return `
+    return `
         background: transparent;
         border: 1px ${type !== 'dash' ? 'solid' : 'dashed'} ${
-		type !== 'light' ? theme[`${type}-color`] : theme[theme.mainContent]['border-color-default']
-	} !important;
+    type !== 'light' ? theme[`${type}-color`] : theme[theme.mainContent]['border-color-default']
+} !important;
         color: ${type !== 'default' && theme[`${type}-color`]};
 
         &:hover, &:focus {
@@ -39,7 +39,7 @@ const outline = (theme: any, type: string) => {
 };
 
 const ghosts = (theme: any) => {
-	return `
+    return `
           background: transparent;
           border: 1px solid ${theme[theme.mainContent]['border-color-default']} !important;
           color: ${theme[theme.mainContent]['border-color-default']} !important;
@@ -56,7 +56,7 @@ const ghosts = (theme: any) => {
 };
 
 const transparents = (theme: any, type: string) => {
-	return `
+    return `
         background: ${type !== 'default' && theme[`${type}-color`]}15;
         border-width: 0px;
         color: ${type !== 'default' && theme[`${type}-color`]};
@@ -72,7 +72,7 @@ const transparents = (theme: any, type: string) => {
 };
 
 const raise = (theme: any, type: string) => {
-	return `
+    return `
         box-shadow: 0 10px 15px ${type !== 'white' ? theme[`${type}-color`] : '#9299B8'}20;
     `;
 };
@@ -97,7 +97,7 @@ const square = (theme: any, type: string) => `
 const squareOutline = (theme: any, type: string) => `
       background: transparent;
       border: 1px ${type !== 'dash' ? 'solid' : 'dashed'} ${
-	type !== 'default' ? theme[`${type}-color`] : theme['disabled-color']
+    type !== 'default' ? theme[`${type}-color`] : theme['disabled-color']
 };
       color: ${type !== 'default' && theme[`${type}-color`]};
       border-radius: 0px;

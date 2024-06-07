@@ -2,11 +2,11 @@ import { ApiHttp } from '../base-api';
 import type { AfipInscription } from '@/app/types/Afip';
 
 export const apiAfipGetInscriptions = async (): Promise<AfipInscription[]> => {
-	const params = new URLSearchParams();
+    const params = new URLSearchParams();
 
-	const { data } = await ApiHttp.get<AfipInscription[]>('/api/afip/inscriptions', { params });
+    const { data } = await ApiHttp.get<AfipInscription[]>('/api/afip/inscriptions', { params });
 
-	return data;
+    return data;
 };
 /* const params = new URLSearchParams();
 

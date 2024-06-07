@@ -13,65 +13,65 @@ const { PriceListGetter, priceListForTransferComponent } = storeToRefs(store);
 const { setPriceList, setPriceListTranferData, addPriceListToListPriceList } = store;
 
 const extractPriceList = async (company_id: number) => {
-	console.log('🚀 ~ file: usePriceListComposable.ts:17 ~ extractPriceList ~ company_id:', company_id);
-	const { data: priceList } = await getPriceList(company_id);
+    console.log('🚀 ~ file: usePriceListComposable.ts:17 ~ extractPriceList ~ company_id:', company_id);
+    const { data: priceList } = await getPriceList(company_id);
 
-	setPriceList(priceList);
+    setPriceList(priceList);
 };
 
 export const usePriceListComposable = (company_id: number) => {
-	const queryClient = useQueryClient();
-	const fetchPriceList = () => {
-		return useQuery(['price-list'], () => getPriceList(company_id), {
-			onSuccess(data: AxiosResponse<PriceList[]>) {
-				console.log('🚀 ~ file: usePriceListComposable.ts:38 ~ onSuccess ~ data:', data);
+    const queryClient = useQueryClient();
+    const fetchPriceList = () => {
+        return useQuery(['price-list'], () => getPriceList(company_id), {
+            onSuccess(data: AxiosResponse<PriceList[]>) {
+                console.log('🚀 ~ file: usePriceListComposable.ts:38 ~ onSuccess ~ data:', data);
 
-				setPriceList(data.data);
-				setPriceListTranferData(data.data);
-			},
-			staleTime: 1000 * 60 * 60,
-		});
-	};
+                setPriceList(data.data);
+                setPriceListTranferData(data.data);
+            },
+            staleTime: 1000 * 60 * 60,
+        });
+    };
 
-	const { mutateAsync, isLoading } = useMutation(savePriceList, {
-		onSuccess: async (data) => {
-			console.log('🚀 ~ file: usePriceListComposable.ts:26 ~ onSuccess: ~ data:', data?.data);
-			message.success('La lista de precios fue ingresada');
-			queryClient.setQueryData<PriceList[]>(['price-list'], (oldData) => {
-				console.log('🚀 ~ file: usePriceListComposable.ts:41 ~ queryClient.setQueryData ~ oldData:', oldData);
-				if (!oldData) {
-					return data?.data;
-				}
+    const { mutateAsync, isLoading } = useMutation(savePriceList, {
+        onSuccess: async (data) => {
+            console.log('🚀 ~ file: usePriceListComposable.ts:26 ~ onSuccess: ~ data:', data?.data);
+            message.success('La lista de precios fue ingresada');
+            queryClient.setQueryData<PriceList[]>(['price-list'], (oldData) => {
+                console.log('🚀 ~ file: usePriceListComposable.ts:41 ~ queryClient.setQueryData ~ oldData:', oldData);
+                if (!oldData) {
+                    return data?.data;
+                }
 
-				return [...oldData.data, data.data];
-			});
+                return [...oldData.data, data.data];
+            });
 
-			const query = await queryClient.getQueryData(['price-list']);
-			console.log('🚀 ~ file: usePriceListComposable.ts:49 ~ onSuccess: ~ query:', query);
-			setPriceList(query);
-			setPriceListTranferData(query);
-		},
-		onError: async (error, data) => {
-			console.log('🚀 ~ file: usePriceListComposable.ts:29 ~ onError: ~ error:', error.message);
+            const query = await queryClient.getQueryData(['price-list']);
+            console.log('🚀 ~ file: usePriceListComposable.ts:49 ~ onSuccess: ~ query:', query);
+            setPriceList(query);
+            setPriceListTranferData(query);
+        },
+        onError: async (error, data) => {
+            console.log('🚀 ~ file: usePriceListComposable.ts:29 ~ onError: ~ error:', error.message);
 
-			message.error(error.message);
-		},
-	});
+            message.error(error.message);
+        },
+    });
 
-	const { mutateAsync: modifyPriceListAsync, isLoading: modifyPriceListLoading } = useMutation(updatePriceList, {
-		onSuccess: async (data) => {
-			await extractPriceList(company_id);
-		},
-	});
+    const { mutateAsync: modifyPriceListAsync, isLoading: modifyPriceListLoading } = useMutation(updatePriceList, {
+        onSuccess: async (data) => {
+            await extractPriceList(company_id);
+        },
+    });
 
-	return {
-		PriceListGetter,
-		fetchPriceList,
-		setPriceList,
-		mutateAsync,
-		isLoading,
-		modifyPriceListAsync,
-		modifyPriceListLoading,
-		priceListForTransferComponent,
-	};
+    return {
+        PriceListGetter,
+        fetchPriceList,
+        setPriceList,
+        mutateAsync,
+        isLoading,
+        modifyPriceListAsync,
+        modifyPriceListLoading,
+        priceListForTransferComponent,
+    };
 };

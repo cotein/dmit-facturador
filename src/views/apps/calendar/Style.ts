@@ -384,20 +384,20 @@ const CalendarWrapper = Styled.div`
                     display: inline-block;
                     &:first-child{
                         ${({ theme }) => (theme.rtl ? 'border-right' : 'border-left')}: 1px solid ${({ theme }) =>
-	theme[theme.mainContent]['border-color-default']};
+    theme[theme.mainContent]['border-color-default']};
                     }
                     &:not(:first-child){
                         a{
                             ${({ theme }) => (theme.rtl ? 'border-top-right-radius' : 'border-top-left-radius')}: 0px;
                             ${({ theme }) =>
-								theme.rtl ? 'border-bottom-right-radius' : 'border-bottom-left-radius'}: 0px;
+        theme.rtl ? 'border-bottom-right-radius' : 'border-bottom-left-radius'}: 0px;
                         }
                     }
                     &:not(:last-child){
                         a{
                             ${({ theme }) => (theme.rtl ? 'border-top-left-radius' : 'border-top-right-radius')}: 0px;
                             ${({ theme }) =>
-								theme.rtl ? 'border-bottom-left-radius' : 'border-bottom-right-radius'}: 0px;
+        theme.rtl ? 'border-bottom-left-radius' : 'border-bottom-right-radius'}: 0px;
                         }
                     }
                     a{
@@ -462,7 +462,7 @@ const CalendarWrapper = Styled.div`
                     min-width: 75px;
                     padding: 16px 18px 16px 18px;
                     ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid color: ${({ theme }) =>
-	theme[theme.mainContent]['border-color-default']};
+    theme[theme.mainContent]['border-color-default']};
                 }
             }
         }
@@ -588,7 +588,7 @@ const CalendarWrapper = Styled.div`
             td{
                 &:not(:last-child){
                     ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid color: ${({ theme }) =>
-	theme[theme.mainContent]['border-color-default']};
+    theme[theme.mainContent]['border-color-default']};
                 }
             }
         }
@@ -855,7 +855,7 @@ const BlockViewCalendarWrapper = Styled.div`
             min-width: 155px;
             padding: 0;
             ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-	theme['border-color-light']};
+    theme['border-color-light']};
             .ant-picker-cell-inner{
                 min-width: 155px;
             }

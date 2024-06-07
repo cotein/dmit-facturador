@@ -257,11 +257,11 @@ const ProductTable = Styled.div`
                         border-bottom: 1px solid ${({ theme }) => theme['border-color-light']};
                         &:first-child{
                             ${({ theme }) => (!theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-	theme['border-color-light']};
+    theme['border-color-light']};
                         }
                         &:last-child{
                             ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-	theme['border-color-light']};
+    theme['border-color-light']};
                             text-align: ${({ theme }) => (theme.rtl ? 'left' : 'right')};
                         }
                     }
@@ -2092,21 +2092,21 @@ const WizardBlock = Styled.div`
 `;
 
 export {
-	FigureWizards,
-	NotFoundWrapper,
-	ProductCard,
-	ProductTable,
-	CouponForm,
-	OrderSummary,
-	AddProductForm,
-	InvoiceHeader,
-	InvoiceLetterBox,
-	InvoiceAction,
-	WizardWrapper,
-	WizardTwo,
-	WizardThree,
-	WizardFour,
-	WizardFive,
-	WizardSix,
-	WizardBlock,
+    FigureWizards,
+    NotFoundWrapper,
+    ProductCard,
+    ProductTable,
+    CouponForm,
+    OrderSummary,
+    AddProductForm,
+    InvoiceHeader,
+    InvoiceLetterBox,
+    InvoiceAction,
+    WizardWrapper,
+    WizardTwo,
+    WizardThree,
+    WizardFour,
+    WizardFive,
+    WizardSix,
+    WizardBlock,
 };

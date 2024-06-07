@@ -2,21 +2,21 @@ import QRious from 'qrious';
 import moment from 'moment';
 
 class QrAfip {
-	public ver: number;
-	public date: string;
-	public cuit: number;
-	public ptoVta: number;
-	public CbteTipo: number;
-	public nroCbte: number;
-	public importe: number;
-	public money: string;
-	public ctz: number;
-	public tipoDocRec: number;
-	public nroDocRec: number;
-	public tipoCodAut: string = 'E';
-	public codAut: number;
-	public url_afip: string = 'https://www.afip.gob.ar/fe/qr/?p=';
-	/**
+    public ver: number;
+    public date: string;
+    public cuit: number;
+    public ptoVta: number;
+    public CbteTipo: number;
+    public nroCbte: number;
+    public importe: number;
+    public money: string;
+    public ctz: number;
+    public tipoDocRec: number;
+    public nroDocRec: number;
+    public tipoCodAut: string = 'E';
+    public codAut: number;
+    public url_afip: string = 'https://www.afip.gob.ar/fe/qr/?p=';
+    /**
      *
      * @param {*} ver
      * @param {*} date
@@ -56,67 +56,67 @@ class QrAfip {
         tipoCodAut	string	OBLIGATORIO – “A” para comprobante autorizado por CAEA, “E” para comprobante autorizado por CAE	"E"
         codAut	Numérico 14 dígitos	OBLIGATORIO – Código de autorización otorgado por AFIP para el comprobante	70417054367476
      */
-	constructor(
-		ver: number,
-		date: string,
-		cuit: number,
-		ptoVta: number,
-		CbteTipo: number,
-		nroCbte: number,
-		importe: number,
-		money: string,
-		ctz: number,
-		tipoDocRec: number,
-		nroDocRec: number,
-		tipoCodAut: string,
-		codAut: number,
-	) {
-		this.ver = ver;
-		this.date = date;
-		this.cuit = cuit;
-		this.ptoVta = ptoVta;
-		this.CbteTipo = CbteTipo;
-		this.nroCbte = nroCbte;
-		this.importe = importe;
-		this.money = money;
-		this.ctz = ctz;
-		this.tipoDocRec = tipoDocRec;
-		this.nroDocRec = nroDocRec;
-		this.tipoCodAut = tipoCodAut;
-		this.codAut = codAut;
-	}
+    constructor(
+        ver: number,
+        date: string,
+        cuit: number,
+        ptoVta: number,
+        CbteTipo: number,
+        nroCbte: number,
+        importe: number,
+        money: string,
+        ctz: number,
+        tipoDocRec: number,
+        nroDocRec: number,
+        tipoCodAut: string,
+        codAut: number,
+    ) {
+        this.ver = ver;
+        this.date = date;
+        this.cuit = cuit;
+        this.ptoVta = ptoVta;
+        this.CbteTipo = CbteTipo;
+        this.nroCbte = nroCbte;
+        this.importe = importe;
+        this.money = money;
+        this.ctz = ctz;
+        this.tipoDocRec = tipoDocRec;
+        this.nroDocRec = nroDocRec;
+        this.tipoCodAut = tipoCodAut;
+        this.codAut = codAut;
+    }
 
-	generate_base_64() {
-		const objJsonStr = JSON.stringify({
-			ver: this.ver,
-			date: moment(this.date).format('YYYY-MM-DD'),
-			cuit: this.cuit,
-			ptoVta: this.ptoVta,
-			CbteTipo: this.CbteTipo,
-			nroCbte: this.nroCbte,
-			importe: this.importe,
-			money: this.money,
-			ctz: this.ctz,
-			tipoDocRec: this.tipoDocRec,
-			nroDocRec: this.nroDocRec,
-			tipoCodAut: this.tipoCodAut,
-			codAut: this.codAut,
-		});
-		console.log('objJsonStr');
-		console.log(objJsonStr);
-		console.log('objJsonStr');
-		const base64Browser = btoa(objJsonStr);
+    generate_base_64() {
+        const objJsonStr = JSON.stringify({
+            ver: this.ver,
+            date: moment(this.date).format('YYYY-MM-DD'),
+            cuit: this.cuit,
+            ptoVta: this.ptoVta,
+            CbteTipo: this.CbteTipo,
+            nroCbte: this.nroCbte,
+            importe: this.importe,
+            money: this.money,
+            ctz: this.ctz,
+            tipoDocRec: this.tipoDocRec,
+            nroDocRec: this.nroDocRec,
+            tipoCodAut: this.tipoCodAut,
+            codAut: this.codAut,
+        });
+        console.log('objJsonStr');
+        console.log(objJsonStr);
+        console.log('objJsonStr');
+        const base64Browser = btoa(objJsonStr);
 
-		return base64Browser;
-	}
+        return base64Browser;
+    }
 
-	generate_qr() {
-		const qr = new QRious({
-			value: this.url_afip + this.generate_base_64(),
-		});
+    generate_qr() {
+        const qr = new QRious({
+            value: this.url_afip + this.generate_base_64(),
+        });
 
-		return qr.toDataURL();
-	}
+        return qr.toDataURL();
+    }
 }
 
 export default QrAfip;

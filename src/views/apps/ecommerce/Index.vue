@@ -1,9 +1,9 @@
 <script>
 export default {
-	name: 'Ecommerce',
+    name: 'Ecommerce',
 };
 </script>
 
 <template>
-	<router-view></router-view>
+    <router-view></router-view>
 </template>

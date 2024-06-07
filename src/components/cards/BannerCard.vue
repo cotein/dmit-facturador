@@ -126,69 +126,69 @@ const ImageUrl = Styled.div`
 `;
 
 const props = defineProps({
-	item: {
-		type: Object,
-		default: () => ({
-			id: 1,
-			type: 'primary',
-			icon: 'water-fall.svg',
-			bgImage: '',
-			title: 'Primary Color',
-			content:
-				'Lorem Ipsum is simply dummy text of the printing printer took a galley of type and scrambled and typesetting industry.',
-			authorName: 'Chris Doe',
-			authorImg: '10.png',
-		}),
-	},
+    item: {
+        type: Object,
+        default: () => ({
+            id: 1,
+            type: 'primary',
+            icon: 'water-fall.svg',
+            bgImage: '',
+            title: 'Primary Color',
+            content:
+                'Lorem Ipsum is simply dummy text of the printing printer took a galley of type and scrambled and typesetting industry.',
+            authorName: 'Chris Doe',
+            authorImg: '10.png',
+        }),
+    },
 });
 const { item } = toRefs(props);
 const { id, content, icon, title, authorName, authorImg, type, bgImage } = item.value;
 </script>
 
 <template>
-	<CardWrapper>
-		<ImageUrl :class="`banner-card banner-card-${type}`" :bgUrl="bgImage">
-			<div class="banner-card__top align-center-v justify-content-between">
-				<h4 class="banner-card__title">
-					<img :src="`/src/assets/img/icon/${icon}`" alt="StrikingDash Banner" />
-					<span>{{ title }}</span>
-				</h4>
-				<div class="banner-card__action">
-					<div class="more">
-						<sdDropdown :action="['click']" class="wide-dropdwon">
-							<template #overlay>
-								<router-link to="#">Edit</router-link>
-								<router-link to="#">Delete</router-link>
-								<router-link to="#">View</router-link>
-							</template>
-							<router-link to="#">
-								<unicon name="ellipsis-h" width="18"></unicon>
-							</router-link>
-						</sdDropdown>
-					</div>
-				</div>
-			</div>
-			<div class="banner-card__body">
-				<p>{{ content }}</p>
-			</div>
-			<div class="banner-card__bottom align-center-v justify-content-between">
-				<div class="card-author">
-					<img :src="`/src/assets/img/users/${authorImg}`" alt="" />
-					<span class="author-name">{{ authorName }}</span>
-				</div>
-				<div class="card-meta">
-					<ul>
-						<li>
-							<unicon name="eye" width="16"></unicon>
-							<span class="view-count">70</span>
-						</li>
-						<li>
-							<unicon name="heart" width="16"></unicon>
-							<span class="view-count">70</span>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</ImageUrl>
-	</CardWrapper>
+    <CardWrapper>
+        <ImageUrl :class="`banner-card banner-card-${type}`" :bgUrl="bgImage">
+            <div class="banner-card__top align-center-v justify-content-between">
+                <h4 class="banner-card__title">
+                    <img :src="`/src/assets/img/icon/${icon}`" alt="StrikingDash Banner" />
+                    <span>{{ title }}</span>
+                </h4>
+                <div class="banner-card__action">
+                    <div class="more">
+                        <sdDropdown :action="['click']" class="wide-dropdwon">
+                            <template #overlay>
+                                <router-link to="#">Edit</router-link>
+                                <router-link to="#">Delete</router-link>
+                                <router-link to="#">View</router-link>
+                            </template>
+                            <router-link to="#">
+                                <unicon name="ellipsis-h" width="18"></unicon>
+                            </router-link>
+                        </sdDropdown>
+                    </div>
+                </div>
+            </div>
+            <div class="banner-card__body">
+                <p>{{ content }}</p>
+            </div>
+            <div class="banner-card__bottom align-center-v justify-content-between">
+                <div class="card-author">
+                    <img :src="`/src/assets/img/users/${authorImg}`" alt="" />
+                    <span class="author-name">{{ authorName }}</span>
+                </div>
+                <div class="card-meta">
+                    <ul>
+                        <li>
+                            <unicon name="eye" width="16"></unicon>
+                            <span class="view-count">70</span>
+                        </li>
+                        <li>
+                            <unicon name="heart" width="16"></unicon>
+                            <span class="view-count">70</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </ImageUrl>
+    </CardWrapper>
 </template>

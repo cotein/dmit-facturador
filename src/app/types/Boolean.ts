@@ -1,4 +1,4 @@
 export enum YesNotBoolean {
-	SÍ = 1,
-	NO = 0,
+    SÍ = 1,
+    NO = 0,
 }

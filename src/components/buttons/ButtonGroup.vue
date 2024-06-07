@@ -1,5 +1,5 @@
 <template>
-	<ButtonStyledGroup><slot></slot></ButtonStyledGroup>
+    <ButtonStyledGroup><slot></slot></ButtonStyledGroup>
 </template>
 <script>
 import { ButtonStyledGroup } from './styled';
@@ -7,8 +7,8 @@ import { ButtonStyledGroup } from './styled';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	components: {
-		ButtonStyledGroup,
-	},
+    components: {
+        ButtonStyledGroup,
+    },
 });
 </script>

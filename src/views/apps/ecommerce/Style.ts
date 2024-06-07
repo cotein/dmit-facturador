@@ -1048,11 +1048,11 @@ const ProductTable = Styled.div`
 												color: ${({ theme }) => theme[theme.mainContent]['dark-text']};
                         &:first-child{
                             ${({ theme }) => (!theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-	theme[theme.mainContent]['border-color-default']};
+    theme[theme.mainContent]['border-color-default']};
                         }
                         &:last-child{
                             ${({ theme }) => (theme.rtl ? 'border-left' : 'border-right')}: 1px solid ${({ theme }) =>
-	theme[theme.mainContent]['border-color-default']};
+    theme[theme.mainContent]['border-color-default']};
                             text-align: ${({ theme }) => (theme.rtl ? 'left' : 'right')};
                         }
                     }
@@ -2243,20 +2243,20 @@ const CheckoutWrapper = Styled.div`
 `;
 
 export {
-	FigureCart,
-	Sidebar,
-	NotFoundWrapper,
-	SidebarSingle,
-	ProductCard,
-	TopToolBox,
-	PaginationWrapper,
-	ProductDetailsWrapper,
-	ProductTable,
-	CouponForm,
-	OrderSummary,
-	AddProductForm,
-	InvoiceHeader,
-	InvoiceLetterBox,
-	InvoiceAction,
-	CheckoutWrapper,
+    FigureCart,
+    Sidebar,
+    NotFoundWrapper,
+    SidebarSingle,
+    ProductCard,
+    TopToolBox,
+    PaginationWrapper,
+    ProductDetailsWrapper,
+    ProductTable,
+    CouponForm,
+    OrderSummary,
+    AddProductForm,
+    InvoiceHeader,
+    InvoiceLetterBox,
+    InvoiceAction,
+    CheckoutWrapper,
 };

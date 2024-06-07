@@ -217,7 +217,7 @@ const Style = Styled(Table)`
 `;
 
 const small = ({ rtl }: any) => {
-	return `
+    return `
     max-width: 600px;
     width: 100%;
     position: fixed;
@@ -236,7 +236,7 @@ const small = ({ rtl }: any) => {
 };
 
 const big = ({ rtl }: any) => {
-	return `
+    return `
   max-width: 1200px;
   width: 100%;
   position: fixed;
@@ -1360,17 +1360,17 @@ const MailSideBar = Styled.div`
 `;
 
 export {
-	Style,
-	MailBox,
-	EmailNav,
-	MessageAction,
-	MailSideBar,
-	EmailAuthor,
-	EmailHeader,
-	MailDetailsWrapper,
-	MessageDetails,
-	MessageReply,
-	ReplyList,
-	MailRightAction,
-	EmailWrapper,
+    Style,
+    MailBox,
+    EmailNav,
+    MessageAction,
+    MailSideBar,
+    EmailAuthor,
+    EmailHeader,
+    MailDetailsWrapper,
+    MessageDetails,
+    MessageReply,
+    ReplyList,
+    MailRightAction,
+    EmailWrapper,
 };

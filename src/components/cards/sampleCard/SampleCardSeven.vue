@@ -98,76 +98,76 @@ const CardWrapper = Styled.figure`
 `;
 
 const props = defineProps({
-	item: {
-		type: Object,
-		default: () => ({
-			id: 1,
-			title: 'Adobe CC',
-			installed: true,
-			content: 'Lorem Ipsum is simply dummy text of the and the typesetting industry.',
-			img: 'assets/img/icon/adobe.svg',
-		}),
-	},
+    item: {
+        type: Object,
+        default: () => ({
+            id: 1,
+            title: 'Adobe CC',
+            installed: true,
+            content: 'Lorem Ipsum is simply dummy text of the and the typesetting industry.',
+            img: 'assets/img/icon/adobe.svg',
+        }),
+    },
 });
 const { item } = toRefs(props);
 const { id, title, installed, content, img } = item.value;
 </script>
 
 <template>
-	<CardWrapper>
-		<div class="card-short">
-			<h4 class="card-short__title align-v-center">
-				<img :src="`/src/${img}`" alt="" />
-				<span>{{ title }}</span>
-			</h4>
-			<div class="card-short__content">
-				<p>{{ content }}</p>
-			</div>
-			<div :class="installed ? 'card-short__bottom installed' : 'card-short__bottom'">
-				<div class="card-short-checkbox">
-					<a-checkbox default-checked>Installed</a-checkbox>
-				</div>
-				<div class="card-short-actions">
-					<div class="content-installed content-action">
-						<sdButton type="primary" size="sm" shape="circle" outlined rounded> Open </sdButton>
-						<div class="more">
-							<sdDropdown :action="['click']" class="wide-dropdwon">
-								<template #overlay>
-									<router-link to="#">Edit</router-link>
-									<router-link to="#">Delete</router-link>
-									<router-link to="#">View</router-link>
-								</template>
-								<router-link to="#">
-									<unicon name="ellipsis-h" width="18"></unicon>
-								</router-link>
-							</sdDropdown>
-						</div>
-					</div>
-					<div class="content-not-installed content-action">
-						<sdButton type="primary" size="sm" shape="circle" raised rounded> Install </sdButton>
-						<div class="more">
-							<sdDropdown :action="['click']" class="wide-dropdwon">
-								<template #overlay>
-									<a-menu>
-										<a-menu-item>
-											<router-link to="#">Edit</router-link>
-										</a-menu-item>
-										<a-menu-item>
-											<router-link to="#">Delete</router-link>
-										</a-menu-item>
-										<a-menu-item>
-											<router-link to="#">View</router-link>
-										</a-menu-item>
-									</a-menu>
-								</template>
-								<router-link to="#">
-									<unicon name="ellipsis-h" width="18"></unicon>
-								</router-link>
-							</sdDropdown>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</CardWrapper>
+    <CardWrapper>
+        <div class="card-short">
+            <h4 class="card-short__title align-v-center">
+                <img :src="`/src/${img}`" alt="" />
+                <span>{{ title }}</span>
+            </h4>
+            <div class="card-short__content">
+                <p>{{ content }}</p>
+            </div>
+            <div :class="installed ? 'card-short__bottom installed' : 'card-short__bottom'">
+                <div class="card-short-checkbox">
+                    <a-checkbox default-checked>Installed</a-checkbox>
+                </div>
+                <div class="card-short-actions">
+                    <div class="content-installed content-action">
+                        <sdButton type="primary" size="sm" shape="circle" outlined rounded> Open </sdButton>
+                        <div class="more">
+                            <sdDropdown :action="['click']" class="wide-dropdwon">
+                                <template #overlay>
+                                    <router-link to="#">Edit</router-link>
+                                    <router-link to="#">Delete</router-link>
+                                    <router-link to="#">View</router-link>
+                                </template>
+                                <router-link to="#">
+                                    <unicon name="ellipsis-h" width="18"></unicon>
+                                </router-link>
+                            </sdDropdown>
+                        </div>
+                    </div>
+                    <div class="content-not-installed content-action">
+                        <sdButton type="primary" size="sm" shape="circle" raised rounded> Install </sdButton>
+                        <div class="more">
+                            <sdDropdown :action="['click']" class="wide-dropdwon">
+                                <template #overlay>
+                                    <a-menu>
+                                        <a-menu-item>
+                                            <router-link to="#">Edit</router-link>
+                                        </a-menu-item>
+                                        <a-menu-item>
+                                            <router-link to="#">Delete</router-link>
+                                        </a-menu-item>
+                                        <a-menu-item>
+                                            <router-link to="#">View</router-link>
+                                        </a-menu-item>
+                                    </a-menu>
+                                </template>
+                                <router-link to="#">
+                                    <unicon name="ellipsis-h" width="18"></unicon>
+                                </router-link>
+                            </sdDropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </CardWrapper>
 </template>

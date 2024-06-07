@@ -3,10 +3,10 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useFilterSearchByCustomerStore = defineStore('filter-search-by-customer', () => {
-	const customer = ref<CustomerSelectComponent>();
+    const customer = ref<CustomerSelectComponent>();
 
-	return {
-		//State properties
-		customer,
-	};
+    return {
+        //State properties
+        customer,
+    };
 });

@@ -10,21 +10,21 @@ const { saleConditions } = storeToRefs(useSaleConditionStore());
 const { setSaleConditions } = useSaleConditionStore();
 
 export const useSaleConditionComposable = () => {
-	const { CompanyGetter } = useCompanyComposable();
+    const { CompanyGetter } = useCompanyComposable();
 
-	const fetchSaleConditions = () => {
-		return useQuery(['sale-conditions'], () => getSaleConditions(CompanyGetter.value.id), {
-			onSuccess(data: AxiosResponse<SaleCondition[]>) {
-				const { data: SaleCondition } = data;
+    const fetchSaleConditions = () => {
+        return useQuery(['sale-conditions'], () => getSaleConditions(CompanyGetter.value.id), {
+            onSuccess(data: AxiosResponse<SaleCondition[]>) {
+                const { data: SaleCondition } = data;
 
-				setSaleConditions(SaleCondition);
-			},
-			staleTime: 1000 * 60 * 60,
-		});
-	};
+                setSaleConditions(SaleCondition);
+            },
+            staleTime: 1000 * 60 * 60,
+        });
+    };
 
-	return {
-		saleConditions,
-		fetchSaleConditions,
-	};
+    return {
+        saleConditions,
+        fetchSaleConditions,
+    };
 };

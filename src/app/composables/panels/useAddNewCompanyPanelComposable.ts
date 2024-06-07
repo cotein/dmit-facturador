@@ -8,13 +8,13 @@ const { AddNewCompany, addNewCompany, EditCompanyPanel } = storeToRefs(store);
 const { openAddNewCompanyPanel, closeAddNewCompanyPanel, openEditCompanyPanel, closeEditCompanyPanel } = store;
 
 export const useAddNewCompanyPanelComposable = () => {
-	return {
-		addNewCompany,
-		openAddNewCompanyPanel,
-		closeAddNewCompanyPanel,
-		openEditCompanyPanel,
-		closeEditCompanyPanel,
-		EditCompanyPanel,
-		AddNewCompany,
-	};
+    return {
+        addNewCompany,
+        openAddNewCompanyPanel,
+        closeAddNewCompanyPanel,
+        openEditCompanyPanel,
+        closeEditCompanyPanel,
+        EditCompanyPanel,
+        AddNewCompany,
+    };
 };

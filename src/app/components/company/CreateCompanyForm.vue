@@ -4,5 +4,5 @@ import FormWww from './FormWww.vue';
 </script>
 
 <template>
-	<FormWww />
+    <FormWww />
 </template>

@@ -3,20 +3,20 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 export const useCategoryStore = defineStore('categories', () => {
-	const categories = ref<Category[]>([]); //se utiliza para los componentes cascader
+    const categories = ref<Category[]>([]); //se utiliza para los componentes cascader
 
-	const rawCategories = ref<CategoryRawData[]>([]);
+    const rawCategories = ref<CategoryRawData[]>([]);
 
-	const setCategories = (value: Category[]) => {
-		categories.value = value;
-	};
+    const setCategories = (value: Category[]) => {
+        categories.value = value;
+    };
 
-	return {
-		//State properties
-		//Actions
-		setCategories,
-		rawCategories,
-		//Getters
-		CategoriesGetter: computed(() => categories.value),
-	};
+    return {
+        //State properties
+        //Actions
+        setCategories,
+        rawCategories,
+        //Getters
+        CategoriesGetter: computed(() => categories.value),
+    };
 });

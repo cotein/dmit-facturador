@@ -8,13 +8,13 @@ const { vouchers } = storeToRefs(useAfipVoucherStore());
 const { setVouchersAction } = useAfipVoucherStore();
 
 export const useVoucherComposable = () => {
-	//defino el store
-	const { isLoading } = useQuery(['afip-voucher'], () => apiAfipGetVouchers(), {
-		cacheTime: Infinity,
+    //defino el store
+    const { isLoading } = useQuery(['afip-voucher'], () => apiAfipGetVouchers(), {
+        cacheTime: Infinity,
 
-		onSuccess(data: AfipIva[]) {
-			setVouchersAction(data);
-		},
-	});
-	return { vouchers };
+        onSuccess(data: AfipIva[]) {
+            setVouchersAction(data);
+        },
+    });
+    return { vouchers };
 };
