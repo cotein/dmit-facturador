@@ -1,6 +1,6 @@
 <template>
+    <div id="preloader" v-if="isLoading"></div>
     <a-layout>
-        <div id="preloader" v-if="isLoading"></div>
         <header id="header" class="fixed-top">
             <div class="container d-flex align-items-center" v-if="!isLoading">
                 <h1 class="logo me-auto"><a href="www.dmit.ar">DMIT</a><small> Facturador en línea</small></h1>
@@ -546,7 +546,9 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-    isLoading.value = false;
+    setTimeout(() => {
+        isLoading.value = false;
+    }, 1000);
 });
 </script>
 <style scoped>
