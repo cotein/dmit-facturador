@@ -59,8 +59,9 @@ const onSubmit = async () => {
         const data = Object.assign(companyForm.value, {
             id: CompanyGetter.value?.id,
             inscription: inscription,
+            cuit: CompanyGetter.value?.cuit,
         });
-        console.log('🚀 ~ onSubmit ~ www:', data);
+
         emit('submitCompanyForm', data);
     }
 };
