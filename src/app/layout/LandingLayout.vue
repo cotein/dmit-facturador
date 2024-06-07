@@ -479,8 +479,8 @@
         <!-- End Footer -->
 
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center"
-            ><i class="bi bi-arrow-up-short"></i
-        ></a>
+            ><i class="bx bx-up-arrow-alt"></i>
+        </a>
     </a-layout>
 </template>
 <script lang="ts" setup>
@@ -498,14 +498,14 @@ onBeforeMount(() => {
     }
     const css: string[] = [
         `${path}/css/style.css`,
-        'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i',
-        `${path}/bootstrap/css/bootstrap.min.css`,
-        `${path}/bootstrap-icons/bootstrap-icons.css`,
+        //'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Jost:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i',
+        //`${path}/bootstrap/css/bootstrap.min.css`,
+        //`${path}/bootstrap-icons/bootstrap-icons.css`,
         /*    `${path}/bootstrap-icons/fonts/bootstrap-icons.woff`,
         `${path}/bootstrap-icons/fonts/bootstrap-icons.woff2`, */
         `${path}/boxicons/css/boxicons.min.css`,
-        `${path}/remixicon/remixicon.css`,
-        `${path}/swiper/swiper-bundle.min.css`,
+        //`${path}/remixicon/remixicon.css`,
+        //`${path}/swiper/swiper-bundle.min.css`,
     ];
 
     css.forEach((c) => {
@@ -520,20 +520,20 @@ onBeforeMount(() => {
     });
 
     const script: string[] = [
-        `${path}/bootstrap/js/bootstrap.bundle.min.js`,
-        `${path}/isotope-layout/isotope.pkgd.min.js`,
-        `${path}/php-email-form/validate.js`,
-        `${path}/swiper/swiper-bundle.min.js`,
-        `${path}/waypoints/noframework.waypoints.js`,
         `${path}/js/main.js`,
+        //`${path}/bootstrap/js/bootstrap.bundle.min.js`,
+        //`${path}/isotope-layout/isotope.pkgd.min.js`,
+        //`${path}/php-email-form/validate.js`,
+        //`${path}/swiper/swiper-bundle.min.js`,
+        `${path}/waypoints/noframework.waypoints.js`,
     ];
 
     script.forEach((s) => {
         const script = document.createElement('script');
         script.src = s;
-        if (s === `${path}/bootstrap/js/bootstrap.bundle.min.js` || `${path}/swiper/swiper-bundle.min.js`) {
+        /* if (s === `${path}/bootstrap/js/bootstrap.bundle.min.js` || `${path}/swiper/swiper-bundle.min.js`) {
             script.defer = true;
-        }
+        } */
         document.head.appendChild(script);
     });
 
