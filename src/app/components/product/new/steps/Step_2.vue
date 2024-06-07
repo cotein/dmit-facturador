@@ -1,3 +1,4 @@
+<!-- eslint-disable indent -->
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount, onMounted, computed } from 'vue';
 import { useProductComposable } from '@/app/composables/product/useProductComposable';
@@ -105,12 +106,12 @@ const validateForm = async () => {
 
 const IvaZeroPercent = computed(() => {
     switch (CompanyGetter.value?.inscription_id) {
-    case AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO:
-        return true;
-    case AFIP_INSCRIPTION.IVA_SUJETO_EXENTO:
+        case AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO:
             return true;
-    default:
-        return false;
+        case AFIP_INSCRIPTION.IVA_SUJETO_EXENTO:
+            return true;
+        default:
+            return false;
     }
 });
 const { IvasGetter } = useIvaComposable();
