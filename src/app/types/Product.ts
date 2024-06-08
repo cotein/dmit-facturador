@@ -49,6 +49,7 @@ export type ProductOnInvoiceTable = {
         percentage: number;
         value: number;
     };
+    comeFrom?: string;
 };
 
 export type ProductTransformer = {

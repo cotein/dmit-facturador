@@ -122,7 +122,7 @@ onBeforeMount(() => {
 
 onMounted(() => {
     if (CompanyGetter.value?.inscription_id === AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO) {
-        productStore.product.iva = AFIP_IVAS.AFIP_CODE_CERO;
+        productStore.product.iva = AFIP_IVAS.AFIP_ID_CERO;
     }
 });
 

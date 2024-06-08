@@ -1,13 +1,5 @@
 <template>
     <div>
-        <!-- <span
-			v-if="invoice.customer.afip_inscription.id === AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO"
-			class="product-total-price"
-			>{{ $filters.formatCurrency(props.record.unit) }}</span
-		>-->
-        <!-- <span v-if="!edit"  class="product-unit">{{
-      $filters.formatCurrency(props.record.unit)
-    }}</span> -->
         <a-input
             @input="input"
             :value="inputValue"
@@ -23,17 +15,18 @@
 import type { ProductOnInvoiceTable } from '@/app/types/Product';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { onlyNumeric, selectText } from '@/app/helpers/onlyNumbers';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
+import { onMounted } from 'vue';
 
 const { invoiceTableData } = useInvoiceComposable();
 
-const edit = ref<boolean>(false);
 type Props = {
     record: ProductOnInvoiceTable;
     index: number;
 };
 
 const inputValue = ref<any>();
+
 const props = withDefaults(defineProps<Props>(), {
     record: undefined,
     index: undefined,
@@ -58,6 +51,13 @@ const formatCurrency = (e: Event) => {
         inputValue.value = target.value;
     }
 };
+
+onMounted(() => {
+    inputValue.value = new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+    }).format(props.record.unit);
+});
 </script>
 
 <style scoped>

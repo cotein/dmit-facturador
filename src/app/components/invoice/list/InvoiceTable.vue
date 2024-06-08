@@ -174,7 +174,7 @@ const { customer } = storeToRefs(useFilterSearchByCustomerStore());
 const { currentPage, itemsPerPage, totalPages, status_id } = storeToRefs(useInvoiceListStore());
 
 type Props = {
-    list: InvoiceList | [];
+    list: InvoiceList;
     loading: boolean;
     viewSearch: boolean;
     viewButtonsColumn: boolean;
@@ -182,7 +182,7 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {
-    list: [],
+    list: [] as InvoiceList[],
     loading: false,
     viewSearch: true,
     viewButtonsColumn: true,
@@ -195,7 +195,7 @@ type InvoiceTableColumn = {
     key: string;
     sorter?: any;
 };
-const pageSizeOptions = ref<string[]>(['10', '20', '30', '40', '50', '100']);
+const pageSizeOptions = ref<string[]>(['2', '10', '20', '30', '40', '50', '100']);
 const filterKey = ref(['Adeudada', 'Parcialmente Cancelada', 'Cancelada']);
 const stateValue = ref('');
 const sortDefault = ref();
@@ -254,6 +254,9 @@ const invoiceTableColumns: InvoiceTableColumn[] = [
         key: 'date',
         sorter: {
             compare: (a: InvoiceList, b: InvoiceList) => {
+                if (!a.voucher || !a.voucher.cbte_fch || !b.voucher || !b.voucher.cbte_fch) {
+                    return 1;
+                }
                 const dayA = dayjs(a.voucher.cbte_fch);
 
                 const dayB = dayjs(b.voucher.cbte_fch);
@@ -278,6 +281,9 @@ const invoiceTableColumns: InvoiceTableColumn[] = [
         key: 'value',
         sorter: {
             compare: (a: InvoiceList, b: InvoiceList) => {
+                if (!a.voucher || !a.voucher.cbte_fch || !b.voucher || !b.voucher.cbte_fch) {
+                    return 1;
+                }
                 if (a.voucher.total < b.voucher.total) {
                     return -1;
                 }
@@ -307,7 +313,16 @@ if (props.isSale) {
 }
 
 const showTotal = (totalPages: number, range: [number, number]) => {
-    return `${range[0]}-${range[1]} de ${totalPages} comprobantes`;
+    totalPages = Number(totalPages);
+
+    // Convertir los elementos de range a números y asegurarse de que siempre hay exactamente dos elementos
+    const newRange: [number, number] = [Number(range[0]), Number(range[1])];
+
+    // Comprobar si los datos son números válidos
+    if (isNaN(totalPages) || newRange.some(isNaN)) {
+        return 'Cargando...';
+    }
+    return `${newRange[0]}-${newRange[1]} de ${totalPages} comprobantes`;
 };
 
 const changeCurrentPage = (current: number, pageSize: number) => {
@@ -341,7 +356,7 @@ const rowSelection = {
     onSelect: (record: any, selected: boolean, selectedRows: InvoiceList) => {
         invoiceForNotaCredito.value = selectedRows;
     },
-    onSelectAll: (selected: boolean, selectedRows: InvoiceList, changeRows: any[]) => {
+    onSelectAll: (selected: boolean, selectedRows: InvoiceList) => {
         invoiceForNotaCredito.value = selectedRows;
     },
 };

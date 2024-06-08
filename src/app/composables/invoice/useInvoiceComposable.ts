@@ -153,7 +153,19 @@ export const useInvoiceComposable = () => {
             return response;
         },
         {
-            onSuccess: (data, vars, context) => {
+            onSuccess: (data) => {
+                if (data && data.data && data.data.invoice[0]) {
+                    const newInvoice = data.data.invoice[0];
+                    if (isProxy(invoiceList.value)) {
+                        const list = JSON.parse(JSON.stringify(invoiceList.value));
+                        list.unshift(newInvoice);
+                        invoiceList.value = list;
+                    } else {
+                        invoiceList.value.unshift(newInvoice);
+                    }
+                }
+            },
+            /* onSuccess: (data) => {
                 if (isProxy(invoiceList.value)) {
                     const list = JSON.parse(JSON.stringify(invoiceList.value));
 
@@ -161,9 +173,9 @@ export const useInvoiceComposable = () => {
 
                     invoiceList.value = list;
                 } else {
-                    invoiceList.value.unshift(data.data.invoice[0]);
+                        invoiceList.value.unshift(data.data.invoice[0]);
                 }
-            },
+            }, */
         },
     );
 

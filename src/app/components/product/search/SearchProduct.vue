@@ -75,7 +75,7 @@ const selectProduct = (id: number, product: ProductTransformer) => {
     priceList.value = product.price_list;
 };
 
-const selectPriceList = (id: number, _: any) => {
+const selectPriceList = (id: number) => {
     const index = priceList.value.findIndex((pl) => pl.id === id);
 
     productOnInvoiceTable.value.priceList = priceList.value[index];
@@ -92,6 +92,9 @@ const selectPriceList = (id: number, _: any) => {
 };
 
 const fetchProducts = async (name: string) => {
+    if (!CompanyGetter.value) {
+        return;
+    }
     const { data } = (await getProducts(CompanyGetter.value.id, name).catch((e) => {})) || {
         data: [],
     };

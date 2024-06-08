@@ -36,7 +36,7 @@ export const useProductStore = defineStore('product', () => {
         product.critical_stock = 1;
         product.discount_amount = 0;
         product.discount_percentage = 0;
-        product.iva = 5;
+        product.iva = AFIP_IVAS.AFIP_ID_VEINTI_UNO;
         product.meters_by_unity = 0;
         product.name = '';
         product.pictures = [];

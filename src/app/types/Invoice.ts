@@ -1,10 +1,10 @@
 import type { CbteAsoc, PeriodoAsoc } from './Afip';
 
 export type Address = {
-    city: string;
-    street: string;
-    cp: string;
-    state: string;
+    city?: string;
+    street?: string;
+    cp?: string;
+    state?: string;
 };
 
 export type Company = {
@@ -15,9 +15,9 @@ export type Company = {
     cuit: string;
     afipInscription: string;
     afipDocument: string;
-    activity_init: string;
-    iibb: string;
-    address: Address;
+    activity_init?: string;
+    iibb?: string;
+    address?: Address;
 };
 
 export type Customer = {
@@ -26,11 +26,11 @@ export type Customer = {
     last_name?: string; // Optional property
     fantasy_name: string;
     cuit: string;
-    afipInscription: string;
-    afipInscription_id: number;
-    afipDocument: string;
-    afipDocTipo: number;
-    address: Address;
+    afipInscription?: string;
+    afipInscription_id?: number;
+    afipDocument?: string;
+    afipDocTipo?: number;
+    address?: Address;
 };
 
 export type Voucher = {
@@ -75,7 +75,7 @@ export type InvoiceList = {
     id: number;
     company: Company;
     customer: Customer;
-    voucher: Voucher;
+    voucher?: Voucher;
     items: Item[];
     comment: string;
 };
