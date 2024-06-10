@@ -52,6 +52,7 @@
 		"svgmap": "^2.10.1",
 		"swiper": "8.4.5",
 		"v-calendar": "3.0.0-alpha.8",
+		"vite-plugin-compression": "^0.5.1",
 		"vue": "^3.3.4",
 		"vue-google-charts": "^1.1.0",
 		"vue-inline-svg": "^2.1.3",
