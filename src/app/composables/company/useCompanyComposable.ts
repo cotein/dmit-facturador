@@ -1,6 +1,5 @@
 import 'ant-design-vue/lib/message/style/index.css';
 import 'ant-design-vue/lib/notification/style/index.css';
-import { notification } from 'ant-design-vue';
 import { ref, reactive } from 'vue';
 import { saveCompany, updateCompany } from '@/api/company/company-api';
 import { storeToRefs } from 'pinia';

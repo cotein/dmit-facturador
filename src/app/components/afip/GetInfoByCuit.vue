@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { reactive, ref, computed, type UnwrapRef } from 'vue';
+import { ref, computed } from 'vue';
 import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
 import { apiAfipGetCompanyDataByCuit } from '@/api/afip/afip-padron';
-import { message } from 'ant-design-vue';
-import { TypeCompany, type Sujeto } from '@/app/types/Company';
+import { TypeCompany } from '@/app/types/Constantes';
 import type { DomicilioFiscal, IdPersonaListReturn, Impuesto, PersonaReturn } from '@/app/types/Afip';
 import { useAddressStore } from '@/app/store/address/address-store';
 import { onUnmounted } from 'vue';
@@ -46,12 +45,12 @@ const validateCuit = (rule: any, value: any) => {
 const setAfipInscriptionType = (personaReturn: any) => {
     personaReturn.datosRegimenGeneral.impuesto.map((impuesto: Impuesto) => {
         switch (impuesto.descripcionImpuesto) {
-        case 'IVA':
-            sujeto.value.inscription = AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO;
-            break;
-        case 'IVA EXENTO':
-            sujeto.value.inscription = AFIP_INSCRIPTION.IVA_SUJETO_EXENTO;
-            break;
+            case 'IVA':
+                sujeto.value.inscription = AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO;
+                break;
+            case 'IVA EXENTO':
+                sujeto.value.inscription = AFIP_INSCRIPTION.IVA_SUJETO_EXENTO;
+                break;
             // puedes agregar más casos aquí si es necesario
         }
     });

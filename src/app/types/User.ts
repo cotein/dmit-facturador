@@ -35,6 +35,7 @@ export interface LoggedUser {
     isActive: boolean;
     companies: Company[];
     avatar?: string;
+    userLevel: number;
 }
 
 export interface Cuit {

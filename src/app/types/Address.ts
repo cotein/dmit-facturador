@@ -1,5 +1,5 @@
 export interface Address {
-    state_id: number | '';
+    state_id: number | undefined;
     city: string;
     street: string;
     cp: string;

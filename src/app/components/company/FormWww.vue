@@ -4,7 +4,7 @@ import { Main, DatePickerWrapper } from '@/views/styled';
 import { ref, watch, defineEmits, onMounted } from 'vue';
 import locale from 'ant-design-vue/es/date-picker/locale/es_ES';
 import AddressForm from '../address/AddressForm.vue';
-import { TypeCompany } from '@/app/types/Company';
+import { TypeCompany } from '@/app/types/Constantes';
 import 'ant-design-vue/lib/message/style/index.css';
 import 'ant-design-vue/lib/notification/style/index.css';
 import GetInfoByCuit from '../afip/GetInfoByCuit.vue';
@@ -14,18 +14,18 @@ import { useAddressComposable } from '@/app/composables/address/useAddressCompos
 import { useInscriptionsComposable } from '@/app/composables/afip/useInscriptionsComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import type { PersonaReturn } from '@/app/types/Afip';
-import type { Impuesto } from '@/app/types/Afip';
 import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
 import { useAddressStore } from '@/app/store/address/address-store';
 import { storeToRefs } from 'pinia';
 import { showMessage } from '@/app/helpers/mesaages';
 
-const { sujeto } = usePadronAfipStore();
+const { sujeto } = storeToRefs(usePadronAfipStore());
 const { lastNameIsRequired, rules, companyForm, CompanyGetter } = useCompanyComposable();
 const { UserGetter } = useUserComposable();
 const { isLoading: inscriptionLoading, store } = useInscriptionsComposable();
 const { isValid } = useAddressComposable();
 const { addressInStore } = storeToRefs(useAddressStore());
+
 interface Props {
     loadingButton: boolean;
     isSaveButton: boolean;
@@ -49,20 +49,24 @@ const onSubmit = async () => {
     });
 
     if (validate) {
-        companyForm.value.cuit = sujeto.cuit;
+        companyForm.value.cuit = sujeto.value.cuit;
         companyForm.value.address = addressInStore.value;
         let inscription: any = companyForm.value.inscription;
 
         if (!Number.isInteger(inscription)) {
             inscription = CompanyGetter.value?.inscription_id;
         }
-        const data = Object.assign(companyForm.value, {
-            id: CompanyGetter.value?.id,
-            inscription: inscription,
-            cuit: CompanyGetter.value?.cuit,
-        });
 
-        emit('submitCompanyForm', data);
+        if (CompanyGetter.value != undefined) {
+            const data = Object.assign(companyForm.value, {
+                id: CompanyGetter.value?.id,
+                inscription: inscription,
+                cuit: CompanyGetter.value?.cuit,
+            });
+            emit('submitCompanyForm', data);
+        } else {
+            emit('submitCompanyForm', companyForm.value);
+        }
     }
 };
 
@@ -75,12 +79,14 @@ const getTipoPersona = (personaReturn: PersonaReturn): string => {
 };
 
 watch(
-    () => sujeto, //cuanod cambia el valor de sujeto (cuit)
+    () => sujeto.value, //cuanod cambia el valor de sujeto (cuit)
     (newValue) => {
         const afipData = newValue.afip_data as PersonaReturn;
         const CONSUMIDOR_FINAL = 5;
         companyForm.value.name = newValue.name;
-        companyForm.value.cuit_id = newValue.cuit_id;
+        if (newValue.cuit_id !== undefined) {
+            companyForm.value.cuit_id = newValue.cuit_id;
+        }
         companyForm.value.lastName = newValue.lastName;
         //companyForm.value.inscription = newValue.inscription;
         companyForm.value.afip_data = afipData;
@@ -102,18 +108,7 @@ watch(
 
         if (afipData && afipData.datosMonotributo) {
             companyForm.value.inscription = AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO;
-        } else {
-            const impuestos = afipData.datosRegimenGeneral.impuesto;
-
-            if (Array.isArray(impuestos)) {
-                impuestos.forEach((impuesto: Impuesto) => {
-                    if (impuesto.descripcionImpuesto === 'IVA') {
-                        companyForm.value.inscription = AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO;
-                    }
-                });
-            }
         }
-
         if (newValue.inscription === CONSUMIDOR_FINAL) {
             resetForm();
             showMessage('warning', 'La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa', 5);

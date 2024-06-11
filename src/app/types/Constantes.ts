@@ -81,6 +81,14 @@ export const AFIP_IVA: Iva[] = [
     { code: '9', name: '2,50%', percentage: 2.5 },
 ];
 
+export const TypeCompany = {
+    JURIDICA: 1 as 1,
+    FISICA: 2 as 2,
+    UNDEFINED: undefined as undefined,
+};
+
+export type TypeCompany = (typeof TypeCompany)[keyof typeof TypeCompany];
+
 // SE UTILIZA PARA DEFINIR EL HEIGHT Y WIDTH DEL DIV DONDE SE
 // IMPRIMIRAN LOS COMENTARIOS DE LOS COMPROBANTES DE VENTAS
 export const HTML2CANVAS_SCALE = {
@@ -90,3 +98,9 @@ export const HTML2CANVAS_SCALE = {
         height: '500px',
     },
 };
+
+export enum TYPE_USER {
+    ROOT = 1000,
+    ADMINISTRADOR = 900,
+    USUARIO = 100,
+}

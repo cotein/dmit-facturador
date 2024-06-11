@@ -12,6 +12,7 @@ export type Sujeto = {
     afip_data: PersonaReturn | undefined;
     fantasy_name?: string;
     type_customer?: number | null;
+    type_company?: number;
 };
 
 export type CompanyRawData = Sujeto & {
@@ -28,11 +29,6 @@ export type CompanyRawData = Sujeto & {
 };
 
 export type CustomerRawData = Sujeto;
-
-export enum TypeCompany {
-    JURIDICA = 1,
-    FISICA = 2,
-}
 
 export type Company = CompanyRawData & {
     id?: number;
