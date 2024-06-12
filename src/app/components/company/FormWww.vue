@@ -264,7 +264,9 @@ onMounted(() => {
                                 <a-typography-title :level="4">Entorno de Facturación</a-typography-title>
                                 <a-radio-group v-model:value="companyForm.afip_environment" button-style="solid">
                                     <a-radio-button value="production">Producción</a-radio-button>
-                                    <a-radio-button value="testing">Testing</a-radio-button>
+                                    <a-radio-button value="testing" v-if="UserGetter.userLevel === 1000"
+                                        >Testing</a-radio-button
+                                    >
                                 </a-radio-group>
                                 <!-- <div class="ninjadash_agree-check">
 									<a-form-item>

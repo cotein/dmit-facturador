@@ -37,7 +37,9 @@ onMounted(() => {
     >
         <Suspense>
             <template #default>
-                <RouterView />
+                <transition name="fade" mode="out-in">
+                    <RouterView />
+                </transition>
             </template>
             <template #fallback>
                 <div class="spin">

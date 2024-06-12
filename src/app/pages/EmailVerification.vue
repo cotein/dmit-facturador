@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { MaintananceWrapper } from './../../views/pages/style';
+import { MaintananceWrapper } from './style';
 import { useRoute, useRouter } from 'vue-router';
 import { onMounted } from 'vue';
 import { apiEmailVerification, apiEmailResendVerification } from './../../api/auth/email-verification-api';
@@ -50,22 +50,23 @@ import { notification } from 'ant-design-vue';
 import { ref } from 'vue';
 import 'ant-design-vue/lib/message/style/index.css';
 import 'ant-design-vue/lib/notification/style/index.css';
+import { showMessage } from '../helpers/mesaages';
+import type { AxiosError } from 'axios';
 
 const router = useRouter();
 const spinning = ref<boolean>(false);
 const sendVerificationSpinner = ref<boolean>(false);
 const sendVerificationButtonDisabled = ref<boolean>(true);
 const route = useRoute();
+const id = route.params.id;
+const hash = route.params.hash;
+const signature = route.query.signature;
 
 const goToLogin = () => {
     //window.location.replace('http://localhost:5173/auth/login');
     window.location.replace(`${import.meta.env.VITE_URL}/auth/login`);
 };
 const resend = async () => {
-    const id = route.query.email_verify_url
-        ?.toString()
-        .substring(18, route.query.email_verify_url?.toString().indexOf('?'));
-
     sendVerificationSpinner.value = true;
 
     const { data } = await apiEmailResendVerification(id)
@@ -96,47 +97,41 @@ const resend = async () => {
 };
 onMounted(async () => {
     spinning.value = true;
+    const url = `/email/verify/${id}/${hash}?signature=${signature}`;
 
-    const url = `${route.query.email_verify_url}&hash=${route.query.hash}&signature=${route.query.signature}`;
+    try {
+        const response = await apiEmailVerification(url);
 
-    const { data } = await apiEmailVerification(url).catch((err) => {
-        if (err.response) {
-            if (err.response.status === 403) {
-                notification['error']({
-                    message: 'Verificación de cuenta',
-                    description: 'Token vencido, vuelva a envíar la solicitud de confirmación de cuenta.',
-                    duration: 6,
-                });
-                sendVerificationButtonDisabled.value = false;
-            }
+        if (response && response.data) {
+            showMessage('success', 'Cuenta verificada, inicie sesión en el Sistema', 3);
+
+            router.replace({ name: 'login' });
         }
+    } catch (error) {
+        if ((error as AxiosError)?.response) {
+            // La petición fue hecha y el servidor respondió con un estado de error
+            showMessage(
+                'error',
+                `Ha ocurrido un error inesperado, por favor comuniquese al soporte técnico. ${
+                    (error as AxiosError)?.response?.data
+                }`,
+                5,
+            );
+            console.log((error as AxiosError).response);
+        } else if ((error as AxiosError).request) {
+            // La petición fue hecha pero no se recibió ninguna respuesta
+            showMessage('error', `La petición fue hecha pero no se recibió ninguna respuesta`, 5);
+            console.log((error as AxiosError).request);
+        } else {
+            // Algo sucedió en la configuración de la petición que provocó un error
+            showMessage('error', `Algo sucedió en la configuración de la petición que provocó un error`, 5);
+            console.log('Error', (error as AxiosError).message);
+        }
+        console.log('🚀 ~ onMounted ~ error:', error);
+        sendVerificationSpinner.value = false;
+    } finally {
+        // Este bloque se ejecutará independientemente de si se produjo una excepción o no
         spinning.value = false;
-    });
-
-    if (data) {
-        localStorage.setItem('www', JSON.stringify(data));
-        const closeWindow = new Promise((resolve, reject) => {
-            notification['success']({
-                message: 'Verificación de cuenta',
-                description: data,
-                duration: 5,
-            });
-
-            spinning.value = false;
-
-            if (data === 'Debe reenviar la petición de verificación de cuenta') {
-                setTimeout(() => {
-                    reject();
-                }, 5200);
-            }
-            if (data === 'Cuenta ya verificada, inicie sesión en el Sistema') {
-                setTimeout(() => {
-                    resolve(true);
-                }, 5200);
-            }
-        });
-
-        closeWindow.then(() => router.replace({ name: 'login' })).catch(() => (sendVerificationSpinner.value = false));
     }
 });
 </script>

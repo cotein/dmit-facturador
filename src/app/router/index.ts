@@ -17,9 +17,9 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         name: 'email-verify',
-        path: '/email/verify',
+        path: '/email/verify/:id/:hash',
         component: () => import('@/app/pages/EmailVerification.vue'),
-        props: (route) => ({ query: route.query.q }),
+        //props: (route) => ({ id: route.params.id, query: route.query }),
     },
     {
         name: 'delegate-afip-service',

@@ -6,6 +6,7 @@ import { message } from 'ant-design-vue';
  * @param {('success' | 'error' | 'info' | 'warning' | 'loading')} type - El tipo de mensaje que se mostrará.
  * @param {string} msg - El mensaje que se mostrará.
  * @param {number} duration - La duración durante la cual se mostrará el mensaje.
+ * @param {string} title - Algún título para el mensaje.
  *
  * @example
  * showMessage('success', 'Operación exitosa', 3);
