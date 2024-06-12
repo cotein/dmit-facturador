@@ -87,7 +87,7 @@ const onEventChange = {
                                     <img
                                         :src="
                                             !darkMode
-                                                ? $environment.VITE_SRC_ASSETS + `/img/Logo_Dark.svg`
+                                                ? $environment.VITE_SRC_ASSETS + `/img/dmit-logo.png`
                                                 : $environment.VITE_SRC_ASSETS + `/img/Logo_White.svg`
                                         "
                                         alt="logo"

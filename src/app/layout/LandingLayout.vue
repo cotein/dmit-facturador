@@ -5,8 +5,10 @@
             <div class="container d-flex align-items-center" v-if="!isLoading">
                 <h1 class="logo me-auto"><a href="www.dmit.ar">DMIT</a><small> Facturador en línea</small></h1>
                 <!-- Uncomment below if you prefer to use an image logo -->
-                <!-- <a href="www.dmit.ar" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
-
+                <!-- <a href="www.dmit.ar" class="logo me-auto"
+                    ><img :src="$environment.VITE_SRC_ASSETS + '/img/dmit-logo.png'" alt="" class="img-fluid"
+                /></a>
+ -->
                 <nav id="navbar" class="navbar">
                     <ul>
                         <li>
