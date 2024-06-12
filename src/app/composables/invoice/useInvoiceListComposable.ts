@@ -18,9 +18,9 @@ export const useInvoiceListComposable = () => {
         ['invoice-list', currentPage, itemsPerPage, customer, status_id, from, to],
         async () =>
             await getInvoiceList(
-                CompanyGetter.value!.id,
-                customer.value?.value,
-                status_id.value,
+                CompanyGetter.value!.id!,
+                customer.value?.value!,
+                status_id.value!,
                 from.value,
                 to.value,
                 currentPage.value,
@@ -29,14 +29,17 @@ export const useInvoiceListComposable = () => {
     );
 
     watch(data, (invoices) => {
-        if (invoices) {
-            const list = invoices.data.data;
+        if (invoices?.data) {
+            const { data: list, pagination } = invoices.data;
 
-            invoiceList.value = list;
+            if (list) {
+                invoiceList.value = list;
+            }
 
-            currentPage.value = invoices?.data.pagination.currentPage;
-
-            totalPages.value = invoices!.data.pagination.total;
+            if (pagination) {
+                currentPage.value = pagination.currentPage;
+                totalPages.value = pagination.total;
+            }
         }
     });
 
