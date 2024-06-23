@@ -1,42 +1,45 @@
 <template>
-    <a-button type="primary" @click="showDrawer">
-        <template #icon><PlusOutlined /></template>
-        Datos del Cliente
-    </a-button>
-    <a-drawer
-        title="Datos del Cliente"
-        :width="720"
-        :visible="visible"
-        :body-style="{ paddingBottom: '80px' }"
-        :footer-style="{ textAlign: 'right' }"
-        :maskClosable="false"
-        @close="onClose"
-        @afterVisibleChange="afterVisibleChange"
-    >
-        <a-form :model="invoice" :rules="rules" layout="vertical" ref="invoiceConfigForm" @submit="onClose">
-            <a-row :gutter="16">
-                <a-col :span="24">
-                    <a-form-item label="Buscar cliente" name="customer">
-                        <SearchCustomer />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="24">
-                    <a-form-item label="Seleccionar tipo de comprobante a relizar" name="voucher">
-                        <VoucherSelect />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="24">
-                    <a-form-item label="Concepto de facturación" name="Concepto">
-                        <a-radio-group v-model:value="invoice.Concepto" name="radioGroup">
-                            <a-radio v-for="(item, index) in BillingConcepts" :key="index" :value="item.value">{{
-                                item.key
-                            }}</a-radio>
-                        </a-radio-group>
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <!-- <a-row :gutter="16">
-				<a-col :span="24">
+    <a-row :gutter="30">
+        <a-col :sm="24" :lg="6" :xs="24">
+            <a-button type="primary" @click="showDrawer">
+                <template #icon><PlusOutlined /></template>
+                Datos del Cliente
+            </a-button>
+        </a-col>
+        <a-drawer
+            title="Datos del Cliente"
+            :width="720"
+            :visible="visible"
+            :body-style="{ paddingBottom: '80px' }"
+            :footer-style="{ textAlign: 'right' }"
+            :maskClosable="false"
+            @close="onClose"
+            @afterVisibleChange="afterVisibleChange"
+        >
+            <a-form :model="invoice" :rules="rules" layout="vertical" ref="invoiceConfigForm" @submit="onClose">
+                <a-row :gutter="16">
+                    <a-col :sm="24" :lg="24" :xs="24">
+                        <a-form-item label="Buscar cliente" name="customer">
+                            <SearchCustomer />
+                        </a-form-item>
+                    </a-col>
+                    <a-col :sm="24" :lg="24" :xs="24">
+                        <a-form-item label="Seleccionar tipo de comprobante a relizar" name="voucher">
+                            <VoucherSelect />
+                        </a-form-item>
+                    </a-col>
+                    <a-col :sm="24" :lg="24" :xs="24">
+                        <a-form-item label="Concepto de facturación" name="Concepto">
+                            <a-radio-group v-model:value="invoice.Concepto" name="radioGroup">
+                                <a-radio v-for="(item, index) in BillingConcepts" :key="index" :value="item.value">{{
+                                    item.key
+                                }}</a-radio>
+                            </a-radio-group>
+                        </a-form-item>
+                    </a-col>
+                </a-row>
+                <!-- <a-row :gutter="16">
+				<a-col :sm="24" :lg="24" :xs="24">
 					<a-form-item label="Detalle de la factura" name="type_details">
 						<a-radio-group v-model:value="invoice.type_details" name="radioGroup">
 							<a-radio value="1">Desea seleccionar productos</a-radio>
@@ -45,66 +48,69 @@
 					</a-form-item>
 				</a-col>
 			</a-row> -->
-            <a-row :gutter="16">
-                <a-col :span="12">
-                    <a-form-item label="Fecha Factura" name="date">
-                        <a-date-picker
-                            v-model:value="invoice.date"
-                            style="width: 100%"
-                            showToday
-                            format="DD-MM-YYYY"
-                            placeholder="Fecha de factura"
-                            @change="changeDate"
-                        />
-                    </a-form-item>
-                </a-col>
+                <a-row :gutter="16">
+                    <a-col :lg="12" :sm="24" :xs="24">
+                        <a-form-item label="Fecha Factura" name="date">
+                            <a-date-picker
+                                v-model:value="invoice.date"
+                                style="width: 100%"
+                                showToday
+                                format="DD-MM-YYYY"
+                                placeholder="Fecha de factura"
+                                @change="changeDate"
+                            />
+                        </a-form-item>
+                    </a-col>
 
-                <a-col :span="12">
-                    <a-form-item label="Condición de venta" name="SaleCondition">
-                        <SaleCondition />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="16">
-                <a-col :span="12">
-                    <a-form-item label="Modo de pago" name="paymentType">
-                        <PaymentTypes />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-row :gutter="16" v-if="invoice.Concepto != '1'">
-                <a-col :span="12">
-                    <a-form-item label="Fecha Servicios" name="servicesDate">
-                        <a-range-picker
-                            style="width: 100%"
-                            :format="dateFormat"
-                            v-model:value="serviceDate"
-                            :placeholder="['Fecha inicial', 'Fecha final']"
-                            @change="servDatesMethod"
-                        />
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                    <a-form-item label="Fecha vencimiento de pago" name="FchVtoPago">
-                        <a-date-picker
-                            v-model:value="invoice.dateVtoPago"
-                            style="width: 100%"
-                            showToday
-                            :format="dateFormat"
-                            placeholder="Vencimiento de pago"
-                            @change="servicesDateFchVtoPago"
-                        />
-                    </a-form-item>
-                </a-col>
-            </a-row>
-            <a-space>
-                <a-button @click="onCloseCancel">Cancelar</a-button>
-                <a-button type="primary" @click="onClose">Aceptar</a-button>
-            </a-space>
-        </a-form>
-        <template #extra> </template>
-    </a-drawer>
-    <DrawerAddCustomer />
+                    <a-col :lg="12" :sm="24" :xs="24">
+                        <a-form-item label="Condición de venta" name="SaleCondition">
+                            <SaleCondition />
+                        </a-form-item>
+                    </a-col>
+                </a-row>
+                <a-row :gutter="16">
+                    <a-col :lg="12" :sm="24" :xs="24">
+                        <a-form-item label="Modo de pago" name="paymentType">
+                            <PaymentTypes />
+                        </a-form-item>
+                    </a-col>
+                </a-row>
+                <a-row :gutter="16" v-if="invoice.Concepto != '1'">
+                    <a-col :lg="12" :sm="24" :xs="24">
+                        <a-form-item label="Fecha Servicios" name="servicesDate">
+                            <a-range-picker
+                                style="width: 100%"
+                                :format="dateFormat"
+                                v-model:value="serviceDate"
+                                :placeholder="['Fecha inicial', 'Fecha final']"
+                                @change="servDatesMethod"
+                            />
+                        </a-form-item>
+                    </a-col>
+                    <a-col :lg="12" :sm="24" :xs="24">
+                        <a-form-item label="Fecha vencimiento de pago" name="FchVtoPago">
+                            <a-date-picker
+                                v-model:value="invoice.dateVtoPago"
+                                style="width: 100%"
+                                showToday
+                                :format="dateFormat"
+                                placeholder="Vencimiento de pago"
+                                @change="servicesDateFchVtoPago"
+                            />
+                        </a-form-item>
+                    </a-col>
+                </a-row>
+                <a-space>
+                    <a-button @click="onCloseCancel">Cancelar</a-button>
+                    <a-button type="primary" @click="onClose">Aceptar</a-button>
+                </a-space>
+            </a-form>
+            <template #extra> </template>
+        </a-drawer>
+        <a-col :sm="24" :lg="6" :xs="24">
+            <DrawerAddCustomer />
+        </a-col>
+    </a-row>
 </template>
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';

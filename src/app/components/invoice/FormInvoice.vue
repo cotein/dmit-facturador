@@ -164,7 +164,7 @@ onUnmounted(() => {
 										</sdCards>
 									</div>
 								</a-col> -->
-                                    <a-col :lg="12" :xs="24">
+                                    <a-col :lg="12" :xs="24" :sm="24">
                                         <address class="invoice-customer">
                                             <sdHeading class="invoice-customer__title" as="h5"> Facturar a: </sdHeading>
                                             <p v-if="InvoiceGetter && InvoiceGetter.customer">
@@ -190,3 +190,28 @@ onUnmounted(() => {
         </Cards>
     </Main>
 </template>
+<style scoped>
+/* Para tablets en orientación landscape y desktops con el viewport menor a 1200px */
+@media (max-width: 1200px) {
+    .invoice-customer__title {
+        /* Estilos específicos para esta resolución aquí */
+        font-size: 18px;
+    }
+}
+
+/* Para tablets en orientación portrait y smartphones grandes con el viewport menor a 900px */
+@media (max-width: 900px) {
+    .invoice-customer__title {
+        /* Estilos específicos para esta resolución aquí */
+        font-size: 16px;
+    }
+}
+
+/* Para smartphones en orientación landscape y smartphones pequeños con el viewport menor a 600px */
+@media (max-width: 600px) {
+    .invoice-customer__title {
+        /* Estilos específicos para esta resolución aquí */
+        font-size: 12px;
+    }
+}
+</style>

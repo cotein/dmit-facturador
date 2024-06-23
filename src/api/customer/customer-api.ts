@@ -5,13 +5,9 @@ import type { Sujeto } from '@/app/types/Company';
 const URL = '/api/customer';
 
 export const saveCustomer = async (customer: Sujeto): Promise<AxiosResponse<Sujeto>> => {
-    try {
-        const response = await ApiHttp.post<Sujeto>(URL, { customer });
+    const response = await ApiHttp.post<Sujeto>(URL, { customer });
 
-        return response;
-    } catch (error) {
-        throw error;
-    }
+    return response;
 };
 
 export const getCustomers = async (company_id: number, name: string = '') => {

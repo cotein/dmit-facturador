@@ -14,7 +14,7 @@
                 action="http://localhost:8001/api/product/img"
                 :beforeUpload="beforeUpload"
                 :headers="{
-                    Authorization: `${UserTokenGetter.token_type} ${UserTokenGetter.access_token}`,
+                    Authorization: `${UserTokenGetter!.token_type} ${UserTokenGetter!.access_token}`,
                 }"
             >
                 <div v-if="fileList.length < 4">

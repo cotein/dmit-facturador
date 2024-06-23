@@ -10,6 +10,7 @@ import { getMyData } from '@/api/user/user-api';
 import 'ant-design-vue/lib/message/style/index.css';
 import 'ant-design-vue/lib/notification/style/index.css';
 import type { LoggedUser } from '@/app/types/User';
+import { showMessage } from '@/app/helpers/mesaages';
 
 const router = useRouter();
 const loginData = reactive<LoginDataOAuthToken>({
@@ -84,18 +85,10 @@ const login = async () => {
             setAvatar(user.avatar);
 
             if (user.isActive) {
-                notification['success']({
-                    message: 'Inicio de sesión',
-                    description: `Bienvenido`,
-                });
-
+                showMessage('success', 'Bienvenido', 2);
                 router.push({ name: 'Dashboard' });
             } else {
-                notification['error']({
-                    message: 'Inicio de sesión',
-                    description: `Usuario no activo`,
-                });
-
+                showMessage('error', 'Usuario no activo', 2);
                 router.push({ name: 'Home' });
             }
         }

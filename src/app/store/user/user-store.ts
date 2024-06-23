@@ -1,11 +1,11 @@
 import type { Company } from '@/app/types/Company';
-import type { LoggedUser } from '@/app/types/User';
+import type { LoggedUser, UserToken } from '@/app/types/User';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref } from 'vue';
 
 export const useUserStore = defineStore('user', () => {
     const user = reactive<LoggedUser | any>({});
-    const userToken = ref({});
+    const userToken = ref<UserToken>(undefined);
     const auth = ref<boolean>(false);
     const addNewCompany = ref<boolean>(false);
     const avatar = ref<string>('');

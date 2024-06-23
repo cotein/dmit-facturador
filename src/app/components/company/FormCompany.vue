@@ -38,35 +38,40 @@ const props = withDefaults(defineProps<Props>(), {
 
 const companyFormRef = ref();
 const emit = defineEmits(['submitCompanyForm']);
-
+const loading = ref(false);
 /**METHODS */
 const onSubmit = async () => {
-    if (!lastNameIsRequired.value) {
-        delete rules.lastName;
-    }
-    const validate = await companyFormRef.value.validate().catch((error: any) => {
-        console.log('error wwwwwwwwwww', error);
-    });
-
-    if (validate) {
-        companyForm.value.cuit = sujeto.value.cuit;
-        companyForm.value.address = addressInStore.value;
-        let inscription: any = companyForm.value.inscription;
-
-        if (!Number.isInteger(inscription)) {
-            inscription = CompanyGetter.value?.inscription_id;
+    loading.value = true;
+    try {
+        if (!lastNameIsRequired.value) {
+            delete rules.lastName;
         }
+        const validate = await companyFormRef.value.validate().catch((error: any) => {
+            console.log('error wwwwwwwwwww', error);
+        });
 
-        if (CompanyGetter.value != undefined) {
-            const data = Object.assign(companyForm.value, {
-                id: CompanyGetter.value?.id,
-                inscription: inscription,
-                cuit: CompanyGetter.value?.cuit,
-            });
-            emit('submitCompanyForm', data);
-        } else {
-            emit('submitCompanyForm', companyForm.value);
+        if (validate) {
+            companyForm.value.cuit = sujeto.value.cuit;
+            companyForm.value.address = addressInStore.value;
+            let inscription: any = companyForm.value.inscription;
+
+            if (!Number.isInteger(inscription)) {
+                inscription = CompanyGetter.value?.inscription_id;
+            }
+
+            if (CompanyGetter.value != undefined) {
+                const data = Object.assign(companyForm.value, {
+                    id: CompanyGetter.value?.id,
+                    inscription: inscription,
+                    cuit: CompanyGetter.value?.cuit,
+                });
+                emit('submitCompanyForm', data);
+            } else {
+                emit('submitCompanyForm', companyForm.value);
+            }
         }
+    } finally {
+        loading.value = false;
     }
 };
 
@@ -260,23 +265,21 @@ onMounted(() => {
                                         </a-form-item>
                                     </a-col>
                                 </a-row>
-                                <a-divider class="divider" />
-                                <a-typography-title :level="4">Entorno de Facturación</a-typography-title>
-                                <a-radio-group v-model:value="companyForm.afip_environment" button-style="solid">
-                                    <a-radio-button value="production">Producción</a-radio-button>
-                                    <a-radio-button value="testing" v-if="UserGetter.userLevel === 1000"
-                                        >Testing</a-radio-button
-                                    >
-                                </a-radio-group>
-                                <!-- <div class="ninjadash_agree-check">
-									<a-form-item>
-										<a-checkbox name="checkbox"> Agree to terms and conditions </a-checkbox>
-									</a-form-item>
-								</div> -->
-                                <a-divider class="divider" />
-                                <a-typography-title :level="4">Domicilio</a-typography-title>
-                                <a-row :gutter="30">
-                                    <a-col :md="4" :xs="24" :sm="24">
+                                <a-row :gutter="[20, 50]" align="middle">
+                                    <a-col :md="12" :xs="24" :sm="24">
+                                        <a-typography-title :level="4">Entorno de Facturación</a-typography-title>
+                                        <a-radio-group
+                                            v-model:value="companyForm.afip_environment"
+                                            button-style="solid"
+                                        >
+                                            <a-radio-button value="production">Producción</a-radio-button>
+                                            <a-radio-button value="testing" v-if="UserGetter.userLevel === 1000"
+                                                >Testing</a-radio-button
+                                            >
+                                        </a-radio-group>
+                                    </a-col>
+                                    <a-col :md="12" :xs="24" :sm="24">
+                                        <a-typography-title :level="4">Domicilio</a-typography-title>
                                         <a-form-item
                                             ref="address"
                                             name="address"
@@ -314,12 +317,7 @@ onMounted(() => {
                                     <!-- <sdButton type="primary" @click.prevent="onSubmit" class="ant-btn-primary">
 										Guardar
 									</sdButton> -->
-                                    <a-button
-                                        type="primary"
-                                        size="large"
-                                        :loading="props.loadingButton"
-                                        @click.prevent="onSubmit"
-                                    >
+                                    <a-button type="primary" size="large" :loading="loading" @click.prevent="onSubmit">
                                         <span>{{ props.isSaveButton ? 'Guardar datos' : 'Actualizar datos' }}</span>
                                     </a-button>
                                     <sdButton

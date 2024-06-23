@@ -9,7 +9,12 @@
             <TableWrapper>
                 <ProductTable>
                     <div class="table-invoice table-responsive">
-                        <a-table :dataSource="invoiceTableData" :columns="productTableColumns" :pagination="false">
+                        <a-table
+                            :dataSource="invoiceTableData"
+                            :columns="productTableColumns"
+                            :pagination="false"
+                            :scroll="{ x: '1000px' }"
+                        >
                             <template #bodyCell="{ column, record, index }">
                                 <template v-if="column.key === 'product'">
                                     <ProductItem :record="record" :index="index" />
@@ -231,7 +236,9 @@ const generateInvoice = async () => {
         invoice.value.comments = '';
 
         console.log('🚀 ~ generateInvoice ~ result.data.invoice[0]:', result.data.invoice[0]);
-        printPdf(result.data.invoice[0]);
+        if (result.data.invoice[0]) {
+            printPdf(result.data.invoice[0]);
+        }
     }
 };
 
@@ -258,4 +265,11 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+@media (max-width: 600px) {
+    .ant-table-cell {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+</style>

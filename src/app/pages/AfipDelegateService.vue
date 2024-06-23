@@ -46,12 +46,14 @@
                                     <unicon name="minus" v-else width="14"></unicon>
                                 </template>
                                 <a-collapse-panel header="Certificados digitales" key="1">
-                                    <p>
-                                        Los certificados digitales para el ambiente de producción se gestionan mediante
-                                        las aplicaciones web “Administrador de Certificados Digitales” y “Administrador
-                                        de Relaciones de Clave Fiscal”, disponibles en www.afip.gob.ar autenticándose
-                                        con clave fiscal.
-                                    </p>
+                                    <ol>
+                                        <li>Ingresar al sitio web de AFIP: https://www.afip.gob.ar/</li>
+                                        <li>Acceder al "Administrador de Relaciones de Clave Fiscal":</li>
+                                        <ul>
+                                            <li>En el menú superior, seleccionar "Mis Servicios".</li>
+                                            <li>Luego, hacer clic en "Administrador de Relaciones de Clave Fiscal".</li>
+                                        </ul>
+                                    </ol>
                                     <!-- <sdHeading as="h4">Was this article helpful?</sdHeading>
 									<div class="panel-actions">
 										<sdButton :outlined="true" type="success">

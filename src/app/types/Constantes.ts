@@ -4,7 +4,8 @@ export const COMPANY_MODEL: string = 'App/Model/Company';
 
 export const CUIT_ID: number = 25;
 
-export const URL_UPLOAD_AVATAR: string = 'http://localhost:8001/api/uploadAvatar';
+export const URL_UPLOAD_AVATAR: string = `${import.meta.env.VITE_URL_BASE_API}/api/uploadAvatar`;
+export const URL_UPLOAD_COMPANY_LOGO: string = `${import.meta.env.VITE_URL_BASE_API}/api/company/uploadLogo`;
 
 export enum CONCEPTO {
     PRODUCTOS = 1,

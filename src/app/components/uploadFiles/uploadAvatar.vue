@@ -8,7 +8,7 @@
         :show-upload-list="false"
         :action="URL_UPLOAD_AVATAR"
         :headers="{
-            Authorization: `${UserTokenGetter.token_type} ${UserTokenGetter.access_token}`,
+            Authorization: `${UserTokenGetter!.token_type} ${UserTokenGetter!.access_token}`,
         }"
         :before-upload="beforeUpload"
         @change="handleChange"
@@ -99,4 +99,3 @@ const beforeUpload = (file: any) => {
     max-height: 128px;
 }
 </style>
-@/app/types/Constantes

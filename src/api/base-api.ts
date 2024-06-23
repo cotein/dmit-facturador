@@ -1,4 +1,4 @@
-import type { UserTokenGetterType } from '@/app/types/User';
+import type { UserToken } from '@/app/types/User';
 import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
@@ -10,10 +10,16 @@ const userStore = useUserStore();
 axios.interceptors.request.use(
     function (config) {
         if (config.url?.includes('api')) {
-            const user: UserTokenGetterType | any = userStore.UserTokenGetter;
+            const user: UserToken | any = userStore.UserTokenGetter;
             config.headers['Accept'] = 'application/json';
-            config.headers['Content-Type'] = 'application/json';
+            //config.headers['Content-Type'] = 'application/json';
             config.headers['Authorization'] = `${user.token_type} ${user.access_token}`;
+
+            if (config.url.includes('upload')) {
+                config.headers['Content-Type'] = 'multipart/form-data';
+            } else {
+                config.headers['Content-Type'] = 'application/json';
+            }
         }
         return config;
     },

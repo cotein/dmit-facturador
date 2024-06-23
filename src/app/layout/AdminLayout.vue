@@ -85,6 +85,7 @@ const onEventChange = {
                                     to="/"
                                 >
                                     <img
+                                        id="logo"
                                         :src="
                                             !darkMode
                                                 ? $environment.VITE_SRC_ASSETS + `/img/dmit-logo.png`
@@ -245,6 +246,9 @@ const onEventChange = {
     padding-left: 1rem;
 }
 
+#logo {
+    padding-top: 1rem;
+}
 @media (max-width: 768px) {
     .company-name {
         font-size: 0.7rem;

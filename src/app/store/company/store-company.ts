@@ -104,6 +104,8 @@ export const useStoreCompany = defineStore('company', () => {
             pto_vta_recibo: company.pto_vta_recibo,
             pto_vta_remito: company.pto_vta_remito,
             type_company: company.type_company,
+            urlLogo: company.urlLogo,
+            logo_base64: company.logo_base64,
         });
 
         Object.assign(addressStore.addressInStore, {

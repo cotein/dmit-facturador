@@ -37,9 +37,13 @@ onMounted(() => {
     >
         <Suspense>
             <template #default>
-                <transition name="fade" mode="out-in">
-                    <RouterView />
-                </transition>
+                <!-- Actualización para usar slot props con <RouterView> -->
+                <RouterView v-slot="{ Component }">
+                    <transition name="fade" mode="out-in">
+                        <!-- Renderiza el componente de ruta actual -->
+                        <component :is="Component" />
+                    </transition>
+                </RouterView>
             </template>
             <template #fallback>
                 <div class="spin">

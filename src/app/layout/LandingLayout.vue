@@ -1,6 +1,6 @@
 <template>
     <div id="preloader" v-if="isLoading"></div>
-    <a-layout>
+    <a-layout v-else>
         <header id="header" class="fixed-top">
             <div class="container d-flex align-items-center" v-if="!isLoading">
                 <h1 class="logo me-auto"><a href="www.dmit.ar">DMIT</a><small> Facturador en línea</small></h1>
@@ -23,7 +23,9 @@
                         <li>
                             <a class="nav-link scrollto" href="#faq">Preguntas frecuentes</a>
                         </li>
-                        <router-link class="getstarted scrollto" :to="{ name: 'login' }">Login</router-link>
+                        <li>
+                            <router-link class="getstarted scrollto" :to="{ name: 'login' }">Login</router-link>
+                        </li>
                     </ul>
                     <i class="bi bi-list mobile-nav-toggle"></i>
                 </nav>
@@ -47,7 +49,10 @@
                             electrónico, y más.
                         </h2>
                         <div class="d-flex justify-content-center justify-content-lg-start">
-                            <router-link class="btn-get-started scrollto" :to="{ name: 'register' }"
+                            <router-link
+                                id="btn-get-started"
+                                class="btn-get-started scrollto"
+                                :to="{ name: 'register' }"
                                 >Registrarse</router-link
                             >
                         </div>
@@ -557,5 +562,29 @@ onMounted(() => {
 #faq-list-9 ul li {
     margin: 2px;
     padding: 2px;
+}
+@media (max-width: 480px) {
+    /* Estilos para móviles en modo retrato */
+    #btn-get-started {
+        margin-bottom: 1rem;
+    }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+    /* Estilos para móviles en modo paisaje */
+    #btn-get-started {
+        margin-bottom: 1rem;
+    }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Estilos para tablets en modo retrato */
+    #btn-get-started {
+        margin-bottom: 1rem;
+    }
+}
+@media (min-width: 1025px) and (max-width: 1200px) {
+    /* Estilos para tablets en modo paisaje y monitores pequeños */
+    #btn-get-started {
+        margin-bottom: 1rem;
+    }
 }
 </style>

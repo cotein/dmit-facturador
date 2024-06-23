@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
 import { apiAfipGetCompanyDataByCuit } from '@/api/afip/afip-padron';
 import { TypeCompany } from '@/app/types/Constantes';
-import type { DomicilioFiscal, IdPersonaListReturn, Impuesto, PersonaReturn } from '@/app/types/Afip';
+import type { DomicilioFiscal, Impuesto, PersonaReturn } from '@/app/types/Afip';
 import { useAddressStore } from '@/app/store/address/address-store';
 import { onUnmounted } from 'vue';
 import { AFIP_INSCRIPTION } from '@/app/types/Constantes';

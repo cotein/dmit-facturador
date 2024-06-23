@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { SettingDropdown } from './auth-info-style';
+const visibleSettings = ref<boolean>(true);
 </script>
 
 <template>
     <div class="ninjadash-nav-actions__settings">
-        <sdPopover placement="bottomRight" action="click">
+        <a-popover placement="bottomRight" action="click">
             <template v-slot:content>
                 <SettingDropdown>
                     <div class="setting-dropdown">
@@ -25,13 +27,10 @@ import { SettingDropdown } from './auth-info-style';
                             </a-col>
                             <a-col :sm="12">
                                 <figure class="setting-dropdown__single d-flex">
-                                    <img
-                                        :src="$environment.VITE_SRC_ASSETS + '/img/icon/015-color-palette.png'"
-                                        alt=""
-                                    />
+                                    <img :src="$environment.VITE_SRC_ASSETS + '/img/icon/010-home.png'" alt="" />
                                     <figcaption>
-                                        <sdHeading as="h5">Themes</sdHeading>
-                                        <p>Third party themes that are compatible</p>
+                                        <sdHeading as="h5">Compañía</sdHeading>
+                                        <p>Cambiar logo</p>
                                     </figcaption>
                                 </figure>
                             </a-col>
@@ -42,6 +41,6 @@ import { SettingDropdown } from './auth-info-style';
             <a to="#" class="ninjadash-nav-action-link">
                 <img :src="$environment.VITE_SRC_ASSETS + '/img/icon/setting.png'" />
             </a>
-        </sdPopover>
+        </a-popover>
     </div>
 </template>

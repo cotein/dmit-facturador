@@ -31,8 +31,16 @@ export abstract class Invoice extends Pdf {
     public voucher;
     public width_position: number = 0;
     public yCoordinateInternalverticalLines: number = 0;
+    public logoBase64: string = '';
 
-    constructor(company: Company, customer: Customer, voucher: Voucher, items: Item[], comment: string) {
+    constructor(
+        company: Company,
+        customer: Customer,
+        voucher: Voucher,
+        items: Item[],
+        comment: string,
+        logoBase64: string,
+    ) {
         super();
         if (company != undefined) {
             this.company = company;
@@ -48,6 +56,9 @@ export abstract class Invoice extends Pdf {
         }
         if (comment != undefined) {
             this.comment = comment;
+        }
+        if (logoBase64 != undefined) {
+            this.logoBase64 = logoBase64;
         }
     }
 
@@ -81,6 +92,10 @@ export abstract class Invoice extends Pdf {
                 this.pdf.text(t, this.first_column_text() - 5, height_position);
             }
         });
+
+        if (this.logoBase64) {
+            this.pdf.addImage(this.logoBase64, 'PNG', 10, 6, 77, 29);
+        }
     }
 
     rightHeaderCompanyData() {

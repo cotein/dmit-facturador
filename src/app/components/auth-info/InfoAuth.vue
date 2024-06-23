@@ -9,7 +9,8 @@ import { usePadronComposable } from '@/app/composables/afip/usePadronComposable'
 import Settings from './Settings.vue';
 import EditCompanyForm from '@/app/components/company/EditCompanyForm.vue';
 import { ref } from 'vue';
-
+import uploadLogo from '../uploadFiles/uploadLogo.vue';
+import { URL_UPLOAD_COMPANY_LOGO } from '@/app/types/Constantes';
 const { sujetoIsEditable } = usePadronComposable();
 const { CompanyGetter, updateCompanyMutation, setCompany } = useCompanyComposable();
 const { openEditCompanyPanel, closeEditCompanyPanel, EditCompanyPanel } = useAddNewCompanyPanelComposable();
@@ -27,6 +28,19 @@ const closeEditPanel = () => {
     sujetoIsEditable.value = false;
     closeEditCompanyPanel();
 };
+
+const addLogoToCompanyModal = ref<boolean>(false);
+
+const openLogoModal = () => {
+    addLogoToCompanyModal.value = true;
+    infoUserVisible.value = false;
+};
+
+const uploadCompanyLogo = () => {
+    addLogoToCompanyModal.value = false;
+    infoUserVisible.value = false;
+};
+
 const openEditPanel = async () => {
     infoUserVisible.value = false;
     setTimeout(() => {
@@ -46,12 +60,45 @@ const openEditPanel = async () => {
             :loadingButton="!updateCompanyMutation.isLoading"
         />
     </a-drawer>
+    <a-modal
+        v-model:visible="addLogoToCompanyModal"
+        width="1000px"
+        title="Agrega un logo de la empresa para encabezados de facturas"
+        @ok="uploadCompanyLogo"
+    >
+        <a-row :gutter="30" justify="space-around">
+            <a-col :sm="24" :md="12" :lg="12">
+                <uploadLogo
+                    :urlAction="URL_UPLOAD_COMPANY_LOGO"
+                    :data="{ company: JSON.stringify(CompanyGetter) }"
+                    :showUploadList="true"
+                    :allowedImages="1"
+                />
+            </a-col>
+            <a-col :sm="24" :md="12" :lg="12">
+                <a-card hoverable style="width: 440px" v-if="CompanyGetter?.urlLogo">
+                    <template #cover>
+                        <img :alt="CompanyGetter.name" :src="CompanyGetter?.urlLogo" />
+                    </template>
+                    <a-card-meta title="Imagen para el logo de la compañia">
+                        <template #description
+                            >Éste logo se verá aplicado en los documentos de facturación de la compañía.</template
+                        >
+                    </a-card-meta>
+                </a-card>
+                <div v-else>
+                    <p>No se ingresó un logo de la compañia</p>
+                </div>
+            </a-col>
+        </a-row>
+    </a-modal>
+
     <InfoWraper>
         <!-- <SearchBar /> -->
         <!-- <DarkMode /> -->
         <!-- <Message />
 		<Notification /> -->
-        <Settings />
+        <!-- <Settings /> -->
         <!-- <Support /> -->
         <div class="ninjadash-nav-actions__item ninjadash-nav-actions__author">
             <a-popover placement="bottomRight" :visible="infoUserVisible" @click="infoUserVisible = !infoUserVisible">
@@ -72,6 +119,11 @@ const openEditPanel = async () => {
                                 <li>
                                     <a to="#" @click.prevent="openEditPanel">
                                         <unicon name="building"></unicon> Editar compañía
+                                    </a>
+                                </li>
+                                <li>
+                                    <a to="#" @click.prevent="openLogoModal">
+                                        <unicon name="focus-target"></unicon> Agregar Logo
                                     </a>
                                 </li>
                             </ul>

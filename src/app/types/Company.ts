@@ -26,6 +26,8 @@ export type CompanyRawData = Sujeto & {
     pto_vta_recibo: number | null;
     type_company: number;
     billing_concept: string;
+    urlLogo?: string;
+    logo_base64?: string;
 };
 
 export type CustomerRawData = Sujeto;
