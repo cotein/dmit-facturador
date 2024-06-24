@@ -26,11 +26,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'ingresar-producto',
         component: () => import('@/app/pages/products/AddNewProduct.vue'),
     },
-    {
+    /* {
         name: 'AddService',
         path: 'ingresar-servicio',
         component: () => import('@/app/pages/services/AddNewService.vue'),
-    },
+    }, */
     {
         name: 'AddPriceList',
         path: 'ingresar-lista-de-precios',

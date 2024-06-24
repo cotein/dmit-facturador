@@ -76,9 +76,9 @@ const openEditPanel = async () => {
                 />
             </a-col>
             <a-col :sm="24" :md="12" :lg="12">
-                <a-card hoverable style="width: 440px" v-if="CompanyGetter?.urlLogo">
+                <a-card hoverable style="width: 440px" v-if="CompanyGetter?.logo_base64">
                     <template #cover>
-                        <img :alt="CompanyGetter.name" :src="CompanyGetter?.urlLogo" />
+                        <img :alt="CompanyGetter.name" :src="CompanyGetter?.logo_base64" />
                     </template>
                     <a-card-meta title="Imagen para el logo de la compañia">
                         <template #description

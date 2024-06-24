@@ -29,11 +29,10 @@ import { message } from 'ant-design-vue';
 import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { ApiHttp } from '@/api/base-api';
-import { useSleepComposable } from '@/app/composables/sleep/useSleepComposable';
 import { showMessage } from '@/app/helpers/mesaages';
 import { watch } from 'vue';
 const { CompanyGetter, company } = useCompanyComposable();
-const { sleep } = useSleepComposable();
+
 interface Props {
     urlAction: string;
     data: any;
@@ -123,8 +122,6 @@ const handleUpload = async () => {
     });
 
     formData.append('company', CompanyGetter.value!.id);
-
-    await sleep(1500);
 
     try {
         const { data } = await ApiHttp.post(URL_UPLOAD_COMPANY_LOGO, formData);

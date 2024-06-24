@@ -156,15 +156,6 @@ onMounted(() => {
                 <router-link :to="{ name: 'AddProduct' }"> Alta </router-link>
             </a-menu-item>
         </a-sub-menu>
-        <a-sub-menu key="services" :disabled="CompanyGetter?.billing_concept === CONCEPTO.PRODUCTOS">
-            <template #icon>
-                <unicon name="constructor" fill="royalblue" />
-            </template>
-            <template #title>Servicios</template>
-            <a-menu-item @click="toggleCollapsed" key="services-new">
-                <router-link :to="{ name: 'AddService' }"> Alta </router-link>
-            </a-menu-item>
-        </a-sub-menu>
 
         <NavTitle class="ninjadash-sidebar-nav-title">Configuración del sistema</NavTitle>
         <a-sub-menu key="settings">

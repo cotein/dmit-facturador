@@ -58,6 +58,7 @@
                                 format="DD-MM-YYYY"
                                 placeholder="Fecha de factura"
                                 @change="changeDate"
+                                :disabled-date="disabledDate"
                             />
                         </a-form-item>
                     </a-col>
@@ -246,45 +247,62 @@ const afterVisibleChange = (visible: boolean) => {
         invoice.value.CbteFch = date.format('YYYYMMDD').toString();
     }
 };
+const formatDate = (dateObj: any) => {
+    const day = dateObj.$D < 10 ? `0${dateObj.$D}` : `${dateObj.$D}`;
+    const month = dateObj.$M + 1 < 10 ? `0${dateObj.$M + 1}` : `${dateObj.$M + 1}`;
+    const year = dateObj.$y;
+    return `${year}${month}${day}`;
+};
 
-const servDatesMethod = (date: any): void => {
+const servDatesMethod = (date: any) => {
     console.log('🚀 ~ servDates ~ date:', date);
-    let day_0 = null;
-    let day_1 = null;
-    let month_0 = null;
-    let month_1 = null;
 
-    if (date) {
-        if (date[0].$D < 10) {
-            day_0 = `0${date[0].$D + 1}`;
-        } else {
-            day_0 = `${date[0].$D + 1}`;
-        }
-
-        if (date[1].$D < 10) {
-            day_1 = `0${date[1].$D}`;
-        } else {
-            day_1 = `${date[1].$D}`;
-        }
-
-        if (date[0].$M + 1 < 10) {
-            month_0 = `0${date[0].$M + 1}`;
-        } else {
-            month_0 = `${date[0].$M + 1}`;
-        }
-
-        if (date[1].$M + 1 < 10) {
-            month_1 = `0${date[1].$M + 1}`;
-        } else {
-            month_1 = `${date[1].$M + 1}`;
-        }
-
-        invoice.value.FchServDesde = `${date[0].$y}${month_0}${day_0}`;
-        invoice.value.FchServHasta = `${date[1].$y}${month_1}${day_1}`;
+    if (date && date.length >= 2) {
+        // Asumiendo que date[0] es la fecha de inicio y date[1] es la fecha de fin
+        invoice.value.FchServDesde = formatDate(date[0]);
+        invoice.value.FchServHasta = formatDate(date[1]);
     } else {
         invoice.value.FchServDesde = '';
         invoice.value.FchServHasta = '';
     }
+};
+
+const disabledDate = (current: any) => {
+    // Asumiendo que invoice es accesible en este contexto
+    const concepto = invoice.value.Concepto;
+    let daysRange;
+
+    // Determinar el rango de días basado en el valor de Concepto
+    if (concepto === '1') {
+        daysRange = 5;
+    } else if (concepto === '2' || concepto === '3') {
+        daysRange = 10;
+    } else {
+        // Si Concepto no es '1', '2', o '3', usar un rango por defecto (opcional)
+        daysRange = 0;
+    }
+
+    // Verificar si invoice.value.date es undefined y establecer una fecha base
+    const invoiceDate = invoice.value.date ? new Date(invoice.value.date.$d) : new Date();
+    const baseDate = concepto === '1' ? new Date() : invoiceDate;
+
+    // Calcular las fechas límite
+    const beforeDate = new Date(baseDate);
+    beforeDate.setDate(beforeDate.getDate() - daysRange - 1);
+    let afterDate = new Date(baseDate);
+    afterDate.setDate(afterDate.getDate() + daysRange);
+
+    // Asegurar que la fecha seleccionada no pase al mes siguiente
+    // Obtener el último día del mes actual
+    const lastDayOfCurrentMonth = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0);
+
+    // Si concepto es '1', '2', o '3', ajustar afterDate para que no exceda el mes actual
+    if (['1', '2', '3'].includes(concepto) && afterDate > lastDayOfCurrentMonth) {
+        afterDate = lastDayOfCurrentMonth;
+    }
+
+    // Deshabilitar fechas fuera del rango calculado
+    return current < beforeDate || current > afterDate;
 };
 
 const setDate = (date: any) => {
