@@ -16,13 +16,11 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
 import { useVoucherComposable } from '@/app/composables/voucher/useVoucherComposable';
 
 const { invoice } = useInvoiceComposable();
-const { CompanyGetter } = useCompanyComposable();
 const { invoiceType } = useInvoiceBuilderComposable();
 const { Vouchers } = useVoucherComposable();
 

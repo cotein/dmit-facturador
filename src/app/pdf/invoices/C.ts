@@ -3,7 +3,7 @@ import { Invoice } from './Invoice';
 import dayjs from 'dayjs';
 
 export class C extends Invoice {
-    public typeB: string = 'C';
+    public typeC: string = 'C';
 
     printColumnNames() {
         this.write_text(
@@ -182,7 +182,7 @@ export class C extends Invoice {
 
                     this.printColumnNames();
 
-                    this.invoice_type(this.typeB);
+                    this.invoice_type(this.typeC);
 
                     this.invoice_original();
 
@@ -238,7 +238,7 @@ export class C extends Invoice {
     }
 
     async print(): Promise<void> {
-        this.printStructure(this.typeB);
+        this.printStructure(this.typeC);
 
         this.printProducts();
 
@@ -248,7 +248,9 @@ export class C extends Invoice {
             await this.convertCommentsToImage(this.comment);
         }
 
-        this.printPageNumber(this.typeB);
+        this.printPageNumber(this.typeC);
+
+        this.cae(this.voucher!.cae, this.voucher!.cae_fch_vto);
 
         this.printAfipQr(
             1,
@@ -266,7 +268,11 @@ export class C extends Invoice {
             parseInt(this.voucher!.cae, 10),
         );
 
-        await this.printCommentImage(this.typeB);
+        this.afipLogo();
+
+        this.afipLegend();
+
+        await this.printCommentImage(this.typeC);
 
         this.pdf.save(`${this.customer?.cuit} ${this.voucher?.pto_vta}-${this.voucher?.cbte_desde}.pdf`);
 

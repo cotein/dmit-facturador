@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas';
 import { useSleepComposable } from '@/app/composables/sleep/useSleepComposable';
 import type { TextOptionsLight } from 'jspdf';
 import QrAfip from '../QrAfip';
+import { AfipLogo } from '../images/AfipLogo';
 
 const { sleep } = useSleepComposable();
 
@@ -97,13 +98,12 @@ export abstract class Invoice extends Pdf {
             this.pdf.addImage(this.logoBase64, 'PNG', 10, 6, 77, 29);
         }
     }
-
     rightHeaderCompanyData() {
         this.write_text(
             [
                 `CUIT: ${this.company?.cuit}`,
                 `Ingresos Brutos: ${this.company?.iibb}`,
-                `Fecha inicio de Actividades: ${this.company?.activity_init}`,
+                `Fecha inicio de Actividades: ${dayjs(this.company?.activity_init).format('DD-MM-YYYY')}`,
             ],
             true,
             8,
@@ -652,6 +652,51 @@ export abstract class Invoice extends Pdf {
         const divs: NodeListOf<HTMLDivElement> = document.querySelectorAll('[id^="html_"]');
 
         divs.forEach((div) => (div.innerHTML = ''));
+    }
+
+    cae(cae: string, cae_vto: string) {
+        const txtCAE: string = 'CAE N°: ';
+        const txtCAEVTO: string = 'Fecha de Vto. de CAE: ';
+
+        this.pdf.setFontSize(8);
+        const width_position = 155;
+
+        const height_position = 270;
+
+        this.options = {
+            lineHeightFactor: 1.2,
+            maxWidth: 50,
+            align: 'left',
+        };
+        // Primero, establece la fuente en negrita para 'CAE N°: '
+        this.pdf.setFont('Helvetica', 'bold');
+        this.pdf.text(txtCAE, width_position, height_position, this.options);
+
+        let boldTextWidth = this.pdf.getTextWidth(txtCAE);
+
+        this.pdf.setFont('Helvetica', 'normal');
+        this.pdf.text(cae, width_position + boldTextWidth, height_position, this.options);
+
+        this.pdf.setFont('Helvetica', 'bold');
+        this.pdf.text(txtCAEVTO, width_position, height_position + 5, this.options);
+        boldTextWidth = this.pdf.getTextWidth(txtCAEVTO);
+
+        this.pdf.setFont('Helvetica', 'normal');
+        this.pdf.text(cae_vto, width_position + boldTextWidth, height_position + 5, this.options);
+    }
+
+    afipLogo() {
+        this.pdf.addImage(AfipLogo.getBase64(), 'PNG', 45, 267, 33, 16);
+    }
+
+    afipLegend() {
+        this.pdf.setFontSize(7);
+        this.pdf.text('Comprobante Autorizado', 45, 287);
+        this.pdf.text(
+            'Esta Administración Federal no se responsabiliza por los datos ingresados en el detalle de la operación',
+            45,
+            291,
+        );
     }
 
     printStructure(invoiceType: string): void {

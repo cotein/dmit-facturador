@@ -3520,3 +3520,14 @@ html[dir='rtl'] .ant-comment-avatar{
 .ant-page-header-content{
   padding-top: 0 !important;
 }
+
+/* MIS CSS */
+.ant-checkbox-wrapper {
+    margin-left: 1rem !important;
+    padding-left: 1rem !important;
+}
+/* .ant-table-selection {
+    margin-left: 1rem !important;
+    padding-left: 1rem !important;
+}
+ */

@@ -78,7 +78,7 @@
                                 :dataSource="props.list"
                                 :pagination="false"
                                 :loading="props.loading"
-                                :rowSelection="!props.isSale ? rowSelection : null"
+                                :rowSelection="null"
                                 :showSorterTooltip="{ title: 'Clic para ordenar' }"
                             >
                                 <template #headerCell="{ title }">
@@ -201,9 +201,11 @@ const stateValue = ref('');
 const sortDefault = ref();
 const printSpinner = ref<boolean>(false);
 const dataExcel = ref([]);
+const selectedCustomerId = ref<any>(null);
 
 const print = async () => {
     const print = 'yes';
+
     const resp = await getInvoiceList(
         CompanyGetter!.value.id,
         customer.value?.value,
@@ -215,8 +217,8 @@ const print = async () => {
         print,
     );
 
-    const p = new ExcelService();
-    p.download(resp.data, 'Listado Ventas');
+    const excel = new ExcelService();
+    excel.download(resp.data, 'Listado Ventas');
 };
 
 const invoiceTableColumns: InvoiceTableColumn[] = [
@@ -348,15 +350,46 @@ const handleChangeForFilter = (e: any): void => {
     status_id.value = statusesArray[index].value;
 };
 
+/* const rowSelection = {
+    hideSelectAll: true,
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: InvoiceList) => {
+        invoiceForNotaCredito.value = selectedRows;
+    },
+    onSelect: (record: any, selected: boolean, selectedRows: InvoiceList) => {
+        console.log('🚀 ~ record:', record);
+        invoiceForNotaCredito.value = selectedRows;
+    },
+    onSelectAll: (selected: boolean, selectedRows: InvoiceList) => {
+        invoiceForNotaCredito.value = selectedRows;
+    },
+}; */
 const rowSelection = {
     hideSelectAll: true,
     onChange: (selectedRowKeys: (string | number)[], selectedRows: InvoiceList) => {
         invoiceForNotaCredito.value = selectedRows;
     },
     onSelect: (record: any, selected: boolean, selectedRows: InvoiceList) => {
+        if (selected) {
+            if (selectedCustomerId.value === null) {
+                // Si es la primera selección, almacena el ID del cliente
+                selectedCustomerId.value = record.customer.id;
+            } else if (record.customer.id !== selectedCustomerId.value) {
+                // Si la factura seleccionada no pertenece al cliente almacenado, revierte la selección
+                return false; // Aquí necesitas implementar la lógica para revertir la selección
+            }
+        } else if (selectedRows.length === 0) {
+            // Si no hay más filas seleccionadas, restablece el ID del cliente
+            selectedCustomerId.value = null;
+        }
         invoiceForNotaCredito.value = selectedRows;
     },
     onSelectAll: (selected: boolean, selectedRows: InvoiceList) => {
+        if (selected) {
+            // Implementa una lógica similar a onSelect aquí para manejar la selección de todas las filas
+        } else {
+            // Si se deseleccionan todas las filas, restablece el ID del cliente
+            selectedCustomerId.value = null;
+        }
         invoiceForNotaCredito.value = selectedRows;
     },
 };

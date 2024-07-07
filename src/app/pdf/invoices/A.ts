@@ -317,8 +317,7 @@ export class A extends Invoice {
             this.height_position,
             this.options,
         );
-
-        this.totalToWords(totalInvoice!);
+        this.totalToWords(totalInvoice);
     }
 
     async print() {
@@ -333,6 +332,9 @@ export class A extends Invoice {
         }
 
         this.printPageNumber(this.typeA);
+
+        this.cae(this.voucher!.cae, this.voucher!.cae_fch_vto);
+
         this.printAfipQr(
             1,
             dayjs(this.voucher!.cbte_fch).format('YYYY-MM-DD'),
