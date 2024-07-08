@@ -264,7 +264,7 @@ export class C extends Invoice {
             1,
             this.customer!.afipDocTipo,
             parseInt(this.customer!.cuit, 10),
-            'A',
+            'E',
             parseInt(this.voucher!.cae, 10),
         );
 
