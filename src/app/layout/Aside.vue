@@ -6,10 +6,9 @@ import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAdd
 import { useUserComposable } from '../composables/user/useUserComposable';
 import { useCompanyComposable } from '../composables/company/useCompanyComposable';
 import type { CompanyRawData } from '../types/Company';
-import { CONCEPTO } from '../types/Constantes';
 import { onMounted } from 'vue';
-const { IHaveMoreThanOneCompany, IHaveOneCompany, IHaventGotCompanies } = useUserComposable();
-const { createCompanyMutation, CompanyGetter } = useCompanyComposable();
+const { IHaventGotCompanies } = useUserComposable();
+const { createCompanyMutation } = useCompanyComposable();
 
 const props = defineProps({
     toggleCollapsed: {
@@ -131,10 +130,10 @@ onMounted(() => {
                 <router-link :to="{ name: 'NewCustomer' }"> Alta </router-link>
             </a-menu-item>
             <!-- <a-menu-item @click="toggleCollapsed" key="customers-cuentas-corrientes">
-        <router-link :to="{ name: 'ListCuentasCorrientes' }">
-          Cuentas Corrientes
-        </router-link>
-      </a-menu-item> -->
+                <router-link :to="{ name: 'ListCuentasCorrientes' }">
+                Cuentas Corrientes
+                </router-link>
+            </a-menu-item> -->
         </a-sub-menu>
 
         <a-sub-menu key="categories">
@@ -147,7 +146,7 @@ onMounted(() => {
             </a-menu-item>
         </a-sub-menu>
 
-        <a-sub-menu key="products" :disabled="CompanyGetter?.billing_concept === CONCEPTO.SERVICIOS">
+        <a-sub-menu key="products">
             <template #icon>
                 <unicon name="gift"></unicon>
             </template>
