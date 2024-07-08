@@ -13,7 +13,7 @@ module.exports = {
         ecmaVersion: 'latest',
     },
     rules: {
-        indent: ['error', 4],
+        indent: ['error', 4, { ArrayExpression: 1 }],
         'vue/multi-word-component-names': [
             'error',
             {
