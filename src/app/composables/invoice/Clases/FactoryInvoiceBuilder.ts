@@ -109,6 +109,7 @@ export class FactoryInvoiceBuilder {
             inscriptionCompany: AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO,
             inscriptionCustomer: AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO,
             class: AfipInvoiceCBuilder,
+        },
         {
             invoiceType: INVOICE_TYPE.FACTURA,
             inscriptionCompany: AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO,
