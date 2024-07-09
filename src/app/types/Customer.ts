@@ -25,9 +25,9 @@ export type CustomerForm = {
 };
 
 export type CustomerSelectComponent = {
-    value: number;
+    value: number | null;
     label: string;
-    cuit: number;
+    cuit: number | null;
 };
 
 /* export type Customer = {

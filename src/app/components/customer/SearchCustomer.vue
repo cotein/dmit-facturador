@@ -90,7 +90,11 @@ const select = async (e: any, option: CustomerSelectComponent): Promise<void> =>
 const change = (e: any, option: CustomerSelectComponent): void => {
     if (option === undefined || option === null) {
         invoice.value.customer = null;
-        customer.value = { value: 1, label: '', cuit: 1 };
+        customer.value = {
+            value: null, // O un valor nulo o predeterminado adecuado
+            label: '', // Cadena vacía o valor predeterminado
+            cuit: null,
+        };
     }
 };
 
