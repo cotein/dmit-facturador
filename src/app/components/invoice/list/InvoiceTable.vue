@@ -32,7 +32,7 @@
                 <TopToolBox>
                     <a-row :gutter="15" class="justify-content-center" v-if="props.viewSearch">
                         <a-col :xxl="6" :lg="6" :xs="24" v-if="props.isSale">
-                            <SearchCustomer :multiple="false" />
+                            <SearchCustomer :multiple="false" :context="'invoice'" />
                         </a-col>
                         <a-col :xxl="9" :lg="9" :xs="24">
                             <div class="table-toolbox-menu">

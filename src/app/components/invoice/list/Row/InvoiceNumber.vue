@@ -13,7 +13,7 @@
                     </p>
                 </template>
                 <span class="invoice">
-                    <a-typography-text type="danger"
+                    <a-typography-text
                         >{{ $props.record?.voucher.name }} {{ props.record.voucher.pto_vta }} -
                         {{ props.record.voucher.cbte_desde }}</a-typography-text
                     >
@@ -31,7 +31,7 @@
                     </p>
                 </template>
                 <span class="invoice">
-                    <a-typography-text type="danger"
+                    <a-typography-text
                         >{{ $props.record?.voucher.name }} {{ props.record.voucher.pto_vta }} -
                         {{ props.record.voucher.cbte_desde }}</a-typography-text
                     >

@@ -1,4 +1,6 @@
 import type { Sujeto } from './Company';
+import type { Customer } from './Invoice';
+import type { PaginationInfo } from './Pagination';
 
 export type CustomerForm = {
     name: any;
@@ -88,4 +90,10 @@ export type CustomerCuentaCorrienteType = {
     number: number;
     pay: string;
     sale: string;
+};
+
+//se utiliza en el listado de clientes
+export type CustomerResponse = {
+    data: Customer[];
+    pagination: PaginationInfo;
 };

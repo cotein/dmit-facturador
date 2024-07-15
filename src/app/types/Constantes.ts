@@ -105,3 +105,5 @@ export enum TYPE_USER {
     ADMINISTRADOR = 900,
     USUARIO = 100,
 }
+
+export const PAGINATION_ITEMS_PER_PAGE = 20;

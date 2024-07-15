@@ -3,6 +3,7 @@ import { ApiHttp } from '../base-api';
 import type { InvoiceList, InvoiceListWithPagination } from '@/app/types/Invoice';
 
 import { useSleepComposable } from '@/app/composables/sleep/useSleepComposable';
+import { PAGINATION_ITEMS_PER_PAGE } from '@/app/types/Constantes';
 const { sleep } = useSleepComposable();
 const URL = '/api/invoice';
 
@@ -18,7 +19,7 @@ export const getInvoiceList = async (
     from: string,
     to: string,
     page: number = 1,
-    per_page: number = 10,
+    per_page: number = PAGINATION_ITEMS_PER_PAGE,
     print: string = 'no',
     invoice_id: number | null = null,
 ): Promise<AxiosResponse<InvoiceListWithPagination>> => {

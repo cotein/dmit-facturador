@@ -1,8 +1,11 @@
 import type { AxiosResponse } from 'axios';
 import { ApiHttp } from '../base-api';
 import type { Sujeto } from '@/app/types/Company';
-
+import { PAGINATION_ITEMS_PER_PAGE } from '@/app/types/Constantes';
+import type { CustomerResponse } from '@/app/types/Customer';
 const URL = '/api/customer';
+
+type IsActiveType = 'active' | 'inactive' | 'all';
 
 export const saveCustomer = async (customer: Sujeto): Promise<AxiosResponse<Sujeto>> => {
     const response = await ApiHttp.post<Sujeto>(URL, { customer });
@@ -10,21 +13,28 @@ export const saveCustomer = async (customer: Sujeto): Promise<AxiosResponse<Suje
     return response;
 };
 
-export const getCustomers = async (company_id: number, name: string = '') => {
+export const getCustomers = async (
+    company_id: number,
+    name: string = '',
+    isActive: IsActiveType = 'all',
+    page: number = 1,
+    itemsPerPage: number = PAGINATION_ITEMS_PER_PAGE,
+): Promise<CustomerResponse> => {
+    // Modifica aquí el tipo de retorno
     try {
         const params = new URLSearchParams();
 
-        if (company_id != null) {
-            params.append('company_id', company_id.toString());
-        }
+        // Añade los parámetros como antes
+        if (company_id != null) params.append('company_id', company_id.toString());
+        if (name != null) params.append('name', name);
+        if (isActive != null) params.append('isActive', isActive);
+        if (page != null) params.append('page', page.toString());
+        if (itemsPerPage != null) params.append('itemsPerPage', itemsPerPage.toString());
 
-        if (name != null) {
-            params.append('name', name);
-        }
+        // Asume que tu API devuelve un objeto con la estructura { data: Customer[], pagination: PaginationInfo }
+        const response: AxiosResponse<CustomerResponse> = await ApiHttp.get<CustomerResponse>(URL, { params });
 
-        const { data } = await ApiHttp.get<[]>(URL, { params });
-
-        return data;
+        return response.data; // Devuelve directamente el objeto con la estructura deseada
     } catch (error) {
         throw new Error();
     }

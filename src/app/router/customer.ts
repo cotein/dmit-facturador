@@ -3,12 +3,17 @@ import type { RouteRecordRaw } from 'vue-router';
 const customerRoutes: Array<RouteRecordRaw> = [
     {
         name: 'NewCustomer',
-        path: 'nuevo',
+        path: 'clientes/nuevo',
         component: () => import('@/app/pages/customer/NewCustomer.vue'),
     },
     {
+        name: 'CustomersList',
+        path: 'clientes/listado-de-clientes',
+        component: () => import('@/app/pages/customer/CustomersList.vue'),
+    },
+    {
         name: 'ListCuentasCorrientes',
-        path: 'listado-cuentas-corrientes',
+        path: 'clientes/listado-cuentas-corrientes',
         component: () => import('@/app/pages/customer/CuentasCorrientes.vue'),
     },
 ];

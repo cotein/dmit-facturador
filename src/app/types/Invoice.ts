@@ -31,6 +31,7 @@ export type Customer = {
     afipDocument?: string;
     afipDocTipo?: number;
     address?: Address;
+    status?: string;
 };
 
 export type Voucher = {
