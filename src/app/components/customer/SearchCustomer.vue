@@ -89,6 +89,7 @@ const select = async (e: any, option: CustomerSelectComponent): Promise<void> =>
     if (props.context === 'invoice') {
         if (CompanyGetter.value?.inscription_id !== undefined) {
             const vouchers = await getVouchers(CompanyGetter.value.inscription_id, customer.value.afip_inscription.id);
+            console.log('🚀 ~ select ~ vouchers:', vouchers);
             setVouchers(vouchers);
         }
     }

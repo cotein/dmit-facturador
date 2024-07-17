@@ -20,7 +20,7 @@
                 <a-row :gutter="16">
                     <a-col :sm="24" :lg="24" :xs="24">
                         <a-form-item label="Buscar cliente" name="customer">
-                            <SearchCustomer />
+                            <SearchCustomer :context="'invoice'" />
                         </a-form-item>
                     </a-col>
                     <a-col :sm="24" :lg="24" :xs="24">
