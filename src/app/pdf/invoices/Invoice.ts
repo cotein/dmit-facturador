@@ -134,7 +134,7 @@ export abstract class Invoice extends Pdf {
     }
 
     customer_data() {
-        const customer = `${this.customer?.name} ${this.customer?.lastName ?? ''}`;
+        const customer = `${this.customer?.name} ${this.customer!.last_name ?? ''}`;
         const customerAddress = `${this.customer?.address?.street ?? ''} ${this.customer?.address?.city ?? ''} ${
             this.customer?.address?.cp ?? ''
         } ${this.customer?.address?.state ?? ''}`;
