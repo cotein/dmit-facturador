@@ -20,12 +20,16 @@ onMounted(() => {
     const divElement: HTMLElement | null = document.getElementById('main_data');
 
     if (divElement) {
+        divElement.style.color = 'white'; // Cambia el color de la fuente a blanco
         divElement.innerHTML = '';
     }
 
     const divs: NodeListOf<HTMLDivElement> = document.querySelectorAll('[id^="html_"]');
 
-    divs.forEach((div) => (div.innerHTML = ''));
+    divs.forEach((div) => {
+        div.style.color = 'white'; // Cambia el color de la fuente a blanco
+        div.innerHTML = ''; // Limpia el contenido interior si es necesario
+    });
 });
 </script>
 

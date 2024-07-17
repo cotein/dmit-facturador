@@ -9,15 +9,17 @@ import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/use
 
 const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
-const { currentPage, itemsPerPage, totalPages, invoiceList, status_id } = storeToRefs(useInvoiceListStore());
+const { currentPage, itemsPerPage, totalPages, invoiceList, status_id, totalItems } = storeToRefs(
+    useInvoiceListStore(),
+);
 
 export const useInvoiceListComposable = () => {
     const { CompanyGetter } = useCompanyComposable();
 
     const { isLoading, data } = useQuery(
         ['invoice-list', currentPage, itemsPerPage, customer, status_id, from, to],
-        async () =>
-            await getInvoiceList(
+        async () => {
+            return await getInvoiceList(
                 CompanyGetter.value!.id!,
                 customer.value?.value!,
                 status_id.value!,
@@ -25,7 +27,11 @@ export const useInvoiceListComposable = () => {
                 to.value,
                 currentPage.value,
                 itemsPerPage.value,
-            ),
+            );
+        },
+        {
+            cacheTime: Infinity,
+        },
     );
 
     watch(data, (invoices) => {
@@ -37,8 +43,10 @@ export const useInvoiceListComposable = () => {
             }
 
             if (pagination) {
-                currentPage.value = pagination.currentPage;
-                totalPages.value = pagination.total;
+                currentPage.value = pagination.current_page;
+                totalPages.value = pagination.last_page;
+                itemsPerPage.value = pagination.per_page;
+                totalItems.value = pagination.total;
             }
         }
     });

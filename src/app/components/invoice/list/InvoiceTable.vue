@@ -114,7 +114,7 @@
                 </TableDefaultStyle>
                 <div class="wrap-pagination">
                     <a-pagination
-                        :total="totalPages"
+                        :total="totalItems"
                         v-model:current="currentPage"
                         v-model:page-size="itemsPerPage"
                         :page-size-options="pageSizeOptions"
@@ -171,7 +171,7 @@ const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
-const { currentPage, itemsPerPage, totalPages, status_id } = storeToRefs(useInvoiceListStore());
+const { currentPage, itemsPerPage, totalPages, status_id, totalItems } = storeToRefs(useInvoiceListStore());
 
 type Props = {
     list: InvoiceList;

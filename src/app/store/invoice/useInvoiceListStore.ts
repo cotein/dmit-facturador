@@ -11,6 +11,8 @@ export const useInvoiceListStore = defineStore('invoice-list', () => {
 
     const totalPages = ref<number>();
 
+    const totalItems = ref<number>();
+
     const status_id = ref<number | null>(null);
 
     return {
@@ -19,5 +21,6 @@ export const useInvoiceListStore = defineStore('invoice-list', () => {
         itemsPerPage,
         totalPages,
         status_id,
+        totalItems,
     };
 });
