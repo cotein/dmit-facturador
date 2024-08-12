@@ -27,7 +27,7 @@ onMounted(() => {
     const divs: NodeListOf<HTMLDivElement> = document.querySelectorAll('[id^="html_"]');
 
     divs.forEach((div) => {
-        div.style.color = 'white'; // Cambia el color de la fuente a blanco
+        //div.style.color = 'white'; // Cambia el color de la fuente a blanco
         div.innerHTML = ''; // Limpia el contenido interior si es necesario
     });
 });
