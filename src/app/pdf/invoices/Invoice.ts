@@ -67,11 +67,11 @@ export abstract class Invoice extends Pdf {
         let height_position = 37;
 
         const companyData = [
-            `Razón social:  ${this.company!.name} ${this.company!.last_name ?? ''}`,
-            `Domicilio:  ${this.company!.address.street} ${this.company!.address.city} ${this.company!.address.cp} ${
-                this.company!.address.state
-            }`,
-            `Cond. IVA:  ${this.company?.afipInscription}`,
+            `Razón social:  ${this.company?.name ?? ''} ${this.company?.last_name ?? ''}`,
+            `Domicilio:  ${this.company?.address?.street ?? ''} ${this.company?.address?.city ?? ''} ${
+                this.company?.address?.cp ?? ''
+            } ${this.company?.address?.state ?? ''}`,
+            `Cond. IVA:  ${this.company?.afipInscription ?? ''}`,
         ];
 
         this.pdf.setFontSize(8);
@@ -357,17 +357,21 @@ export abstract class Invoice extends Pdf {
     }
 
     factura_servicios(voucher: any) {
-        if (voucher.concepto === 2 || voucher.concepto === 3) {
+        if (voucher.fch_serv_desde) {
             this.pdf.text(
                 `Período facturado Desde: ${dayjs(voucher.fch_serv_desde).format('DD-MM-YYYY')}`,
                 14,
                 this.first_line_height + 6,
             );
+        }
+        if (voucher.fch_serv_hasta) {
             this.pdf.text(
                 `Hasta ${dayjs(voucher.fch_serv_hasta).format('DD-MM-YYYY')}`,
                 90,
                 this.first_line_height + 6,
             );
+        }
+        if (voucher.fch_vto_pago) {
             this.pdf.text(
                 `Fecha de Vto. para el pago: ${dayjs(voucher.fch_vto_pago).format('DD-MM-YYYY')}`,
                 130,
@@ -699,6 +703,21 @@ export abstract class Invoice extends Pdf {
         );
     }
 
+    paymentTypeLegend(paymentType: string) {
+        /* this.write_text(
+            ['Cheques a la orden de: '],
+            true,
+            10,
+            this.first_column_text() - this.one_cm() / 2,
+            this.margin_bottom - this.one_cm() * 2.5,
+            this.interline(),
+        ); */
+        this.pdf.text(
+            `Modo de pago: ${paymentType}`,
+            this.first_column_text() - this.one_cm() / 2,
+            this.margin_bottom - this.one_cm() * 3.32,
+        );
+    }
     printStructure(invoiceType: string): void {
         this.lines();
 
@@ -718,6 +737,7 @@ export abstract class Invoice extends Pdf {
 
         this.factura_servicios(this.voucher);
 
+        this.paymentTypeLegend(this.voucher!.payment_type ?? '');
         this.printTotals();
     }
 

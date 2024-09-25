@@ -1,7 +1,7 @@
 <template>
     <a-drawer
         :title="titleNotaCredito"
-        width="65%"
+        width="75%"
         :visible="openDrawerNotaCredito"
         @close="onClose"
         :bodyStyle="bodyStyle"
@@ -44,36 +44,54 @@
 
                     <a-col :lg="12" :xs="24">
                         <sdHeading class="invoice-customer__title" as="h5">
-                            Sobre: {{ invoiceForNotaCredito?.voucher.name }}
-                            {{ invoiceForNotaCredito?.voucher.pto_vta }}-{{ invoiceForNotaCredito?.voucher.cbte_desde }}
+                            Sobre: {{ invoiceForNotaCredito?.voucher!.name }}
+                            {{ invoiceForNotaCredito?.voucher!.pto_vta }}-{{
+                                invoiceForNotaCredito?.voucher!.cbte_desde
+                            }}
                         </sdHeading>
                     </a-col>
                 </a-row>
             </div>
         </InvoiceLetterBox>
-        <InvoiceHasNotaCredito :children="invoiceForNotaCredito?.voucher.children" />
+        <InvoiceHasNotaCredito :children="invoiceForNotaCredito?.voucher!.children" />
         <div class="invoice--body">
+            <p>Detalle de la factura</p>
             <a-table
                 :columns="columns"
                 :data-source="invoiceForNotaCredito?.items"
-                :row-selection="rowSelection"
                 :pagination="false"
+                :rowSelection="rowSelection"
             >
                 <template #headerCell="{ title }">
                     <div style="text-align: center">{{ title }}</div>
                 </template>
-                <template #bodyCell="{ column, record, index }">
+                <template #bodyCell="{ column, record }">
                     <template v-if="column.key === 'name'">
                         {{ record.name }}
-                    </template>
-                    <template v-if="column.key === 'quantity'">
-                        <QuantityProductNotaCredito :record="record" :index="index" />
                     </template>
                     <template v-if="column.key === 'unit_price'">
                         {{ $filters.formatCurrency(parseFloat(record.unit_price)) }}
                     </template>
+                    <template v-if="column.key === 'quantity'">
+                        <!-- <QuantityProductNotaCredito :record="record" :index="index" /> -->
+                        {{ record.quantity }}
+                    </template>
+                    <template v-if="column.key === 'neto'">
+                        {{ $filters.formatCurrency(record.neto_import) }}
+                    </template>
+                    <template v-if="column.key === 'iva'">
+                        {{ $filters.formatCurrency(record.iva_import) }}
+                    </template>
+                    <template v-if="column.key === 'percep_iibb_import'">
+                        {{ `${record.percep_iibb_alicuota} % | ${$filters.formatCurrency(record.percep_iibb_import)}` }}
+                    </template>
+                    <template v-if="column.key === 'percep_iva_import'">
+                        {{ `${record.percep_iva_alicuota} % | ${$filters.formatCurrency(record.percep_iva_import)}` }}
+                    </template>
                     <template v-if="column.key === 'total'">
-                        {{ $filters.formatCurrency(record.total) }}
+                        {{
+                            $filters.formatCurrency(record.total + record.percep_iibb_import + record.percep_iva_import)
+                        }}
                     </template>
                 </template>
             </a-table>
@@ -84,6 +102,7 @@
                 {{ $filters.formatCurrency(totalNotaCredito) }}</sdHeading
             >
         </template>
+        <ProductsWillBeBillTable />
     </a-drawer>
 </template>
 <script setup lang="ts">
@@ -96,7 +115,7 @@ import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceCompos
 import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
 import dayjs, { Dayjs } from 'dayjs';
 import InvoiceHasNotaCredito from '@/app/components/invoice/notaCredito/InvoiceHasNotaCredito.vue';
-import QuantityProductNotaCredito from '@/app/components/invoice/notaCredito/QuantityProductNotaCredito.vue';
+import ProductsWillBeBillTable from '@/app/components/invoice/notaCredito/ProductsWillBeBillTable.vue';
 import type { ProductForNotaCredito } from '@/app/types/Product';
 
 const { CompanyGetter } = useCompanyComposable();
@@ -109,6 +128,7 @@ const { createInvoiceBuilder, createConcreteInvoiceBuilder } = useInvoiceBuilder
 const onClose = () => {
     openDrawerNotaCredito.value = false;
     invoiceForNotaCredito.value = undefined;
+    productsForNotaCredito.value = [];
 };
 
 const notUse = ref(dayjs(new Date()));
@@ -116,7 +136,7 @@ const notUse = ref(dayjs(new Date()));
 const disabledDate = (current: Dayjs) => {
     let days = 10;
 
-    if (invoiceForNotaCredito.value?.voucher.concepto === 1) days = 5;
+    if (invoiceForNotaCredito.value?.voucher!.concepto === 1) days = 5;
 
     return (current && current < dayjs().subtract(days, 'day')) || current > dayjs().add(days, 'day');
 };
@@ -137,6 +157,25 @@ watch(
     },
     { immediate: true },
 );
+
+const rowSelection = {
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: ProductForNotaCredito[]) => {
+        console.log('🚀 ~onChange selectedRows:', selectedRows);
+        productsForNotaCredito.value = selectedRows;
+    },
+    onSelect: (record: ProductForNotaCredito, selected: boolean, selectedRows: ProductForNotaCredito[]) => {
+        productsForNotaCredito.value = selectedRows;
+    },
+    onSelectAll: (selected: boolean, selectedRows: ProductForNotaCredito[], changeRows: ProductForNotaCredito[]) => {
+        console.log('🚀 ~ onSelectAll selectedRows:', selectedRows);
+        productsForNotaCredito.value = selectedRows;
+    },
+    getCheckboxProps: (record: ProductForNotaCredito) => {
+        return {
+            disabled: disableCheckbox(record),
+        };
+    },
+};
 
 const columns = [
     {
@@ -160,6 +199,30 @@ const columns = [
         title: 'Cantidad',
         dataIndex: 'quantity',
         key: 'quantity',
+        align: 'center',
+    },
+    {
+        title: 'Neto',
+        dataIndex: 'neto',
+        key: 'neto',
+        align: 'right',
+    },
+    {
+        title: 'Iva',
+        dataIndex: 'iva',
+        key: 'iva',
+        align: 'right',
+    },
+    {
+        title: 'Percep. IIBB',
+        dataIndex: 'iibb',
+        key: 'percep_iibb_import',
+        align: 'right',
+    },
+    {
+        title: 'Percep. IVA',
+        dataIndex: 'iva',
+        key: 'percep_iva_import',
         align: 'right',
     },
     {
@@ -170,29 +233,12 @@ const columns = [
     },
 ];
 
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: ProductForNotaCredito[]) => {
-        productsForNotaCredito.value = selectedRows;
-    },
-    onSelect: (record: ProductForNotaCredito, selected: boolean, selectedRows: ProductForNotaCredito[]) => {
-        productsForNotaCredito.value = selectedRows;
-    },
-    onSelectAll: (selected: boolean, selectedRows: ProductForNotaCredito[], changeRows: ProductForNotaCredito[]) => {
-        productsForNotaCredito.value = selectedRows;
-    },
-    getCheckboxProps: (record: ProductForNotaCredito) => {
-        return {
-            disabled: disableCheckbox(record),
-        };
-    },
-};
-
 const disableCheckbox = (record: ProductForNotaCredito): boolean => {
     let productInNotaCredito: number = 0;
 
-    if (invoiceForNotaCredito.value?.voucher.children.length) {
+    if (invoiceForNotaCredito.value?.voucher!.children.length) {
         const matchedItems = invoiceForNotaCredito.value.voucher.children
-            .flatMap((invoice) => invoice.items)
+            .flatMap((invoice: any) => invoice.items)
             .filter((item) => record.name === item.name);
 
         productInNotaCredito = matchedItems.reduce((total, item) => total + item.quantity, 0);
@@ -291,5 +337,8 @@ const footerStyle = { height: '3rem' };
     background-color: white;
     padding: 1rem;
     border-radius: 7px;
+}
+.invoice--body p {
+    font-weight: bold;
 }
 </style>

@@ -13,11 +13,13 @@ import { useUserComposable } from '@/app/composables/user/useUserComposable';
 import { useAddressComposable } from '@/app/composables/address/useAddressComposable';
 import { useInscriptionsComposable } from '@/app/composables/afip/useInscriptionsComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useBankComposable } from '@/app/composables/bank/useBankComposable';
 import type { PersonaReturn } from '@/app/types/Afip';
 import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
 import { useAddressStore } from '@/app/store/address/address-store';
 import { storeToRefs } from 'pinia';
 import { showMessage } from '@/app/helpers/mesaages';
+import ASelectedBank from '@/app/components/banks/ASelectedBank.vue';
 
 const { sujeto } = storeToRefs(usePadronAfipStore());
 const { lastNameIsRequired, rules, companyForm, CompanyGetter } = useCompanyComposable();
@@ -25,6 +27,7 @@ const { UserGetter } = useUserComposable();
 const { isLoading: inscriptionLoading, store } = useInscriptionsComposable();
 const { isValid } = useAddressComposable();
 const { addressInStore } = storeToRefs(useAddressStore());
+const { fetchBanks } = useBankComposable();
 
 interface Props {
     loadingButton: boolean;
@@ -123,7 +126,8 @@ watch(
 );
 const isMobile = ref<boolean>(false);
 
-onMounted(() => {
+onMounted(async () => {
+    await fetchBanks('');
     if (window.innerWidth <= 768) {
         isMobile.value = true;
     }
@@ -262,6 +266,16 @@ onMounted(() => {
                                                 <a-radio-button value="2">SERVICIOS</a-radio-button>
                                                 <a-radio-button value="3">PRODUCTOS Y SERVICIOS</a-radio-button>
                                             </a-radio-group>
+                                        </a-form-item>
+                                    </a-col>
+                                    <a-col :md="12" :xs="24" :sm="24">
+                                        <a-form-item ref="bank_id" name="bank" label="Banco">
+                                            <a-selected-bank />
+                                        </a-form-item>
+                                    </a-col>
+                                    <a-col :md="12" :xs="24" :sm="24">
+                                        <a-form-item ref="cbu" name="cbu" label="CBU - Necesario para Facturas MiPyme">
+                                            <a-input v-model:value="companyForm.cbu.cbu" placeholder="CBU" />
                                         </a-form-item>
                                     </a-col>
                                 </a-row>

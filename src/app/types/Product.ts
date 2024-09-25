@@ -50,6 +50,10 @@ export type ProductOnInvoiceTable = {
         value: number;
     };
     comeFrom?: string;
+    percep_iibb_alicuota?: number;
+    percep_iibb_import?: number;
+    percep_iva_alicuota?: number;
+    percep_iva_import?: number;
 };
 
 export type ProductTransformer = {
@@ -79,4 +83,8 @@ export type ProductForNotaCredito = {
     iva_afip_code: string;
     unit_price: number;
     total: number;
+    percep_iibb_alicuota?: number;
+    percep_iibb_import?: number;
+    percep_iva_alicuota?: number;
+    percep_iva_import?: number;
 };

@@ -37,12 +37,28 @@
                                 <span class="summary-list-text">{{ $filters.formatCurrency(iva.import) }}</span>
                             </li>
                         </template>
-                        <!-- <template v-if="Aditional">
-							<li>
-								<span class="summary-list-title">Adicional {{ AditionalPercentage }}</span>
-								<span class="summary-list-text">{{ $filters.formatCurrency(Aditional) }}</span>
-							</li>
-						</template> -->
+                        <template v-if="PercepIVATresPorciento > 0">
+                            <li>
+                                <span class="summary-list-title">Perc. IVA 3%</span>
+                                <span class="summary-list-text">{{
+                                    $filters.formatCurrency(PercepIVATresPorciento)
+                                }}</span>
+                            </li>
+                        </template>
+                        <template v-if="PercepIVAUnoComaCinco > 0">
+                            <li>
+                                <span class="summary-list-title">Perc. IVA 1.5%</span>
+                                <span class="summary-list-text">{{
+                                    $filters.formatCurrency(PercepIVAUnoComaCinco)
+                                }}</span>
+                            </li>
+                        </template>
+                        <template v-if="CompanyGetter?.perception_iibb && PercepIIBB > 0">
+                            <li>
+                                <span class="summary-list-title">Perc. IIBB {{ alicuotaPercepcion }} %</span>
+                                <span class="summary-list-text">{{ $filters.formatCurrency(PercepIIBB) }}</span>
+                            </li>
+                        </template>
                     </ul>
                     <sdHeading class="summary-total" as="h4">
                         <span class="summary-total-label">Total : </span>
@@ -59,10 +75,26 @@ import { ref, watch, computed } from 'vue';
 import { OrderSummary } from './Style';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useArbaComposable } from '@/app/composables/arba/useArbaComposable';
 
-const { invoice, Subtotal, Discount, TotalComprobante, IVAS } = useInvoiceComposable();
+const { CompanyGetter } = useCompanyComposable();
+
+const {
+    invoice,
+    Subtotal,
+    Discount,
+    TotalComprobante,
+    IVAS,
+    PercepIVATresPorciento,
+    PercepIVAUnoComaCinco,
+    PercepIIBB,
+} = useInvoiceComposable();
+
+const { alicuotaPercepcion } = useArbaComposable();
 
 const { PaymentTypesGetter } = usePaymentTypeComposable();
+
 const openEditor = ref<boolean>(false);
 
 const Aditional = computed(() => {

@@ -1,17 +1,25 @@
 import type { AfipInvoice, FeCabReq } from '@/app/types/Afip';
-import type { InvoiceList } from '@/app/types/Invoice';
+import type { FECAESolicitarRequest, InvoiceList } from '@/app/types/Invoice';
 import type { ProductOnInvoiceTable } from '@/app/types/Product';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, type UnwrapRef } from 'vue';
 
 export const useInvoiceStore = defineStore('invoice', () => {
-    const invoiceType = ref<number>();
+    const invoiceType = ref<number>(1);
 
     const isSale = ref<boolean>(true);
 
     const invoiceConfigIsValidated = ref<boolean>(false);
 
     const invoiceList = ref<InvoiceList[]>([]);
+
+    const FECAESolicitarObject = ref<FECAESolicitarRequest>();
+
+    const alicuotaIIBB = ref<number>(0);
+
+    const alicuotaIVATresPorciento = ref<number>(3);
+
+    const alicuotaIVAUnoComaCinco = ref<number>(1.5);
 
     const invoice: UnwrapRef<AfipInvoice> = reactive({
         CantReg: 1,
@@ -51,6 +59,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
         voucher: null,
         comments: null,
         aditional_percentage: 0,
+        isMiPyme: false,
     });
 
     const invoiceInitialStatus = (): void => {
@@ -89,6 +98,8 @@ export const useInvoiceStore = defineStore('invoice', () => {
 
     const openSearchProduct = ref<boolean>(false);
 
+    const openModalMiPyme = ref<boolean>(false);
+
     const invoiceTableData = ref<ProductOnInvoiceTable[]>([]);
 
     const productOnInvoiceTable = ref<ProductOnInvoiceTable>({
@@ -117,6 +128,10 @@ export const useInvoiceStore = defineStore('invoice', () => {
             percentage: 0,
             value: 0,
         },
+        percep_iibb_alicuota: 0,
+        percep_iibb_import: 0,
+        percep_iva_alicuota: 0,
+        percep_iva_import: 0,
     });
 
     const setInitialData = () => {
@@ -137,5 +152,10 @@ export const useInvoiceStore = defineStore('invoice', () => {
         productOnInvoiceTable,
         setInitialData,
         invoiceConfigIsValidated,
+        openModalMiPyme,
+        FECAESolicitarObject,
+        alicuotaIIBB,
+        alicuotaIVATresPorciento,
+        alicuotaIVAUnoComaCinco,
     };
 });

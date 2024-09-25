@@ -8,11 +8,12 @@ const { IvasGetter, loaded } = storeToRefs(useAfipIvaStore());
 const { setIvasAction } = useAfipIvaStore();
 
 export const useIvaComposable = () => {
-    if (!loaded) {
+    if (!loaded.value) {
         const { isLoading } = useQuery(['ivas-cache'], () => apiAfipGetIvas(), {
             cacheTime: Infinity,
 
             onSuccess(data: AfipIva[]) {
+                loaded.value = true;
                 setIvasAction(data);
             },
         });

@@ -15,6 +15,13 @@ export type Sujeto = {
     type_company?: number;
 };
 
+export type CBU = {
+    alias?: string;
+    bank_id?: number;
+    bank?: string;
+    cbu?: string;
+};
+
 export type CompanyRawData = Sujeto & {
     activity_init: any;
     iibb: string;
@@ -28,6 +35,7 @@ export type CompanyRawData = Sujeto & {
     billing_concept: string;
     urlLogo?: string;
     logo_base64?: string;
+    cbu: CBU;
 };
 
 export type CustomerRawData = Sujeto;

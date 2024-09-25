@@ -28,7 +28,7 @@ export const useStoreCompany = defineStore('company', () => {
         pto_vta_recibo: null,
         billing_concept: '1',
         address: {
-            state_id: '',
+            state_id: undefined,
             city: '',
             street: '',
             cp: '',
@@ -40,6 +40,10 @@ export const useStoreCompany = defineStore('company', () => {
         },
         afip_data: undefined,
         fantasy_name: '',
+        cbu: {
+            bank_id: '',
+            cbu: '',
+        },
     });
 
     const defaultCompanyForm = {
@@ -61,6 +65,7 @@ export const useStoreCompany = defineStore('company', () => {
         pto_vta_recibo: null,
         pto_vta_remito: null,
         type_company: null,
+        cbu: null,
     };
 
     const defaultAddressInStore = {
@@ -106,6 +111,10 @@ export const useStoreCompany = defineStore('company', () => {
             type_company: company.type_company,
             urlLogo: company.urlLogo,
             logo_base64: company.logo_base64,
+            cbu: {
+                bank_id: company.cbus[0] && company.cbus[0].bank_id ? company.cbus[0].bank_id : null,
+                cbu: company.cbus[0] && company.cbus[0].cbu ? company.cbus[0].cbu : null,
+            },
         });
 
         Object.assign(addressStore.addressInStore, {

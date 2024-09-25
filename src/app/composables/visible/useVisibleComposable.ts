@@ -1,5 +1,8 @@
 import { useVisibleStore } from '@/app/store/visible/store-visible';
-const { visible, setVisible, VisibleGetter } = useVisibleStore();
+import { storeToRefs } from 'pinia';
+
+const { visible, VisibleGetter } = storeToRefs(useVisibleStore());
+const { setVisible } = useVisibleStore();
 
 export const useVisibleComposable = () => {
     return {

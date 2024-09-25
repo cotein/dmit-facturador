@@ -11,8 +11,6 @@ const { clearSujetoData } = usePadronAfipStore();
 
 const RESPONSABLE_INSCRIPTO = 1;
 
-const MONOTRIBUTO = 6;
-
 const EXENTO = 4;
 
 const setAfipInscriptionType = (personaReturn: any) => {
@@ -25,15 +23,6 @@ const setAfipInscriptionType = (personaReturn: any) => {
         }
     });
 };
-
-/* const domicilioFiscal = () => {
-	addressStore.address.state_id = domicilio.idProvincia + 1;
-	addressStore.address.city = domicilio.localidad;
-	addressStore.address.street = domicilio.direccion;
-	addressStore.address.cp = domicilio.codPostal;
-	addressStore.isValid = true;
-};
- */
 
 export const usePadronComposable = () => {
     const getPerson = (cuit: any) => {

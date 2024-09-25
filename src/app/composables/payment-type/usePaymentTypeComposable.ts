@@ -12,9 +12,12 @@ export const usePaymentTypeComposable = () => {
     const { paymentTypes, PaymentTypesGetter } = storeToRefs(usePaymentTypeStore());
 
     const fetchPaymentTypes = () => {
-        return useQuery(['payment-types'], () => getPaymentTypes(CompanyGetter!.value.id), {
+        const companyId = CompanyGetter?.value?.id;
+        if (companyId === undefined) {
+            throw new Error('Company ID is undefined');
+        }
+        return useQuery(['payment-types'], () => getPaymentTypes(companyId), {
             onSuccess(data: PaymentType[]) {
-                console.log('🚀 ~ onSuccess ~ data:', data);
                 paymentTypes.value = data;
             },
             staleTime: 1000 * 60 * 60,

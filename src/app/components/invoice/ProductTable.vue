@@ -75,6 +75,7 @@
             </a-row>
         </Cards>
         <Html2CanvasPdf />
+        <ModalMiPyme />
     </Main>
 </template>
 
@@ -90,7 +91,6 @@ import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoic
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
 import Cards from '@/components/cards/frame/CardsFrame.vue';
-
 import Html2CanvasPdf from '@/app/pdf/Html2CanvasPdf.vue';
 import Actions from './product/Actions.vue';
 import Discount from './product/Discount.vue';
@@ -102,6 +102,7 @@ import Total from './product/Total.vue';
 import Totals from './Totals.vue';
 import Unit from './product/Unit.vue';
 import FreeText from './FreeText.vue';
+import ModalMiPyme from './ModalMiPyme.vue';
 
 const { printPdf } = usePrinterPdfComposable();
 
@@ -112,6 +113,8 @@ const {
     InvoiceGetter,
     invoice,
     invoiceConfigIsValidated,
+    openModalMiPyme,
+    FECAESolicitarObject,
 } = useInvoiceComposable();
 
 const { createConcreteInvoiceBuilder, createInvoiceBuilder, invoiceType } = useInvoiceBuilderComposable();
@@ -169,22 +172,29 @@ const productTableColumns = [
 ];
 
 const generateInvoice = async () => {
+    loading.value = true;
+
+    invoice.value.PtoVta = parseInt(CompanyGetter.value!.pto_vta_fe);
+
+    invoice.value.CbteTipo = invoice.value.voucher;
+
     const builder = createConcreteInvoiceBuilder(
         SELECT_INVOICE_TYPE[invoiceType.value],
         CompanyGetter.value?.inscription_id,
         invoice.value.customer.afip_inscription.id,
     );
 
-    loading.value = true;
+    FECAESolicitarObject.value = createInvoiceBuilder(builder, invoice.value, invoiceTableData.value);
 
-    const FECAESolicitar = createInvoiceBuilder(builder, invoice.value, invoiceTableData.value);
-
-    if (FECAESolicitar.FECAEDetRequest.Concepto === 2 || FECAESolicitar.FECAEDetRequest.Concepto === 3) {
+    if (
+        FECAESolicitarObject.value.FECAEDetRequest.Concepto === 2 ||
+        FECAESolicitarObject.value.FECAEDetRequest.Concepto === 3
+    ) {
         if (
-            FECAESolicitar.FECAEDetRequest.FchServDesde === '' ||
-            FECAESolicitar.FECAEDetRequest.FchServDesde === null ||
-            FECAESolicitar.FECAEDetRequest.FchServHasta === '' ||
-            FECAESolicitar.FECAEDetRequest.FchServHasta === null
+            FECAESolicitarObject.value.FECAEDetRequest.FchServDesde === '' ||
+            FECAESolicitarObject.value.FECAEDetRequest.FchServDesde === null ||
+            FECAESolicitarObject.value.FECAEDetRequest.FchServHasta === '' ||
+            FECAESolicitarObject.value.FECAEDetRequest.FchServHasta === null
         ) {
             message.error({
                 content: 'Si factura servicios debe ingresar las fechas en que se desarrolló el mismo.',
@@ -194,15 +204,15 @@ const generateInvoice = async () => {
         }
     }
 
-    if (FECAESolicitar.FECAEDetRequest.ImpTotal === 0) {
+    if (FECAESolicitarObject.value.FECAEDetRequest.ImpTotal === 0) {
         message.error({ content: 'No se permite emitir un comprobante en cero.' });
         loading.value = false;
         return false;
     }
 
     const params = {
-        FeCabReq: FECAESolicitar.FeCabReq,
-        FECAEDetRequest: FECAESolicitar.FECAEDetRequest,
+        FeCabReq: FECAESolicitarObject.value.FeCabReq,
+        FECAEDetRequest: FECAESolicitarObject.value.FECAEDetRequest,
         environment: CompanyGetter.value?.afip_environment,
         company_cuit: CompanyGetter.value?.cuit,
         company_id: CompanyGetter.value?.id,
@@ -212,52 +222,41 @@ const generateInvoice = async () => {
         customer: InvoiceGetter.value?.customer,
         comments: InvoiceGetter.value?.comments,
         paymentType: InvoiceGetter.value?.paymentType,
+        isMiPyme: InvoiceGetter.value?.isMiPyme,
     };
 
     const result = await createInvoiceMutation
         .mutateAsync(params)
         .catch((err) => {
-            console.log('🚀 ~ file: ProductTable.vue:160 ~ generateInvoice ~ err:', err);
+            console.log(`🚀 ~ file: ProductTable.vue:160 ~ generateInvoice ~ err:`, err);
         })
         .finally(() => (loading.value = false));
 
     if (result) {
         console.log('🚀 ~ generateInvoice ~ result:', result);
+        if (result.data.isMipyme) {
+            openModalMiPyme.value = true;
+            invoice.value.isMiPyme = true;
+            FECAESolicitarObject.value.FeCabReq.CbteTipo = result.data.CbteTipo;
+            FECAESolicitarObject.value.FECAEDetRequest.CbteDesde = result.data.CbteDesde;
+            FECAESolicitarObject.value.FECAEDetRequest.CbteHasta = result.data.CbteHasta;
+
+            return;
+        }
+
         message.success({
-            content: 'Factura generada correctamente',
+            content: `Factura generada correctamente`,
             duration: 3,
         });
+
         invoiceTableData.value = []; //limpia los productos de la tabla
         invoice.value.comments = ''; //limpia comentarios
-        invoice.value.CbteDesde = parseInt(result.data.invoice[0]!.voucher.cbte_desde) + 1; //sumo uno al mismo tipo de voucher para no consultar la api de afip
-        invoice.value.CbteHasta = parseInt(result.data.invoice[0]!.voucher.cbte_desde) + 1; //sumo uno al mismo tipo de voucher para no consultar la api de afip
-        invoice.value.CbteNro = parseInt(result.data.invoice[0]!.voucher.cbte_desde) + 1; //sumo uno al mismo tipo de voucher para no consultar la api de afip
-        //invoiceInitialStatus();
-        invoice.value.comments = '';
 
-        console.log('🚀 ~ generateInvoice ~ result.data.invoice[0]:', result.data.invoice[0]);
         if (result.data.invoice[0]) {
             printPdf(result.data.invoice[0]);
         }
     }
 };
-
-/* const removeIvaColumn = () => {
-	const index = productTableColumns.findIndex((objeto) => objeto.key === 'iva');
-	console.log('🚀 ~ removeIvaColumn ~ index:', index);
-
-	if (index !== -1) {
-		productTableColumns.splice(index, 1);
-	}
-};
-
-const addIvaColumn = (indexIva: number) => {
-	const index = productTableColumns.findIndex((objeto) => objeto.key === 'iva');
-
-	if (index !== -1) {
-		productTableColumns.splice(indexIva, 0, iva);
-	}
-}; */
 
 onUnmounted(() => {
     invoiceInitialStatus();

@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const Total = computed(() => {
     return props.record.items.reduce((total: number, item: Item) => {
-        if (item.total) return total + item.total;
+        if (item.total) return total + item.total + item.percep_iibb_import + item.percep_iva_import;
         return total;
     }, 0);
 });

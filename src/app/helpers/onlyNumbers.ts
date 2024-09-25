@@ -33,3 +33,17 @@ export const selectText = (event: FocusEvent) => {
     const input = event.target as HTMLInputElement;
     input.select();
 };
+
+export const onlyNumericInputEvent = (event: Event) => {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+
+    // Remover cualquier carácter que no sea un número
+    const numericValue = value.replace(/[^0-9]/g, '');
+
+    // Actualizar el valor del input con el valor numérico
+    if (value !== numericValue) {
+        input.value = numericValue;
+        event.preventDefault();
+    }
+};

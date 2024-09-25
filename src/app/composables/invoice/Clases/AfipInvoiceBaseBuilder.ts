@@ -2,7 +2,6 @@ import type { CbteAsoc, PeriodoAsoc } from './../../../types/Afip';
 import type { FECAEDetRequest, FeCabReq } from '@/app/types/Afip';
 import type { CustomerInvoice, CustomerOnSaleInvoice } from '@/app/types/Customer';
 import type { ProductForNotaCredito, ProductOnInvoiceTable } from '@/app/types/Product';
-import moment from 'moment';
 
 export abstract class AfipInvoiceBaseBuilder {
     public FeCabReq: FeCabReq;
@@ -246,7 +245,7 @@ export abstract class AfipInvoiceBaseBuilder {
      *
      * @param invoiceTableData Suma de los importes del array de tributos
      */
-    abstract setImpTrib(invoiceTableData: ProductOnInvoiceTable[] | ProductForNotaCredito[]): void; //this.FECAEDetRequest.ImpTrib = parseFloat(ImpTrib);
+    abstract setImpTrib(impTrib: number): void;
 
     /**
      *
@@ -352,7 +351,7 @@ export abstract class AfipInvoiceBaseBuilder {
      * a un comprobante <Tributo>.
      * @param value
      */
-    abstract setTributos(value?: any): void;
+    abstract setTributos(invoiceTableData: ProductOnInvoiceTable[] | ProductForNotaCredito[]): void;
 
     /**
      *

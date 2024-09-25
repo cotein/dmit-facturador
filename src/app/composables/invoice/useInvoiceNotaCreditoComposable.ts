@@ -9,7 +9,7 @@ const invoiceListForNotaCreditoStore = useInvoiceNotaCreditoStore();
 
 invoiceListForNotaCreditoStore.$subscribe((m, state) => {
     const totalNota = productsForNotaCredito.value.reduce((acc, item: ProductForNotaCredito) => {
-        return acc + item.neto_import + item.iva_import;
+        return acc + item.neto_import + item.iva_import + item.percep_iibb_import! + item.percep_iva_import!;
     }, 0);
 
     totalNotaCredito.value = parseFloat(totalNota.toFixed(2));

@@ -33,7 +33,7 @@
 		"auth0-lock": "^12.5.0",
 		"axios": "^1.7.2",
 		"chart.js": "3.9.1",
-		"dayjs": "^1.11.7",
+		"dayjs": "^1.11.13",
 		"emoji-picker-element": "^1.16.0",
 		"exceljs": "^4.4.0",
 		"feather-icons": "^4.29.0",

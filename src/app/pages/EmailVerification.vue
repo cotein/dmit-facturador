@@ -58,6 +58,7 @@ const spinning = ref<boolean>(false);
 const sendVerificationSpinner = ref<boolean>(false);
 const sendVerificationButtonDisabled = ref<boolean>(true);
 const route = useRoute();
+console.log('🚀 ~ route:', route);
 const id = route.params.id;
 const hash = route.params.hash;
 const signature = route.query.signature;
@@ -97,6 +98,7 @@ const resend = async () => {
 };
 onMounted(async () => {
     spinning.value = true;
+
     const url = `/email/verify/${id}/${hash}?signature=${signature}`;
 
     try {

@@ -96,10 +96,23 @@
                                         <InvoiceNumber :record="record" :index="index" />
                                     </template>
                                     <template v-if="column.key === 'date'">
-                                        <InvoiceDate :record="record" :index="index" />
+                                        <InvoiceDate :record="record" :index="index" :date="record.voucher.cbte_fch" />
+                                    </template>
+                                    <template v-if="column.key === 'sale_condition'">
+                                        <ShowSomeStringData
+                                            :string="record.voucher.sale_conditions"
+                                            custom-class="custom-class"
+                                        />
                                     </template>
                                     <template v-if="column.key === 'value'">
                                         <InvoiceImport :record="record" :index="index" />
+                                    </template>
+                                    <template v-if="column.key === 'vto_pago'">
+                                        <InvoiceDate
+                                            :record="record"
+                                            :index="index"
+                                            :date="record.voucher?.fch_vto_pago"
+                                        />
                                     </template>
                                     <template v-if="column.key === 'status'">
                                         <InvoiceStatus :record="record" :index="index" />
@@ -151,8 +164,12 @@ import { useCompanyComposable } from '@/app/composables/company/useCompanyCompos
 import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
 import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
 import { useInvoiceListStore } from '@/app/store/invoice/useInvoiceListStore';
-import Cards from '../../../components/cards/frame/CardsFrame.vue';
+import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
 import BetweenDaysRangePicker from '../../shared/BetweenDaysRangePicker.vue';
+import Cards from '../../../components/cards/frame/CardsFrame.vue';
+import dayjs from 'dayjs';
+import DrawerNotaCredito from '@/app/components/invoice/notaCredito/DrawerNotaCredito.vue';
+import Html2CanvasPdf from '@/app/pdf/Html2CanvasPdf.vue';
 import InvoiceActions from './Row/InvoiceActions.vue';
 import InvoiceCustomer from './Row/InvoiceCustomer.vue';
 import InvoiceDate from './Row/InvoiceDate.vue';
@@ -161,11 +178,8 @@ import InvoiceNumber from './Row/InvoiceNumber.vue';
 import InvoiceStatus from './Row/InvoiceStatus.vue';
 import RowNumber from '../../shared/RowNumber.vue';
 import SearchCustomer from '../../customer/SearchCustomer.vue';
-import DrawerNotaCredito from '@/app/components/invoice/notaCredito/DrawerNotaCredito.vue';
+import ShowSomeStringData from '../../shared/ShowSomeStringData.vue';
 import type { InvoiceList } from '@/app/types/Invoice';
-import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
-import dayjs from 'dayjs';
-import Html2CanvasPdf from '@/app/pdf/Html2CanvasPdf.vue';
 
 const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
@@ -195,7 +209,7 @@ type InvoiceTableColumn = {
     key: string;
     sorter?: any;
 };
-const pageSizeOptions = ref<string[]>(['2', '10', '20', '30', '40', '50', '100']);
+const pageSizeOptions = ref<string[]>(['10', '20', '30', '40', '50', '100']);
 const filterKey = ref(['Adeudada', 'Parcialmente Cancelada', 'Cancelada']);
 const stateValue = ref('');
 const sortDefault = ref();
@@ -218,6 +232,7 @@ const print = async () => {
     );
 
     const excel = new ExcelService();
+
     excel.download(resp.data, 'Listado Ventas');
 };
 
@@ -298,6 +313,16 @@ const invoiceTableColumns: InvoiceTableColumn[] = [
             },
             multiple: 2,
         },
+    },
+    {
+        title: 'Vto. Pago',
+        dataIndex: 'vto_pago',
+        key: 'vto_pago',
+    },
+    {
+        title: 'Cond. de venta',
+        dataIndex: 'sale_condition',
+        key: 'sale_condition',
     },
     {
         title: 'Estado',
@@ -405,5 +430,9 @@ const rowSelection = {
 .wrap-pagination {
     padding: 3rem;
     text-align: center;
+}
+.custom-class {
+    color: red;
+    text-align: left;
 }
 </style>

@@ -42,7 +42,7 @@ export const useInvoiceBuilderComposable = () => {
         concreteInvoiceBuilder.setImpNeto(invoiceTableData);
         concreteInvoiceBuilder.setImpOpEx(invoiceTableData);
         concreteInvoiceBuilder.setImpIVA(invoiceTableData);
-        concreteInvoiceBuilder.setImpTrib(invoiceTableData);
+        //concreteInvoiceBuilder.setImpTrib(invoiceTableData);
         concreteInvoiceBuilder.setFchServDesde(invoice.FchServDesde);
         concreteInvoiceBuilder.setFchServHasta(invoice.FchServHasta);
         concreteInvoiceBuilder.setFchVtoPago(invoice.FchVtoPago!);
@@ -50,7 +50,7 @@ export const useInvoiceBuilderComposable = () => {
         concreteInvoiceBuilder.setMonCotiz(1);
         concreteInvoiceBuilder.setIvaAarray(invoiceTableData);
         concreteInvoiceBuilder.setCbtesAsoc(invoice.CbtesAsoc);
-        concreteInvoiceBuilder.setTributos();
+        concreteInvoiceBuilder.setTributos(invoiceTableData);
         concreteInvoiceBuilder.setOpcionales();
         concreteInvoiceBuilder.setCompradores();
         concreteInvoiceBuilder.setPeriodoAsoc();

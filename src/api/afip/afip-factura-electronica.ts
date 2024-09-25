@@ -26,6 +26,7 @@ export const FECAESolicitar = async (
     comments: string,
     paymentType: number,
     parent?: number,
+    isMiPyme?: boolean,
 ): Promise<AxiosResponse<InvoicePdf> | undefined> => {
     try {
         const response = await ApiHttp.post<InvoicePdf>(`${URL}/FECAESolicitar`, {
@@ -41,6 +42,7 @@ export const FECAESolicitar = async (
             comments,
             paymentType,
             parent,
+            isMiPyme,
         });
 
         return response;

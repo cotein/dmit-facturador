@@ -2,6 +2,7 @@ import type { Item } from '@/app/types/Pdf';
 import { Invoice } from './Invoice';
 import { AFIP_IVA } from '@/app/types/Constantes';
 import dayjs from 'dayjs';
+import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
 
 export class A extends Invoice {
     public typeA: string = 'A';
@@ -58,15 +59,6 @@ export class A extends Invoice {
             7,
             this.first_column_text() * 10.8,
             this.first_line_height + 15,
-            this.interline(),
-        );
-
-        this.write_text(
-            ['Cheques a la orden de: '],
-            true,
-            10,
-            this.first_column_text() - this.one_cm() / 2,
-            this.margin_bottom - this.one_cm() * 2.5,
             this.interline(),
         );
     }
@@ -268,6 +260,39 @@ export class A extends Invoice {
             return result;
         }, []);
 
+        const percep_iibb = this.items!.reduce((acc: Array, item: Item) => {
+            const index = acc.findIndex((el) => el.name === `Percep. IIBB ${item.percep_iibb_alicuota} %:`);
+
+            if (index < 0) {
+                acc.push({
+                    name: `Percep. IIBB ${item.percep_iibb_alicuota} %:`,
+                    total: parseFloat(item.percep_iibb_import),
+                });
+            } else {
+                acc[index].total += parseFloat(item.percep_iibb_import);
+            }
+            console.log('🚀 ~ A ~ coniiiibbbbbb ~ acc:', acc);
+            return acc;
+        }, []);
+
+        const percep_iva = this.items!.reduce((acc: any, item: Item) => {
+            const index = acc.findIndex((el: any) => el.name === `Percep. IVA ${item.percep_iva_alicuota} %:`);
+
+            if (index < 0) {
+                acc.push({
+                    name: `Percep. IVA ${item.percep_iva_alicuota} %:`,
+                    total: parseFloat(item.percep_iva_import),
+                });
+            } else {
+                acc[index].total += parseFloat(item.percep_iva_import);
+            }
+
+            console.log('🚀 ~ A ~ constpercep_iva=this.items!.reduce ~ item:', item);
+            console.log('🚀 ~ A ~ constpercep_iva=this.items!.reduce ~ acc:', acc);
+            return acc;
+        }, []);
+        console.log('🚀 ~ A ~ constpercep_iva=this.items!.reduce ~ percep_iva:', percep_iva);
+
         this.height_position = this.margin_bottom - 40;
 
         this.pdf.setFontSize(10);
@@ -304,11 +329,36 @@ export class A extends Invoice {
             );
             this.height_position = this.height_position + 5;
         });
+        ///////////////// PERCEPCION IIBB //////////////////
+        percep_iibb.forEach((iibb: any) => {
+            if (iibb.total === 0) {
+                return;
+            }
+            this.pdf.text(iibb.name, this.first_column_text() * 8.5, this.height_position, this.options);
+            this.pdf.text(
+                this.CurrencyFormat(iibb.total),
+                this.first_column_text() * 11.5,
+                this.height_position,
+                this.options,
+            );
+            this.height_position = this.height_position + 5;
+        });
+        ///////////////// PERCEPCION IVA //////////////////
+        percep_iva.forEach((percep_iva: any) => {
+            this.pdf.text(percep_iva.name, this.first_column_text() * 8.5, this.height_position, this.options);
+            this.pdf.text(
+                this.CurrencyFormat(percep_iva.total),
+                this.first_column_text() * 11.5,
+                this.height_position,
+                this.options,
+            );
+            this.height_position = this.height_position + 5;
+        });
         ///////////////// TOTALS //////////////////
         this.pdf.text('TOTAL', this.first_column_text() * 8.5, this.height_position, this.options);
 
         const totalInvoice = this.items?.reduce((total: number, item: Item) => {
-            return total + (item.total ?? 0);
+            return total + (item.total ?? 0) + item.percep_iibb_import! + item.percep_iva_import!;
         }, 0);
 
         this.pdf.text(
@@ -320,7 +370,19 @@ export class A extends Invoice {
         this.totalToWords(totalInvoice);
     }
 
-    async print() {
+    afipLegendRItoMonotributo() {
+        const lines = this.pdf.splitTextToSize(
+            'El crédito fiscal discriminado en el presente comprobante, sólo podrá ser computado a efectos del Régimen de Sostenimiento e Inclusión Fiscal para Pequeños Contribuyentes de la Ley Nº 27.618',
+            70, // Ancho máximo de 70
+        );
+
+        this.pdf.setFontSize(7);
+        this.pdf.setTextColor(255, 0, 0);
+        this.pdf.text(lines, 80, 271, { align: 'left' });
+        this.pdf.setTextColor(0);
+    }
+
+    async print(): Promise<void> {
         this.printStructure(this.typeA);
 
         this.printProducts();
@@ -350,6 +412,18 @@ export class A extends Invoice {
             'E',
             parseInt(this.voucher!.cae, 10),
         );
+
+        this.afipLogo();
+
+        this.afipLegend();
+
+        if (
+            this.company?.afipInscription_id === AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO &&
+            (this.customer?.afipInscription_id === AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO ||
+                this.customer?.afipInscription_id === AFIP_INSCRIPTION.MONOTRIBUTISTA_SOCIAL)
+        ) {
+            this.afipLegendRItoMonotributo();
+        }
 
         await this.printCommentImage(this.typeA);
 

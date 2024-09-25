@@ -1,16 +1,16 @@
 <template>
-    <div id="main_data"></div>
-    <div id="html_0"></div>
-    <div id="html_1"></div>
-    <div id="html_2"></div>
-    <div id="html_3"></div>
-    <div id="html_4"></div>
-    <div id="html_5"></div>
-    <div id="html_6"></div>
-    <div id="html_7"></div>
-    <div id="html_8"></div>
-    <div id="html_9"></div>
-    <div id="html_10"></div>
+    <div id="main_data" class="off-screen"></div>
+    <div id="html_0" class="off-screen"></div>
+    <div id="html_1" class="off-screen"></div>
+    <div id="html_2" class="off-screen"></div>
+    <div id="html_3" class="off-screen"></div>
+    <div id="html_4" class="off-screen"></div>
+    <div id="html_5" class="off-screen"></div>
+    <div id="html_6" class="off-screen"></div>
+    <div id="html_7" class="off-screen"></div>
+    <div id="html_8" class="off-screen"></div>
+    <div id="html_9" class="off-screen"></div>
+    <div id="html_10" class="off-screen"></div>
 </template>
 
 <script setup lang="ts">
@@ -37,5 +37,9 @@ onMounted(() => {
 div {
     margin-bottom: 2rem;
     width: 756px;
+}
+.off-screen {
+    position: absolute;
+    left: -9999px;
 }
 </style>

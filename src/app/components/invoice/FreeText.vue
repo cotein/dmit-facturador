@@ -12,7 +12,6 @@
             </a-col>
         </a-row>
     </ProductTable>
-    <!-- <Totals /> -->
 </template>
 
 <script setup lang="ts">

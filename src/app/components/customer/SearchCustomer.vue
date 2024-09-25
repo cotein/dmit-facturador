@@ -12,6 +12,7 @@
         @search="handleSearch"
         @select="select"
         @change="change"
+        @deselect="deselect"
         @dropdownVisibleChange="cleanVouchers"
         :mode="props.multiple ? 'multiple' : ''"
         v-model:value="defaultCustomer"
@@ -32,12 +33,16 @@ import { storeToRefs } from 'pinia';
 import { getVouchers } from '@/api/voucher/voucher-api';
 import { useVoucherStore } from '@/app/store/voucher/useVoucherStore';
 import { useCustomerListComposable } from '@/app/composables/customer/useCustomerListComposable';
+import { useArbaComposable } from '@/app/composables/arba/useArbaComposable';
 
-const { customersList, customerName } = useCustomerListComposable();
+const { customerName } = useCustomerListComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
 const { CompanyGetter } = useCompanyComposable();
 const { invoice } = useInvoiceComposable();
 const { setVouchers } = useVoucherStore();
+const { alicuotaPorSujeto, simpleXMLElementArba, alicuotaPercepcion, alicuotaPercepcionInitilize } =
+    useArbaComposable();
+
 const fetching = ref(false);
 const options = ref<{ value: any; label: string }[]>([]);
 
@@ -89,8 +94,20 @@ const select = async (e: any, option: CustomerSelectComponent): Promise<void> =>
     if (props.context === 'invoice') {
         if (CompanyGetter.value?.inscription_id !== undefined) {
             const vouchers = await getVouchers(CompanyGetter.value.inscription_id, customer.value.afip_inscription.id);
-            console.log('🚀 ~ select ~ vouchers:', vouchers);
             setVouchers(vouchers);
+
+            if (CompanyGetter.value.perception_iibb) {
+                if (customer.value.cuit !== null) {
+                    const alicuota = await alicuotaPorSujeto(customer.value.cuit);
+                    simpleXMLElementArba.value = alicuota;
+                    console.log('🚀 ~ select ~ alicuota:', alicuota.contribuyentes.contribuyente.alicuotaPercepcion);
+                    const percentage: string = alicuota.contribuyentes.contribuyente.alicuotaPercepcion;
+                    const convertedValue: number = parseFloat(percentage.replace(',', '.'));
+
+                    alicuotaPercepcion.value = convertedValue;
+                    console.log('🚀 ~ select ~ alicuotaPercepcion.value:', alicuotaPercepcion.value);
+                }
+            }
         }
     }
 
@@ -99,6 +116,16 @@ const select = async (e: any, option: CustomerSelectComponent): Promise<void> =>
     }
 };
 
+const deselect = (e: any, option: CustomerSelectComponent): void => {
+    invoice.value.customer = null;
+    customer.value = {
+        value: null, // O un valor nulo o predeterminado adecuado
+        label: '', // Cadena vacía o valor predeterminado
+        cuit: null,
+    };
+    customerName.value = '';
+    alicuotaPercepcionInitilize();
+};
 const change = (e: any, option: CustomerSelectComponent): void => {
     if (option === undefined || option === null) {
         invoice.value.customer = null;

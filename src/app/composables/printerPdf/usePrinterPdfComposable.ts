@@ -12,6 +12,7 @@ export const usePrinterPdfComposable = () => {
         case 1:
         case 2:
         case 3:
+        case 92:
             return A;
         case 6:
         case 7:

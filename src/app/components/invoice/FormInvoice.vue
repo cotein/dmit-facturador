@@ -17,6 +17,7 @@ import InvoiceConfig from './InvoiceConfig.vue';
 import moment from 'moment';
 import ProductTable from './ProductTable.vue';
 import Cards from '@/components/cards/frame/CardsFrame.vue';
+
 const { CompanyGetter } = useCompanyComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
 const { fetchSaleConditions } = useSaleConditionComposable();
@@ -115,7 +116,7 @@ onUnmounted(() => {
                                                     InvoiceGetter && InvoiceGetter.voucher ? VoucherName : ''
                                                 }}</sdHeading
                                             >
-                                            <p>
+                                            <!--  <p>
                                                 {{
                                                     InvoiceGetter && InvoiceGetter.PtoVta && InvoiceGetter.CbteNro
                                                         ? String(InvoiceGetter.PtoVta).padStart(4, '0') + '-'
@@ -126,8 +127,9 @@ onUnmounted(() => {
                                                         ? String(InvoiceGetter.CbteNro).padStart(8, '0')
                                                         : ''
                                                 }}
-                                            </p>
+                                            </p> -->
                                             <p>
+                                                Fecha factura:
                                                 {{ InvoiceGetter && InvoiceGetter.CbteFch != '' ? VoucherDate : '' }}
                                             </p>
                                             <p>
@@ -183,7 +185,6 @@ onUnmounted(() => {
                         <br />
                         <!-- Facturo por productos -->
                         <ProductTable v-if="isSale" />
-                        <!-- Facturo por nota de crédito / débito -->
                     </sdCards>
                 </a-col>
             </a-row>

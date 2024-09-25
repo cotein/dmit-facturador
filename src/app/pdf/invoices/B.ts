@@ -50,15 +50,6 @@ export class B extends Invoice {
             this.first_line_height + 15,
             this.interline(),
         );
-
-        this.write_text(
-            ['Cheques a la orden de: '],
-            true,
-            10,
-            this.first_column_text() - this.one_cm() / 2,
-            this.margin_bottom - this.one_cm() * 2.5,
-            this.interline(),
-        );
     }
 
     printInternalVerticalsLines(yCoordinate: number) {
@@ -265,6 +256,10 @@ export class B extends Invoice {
             'E',
             parseInt(this.voucher!.cae, 10),
         );
+
+        this.afipLogo();
+
+        this.afipLegend();
 
         await this.printCommentImage(this.typeB);
 

@@ -1,7 +1,5 @@
 import type { Dayjs } from 'dayjs';
-import type { Customer } from './Customer';
-import type { SaleCondition } from './SaleCondition';
-import type { PaymentType } from './PaymentType';
+import type { Customer } from './Invoice';
 
 export type AfipInscription = {
     id: number;
@@ -158,6 +156,7 @@ export type AfipInvoice = {
     Tributos?: Tributos | null;
     type_details: string | null;
     voucher: number | null;
+    isMiPyme: boolean;
 };
 
 export type VoucherOption = {

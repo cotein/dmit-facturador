@@ -7,6 +7,8 @@ import { useUserComposable } from '../composables/user/useUserComposable';
 import { useCompanyComposable } from '../composables/company/useCompanyComposable';
 import type { CompanyRawData } from '../types/Company';
 import { onMounted } from 'vue';
+import { FileAddOutlined } from '@ant-design/icons-vue';
+
 const { IHaventGotCompanies } = useUserComposable();
 const { createCompanyMutation } = useCompanyComposable();
 
@@ -132,11 +134,20 @@ onMounted(() => {
             <a-menu-item @click="toggleCollapsed" key="customers-list">
                 <router-link :to="{ name: 'CustomersList' }"> Listado </router-link>
             </a-menu-item>
-            <!-- <a-menu-item @click="toggleCollapsed" key="customers-cuentas-corrientes">
-                <router-link :to="{ name: 'ListCuentasCorrientes' }">
-                Cuentas Corrientes
-                </router-link>
-            </a-menu-item> -->
+        </a-sub-menu>
+
+        <!-- Nuevo submenú Recibos -->
+        <a-sub-menu key="receipts">
+            <template #icon>
+                <unicon name="file-medical"></unicon>
+            </template>
+            <template #title>Recibos</template>
+            <!--  <a-menu-item @click="toggleCollapsed" key="receipts-list">
+                    <router-link :to="{ name: 'ReceiptsList' }"> Listado </router-link>
+                </a-menu-item> -->
+            <a-menu-item key="receipts-new">
+                <router-link :to="{ name: 'NewReceiptPage' }"> Ingresar </router-link>
+            </a-menu-item>
         </a-sub-menu>
 
         <a-sub-menu key="categories">

@@ -1,5 +1,6 @@
 <template>
     <div class="invoice--previus-nota-credito" v-if="props.children.length">
+        <p>Otros comprobantes relacionados con la factura:</p>
         <a-collapse v-model:activeKey="activeKey" ghost v-for="(invoice, index) in props.children" :key="index">
             <a-collapse-panel :key="index" :header="invoice.invoice">
                 <p class="item--detail" v-for="(item, i) in invoice.items" :key="i">
@@ -53,6 +54,9 @@ const activeKey = ref<string[]>([]);
     background-color: white;
     padding: 1rem;
     border-radius: 7px;
+}
+.invoice--previus-nota-credito > p {
+    font-weight: bold;
 }
 .item--detail {
     margin-left: 2rem;

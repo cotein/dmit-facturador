@@ -115,7 +115,6 @@
 </template>
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
-import { FECompUltimoAutorizado } from '@/api/afip/afip-factura-electronica';
 import { onMounted, ref, watch } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
@@ -141,16 +140,6 @@ const invoiceConfigForm = ref();
 // Agrega un cero al inicio del número si es menor a 10
 const appendZero = function (number: number) {
     return Number(number) < 10 ? '0' + number : number;
-};
-
-const getDateTodayInArgentinaFormat = () => {
-    const date = new Date();
-
-    const day = appendZero(date.getDate());
-    const month = appendZero(date.getMonth() + 1);
-    const year = date.getFullYear();
-
-    return `${day}-${month}-${year}`;
 };
 
 const dateFormat = 'DD-MM-YYYY';
@@ -179,8 +168,6 @@ const invoiceVoucherValidator = (rule: Rule, value: any) => {
 
 const vtoPagoValidator = (rule: Rule, value: Dayjs) => {
     return new Promise((resolve, reject) => {
-        console.log('🚀 ~ value:', value);
-        console.log('🚀 ~ rule:', rule);
         if (invoice.value.Concepto === '2' || invoice.value.Concepto === '3') {
             if (value) {
                 resolve(true);
@@ -322,7 +309,6 @@ const setDate = (date: any) => {
 };
 
 const servicesDateFchVtoPago = (date: any) => {
-    console.log('🚀 ~ servicesDateFchVtoPago ~ date:', date);
     let day = null;
 
     if (date.$D < 10) {
@@ -348,27 +334,6 @@ watch(
     },
     { deep: true },
 );
-
-watch(visible, async (visible) => {
-    if (!visible) {
-        const resp = await FECompUltimoAutorizado(
-            invoice.value.voucher,
-            CompanyGetter.value!.pto_vta_fe ?? '',
-            CompanyGetter.value?.afip_environment ?? '',
-            CompanyGetter.value?.cuit ?? '',
-            CompanyGetter.value.id,
-            CompanyGetter.value?.user_id ?? '',
-        );
-
-        if (resp) {
-            const { FECompUltimoAutorizadoResult } = resp.data;
-
-            invoice.value.CbteTipo = FECompUltimoAutorizadoResult.CbteTipo;
-            invoice.value.PtoVta = FECompUltimoAutorizadoResult.PtoVta;
-            invoice.value.CbteNro = FECompUltimoAutorizadoResult.CbteNro + 1;
-        }
-    }
-});
 
 watch(
     () => invoice.value.Concepto,
@@ -397,7 +362,6 @@ watch(
 watch(
     () => invoice.value.SaleCondition,
     (newValue) => {
-        console.log('🚀 ~ newValue:', newValue);
         const date = dayjs(new Date());
         //fchVtoPago.value = date.add(newValue.days, 'day');
     },

@@ -1,4 +1,4 @@
-import type { CbteAsoc, PeriodoAsoc } from './Afip';
+import type { CbteAsoc, FeCabReq, FECAEDetRequest, PeriodoAsoc } from './Afip';
 
 export type Address = {
     city?: string;
@@ -14,6 +14,7 @@ export type Company = {
     fantasy_name: string;
     cuit: string;
     afipInscription: string;
+    afipInscription_id?: number;
     afipDocument: string;
     activity_init?: string;
     iibb?: string;
@@ -60,6 +61,7 @@ export type Voucher = {
     typeNotaDebito: number;
     voucher_type: number;
     voucher_id: number;
+    payment_type?: string;
 };
 
 export type Item = {
@@ -70,6 +72,13 @@ export type Item = {
     iva_import: number;
     unit_price: number;
     total: number;
+    discount_percentage: number;
+    discount_import: number;
+    price_list_id: number;
+    percep_iibb_alicuota: number;
+    percep_iibb_import: number;
+    percep_iva_alicuota: number;
+    percep_iva_import: number;
 };
 
 export type InvoiceList = {
@@ -93,4 +102,9 @@ export type Pagination = {
 export type InvoiceListWithPagination = {
     data: InvoiceList[];
     pagination: Pagination;
+};
+
+export type FECAESolicitarRequest = {
+    FeCabReq: FeCabReq;
+    FECAEDetRequest: FECAEDetRequest;
 };

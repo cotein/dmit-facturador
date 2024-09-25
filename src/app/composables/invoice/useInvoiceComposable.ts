@@ -6,10 +6,12 @@ import { computed, isProxy } from 'vue';
 import { FECAESolicitar } from '@/api/afip/afip-factura-electronica';
 import { storeToRefs } from 'pinia';
 import { useMutation } from '@tanstack/vue-query';
-import { INVOICE_TYPE } from '@/app/types/Constantes';
+import { AFIP_IVAS, INVOICE_TYPE } from '@/app/types/Constantes';
 import { useInvoiceStore } from '@/app/store/invoice/useInvoiceStore';
 import { useInvoiceListComposable } from './useInvoiceListComposable';
 import { useQueryClient } from '@tanstack/vue-query';
+import { useCompanyComposable } from '../company/useCompanyComposable';
+import { useArbaComposable } from '../arba/useArbaComposable';
 
 const {
     invoice,
@@ -20,43 +22,15 @@ const {
     productOnInvoiceTable,
     isSale,
     invoiceConfigIsValidated,
+    openModalMiPyme,
+    FECAESolicitarObject,
+    alicuotaIVATresPorciento,
+    alicuotaIVAUnoComaCinco,
 } = storeToRefs(useInvoiceStore());
 
 const { invoiceInitialStatus } = useInvoiceStore();
 
 const invoiceStore = useInvoiceStore();
-
-invoiceStore.$subscribe(() => {
-    invoiceTableData.value.forEach((item: ProductOnInvoiceTable) => {
-        const unit = parseFloat(item.unit.toFixed(2));
-
-        const subtotal = (unit * item.quantity - item.discount).toFixed(2);
-
-        item.subtotal = parseFloat(subtotal);
-
-        const iva_import = ((item.subtotal * item.iva.percentage) / 100).toFixed(2);
-
-        item.iva_import = parseFloat(iva_import);
-
-        item.total = item.subtotal + item.iva_import;
-    });
-
-    if (
-        invoice.value.voucher !== null &&
-        [
-            INVOICE_TYPE.NOTA_CREDITO_A,
-            INVOICE_TYPE.NOTA_CREDITO_B,
-            INVOICE_TYPE.NOTA_CREDITO_C,
-            INVOICE_TYPE.NOTA_DEBITO_A,
-            INVOICE_TYPE.NOTA_DEBITO_B,
-            INVOICE_TYPE.NOTA_DEBITO_C,
-        ].includes(invoice.value.voucher)
-    ) {
-        isSale.value = false;
-    } else {
-        isSale.value = true;
-    }
-});
 
 const Subtotal = computed(() => {
     const subtotal = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
@@ -84,10 +58,43 @@ const IVA = computed(() => {
 
 const TotalComprobante = computed(() => {
     const totalComprobante = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
-        return total + item.total;
+        return total + item.total + item.percep_iva_import! + item.percep_iibb_import!;
     }, 0);
 
     return parseFloat(totalComprobante.toFixed(2));
+});
+
+const PercepIVATresPorciento = computed(() => {
+    const percepIVA = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
+        if (item.percep_iva_import && item.percep_iva_alicuota === alicuotaIVATresPorciento.value) {
+            return total + item.percep_iva_import;
+        }
+        return total;
+    }, 0);
+
+    return parseFloat(percepIVA.toFixed(2));
+});
+
+const PercepIVAUnoComaCinco = computed(() => {
+    const percepIVA = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
+        if (item.percep_iva_import && item.percep_iva_alicuota === alicuotaIVAUnoComaCinco.value) {
+            return total + item.percep_iva_import;
+        }
+        return total;
+    }, 0);
+
+    return parseFloat(percepIVA.toFixed(2));
+});
+
+const PercepIIBB = computed(() => {
+    const iibb = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
+        if (item.percep_iibb_import) {
+            return total + item.percep_iibb_import;
+        }
+        return total;
+    }, 0);
+
+    return iibb;
 });
 
 const IVAS = computed(() => {
@@ -117,9 +124,64 @@ const IVAS = computed(() => {
 });
 
 export const useInvoiceComposable = () => {
+    const { CompanyGetter } = useCompanyComposable();
+
+    const { alicuotaPercepcion } = useArbaComposable();
+
+    invoiceStore.$subscribe(() => {
+        invoiceTableData.value.forEach((item: ProductOnInvoiceTable) => {
+            const unit = parseFloat(item.unit.toFixed(2));
+
+            const subtotal = (unit * item.quantity - item.discount).toFixed(2);
+
+            item.subtotal = parseFloat(subtotal);
+
+            const iva_import = ((item.subtotal * item.iva.percentage) / 100).toFixed(2);
+
+            item.iva_import = parseFloat(iva_import);
+
+            if (CompanyGetter.value?.perception_iva) {
+                if (item.iva.afip_code === AFIP_IVAS.AFIP_CODE_VEINTI_UNO) {
+                    const percep_iva_import = ((item.subtotal * alicuotaIVATresPorciento.value) / 100).toFixed(2);
+                    item.percep_iva_import = parseFloat(percep_iva_import);
+                    item.percep_iva_alicuota = alicuotaIVATresPorciento.value;
+                }
+
+                if (item.iva.afip_code === AFIP_IVAS.AFIP_CODE_DIEZ_COMA_CINCO) {
+                    const percep_iva_import = ((item.subtotal * alicuotaIVAUnoComaCinco.value) / 100).toFixed(2);
+                    item.percep_iva_import = parseFloat(percep_iva_import);
+                    item.percep_iva_alicuota = alicuotaIVAUnoComaCinco.value;
+                }
+            }
+
+            if (CompanyGetter.value?.perception_iibb) {
+                item.percep_iibb_alicuota = alicuotaPercepcion.value;
+                const percep_iibb_import = ((item.subtotal * alicuotaPercepcion.value) / 100).toFixed(2);
+                item.percep_iibb_import = parseFloat(percep_iibb_import);
+            }
+
+            item.total = item.subtotal + item.iva_import;
+        });
+
+        if (
+            invoice.value.voucher !== null &&
+            [
+                INVOICE_TYPE.NOTA_CREDITO_A,
+                INVOICE_TYPE.NOTA_CREDITO_B,
+                INVOICE_TYPE.NOTA_CREDITO_C,
+                INVOICE_TYPE.NOTA_DEBITO_A,
+                INVOICE_TYPE.NOTA_DEBITO_B,
+                INVOICE_TYPE.NOTA_DEBITO_C,
+            ].includes(invoice.value.voucher)
+        ) {
+            isSale.value = false;
+        } else {
+            isSale.value = true;
+        }
+    });
+
     const queryClient = useQueryClient();
     const { invoiceList } = useInvoiceListComposable();
-
     const createInvoiceMutation = useMutation(
         async (params: {
             FeCabReq: FeCabReq;
@@ -134,6 +196,7 @@ export const useInvoiceComposable = () => {
             comments: string;
             paymentType: number;
             parent?: number;
+            isMiPyme?: boolean;
         }) => {
             const response = await FECAESolicitar(
                 params.FeCabReq,
@@ -148,34 +211,27 @@ export const useInvoiceComposable = () => {
                 params.comments,
                 params.paymentType,
                 params.parent,
+                params.isMiPyme,
             );
 
             return response;
         },
         {
             onSuccess: (data) => {
-                if (data && data.data && data.data.invoice[0]) {
-                    const newInvoice = data.data.invoice[0];
-                    if (isProxy(invoiceList.value)) {
-                        const list = JSON.parse(JSON.stringify(invoiceList.value));
-                        list.unshift(newInvoice);
-                        invoiceList.value = list;
-                    } else {
-                        invoiceList.value.unshift(newInvoice);
+                if (data && data.data) {
+                    console.log('🚀 ~ useInvoiceComposable ~ wwww:', data?.data);
+                    if (Array.isArray(data.data.invoice) && data.data.invoice.length > 0) {
+                        const newInvoice = data.data.invoice[0];
+                        if (isProxy(invoiceList.value)) {
+                            const list = JSON.parse(JSON.stringify(invoiceList.value));
+                            list.unshift(newInvoice);
+                            invoiceList.value = list;
+                        } else {
+                            invoiceList.value.unshift(newInvoice);
+                        }
                     }
                 }
             },
-            /* onSuccess: (data) => {
-                if (isProxy(invoiceList.value)) {
-                    const list = JSON.parse(JSON.stringify(invoiceList.value));
-
-                    list.unshift(data!.data.invoice[0]);
-
-                    invoiceList.value = list;
-                } else {
-                        invoiceList.value.unshift(data.data.invoice[0]);
-                }
-            }, */
         },
     );
 
@@ -213,22 +269,28 @@ export const useInvoiceComposable = () => {
     };
 
     return {
+        addInvoiceToCache,
         createInvoiceMutation,
         details,
         Discount,
         insertProductOnInvoiceTable,
         invoice,
+        invoiceConfigIsValidated,
         InvoiceGetter,
         invoiceInitialStatus,
         invoiceTableData,
         isSale,
         IVA,
         IVAS,
+        openModalMiPyme,
         openSearchProduct,
         productOnInvoiceTable,
         Subtotal,
         TotalComprobante,
-        addInvoiceToCache,
-        invoiceConfigIsValidated,
+        FECAESolicitar,
+        FECAESolicitarObject,
+        PercepIVATresPorciento,
+        PercepIVAUnoComaCinco,
+        PercepIIBB,
     };
 };

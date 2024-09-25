@@ -26,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'ingresar-producto',
         component: () => import('@/app/pages/products/AddNewProduct.vue'),
     },
+    {
+        name: 'NewReceiptPage',
+        path: 'cancelar-facturas',
+        component: () => import('@/app/pages/receipts/NewReceiptPage.vue'),
+    },
     /* {
         name: 'AddService',
         path: 'ingresar-servicio',
