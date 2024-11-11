@@ -1,7 +1,9 @@
 <template>
     <div>
-        <div id="search-customer">
-            <SearchCustomer />
+        <div id="filter-data">
+            <SearchCustomer :context="'receipt'" />
+            <DatePickerRangeBase v-model="selectedDates" @change="onDateChange" />
+            <a-button @click="getInvoicesToPay" :loading="loading" type="primary">Buscar</a-button>
         </div>
         <a-transfer
             v-model:target-keys="targetKeys"
@@ -12,7 +14,7 @@
             :show-select-all="false"
             @change="onChange"
             :pagination="true"
-            :titles="[' Facturas a cancelar', ' Facturas seleccionadas']"
+            :titles="[' Comprobantes adeudados', ' Comprobantes a cancelar']"
             listStyle="height: 400px"
         >
             <template
@@ -37,6 +39,7 @@
                     :columns="direction === 'left' ? leftColumns : rightColumns"
                     :data-source="filteredItems"
                     size="small"
+                    :pagination="false"
                     :style="{ pointerEvents: listDisabled ? 'none' : null }"
                     :custom-row="
                         ({ key, disabled: itemDisabled }) => ({
@@ -55,88 +58,124 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import SearchCustomer from '@/app/components/customer/SearchCustomer.vue';
 import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
-import { getInvoiceList } from '@/api/invoice/invoice-api';
 import { useReceiptComposable } from '@/app/composables/receipt/useReceiptComposable';
-import type { InvoiceList } from '@/app/types/Invoice';
+import DatePickerRangeBase from '@/app/componentsBase/DatePickerRangeBase.vue';
+import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
+import type { Dayjs } from 'dayjs';
+import { getInvoiceList } from '@/api/invoice/invoice-api';
+import { useCompanyComposable } from './../../composables/company/useCompanyComposable';
 import { formatCurrency } from '@/app/helpers/formatCurrency';
-import { INVOICE_TYPE } from '@/app/types/Constantes';
+const { CompanyGetter } = useCompanyComposable();
+
+const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
+
+const selectedDates = ref<[Dayjs, Dayjs] | null>(null);
+
+const onDateChange = (dates: [Dayjs, Dayjs] | null): [string, string] | null => {
+    if (dates && dates.length === 2) {
+        const formattedDates: [string, string] = [dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')];
+        from.value = formattedDates[0];
+        to.value = formattedDates[1];
+        return formattedDates;
+    }
+    return null;
+};
 
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
-const { sourceData, invoices, setinitialData, totalInvoicedAmountToCancel, enableButtonOpenDocumentCancelationDrawer } =
-    useReceiptComposable();
+
+const {
+    sourceData,
+    invoices,
+    totalInvoicedAmountToCancel,
+    enableButtonOpenDocumentCancelationDrawer,
+    selectedInvoiceIds,
+    setinitialDataAtReceipt,
+    isCreatedReceipt,
+} = useReceiptComposable();
 
 const targetKeys = ref<string[]>([]);
-const disabled = ref(false);
-const showSearch = ref(true);
-
-const NOTAS_DE_CREDITO = [
-    INVOICE_TYPE.NOTA_CREDITO_A,
-    INVOICE_TYPE.NOTA_CREDITO_B,
-    INVOICE_TYPE.NOTA_CREDITO_C,
-    INVOICE_TYPE.MIPYME_NOTA_CREDITO_A,
-    INVOICE_TYPE.MIPYME_NOTA_CREDITO_B,
-    INVOICE_TYPE.MIPYME_NOTA_CREDITO_C,
-];
+const disabled = ref<boolean>(false);
+const showSearch = ref<boolean>(true);
+const loading = ref<boolean>(false);
+const selectedKeys = ref<string[]>([]);
 
 type Record = {
     //datos del tranfer que aquí los utilizo en la table
     key: string;
     title: string;
     description: string;
+    saldo: string;
     disabled: boolean;
+};
+
+const sumPreviousPayment = (invoice: any) => {
+    return invoice.previousPayment.reduce((acc: number, item: any) => {
+        return acc + parseFloat(item.importPayment);
+    }, 0);
+};
+
+const getInvoicesToPay = async () => {
+    setinitialDataAtReceipt();
+
+    loading.value = true;
+
+    const res = await getInvoiceList(
+        CompanyGetter.value!.id!,
+        customer.value?.value!,
+        null,
+        from.value,
+        to.value,
+        null,
+        null,
+        'no',
+        null,
+        true,
+    )
+        .catch((error) => {
+            console.log('🚀 ~ getInvoicesToPay ~ error:', error);
+        })
+        .finally(() => {
+            loading.value = false;
+        });
+
+    if (res) {
+        invoices.value = res.data;
+        sourceData.value = res.data.map((item: any) => {
+            const saldo =
+                Array.isArray(item.previousPayment) && item.previousPayment.length > 0
+                    ? item.import - sumPreviousPayment(item)
+                    : item.import;
+
+            return {
+                key: item.id.toString(),
+                title: item.number,
+                description: formatCurrency(item.import),
+                saldo: formatCurrency(saldo),
+                disabled: false,
+            };
+        });
+    }
 };
 
 const leftColumns = [
     { dataIndex: 'title', title: 'Comprobante' },
     { dataIndex: 'description', title: 'Importe', align: 'right' },
+    { dataIndex: 'saldo', title: 'Saldo', align: 'right' },
 ];
 
 const rightColumns = [
     { dataIndex: 'title', title: 'Comprobante' },
     { dataIndex: 'description', title: 'Importe', align: 'right' },
+    { dataIndex: 'saldo', title: 'Saldo', align: 'right' },
 ];
 
-const totalInvoice = (invoice: InvoiceList) => {
-    const total = invoice.items.reduce(
-        (acc, item) => acc + item.neto_import + item.iva_import + item.percep_iibb_import + item.percep_iva_import,
-        0,
-    );
-
-    if (NOTAS_DE_CREDITO.includes(invoice.voucher!.voucher_type)) {
-        return -total;
-    }
-
-    return total;
-};
-
-const containsNotaDeCredito = (title: string) => {
-    return title.includes('NOTA DE CREDITO') || title.includes('NOTAS DE CREDITO') || false;
-};
-
 const rowClassName = (record: Record) => {
-    return containsNotaDeCredito(record.title) ? 'red-color' : '';
+    return 'red-color';
 };
-
-watch(customer, async (newVal, oldVal) => {
-    setinitialData();
-
-    const { data } = await getInvoiceList(3, 8, 1, '2024-01-01', '2024-12-31');
-
-    invoices.value = data.data;
-    console.log('🚀 ~ watch ~ invoices.value:', invoices.value);
-
-    sourceData.value = data.data.map((invoice) => ({
-        key: invoice.id.toString(),
-        title: `${invoice.voucher?.name} ${invoice.voucher?.pto_vta}-${invoice.voucher?.cbte_desde}`,
-        description: formatCurrency(totalInvoice(invoice)),
-        disabled: false,
-    }));
-    // Aquí puedes agregar la lógica que necesites ejecutar cuando customer cambie
-});
 
 const getRowSelection = ({ disabled, selectedKeys, onItemSelectAll, onItemSelect }) => ({
     onSelectAll: (selected, selectedRows) => {
@@ -144,7 +183,6 @@ const getRowSelection = ({ disabled, selectedKeys, onItemSelectAll, onItemSelect
         onItemSelectAll(treeSelectedKeys, selected);
     },
     onSelect: ({ key }, selected) => {
-        console.log('🚀 ~ getRowSelection ~ selected:', key);
         onItemSelect(key, selected);
     },
     selectedRowKeys: selectedKeys,
@@ -153,15 +191,58 @@ const getRowSelection = ({ disabled, selectedKeys, onItemSelectAll, onItemSelect
 
 const onChange = (nextTargetKeys: any) => {
     targetKeys.value = nextTargetKeys;
+
     enableButtonOpenDocumentCancelationDrawer.value = nextTargetKeys.length > 0;
+
     totalInvoicedAmountToCancel.value = invoices.value
-        .filter((invoice) => nextTargetKeys.includes(invoice.id.toString()))
-        .reduce((acc, item) => acc + totalInvoice(item), 0);
+        .filter((invoice) => {
+            return nextTargetKeys.includes(invoice.id.toString());
+        })
+        .reduce((acc, item: any) => {
+            if (item.previousPayment.length > 0) {
+                return acc + parseFloat(item.import) - sumPreviousPayment(item);
+            }
+            return acc + item.import;
+        }, 0);
+
+    // Actualizar el array de IDs de facturas seleccionadas
+    selectedInvoiceIds.value = nextTargetKeys.map((key: string) => key);
+
+    // Actualizar las claves seleccionadas
+    selectedKeys.value = nextTargetKeys;
 };
+
+watch(
+    () => customer.value,
+    () => {
+        setinitialDataAtReceipt();
+        targetKeys.value = [];
+        selectedKeys.value = [];
+    },
+);
+
+watch(
+    () => isCreatedReceipt.value,
+    (newVal) => {
+        if (newVal) {
+            setinitialDataAtReceipt();
+            targetKeys.value = [];
+            selectedKeys.value = [];
+        }
+    },
+);
+
+onUnmounted(() => {
+    targetKeys.value = [];
+    selectedKeys.value = [];
+    setinitialDataAtReceipt();
+});
 </script>
 
 <style scoped>
-#search-customer {
+#filter-data {
+    display: flex;
+    gap: 1rem;
     margin-bottom: 2rem;
 }
 .red-color {

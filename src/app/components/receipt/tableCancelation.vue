@@ -6,8 +6,8 @@
             <a-tag color="green">{{ TotalInvoicedAmountToCancelComputed }}</a-tag>
         </div>
     </div>
-    <div id="descriptions">
-        <h3>Detalle de los documentos</h3>
+    <div id="descriptions" v-if="documentsCancelation.length">
+        <h3>Documentos de pago</h3>
         <div id="description" v-for="(item, index) in documentsCancelation" :key="index">
             <a-descriptions
                 :title="index + 1"

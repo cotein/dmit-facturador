@@ -128,8 +128,6 @@ const rules = reactive<Record<string, Rule[]>>({
             required: true,
             message: 'La provincia es requerida',
             validator: (_: any, value: any) => {
-                console.log('🚀 ~ _:', _);
-                console.log('🚀 ~ value:', value);
                 if (value === '' || value === null || value === undefined) {
                     return Promise.reject();
                 }
@@ -141,8 +139,6 @@ const rules = reactive<Record<string, Rule[]>>({
         {
             message: 'La localidad es requerida',
             validator: (_: any, value: any) => {
-                console.log('🚀 ~ _:', _);
-                console.log('🚀 ~ value:', value);
                 if (value === '' || value === null || value === undefined) {
                     return Promise.reject();
                 }
@@ -155,8 +151,6 @@ const rules = reactive<Record<string, Rule[]>>({
             required: true,
             message: 'La calle es requerida',
             validator: (_: any, value: any) => {
-                console.log('🚀 ~ _:', _);
-                console.log('🚀 ~ value:', value);
                 if (value === '' || value === null || value === undefined) {
                     return Promise.reject();
                 }

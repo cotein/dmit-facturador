@@ -23,11 +23,11 @@
                 >
                     <UpOutlined style="color: green" /> Generar Nota de Débito
                 </a-menu-item>
-                <a-menu-item @click="openReceiptDrawer"> <DollarCircleOutlined /> Generar recibo de pago </a-menu-item>
+                <a-menu-item @click="viewPaymentHistory"> <DollarCircleOutlined /> Ver detalle de pago </a-menu-item>
             </a-menu>
         </template>
     </a-dropdown>
-    <ReceiptDrawer />
+    <ViewPreviousPaymentsModal />
 </template>
 
 <script setup lang="ts">
@@ -37,13 +37,15 @@ import { UpOutlined, DownOutlined, DollarCircleOutlined } from '@ant-design/icon
 import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
 import { computed } from 'vue';
 import { useVisibleComposable } from '@/app/composables/visible/useVisibleComposable';
-import ReceiptDrawer from '@/app/components/customer/receipts/ReceiptDrawer.vue';
-import { useReceiptComposable } from '@/app/composables/receipt/useReceiptComposable';
+import ViewPreviousPaymentsModal from '@/app/components/customer/receipts/ViewPreviousPaymentsModal.vue';
+import { getInvoiceList } from '@/api/invoice/invoice-api';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useInvoiceListComposable } from '@/app/composables/invoice/useInvoiceListComposable';
 
-const { receiptInvoices } = useReceiptComposable();
-
+const { CompanyGetter } = useCompanyComposable();
 const { setVisible } = useVisibleComposable();
 const { openDrawerNotaCredito, invoiceForNotaCredito, titleNotaCredito } = useInvoiceNotaCreditoComposable();
+const { individualInvoice } = useInvoiceListComposable();
 
 type Props = {
     index: number;
@@ -57,18 +59,31 @@ const open = (name: string) => {
     titleNotaCredito.value = name;
     openDrawerNotaCredito.value = true;
     invoiceForNotaCredito.value = props.record;
-    console.log('🚀 ~ open ~ props.record:', props.record);
 };
 
 const CanEmitNotaCredito = computed(() => {
-    return props.record.voucher.children.reduce((sum, invoice) => {
-        return sum + invoice.items.reduce((itemSum: number, item) => itemSum + item.total, 0);
+    return props.record.voucher?.children.reduce((sum, invoice) => {
+        return sum + invoice.items.reduce((itemSum: number, item: any) => itemSum + item.total, 0);
     }, 0);
 });
 
-const openReceiptDrawer = () => {
+const viewPaymentHistory = async () => {
     setVisible(true);
-    receiptInvoices.value = [props.record.voucher];
+    const invoice = await getInvoiceList(
+        CompanyGetter!.value!.id ?? 0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        'no',
+        props.record.id, //invoice_id
+    ).catch((error) => {
+        console.error(error);
+    });
+
+    individualInvoice.value = invoice.data[0];
 };
 </script>
 

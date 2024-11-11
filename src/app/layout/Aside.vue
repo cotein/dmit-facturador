@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import CreateCompanyForm from '../components/company/CreateCompanyForm.vue';
 import { useOpenCompanyPanelStore } from '@/app/store/panels/useOpenCompanyPanelStore';
 import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAddNewCompanyPanelComposable';
 import { useUserComposable } from '../composables/user/useUserComposable';
 import { useCompanyComposable } from '../composables/company/useCompanyComposable';
 import type { CompanyRawData } from '../types/Company';
-import { onMounted } from 'vue';
-import { FileAddOutlined } from '@ant-design/icons-vue';
 
 const { IHaventGotCompanies } = useUserComposable();
 const { createCompanyMutation } = useCompanyComposable();
@@ -53,7 +51,6 @@ const { AddNewCompany, closeAddNewCompanyPanel } = useAddNewCompanyPanelComposab
 const { OpenPanelWithMyCompanies } = useOpenCompanyPanelStore();
 
 const handleSubmitCompanyForm = (data: CompanyRawData) => {
-    console.log('🚀 ~ handleSubmitCompanyForm ~ data:', data);
     createCompanyMutation.mutateAsync(data);
 };
 
@@ -102,9 +99,9 @@ onMounted(() => {
         v-model:selectedKeys="state.selectedKeys"
         :mode="mode"
         :theme="darkMode ? 'dark' : 'light'"
-        class="scroll-menu"
         @openChange="onOpenChange"
         @click="onClick"
+        :style="{ width: '100%', height: '100%' }"
     >
         <NavTitle class="ninjadash-sidebar-nav-title">Ventas</NavTitle>
         <a-sub-menu key="sales">
@@ -142,12 +139,15 @@ onMounted(() => {
                 <unicon name="file-medical"></unicon>
             </template>
             <template #title>Recibos</template>
-            <!--  <a-menu-item @click="toggleCollapsed" key="receipts-list">
-                    <router-link :to="{ name: 'ReceiptsList' }"> Listado </router-link>
-                </a-menu-item> -->
-            <a-menu-item key="receipts-new">
+            <a-menu-item @click="toggleCollapsed" key="receipts-list">
+                <router-link :to="{ name: 'ReceiptsList' }"> Listado </router-link>
+            </a-menu-item>
+            <a-menu-item @click="toggleCollapsed" key="receipts-new">
                 <router-link :to="{ name: 'NewReceiptPage' }"> Ingresar </router-link>
             </a-menu-item>
+            <!--  <a-menu-item @click="toggleCollapsed" key="receipts-list">
+                <router-link :to="{ name: 'ReceiptListPage' }"> Listado </router-link>
+            </a-menu-item> -->
         </a-sub-menu>
 
         <a-sub-menu key="categories">

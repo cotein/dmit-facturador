@@ -14,14 +14,15 @@ type ErrorData = {
 
 export const getInvoiceList = async (
     company_id: number,
-    customer_id: number,
-    status_id: number,
-    from: string,
-    to: string,
-    page: number = 1,
-    per_page: number = PAGINATION_ITEMS_PER_PAGE,
+    customer_id: number | null = null,
+    status_id: number | null = null,
+    from: string | null = null,
+    to: string | null = null,
+    page: number | null = 1,
+    per_page: number | null = PAGINATION_ITEMS_PER_PAGE,
     print: string = 'no',
     invoice_id: number | null = null,
+    getPaymentOnReceipt: boolean = false,
 ): Promise<AxiosResponse<InvoiceListWithPagination>> => {
     try {
         const params: URLSearchParams = new URLSearchParams();
@@ -62,6 +63,9 @@ export const getInvoiceList = async (
             params.append('per_page', per_page.toString());
         }
 
+        if (getPaymentOnReceipt != null && getPaymentOnReceipt) {
+            params.append('getPaymentOnReceipt', 'getPaymentOnReceipt');
+        }
         //await sleep(1000);
 
         const response = await ApiHttp.get<InvoiceListWithPagination>(URL, { params });
@@ -72,14 +76,3 @@ export const getInvoiceList = async (
         throw new Error();
     }
 };
-
-/* export const getInvoiceData = async (invoice_id: number):Promise<AxiosResponse<InvoiceList>> => {
-
-	try {
-		const params = new URLSearchParams();
-
-	} catch (error) {
-		console.log('🚀 ~ error:', error);
-		throw new Error();
-	}
-} */

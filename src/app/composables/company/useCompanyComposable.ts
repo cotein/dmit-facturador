@@ -111,35 +111,25 @@ const rules = reactive<Record<string, Rule[]>>({
             },
         },
     ],
-    cbu: [
+    /* cbu: [
         {
-            validator: (_: any, value: any) => {
-                return new Promise((resolve, reject) => {
-                    if (
-                        value.bank_id === null ||
-                        (value.bank_id === undefined &&
-                            (value.cbu === null || value.cbu === '' || value.cbu === undefined))
-                    ) {
-                        // No realizar validación si bank_id es null y cbu es null o vacío
-                        resolve();
-                    } else if (value.bank_id && (value.cbu === null || value.cbu === '' || value.cbu === undefined)) {
-                        // Rechazar si bank_id está presente pero cbu es null o vacío
-                        reject('El CBU es obligatorio si el banco está presente');
-                    } else if (value.cbu && (value.bank_id === null || value.bank_id === undefined)) {
-                        // Rechazar si cbu está presente pero bank_id es null o vacío
-                        reject('El banco es obligatorio si el CBU está presente');
-                    } else if (value.cbu && value.cbu.length !== 22) {
-                        // Rechazar si el cbu no tiene 22 caracteres
+            validator: (_rule: Rule, value: any) => {
+                console.log('🚀 ~ valuewwwwwwww:', value);
+                return new Promise<void>((resolve, reject) => {
+                    if (!value) {
+                        console.log('🚀 ~ !value:', !value);
+                        reject('Este campo es obligatorio');
+                    } else if (value.length !== 22) {
+                        console.log('🚀 ~ value.length !== 22:', value.length !== 22);
                         reject('El CBU debe tener 22 caracteres de longitud');
                     } else {
-                        // Resolver en cualquier otro caso
                         resolve();
                     }
                 });
             },
             trigger: 'blur',
         },
-    ],
+    ], */
 });
 
 export const useCompanyComposable = () => {

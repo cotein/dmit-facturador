@@ -4,6 +4,8 @@ export const COMPANY_MODEL: string = 'App/Model/Company';
 
 export const CUIT_ID: number = 25;
 
+export const ZERO = 0;
+
 export const URL_UPLOAD_AVATAR: string = `${import.meta.env.VITE_URL_BASE_API}/api/uploadAvatar`;
 export const URL_UPLOAD_COMPANY_LOGO: string = `${import.meta.env.VITE_URL_BASE_API}/api/company/uploadLogo`;
 
@@ -116,3 +118,8 @@ export enum TYPE_USER {
 }
 
 export const PAGINATION_ITEMS_PER_PAGE = 20;
+export const PAGINATION_ITEMS_PER_PAGE_10 = 10;
+export const PAGINATION_ITEMS_PER_PAGE_5 = 5;
+export const PAGINATION_PAGE_ONE = 1;
+
+export const ONE_HOUR_IN_MS = 1000 * 60 * 60;

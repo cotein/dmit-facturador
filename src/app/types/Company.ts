@@ -16,10 +16,11 @@ export type Sujeto = {
 };
 
 export type CBU = {
-    alias?: string;
-    bank_id?: number;
-    bank?: string;
-    cbu?: string;
+    alias?: string | null;
+    bank_id?: number | null;
+    bank?: string | null;
+    cbu?: string | null;
+    ctaCte?: string | null;
 };
 
 export type CompanyRawData = Sujeto & {
@@ -35,7 +36,11 @@ export type CompanyRawData = Sujeto & {
     billing_concept: string;
     urlLogo?: string;
     logo_base64?: string;
-    cbu: CBU;
+    cbus: CBU[];
+    phone1: string;
+    phone2: string;
+    email: string;
+    webSite: string;
 };
 
 export type CustomerRawData = Sujeto;

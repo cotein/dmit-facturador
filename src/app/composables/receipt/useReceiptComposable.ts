@@ -1,8 +1,13 @@
 import { storeToRefs } from 'pinia';
 import { useReceiptStore } from '@/app/store/receipt/useReceiptStore';
 import type { DocumentCancelation } from '@/app/types/Receipt';
+
+import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
+import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
 import { ref } from 'vue';
 
+const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
+const { customer } = storeToRefs(useFilterSearchByCustomerStore());
 const {
     sourceData,
     invoices,
@@ -12,9 +17,15 @@ const {
     isEditingDocumentCancelation,
     dataDocumentCancelation,
     enableButtonOpenDocumentCancelationDrawer,
+    selectedInvoiceIds,
+    invoicesToCancel,
+    isCreatedReceipt,
+    openModalToPrintReceipt,
+    openModalAsignPaymentToInvoices,
+    printeableReceiptData,
 } = storeToRefs(useReceiptStore());
 
-const { setinitialData } = useReceiptStore();
+const { setinitialDataAtReceipt, setNullPrinteableReceiptData } = useReceiptStore();
 
 type Total = {
     payment_type_id: number;
@@ -58,16 +69,27 @@ export const useReceiptComposable = () => {
             return acc;
         }, {});
     });
+
     return {
-        sourceData,
-        invoices,
-        setinitialData,
-        totalInvoicedAmountToCancel,
-        documentsCancelation,
-        totalsDocumetsCancelation,
-        drawerVisible,
-        isEditingDocumentCancelation,
+        customer,
         dataDocumentCancelation,
+        documentsCancelation,
+        drawerVisible,
         enableButtonOpenDocumentCancelationDrawer,
+        from,
+        invoices,
+        invoicesToCancel,
+        isEditingDocumentCancelation,
+        selectedInvoiceIds,
+        setinitialDataAtReceipt,
+        sourceData,
+        to,
+        totalInvoicedAmountToCancel,
+        totalsDocumetsCancelation,
+        isCreatedReceipt,
+        openModalToPrintReceipt,
+        openModalAsignPaymentToInvoices,
+        printeableReceiptData,
+        setNullPrinteableReceiptData,
     };
 };

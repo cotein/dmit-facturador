@@ -1,25 +1,25 @@
-import { getInvoiceList } from '@/api/invoice/invoice-api';
 import { storeToRefs } from 'pinia';
 import { useCompanyComposable } from '../company/useCompanyComposable';
 import { useQuery } from '@tanstack/vue-query';
-import { watch } from 'vue';
-import { useInvoiceListStore } from '@/app/store/invoice/useInvoiceListStore';
 import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
 import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
+import { useReceiptListStore } from '@/app/store/receipt/useReceiptListStore';
+import { getReceipts } from '@/api/receipt/receipt-api';
+import { watch } from 'vue';
 
 const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
-const { currentPage, itemsPerPage, totalPages, invoiceList, status_id, totalItems, individualInvoice } = storeToRefs(
-    useInvoiceListStore(),
+const { currentPage, itemsPerPage, totalPages, status_id, totalItems, receiptList } = storeToRefs(
+    useReceiptListStore(),
 );
 
-export const useInvoiceListComposable = () => {
+export const useReceiptListComposable = () => {
     const { CompanyGetter } = useCompanyComposable();
 
     const { isLoading, data } = useQuery(
-        ['invoice-list', currentPage, itemsPerPage, customer, status_id, from, to],
+        ['receipt-list', currentPage, itemsPerPage, customer, status_id, from, to],
         async () => {
-            return await getInvoiceList(
+            return await getReceipts(
                 CompanyGetter.value!.id!,
                 customer.value?.value!,
                 status_id.value!,
@@ -31,15 +31,20 @@ export const useInvoiceListComposable = () => {
         },
         {
             cacheTime: Infinity,
+            onSuccess(data) {
+                console.log('🚀 ~ useReceiptListComposable ~ data:', data);
+                receiptList.value = data.data;
+            },
         },
     );
 
-    watch(data, (invoices) => {
-        if (invoices?.data) {
-            const { data: list, pagination } = invoices.data;
+    watch(data, (receipts) => {
+        if (receipts!.data) {
+            const { data: list, pagination } = receipts!.data;
+            console.log('🚀 ~ watch ~ list:', list);
 
             if (list) {
-                invoiceList.value = list;
+                receiptList.value = list;
             }
 
             if (pagination) {
@@ -51,5 +56,5 @@ export const useInvoiceListComposable = () => {
         }
     });
 
-    return { currentPage, itemsPerPage, totalPages, invoiceList, isLoading, data, status_id, individualInvoice };
+    return { currentPage, itemsPerPage, totalPages, receiptList, isLoading, data, status_id, totalItems };
 };

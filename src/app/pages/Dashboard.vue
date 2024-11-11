@@ -19,10 +19,12 @@ import { onBeforeMount } from 'vue';
 import { useIvaComposable } from '../composables/afip/useIvaComposable';
 import { useVoucherComposable } from '../composables/voucher/useVoucherComposable';
 import TotalInvoiced from '../components/charts/dashboard/TotalInvoiced.vue';
+import { useBankComposable } from '../composables/bank/useBankComposable';
 
 onBeforeMount(() => {
     useIvaComposable();
     useVoucherComposable();
+    useBankComposable();
 });
 </script>
 <style scoped></style>

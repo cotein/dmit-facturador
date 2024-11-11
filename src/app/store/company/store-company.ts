@@ -1,4 +1,4 @@
-import type { Company, CompanyRawData } from '@/app/types/Company';
+import type { Company, CompanyRawData, CBU } from '@/app/types/Company';
 import moment from 'moment';
 import { CUIT_ID } from '@/app/types/Constantes';
 import { defineStore, storeToRefs } from 'pinia';
@@ -20,7 +20,7 @@ export const useStoreCompany = defineStore('company', () => {
         activity_init: '',
         iibb: '',
         afip_environment: 'production',
-        type_company: null,
+        type_company: 1,
         perception_iibb: false,
         perception_iva: false,
         pto_vta_fe: null,
@@ -40,10 +40,19 @@ export const useStoreCompany = defineStore('company', () => {
         },
         afip_data: undefined,
         fantasy_name: '',
-        cbu: {
-            bank_id: '',
-            cbu: '',
-        },
+        cbus: [
+            {
+                alias: null,
+                bank_id: null,
+                bank: null,
+                cbu: null,
+                ctaCte: null,
+            },
+        ],
+        phone1: '',
+        phone2: '',
+        email: '',
+        webSite: '',
     });
 
     const defaultCompanyForm = {
@@ -66,6 +75,10 @@ export const useStoreCompany = defineStore('company', () => {
         pto_vta_remito: null,
         type_company: null,
         cbu: null,
+        phone1: '',
+        phone2: '',
+        email: '',
+        webSite: '',
     };
 
     const defaultAddressInStore = {
@@ -111,10 +124,22 @@ export const useStoreCompany = defineStore('company', () => {
             type_company: company.type_company,
             urlLogo: company.urlLogo,
             logo_base64: company.logo_base64,
-            cbu: {
-                bank_id: company.cbus[0] && company.cbus[0].bank_id ? company.cbus[0].bank_id : null,
-                cbu: company.cbus[0] && company.cbus[0].cbu ? company.cbus[0].cbu : null,
-            },
+            cbus:
+                company.cbus.length > 0
+                    ? company.cbus
+                    : [
+                        {
+                            alias: null,
+                            bank_id: null,
+                            bank: null,
+                            cbu: null,
+                            ctaCte: null,
+                        },
+                    ],
+            phone1: company.phone1,
+            phone2: company.phone2,
+            email: company.email,
+            webSite: company.webSite,
         });
 
         Object.assign(addressStore.addressInStore, {

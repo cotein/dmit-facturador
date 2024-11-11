@@ -1,9 +1,9 @@
-import type { individualInvoice, InvoiceList, PaymentHistory } from '@/app/types/Invoice';
+import type { PrinteableReceiptData } from '@/app/types/Receipt';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export const useInvoiceListStore = defineStore('invoice-list', () => {
-    const invoiceList = ref<InvoiceList[]>([]);
+export const useReceiptListStore = defineStore('receipt-list', () => {
+    const receiptList = ref<PrinteableReceiptData[]>([]);
 
     const currentPage = ref<number>();
 
@@ -15,15 +15,17 @@ export const useInvoiceListStore = defineStore('invoice-list', () => {
 
     const status_id = ref<number | null>(null);
 
-    const individualInvoice = ref<individualInvoice | null>(null);
+    const setinitialDataAtReceiptList = () => {
+        receiptList.value = [];
+    };
 
     return {
-        invoiceList,
+        receiptList,
         currentPage,
         itemsPerPage,
         totalPages,
         status_id,
         totalItems,
-        individualInvoice,
+        setinitialDataAtReceiptList,
     };
 });

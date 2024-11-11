@@ -9,25 +9,23 @@ import type { Bank } from '@/app/types/Bank';
 export const useBankComposable = () => {
     const { banks, selectedBank } = storeToRefs(useBankStore());
 
-    const fetchBanks = (name: string | null = null) => {
-        return useQuery<Bank[]>(
-            ['banks', name],
-            () => {
-                const { data } = getBanks(name ?? null);
-                return data;
+    const { isLoading, data } = useQuery<Bank[]>(
+        ['banks', name],
+        async () => {
+            const response = await getBanks(name ?? null);
+            return response.data;
+        },
+        {
+            cacheTime: -1,
+            onSuccess(data: Bank[]) {
+                banks.value = data;
             },
-            {
-                cacheTime: -1,
-                onSuccess(data: Bank[]) {
-                    banks.value = data;
-                },
-            },
-        );
-    };
+        },
+    );
 
     const getBankById = (id: number) => {
         return banks.value.find((bank) => bank.id === id)?.name ?? '';
     };
 
-    return { fetchBanks, banks, selectedBank, getBankById };
+    return { isLoading, data, banks, selectedBank, getBankById };
 };

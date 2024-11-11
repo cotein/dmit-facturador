@@ -108,3 +108,15 @@ export type FECAESolicitarRequest = {
     FeCabReq: FeCabReq;
     FECAEDetRequest: FECAEDetRequest;
 };
+
+export type PaymentHistory = {
+    number: number;
+    saldo: string;
+    percentage_payment: string;
+    import_payment: string;
+    percentage_paid_history: string;
+    import_paid_history: string;
+    created_at: string;
+};
+
+export type individualInvoice = InvoiceList & PaymentHistory;

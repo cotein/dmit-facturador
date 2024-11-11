@@ -1,8 +1,10 @@
 <template>
     <div v-if="totalsDocumetsCancelation.length > 0">
-        {{ documentsCancelation }}
         <h1>Resumen de pago</h1>
-        <a-list :grid="{ gutter: 16, column: 4 }" :data-source="totalsDocumetsCancelation">
+        <a-list
+            :grid="{ gutter: 16, column: 4 }"
+            :data-source="totalsDocumetsCancelation"
+        >
             <template #renderItem="{ item }">
                 <a-list-item>
                     <a-card
@@ -23,7 +25,8 @@
             <div id="to-pay-info">
                 <p>
                     Total comprobantes de ventas:
-                    {{ $filters.formatCurrency(totalInvoicedAmountToCancel) }}.--, total importe a pagar por el cliente:
+                    {{ $filters.formatCurrency(totalInvoicedAmountToCancel) }}.--, total
+                    importe a pagar por el cliente:
                     {{ $filters.formatCurrency(TotalToPay) }}.--
                 </p>
             </div>
@@ -32,27 +35,71 @@
                     {{
                         Diff > 0
                             ? `El cliente debe ${$filters.formatCurrency(Diff)}.--`
-                            : `El cliente tiene un saldo a favor de ${$filters.formatCurrency(Diff * -1)}.--`
+                            : `El cliente tiene un saldo a favor de ${$filters.formatCurrency(
+                                  Diff * -1
+                              )}.--`
                     }}
                 </p>
             </div>
         </div>
         <div id="to-pay-action">
-            <a-button :size="'large'" type="primary">Generar recibo de pago</a-button>
+            <a-button
+                :size="'large'"
+                type="primary"
+                @click="openModalAsignPaymentToInvoicesComponent"
+                >Generar recibo de pago</a-button
+            >
         </div>
     </div>
+    <AsignPaymentToInvoices />
+
+    <a-modal
+        :visible="openModalToPrintReceipt"
+        title="Confirmar"
+        @ok="printReceipt"
+        @cancel="cancelPrintReceipt"
+        okText="Imprimir"
+        cancelText="No"
+    >
+        <p id="print-message">¿Imprimir recibo de pago?</p>
+    </a-modal>
 </template>
 
 <script setup lang="ts">
-import { useReceiptComposable } from '@/app/composables/receipt/useReceiptComposable';
-import { useQueryClient } from '@tanstack/vue-query';
-import { computed } from 'vue';
-const { totalsDocumetsCancelation, totalInvoicedAmountToCancel, documentsCancelation } = useReceiptComposable();
+import { useReceiptComposable } from "@/app/composables/receipt/useReceiptComposable";
+import { useQueryClient } from "@tanstack/vue-query";
+import { computed, watch, ref } from "vue";
+import AsignPaymentToInvoices from "./AsignPaymentToInvoices.vue";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import { fetchReport } from "@/api-reports/api-reports-base";
+import { useInvoiceSorting } from "@/app/composables/receipt/useInvoiceSorting";
+import { showMessage } from "@/app/helpers/mesaages";
+import { zeroLeft } from "@/app/helpers/zero-left";
 
+const {
+    invoicesToCancel,
+    totalsDocumetsCancelation,
+    totalInvoicedAmountToCancel,
+    documentsCancelation,
+    openModalToPrintReceipt,
+    openModalAsignPaymentToInvoices,
+    selectedInvoiceIds,
+    invoices,
+    printeableReceiptData,
+    setNullPrinteableReceiptData,
+} = useReceiptComposable();
+
+const { CompanyGetter } = useCompanyComposable();
 const queryClient = useQueryClient();
 
+const { backUpInvoices, generateTableData, sortInvoices } = useInvoiceSorting(
+    invoices,
+    selectedInvoiceIds,
+    totalsDocumetsCancelation
+);
+
 const getPaymentTypeName = (paymentTypeId: number) => {
-    const paymentTypes = queryClient.getQueryData(['payment-types']) as Array<{
+    const paymentTypes = queryClient.getQueryData(["payment-types"]) as Array<{
         company_id: number;
         id: number;
         name: string;
@@ -61,9 +108,9 @@ const getPaymentTypeName = (paymentTypeId: number) => {
     if (paymentTypes) {
         const paymentType = paymentTypes.find((type) => type.id === paymentTypeId);
 
-        return paymentType ? paymentType.name : 'Unknown';
+        return paymentType ? paymentType.name : "Unknown";
     }
-    return 'Unknown';
+    return "Unknown";
 };
 
 const TotalToPay = computed(() => {
@@ -75,6 +122,67 @@ const TotalToPay = computed(() => {
 const Diff = computed(() => {
     return totalInvoicedAmountToCancel.value - TotalToPay.value;
 });
+
+const loadingPrintReceipt = ref<boolean>(false);
+
+const cancelPrintReceipt = () => {
+    openModalToPrintReceipt.value = false;
+    setNullPrinteableReceiptData();
+};
+
+const openModalAsignPaymentToInvoicesComponent = () => {
+    openModalAsignPaymentToInvoices.value = true;
+    invoicesToCancel.value = generateTableData();
+    backUpInvoices.value = JSON.parse(JSON.stringify(invoicesToCancel.value));
+    sortInvoices("asc");
+
+    const copy_company = JSON.parse(JSON.stringify(CompanyGetter.value));
+    const copy_invoicesToCancel = JSON.parse(JSON.stringify(invoicesToCancel.value));
+    const copy_documentsCancelation = JSON.parse(
+        JSON.stringify(documentsCancelation.value)
+    );
+    const copy_saldo = parseFloat(Diff.value.toFixed(2));
+
+    printeableReceiptData.value = {
+        company: copy_company,
+        invoicesToCancel: copy_invoicesToCancel,
+        documentsCancelation: copy_documentsCancelation,
+        saldo: copy_saldo,
+    };
+};
+
+const printReceipt: Function = async () => {
+    loadingPrintReceipt.value = true;
+
+    if (!printeableReceiptData.value) {
+        showMessage("error", "Error al generar el recibo de pago", 2);
+        return;
+    }
+
+    const receiptNumber: string = `${zeroLeft(
+        printeableReceiptData.value.receipt.pto_vta_receipt,
+        4
+    )}-${zeroLeft(printeableReceiptData.value.receipt.number, 8)}`;
+
+    const fileName = `${printeableReceiptData.value.company.name}-RECIBO DE PAGO ${receiptNumber}.pdf`;
+    if (printeableReceiptData.value) {
+        const receitpPdf = await fetchReport(
+            "receipt-report",
+            fileName,
+            printeableReceiptData.value
+        );
+
+        if (receitpPdf) {
+            setNullPrinteableReceiptData();
+        }
+    } else {
+        showMessage("error", "Error al generar el recibo de pago", 2);
+    }
+
+    loadingPrintReceipt.value = false;
+
+    cancelPrintReceipt();
+};
 </script>
 
 <style scoped>
@@ -106,5 +214,8 @@ const Diff = computed(() => {
     display: flex;
     justify-content: center;
     margin-top: 1rem;
+}
+#print-message {
+    font-size: 18px;
 }
 </style>

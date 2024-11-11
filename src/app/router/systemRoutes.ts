@@ -18,18 +18,23 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         name: 'AddCategory',
-        path: 'ingresar-categoria',
+        path: 'ingresar/categoria',
         component: () => import('@/app/pages/categories/AddNewCategory.vue'),
     },
     {
         name: 'AddProduct',
-        path: 'ingresar-producto',
+        path: 'ingresar/producto',
         component: () => import('@/app/pages/products/AddNewProduct.vue'),
     },
     {
         name: 'NewReceiptPage',
-        path: 'cancelar-facturas',
+        path: 'cancelar/facturas',
         component: () => import('@/app/pages/receipts/NewReceiptPage.vue'),
+    },
+    {
+        name: 'ReceiptsList',
+        path: 'listado/recibos',
+        component: () => import('@/app/pages/receipts/ReceiptsList.vue'),
     },
     /* {
         name: 'AddService',

@@ -1,10 +1,10 @@
-import type { AxiosResponse } from 'axios';
 import type { PaymentType } from '@/app/types/PaymentType';
 import { getPaymentTypes } from '@/api/payment-type/payment-type-api';
 import { storeToRefs } from 'pinia';
 import { useCompanyComposable } from '../company/useCompanyComposable';
 import { usePaymentTypeStore } from '@/app/store/payment-type/usePaymentTypeStore';
 import { useQuery } from '@tanstack/vue-query';
+import { ONE_HOUR_IN_MS } from '@/app/types/Constantes';
 
 export const usePaymentTypeComposable = () => {
     const { CompanyGetter } = useCompanyComposable();
@@ -20,7 +20,7 @@ export const usePaymentTypeComposable = () => {
             onSuccess(data: PaymentType[]) {
                 paymentTypes.value = data;
             },
-            staleTime: 1000 * 60 * 60,
+            staleTime: ONE_HOUR_IN_MS,
         });
     };
 

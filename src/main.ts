@@ -32,7 +32,7 @@ app.config.globalProperties.$filters = {
         return moment(date).fromNow();
     },
     argentinianDate(date: any) {
-        return moment(date).format('DD/MM/YYYY');
+        return moment(date).format('DD-MM-YYYY');
     },
     afipDate(date: any) {
         return moment(date).format('YYYYMMDD');

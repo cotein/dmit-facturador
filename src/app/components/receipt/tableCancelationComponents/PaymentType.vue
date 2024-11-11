@@ -9,11 +9,7 @@
 
 <script setup lang="ts">
 import SelectedPaymentTypeBase from '@/app/componentsBase/SelectedPaymentTypeBase.vue';
-import type { PaymentType } from '@/app/types/PaymentType';
-import { useReceiptComposable } from '@/app/composables/receipt/useReceiptComposable';
 import { ref, defineProps, defineEmits } from 'vue';
-
-const { documentsCancelation } = useReceiptComposable();
 
 type Props = {
     index?: number;

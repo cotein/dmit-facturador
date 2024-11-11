@@ -221,7 +221,7 @@ const print = async () => {
     const print = 'yes';
 
     const resp = await getInvoiceList(
-        CompanyGetter!.value.id,
+        CompanyGetter!.value!.id ?? 0,
         customer.value?.value,
         status_id.value,
         from.value,

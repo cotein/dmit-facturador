@@ -145,7 +145,7 @@ const handleModalOk = () => {
     });
 };
 const popConfirmIsVisible = (e: boolean) => {
-    console.log('🚀 ~ www ~ e:', e);
+    console.log('🚀 ~  ~ e:', e);
 };
 /* const cancel = (e: MouseEvent) => {
 	console.log(e);

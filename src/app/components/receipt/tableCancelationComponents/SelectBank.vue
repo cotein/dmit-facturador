@@ -8,11 +8,7 @@
 </template>
 <script setup lang="ts">
 import SelectedBankBase from '@/app/componentsBase/SelectedBankBase.vue';
-import { useReceiptComposable } from '@/app/composables/receipt/useReceiptComposable';
 import { ref, defineEmits } from 'vue';
-import type { Bank } from '@/app/types/Bank';
-
-const { documentsCancelation } = useReceiptComposable();
 
 type Props = {
     index?: number;

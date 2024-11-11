@@ -1,5 +1,4 @@
-import type { InvoiceList } from '@/app/types/Invoice';
-import type { DocumentCancelation } from '@/app/types/Receipt';
+import type { DocumentCancelation, InvoicesToCancel, PrinteableReceiptData } from '@/app/types/Receipt';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
@@ -8,6 +7,7 @@ export const useReceiptStore = defineStore('receipt', () => {
         key: string;
         title: string;
         description: string;
+        saldo: string;
         disabled: boolean;
     };
 
@@ -19,28 +19,62 @@ export const useReceiptStore = defineStore('receipt', () => {
 
     const sourceData = ref<SourceData[]>([]);
 
-    const invoices = ref<InvoiceList[]>([]);
+    const invoices = ref<InvoicesToCancel[]>([]);
 
     const documentsCancelation = ref<DocumentCancelation[]>([]);
+
     const dataDocumentCancelation = ref<{ data: DocumentCancelation | null; index: number | null }>();
 
     const totalInvoicedAmountToCancel = ref<number>(0);
 
-    const setinitialData = () => {
+    const selectedInvoiceIds = ref<number[]>([]);
+
+    const invoicesToCancel = ref<any[]>([]);
+
+    const isCreatedReceipt = ref<boolean>(false);
+
+    const openModalToPrintReceipt = ref<boolean>(false);
+
+    const openModalAsignPaymentToInvoices = ref<boolean>(false);
+
+    const printeableReceiptData = ref<PrinteableReceiptData | null>(null);
+
+    const setinitialDataAtReceipt = () => {
         sourceData.value = [];
         invoices.value = [];
         documentsCancelation.value = [];
+        enableButtonOpenDocumentCancelationDrawer.value = false;
+        isEditingDocumentCancelation.value = false;
+        dataDocumentCancelation.value = { data: null, index: null };
+        totalInvoicedAmountToCancel.value = 0;
+        selectedInvoiceIds.value = [];
+        invoicesToCancel.value = [];
+        isCreatedReceipt.value = false;
+        //openModalToPrintReceipt.value = false;
+        openModalAsignPaymentToInvoices.value = false;
+        //printeableReceiptData.value = null;
+    };
+
+    const setNullPrinteableReceiptData = () => {
+        printeableReceiptData.value = null;
     };
 
     return {
         sourceData,
         invoices,
-        setinitialData,
+        setinitialDataAtReceipt,
         totalInvoicedAmountToCancel,
         documentsCancelation,
         drawerVisible,
         isEditingDocumentCancelation,
         dataDocumentCancelation,
         enableButtonOpenDocumentCancelationDrawer,
+        selectedInvoiceIds,
+        invoicesToCancel,
+        isCreatedReceipt,
+        openModalToPrintReceipt,
+        openModalAsignPaymentToInvoices,
+        printeableReceiptData,
+        setNullPrinteableReceiptData,
     };
 });

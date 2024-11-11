@@ -148,7 +148,7 @@ const onEventChange = {
                             :width="280"
                             :style="{
                                 margin: '0 0 0 0',
-                                padding: `${!rtl ? '20px 20px 55px 0px' : '20px 0px 55px 20px'}`,
+                                padding: `${!rtl ? '0px 0px 10px 0px' : '20px 0px 55px 20px'}`,
                                 overflowY: 'auto',
                                 height: '100vh',
                                 position: 'fixed',
@@ -177,11 +177,6 @@ const onEventChange = {
                     </template>
                     <Layout class="ninjadash-main-layout">
                         <Content>
-                            <!-- <router-view v-slot="{ Component }">
-							<suspense>
-								<component :is="Component" />
-							</suspense>
-						</router-view> -->
                             <RouterView v-slot="{ Component }">
                                 <template v-if="Component">
                                     <Suspense>
@@ -196,14 +191,14 @@ const onEventChange = {
                             </RouterView>
 
                             <Footer
-                                class="admin-footer"
                                 :style="{
                                     padding: '20px 30px 18px',
                                     color: 'rgba(0, 0, 0, 0.65)',
                                     fontSize: '14px',
                                     background: 'rgba(255, 255, 255, .90)',
                                     width: '100%',
-                                    boxShadow: '0 -5px 10px rgba(146,153,184, 0.05)',
+                                    height: '31px',
+                                    minHeight: '31px',
                                 }"
                             >
                                 <a-row>

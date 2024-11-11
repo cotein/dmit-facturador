@@ -8,4 +8,5 @@ export interface Address {
     between_streets: string;
     addressable_id: string;
     addressable_type: string;
+    localidad?: string;
 }

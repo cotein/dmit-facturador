@@ -168,7 +168,7 @@ onBeforeMount(() => {
                         >
                             <a-row :gutter="30">
                                 <a-col :md="8" :xs="24">
-                                    <GetInfoByCuit />
+                                    <GetInfoByCuit :only-cuit="false" />
                                 </a-col>
                                 <a-col :md="lastNameIsRequired ? 8 : 16" :xs="24">
                                     <a-form-item

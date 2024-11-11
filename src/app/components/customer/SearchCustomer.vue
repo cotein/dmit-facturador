@@ -34,6 +34,7 @@ import { getVouchers } from '@/api/voucher/voucher-api';
 import { useVoucherStore } from '@/app/store/voucher/useVoucherStore';
 import { useCustomerListComposable } from '@/app/composables/customer/useCustomerListComposable';
 import { useArbaComposable } from '@/app/composables/arba/useArbaComposable';
+import { getReceipts } from '@/api/receipt/receipt-api';
 
 const { customerName } = useCustomerListComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
@@ -94,18 +95,20 @@ const select = async (e: any, option: CustomerSelectComponent): Promise<void> =>
     if (props.context === 'invoice') {
         if (CompanyGetter.value?.inscription_id !== undefined) {
             const vouchers = await getVouchers(CompanyGetter.value.inscription_id, customer.value.afip_inscription.id);
+
             setVouchers(vouchers);
 
             if (CompanyGetter.value.perception_iibb) {
                 if (customer.value.cuit !== null) {
                     const alicuota = await alicuotaPorSujeto(customer.value.cuit);
+
                     simpleXMLElementArba.value = alicuota;
-                    console.log('🚀 ~ select ~ alicuota:', alicuota.contribuyentes.contribuyente.alicuotaPercepcion);
+
                     const percentage: string = alicuota.contribuyentes.contribuyente.alicuotaPercepcion;
+
                     const convertedValue: number = parseFloat(percentage.replace(',', '.'));
 
                     alicuotaPercepcion.value = convertedValue;
-                    console.log('🚀 ~ select ~ alicuotaPercepcion.value:', alicuotaPercepcion.value);
                 }
             }
         }
@@ -113,6 +116,23 @@ const select = async (e: any, option: CustomerSelectComponent): Promise<void> =>
 
     if (props.context === 'customer') {
         customerName.value = option.label;
+    }
+
+    if (props.context === 'receipt') {
+        console.log("🚀 ~ select ~ props.context === 'receipt':", props.context === 'receipt');
+        if (CompanyGetter.value?.inscription_id !== undefined) {
+            const vouchers = await getVouchers(
+                CompanyGetter.value.inscription_id,
+                customer.value.afip_inscription.id,
+                props.context,
+            );
+
+            setVouchers(vouchers);
+        }
+    }
+
+    if (props.context === 'receipt-list') {
+        console.log('🚀 ~ select ~ options:', options);
     }
 };
 

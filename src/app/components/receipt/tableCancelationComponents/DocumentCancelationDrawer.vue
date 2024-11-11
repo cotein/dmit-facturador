@@ -22,8 +22,20 @@
                     <a-input-number v-model:value="form.import" style="width: 100%" />
                 </a-form-item>
                 <a-form-item label="Ingresa a Cta. Cte." name="ctacte">
-                    <a-input v-model:value="form.ctacte" />
+                    <a-select
+                        v-model="form.cbu_id"
+                        placeholder="Cuenta corriente"
+                        style="width: 100%"
+                        :default-active-first-option="false"
+                        :field-names="{ label: 'ctaCte', value: 'id' }"
+                        :options="CompanyGetter!.cbus"
+                        :size="'default'"
+                        @select="handlerCbuChange"
+                    ></a-select>
                 </a-form-item>
+                <!-- <a-form-item label="Ingresa a Cta. Cte." name="ctacte">
+                    <a-input v-model:value="form.ctacte" />
+                </a-form-item> -->
                 <a-form-item label="Fecha Imputación" name="imputation_date">
                     <DatePickerBase v-model="form.imputation_date" @update:modelValue="handleImputationDateChange" />
                 </a-form-item>
@@ -66,8 +78,13 @@ import SelectBank from './SelectBank.vue';
 import DatePickerBase from '@/app/componentsBase/DatePickerBase.vue';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Dayjs from 'dayjs';
-Dayjs.extend(customParseFormat);
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 
+Dayjs.extend(customParseFormat);
+const handlerCbuChange = (value: any) => {
+    form.value.cbu_id = value;
+};
+const { CompanyGetter } = useCompanyComposable();
 const {
     documentsCancelation,
     drawerVisible,
@@ -80,7 +97,7 @@ const form = ref<DocumentCancelation>({
     payment_type_id: null,
     number: '',
     import: null,
-    ctacte: '',
+    cbu_id: null,
     imputation_date: '',
     bank: null,
     chequeOwner: '',
@@ -94,8 +111,6 @@ const rules = {
         {
             message: 'Por favor ingrese el método de pago',
             validator: (_: any, value: any) => {
-                console.log('🚀 ~ _:', _);
-                console.log('🚀 ~ value:', value);
                 if (value === '' || value === null || value === undefined) {
                     return Promise.reject();
                 }
@@ -149,7 +164,7 @@ const documentCancelation = ref<DocumentCancelation>({
     payment_type_id: 1,
     number: '',
     import: null,
-    ctacte: null,
+    cbu_id: null,
     imputation_date: '',
     bank: null,
     chequeOwner: null,
@@ -176,7 +191,7 @@ const sendDataToFormByEdit = (visible: boolean) => {
             payment_type_id: dataDocumentCancelation.value?.data.payment_type_id ?? null,
             number: dataDocumentCancelation.value?.data.number ?? '',
             import: dataDocumentCancelation.value?.data.import ?? null,
-            ctacte: dataDocumentCancelation.value?.data.ctacte ?? '',
+            cbu_id: dataDocumentCancelation.value?.data.cbu_id ?? null,
             imputation_date: dataDocumentCancelation.value?.data.imputation_date ?? '',
             bank: dataDocumentCancelation.value?.data.bank ?? null,
             chequeOwner: dataDocumentCancelation.value?.data.chequeOwner ?? '',

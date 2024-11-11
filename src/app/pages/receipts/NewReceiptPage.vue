@@ -37,12 +37,6 @@ onBeforeMount(async () => {
     if (!paymentTypesCache) {
         await fetchPaymentTypes();
     }
-
-    const bankList = await getBanks(null);
-
-    if (bankList) {
-        banks.value = bankList.data;
-    }
 });
 </script>
 

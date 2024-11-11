@@ -10,7 +10,9 @@
             >
             <ul class="info-list">
                 <li>
-                    <span class="info-title">{{ props.record.customer.fantasy_name ?? '' }}</span>
+                    <span class="info-title">{{
+                        props.record.customer.fantasy_name ?? ""
+                    }}</span>
                 </li>
             </ul>
         </div>
@@ -18,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import type { InvoiceList } from '@/app/types/Invoice';
+import type { InvoiceList } from "@/app/types/Invoice";
 
 type Props = {
     record: InvoiceList;
