@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { FormValidationWrap, VerticalFormStyleWrap } from "@/views/forms/overview/Style";
-import { Main, DatePickerWrapper } from "@/views/styled";
-import { ref, watch, defineEmits, onMounted } from "vue";
-import locale from "ant-design-vue/es/date-picker/locale/es_ES";
-import AddressForm from "../address/AddressForm.vue";
-import { TypeCompany } from "@/app/types/Constantes";
-import "ant-design-vue/lib/message/style/index.css";
-import "ant-design-vue/lib/notification/style/index.css";
-import GetInfoByCuit from "../afip/GetInfoByCuit.vue";
-import { usePadronAfipStore } from "@/app/store/afip/usePadronAfipStore";
-import { useUserComposable } from "@/app/composables/user/useUserComposable";
-import { useAddressComposable } from "@/app/composables/address/useAddressComposable";
-import { useInscriptionsComposable } from "@/app/composables/afip/useInscriptionsComposable";
-import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
-import type { PersonaReturn } from "@/app/types/Afip";
-import { AFIP_INSCRIPTION } from "@/app/types/Constantes";
-import { useAddressStore } from "@/app/store/address/address-store";
-import { storeToRefs } from "pinia";
-import { showMessage } from "@/app/helpers/mesaages";
-import ASelectedBank from "@/app/components/banks/ASelectedBank.vue";
-import { onlyNumeric } from "@/app/helpers/onlyNumbers";
-import { FormInstance, Rule } from "ant-design-vue/lib/form";
+import { FormValidationWrap, VerticalFormStyleWrap } from '@/views/forms/overview/Style';
+import { Main, DatePickerWrapper } from '@/views/styled';
+import { ref, watch, defineEmits, onMounted } from 'vue';
+import locale from 'ant-design-vue/es/date-picker/locale/es_ES';
+import AddressForm from '../address/AddressForm.vue';
+import { TypeCompany } from '@/app/types/Constantes';
+import 'ant-design-vue/lib/message/style/index.css';
+import 'ant-design-vue/lib/notification/style/index.css';
+import GetInfoByCuit from '../afip/GetInfoByCuit.vue';
+import { usePadronAfipStore } from '@/app/store/afip/usePadronAfipStore';
+import { useUserComposable } from '@/app/composables/user/useUserComposable';
+import { useAddressComposable } from '@/app/composables/address/useAddressComposable';
+import { useInscriptionsComposable } from '@/app/composables/afip/useInscriptionsComposable';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import type { PersonaReturn } from '@/app/types/Afip';
+import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
+import { useAddressStore } from '@/app/store/address/address-store';
+import { storeToRefs } from 'pinia';
+import { showMessage } from '@/app/helpers/mesaages';
+import ASelectedBank from '@/app/components/banks/ASelectedBank.vue';
+import { onlyNumeric } from '@/app/helpers/onlyNumbers';
+import { FormInstance, Rule } from 'ant-design-vue/lib/form';
 
 const { sujeto } = storeToRefs(usePadronAfipStore());
 const { lastNameIsRequired, rules, companyForm, CompanyGetter } = useCompanyComposable();
@@ -45,49 +45,49 @@ const formIsValid = ref<boolean>(true);
 
 const validateCBU = (cbu: string, index: number) => {
     if (!cbu) {
-        cbuErrors.value[index][0] = "Este campo es obligatorio";
+        cbuErrors.value[index][0] = 'Este campo es obligatorio';
         formIsValid.value = false;
     } else if (cbu.length !== 22) {
-        cbuErrors.value[index][0] = "El CBU debe tener 22 caracteres de longitud";
+        cbuErrors.value[index][0] = 'El CBU debe tener 22 caracteres de longitud';
         formIsValid.value = false;
     } else {
-        cbuErrors.value[index][0] = "";
+        cbuErrors.value[index][0] = '';
     }
 };
 
 const validateAlias = (alias: string, index: number) => {
     if (!alias) {
-        cbuErrors.value[index][1] = "Este campo es obligatorio";
+        cbuErrors.value[index][1] = 'Este campo es obligatorio';
         formIsValid.value = false;
     } else {
-        cbuErrors.value[index][1] = "";
+        cbuErrors.value[index][1] = '';
     }
 };
 
 const validateBankId = (bank_id: number | undefined, index: number) => {
     if (!bank_id) {
-        cbuErrors.value[index][2] = "Este campo es obligatorio";
+        cbuErrors.value[index][2] = 'Este campo es obligatorio';
         formIsValid.value = false;
     } else {
-        cbuErrors.value[index][2] = "";
+        cbuErrors.value[index][2] = '';
     }
 };
 
 const validateBank = (bank: string, index: number) => {
     if (!bank) {
-        cbuErrors.value[index][3] = "Este campo es obligatorio";
+        cbuErrors.value[index][3] = 'Este campo es obligatorio';
         formIsValid.value = false;
     } else {
-        cbuErrors.value[index][3] = "";
+        cbuErrors.value[index][3] = '';
     }
 };
 
 const validateCtaCte = (ctaCte: string, index: number) => {
     if (!ctaCte) {
-        cbuErrors.value[index][4] = "Este campo es obligatorio";
+        cbuErrors.value[index][4] = 'Este campo es obligatorio';
         formIsValid.value = false;
     } else {
-        cbuErrors.value[index][4] = "";
+        cbuErrors.value[index][4] = '';
     }
 };
 
@@ -95,26 +95,26 @@ const validateCBUs = () => {
     formIsValid.value = true; // Reset form validity
     companyForm.value.cbus.forEach((cbuItem: any, index: number) => {
         validateCBU(cbuItem.cbu, index);
-        console.log("object " + cbuItem.cbu, index, formIsValid.value);
+        console.log('object ' + cbuItem.cbu, index, formIsValid.value);
         validateAlias(cbuItem.alias, index);
-        console.log("object " + cbuItem.alias, index, formIsValid.value);
+        console.log('object ' + cbuItem.alias, index, formIsValid.value);
         validateBankId(cbuItem.bank_id, index);
-        console.log("object " + cbuItem.bank_id, index, formIsValid.value);
+        console.log('object ' + cbuItem.bank_id, index, formIsValid.value);
         /* validateBank(cbuItem.bank, index);
         console.log("object " + cbuItem, index, formIsValid.value); */
         validateCtaCte(cbuItem.ctaCte, index);
-        console.log("object " + cbuItem.ctaCte, index, formIsValid.value);
+        console.log('object ' + cbuItem.ctaCte, index, formIsValid.value);
     });
 };
 
 const companyFormRef = ref<FormInstance>();
-const emit = defineEmits(["submitCompanyForm"]);
+const emit = defineEmits(['submitCompanyForm']);
 const loading = ref(false);
 /**METHODS */
 const onSubmit = async () => {
     validateCBUs();
     if (!formIsValid.value) {
-        showMessage("error", "Error al validar el formulario qqq", 3);
+        showMessage('error', 'Error al validar el formulario qqq', 3);
         return;
     }
 
@@ -124,7 +124,7 @@ const onSubmit = async () => {
             delete rules.lastName;
         }
         const validate = await companyFormRef.value!.validate().catch((error: any) => {
-            showMessage("error", "Error al validar el formulario", 3);
+            showMessage('error', 'Error al validar el formulario', 3);
         });
 
         if (validate) {
@@ -142,9 +142,9 @@ const onSubmit = async () => {
                     inscription: inscription,
                     cuit: CompanyGetter.value?.cuit,
                 });
-                emit("submitCompanyForm", data);
+                emit('submitCompanyForm', data);
             } else {
-                emit("submitCompanyForm", companyForm.value);
+                emit('submitCompanyForm', companyForm.value);
             }
         }
     } finally {
@@ -182,11 +182,7 @@ watch(
             lastNameIsRequired.value = true;
         }
 
-        if (
-            afipData &&
-            afipData.datosGenerales &&
-            getTipoPersona(afipData) === "FISICA"
-        ) {
+        if (afipData && afipData.datosGenerales && getTipoPersona(afipData) === 'FISICA') {
             companyForm.value.type_company = TypeCompany.FISICA;
         } else {
             companyForm.value.type_company = TypeCompany.JURIDICA;
@@ -197,14 +193,10 @@ watch(
         }
         if (newValue.inscription === CONSUMIDOR_FINAL) {
             resetForm();
-            showMessage(
-                "warning",
-                "La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa",
-                5
-            );
+            showMessage('warning', 'La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa', 5);
         }
     },
-    { deep: true }
+    { deep: true },
 );
 const isMobile = ref<boolean>(false);
 
@@ -223,11 +215,11 @@ const removeCBU = (index: number) => {
 const addAccount = () => {
     if (companyForm.value.cbus.length < 3) {
         companyForm.value.cbus.push({
-            alias: "",
+            alias: '',
             bank_id: undefined,
-            bank: "",
-            cbu: "",
-            ctaCte: "",
+            bank: '',
+            cbu: '',
+            ctaCte: '',
         });
     }
 };
@@ -267,42 +259,19 @@ const addAccount = () => {
                                     <a-col :md="lastNameIsRequired ? 8 : 16" :xs="24">
                                         <a-form-item
                                             ref="name"
-                                            :label="
-                                                lastNameIsRequired
-                                                    ? 'Nombre'
-                                                    : 'Razón Social'
-                                            "
+                                            :label="lastNameIsRequired ? 'Nombre' : 'Razón Social'"
                                             name="name"
                                         >
-                                            <a-input
-                                                v-model:value="companyForm.name"
-                                                placeholder="Nombre"
-                                            />
+                                            <a-input v-model:value="companyForm.name" placeholder="Nombre" />
                                         </a-form-item>
                                     </a-col>
-                                    <a-col
-                                        :md="8"
-                                        :xs="24"
-                                        :sm="24"
-                                        v-if="lastNameIsRequired"
-                                    >
-                                        <a-form-item
-                                            ref="lastName"
-                                            name="lastName"
-                                            label="Apellido"
-                                        >
-                                            <a-input
-                                                v-model:value="companyForm.lastName"
-                                                placeholder="Apellido"
-                                            />
+                                    <a-col :md="8" :xs="24" :sm="24" v-if="lastNameIsRequired">
+                                        <a-form-item ref="lastName" name="lastName" label="Apellido">
+                                            <a-input v-model:value="companyForm.lastName" placeholder="Apellido" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="10" :xs="24">
-                                        <a-form-item
-                                            ref="fantasy_name"
-                                            name="fantasy_name"
-                                            label="Nombre de Fantasía"
-                                        >
+                                        <a-form-item ref="fantasy_name" name="fantasy_name" label="Nombre de Fantasía">
                                             <a-input
                                                 v-model:value="companyForm.fantasy_name"
                                                 placeholder="Nombre de Fantasía"
@@ -310,11 +279,7 @@ const addAccount = () => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="8" :xs="24" :sm="24">
-                                        <a-form-item
-                                            ref="inscription"
-                                            name="inscription"
-                                            label="Inscripción en AFIP"
-                                        >
+                                        <a-form-item ref="inscription" name="inscription" label="Inscripción en AFIP">
                                             <a-select
                                                 v-model:value="companyForm.inscription"
                                                 size="large"
@@ -345,9 +310,7 @@ const addAccount = () => {
                                         >
                                             <DatePickerWrapper>
                                                 <a-date-picker
-                                                    v-model:value="
-                                                        companyForm.activity_init
-                                                    "
+                                                    v-model:value="companyForm.activity_init"
                                                     size="large"
                                                     placeholder="Seleccionar Fecha"
                                                     :format="'DD-MM-YYYY'"
@@ -357,23 +320,12 @@ const addAccount = () => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="6" :xs="24" :sm="24">
-                                        <a-form-item
-                                            ref="iibb"
-                                            name="iibb"
-                                            label="N° de Ingresos Brutos"
-                                        >
-                                            <a-input
-                                                v-model:value="companyForm.iibb"
-                                                placeholder="IIBB"
-                                            />
+                                        <a-form-item ref="iibb" name="iibb" label="N° de Ingresos Brutos">
+                                            <a-input v-model:value="companyForm.iibb" placeholder="IIBB" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="4" :xs="24" :sm="24">
-                                        <a-form-item
-                                            ref="type_company"
-                                            name="type_company"
-                                            label="Tipo de Empresa"
-                                        >
+                                        <a-form-item ref="type_company" name="type_company" label="Tipo de Empresa">
                                             <a-select
                                                 v-model:value="companyForm.type_company"
                                                 size="large"
@@ -384,14 +336,10 @@ const addAccount = () => {
                                                 allowClear
                                                 :not-found-content="null"
                                             >
-                                                <a-select-option
-                                                    :value="TypeCompany.JURIDICA"
+                                                <a-select-option :value="TypeCompany.JURIDICA"
                                                     >JURÍDICA</a-select-option
                                                 >
-                                                <a-select-option
-                                                    :value="TypeCompany.FISICA"
-                                                    >FÍSICA</a-select-option
-                                                >
+                                                <a-select-option :value="TypeCompany.FISICA">FÍSICA</a-select-option>
                                             </a-select>
                                         </a-form-item>
                                     </a-col>
@@ -402,20 +350,12 @@ const addAccount = () => {
                                             label="Concepto de facturación"
                                         >
                                             <a-radio-group
-                                                v-model:value="
-                                                    companyForm.billing_concept
-                                                "
+                                                v-model:value="companyForm.billing_concept"
                                                 class="radio-group"
                                             >
-                                                <a-radio-button value="1"
-                                                    >PRODUCTOS</a-radio-button
-                                                >
-                                                <a-radio-button value="2"
-                                                    >SERVICIOS</a-radio-button
-                                                >
-                                                <a-radio-button value="3"
-                                                    >PRODUCTOS Y SERVICIOS</a-radio-button
-                                                >
+                                                <a-radio-button value="1">PRODUCTOS</a-radio-button>
+                                                <a-radio-button value="2">SERVICIOS</a-radio-button>
+                                                <a-radio-button value="3">PRODUCTOS Y SERVICIOS</a-radio-button>
                                             </a-radio-group>
                                         </a-form-item>
                                     </a-col>
@@ -428,9 +368,7 @@ const addAccount = () => {
                                             name="bank"
                                             label="Banco"
                                             :help="cbuErrors[0][2]"
-                                            :validateStatus="
-                                                cbuErrors[0][2] ? 'error' : 'success'
-                                            "
+                                            :validateStatus="cbuErrors[0][2] ? 'error' : 'success'"
                                         >
                                             <a-selected-bank :index="0" />
                                         </a-form-item>
@@ -439,16 +377,11 @@ const addAccount = () => {
                                         <a-form-item
                                             ref="cbu"
                                             name="cbu"
-                                            label="CBU - Necesario para Facturas MiPyme www"
+                                            label="CBU - Necesario para Facturas MiPyme"
                                             :help="cbuErrors[0][0]"
-                                            :validateStatus="
-                                                cbuErrors[0][0] ? 'error' : 'success'
-                                            "
+                                            :validateStatus="cbuErrors[0][0] ? 'error' : 'success'"
                                         >
-                                            <a-input
-                                                v-model:value="companyForm.cbus[0].cbu"
-                                                placeholder="CBU"
-                                            />
+                                            <a-input v-model:value="companyForm.cbus[0].cbu" placeholder="CBU" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="3" :xs="24" :sm="24">
@@ -457,9 +390,7 @@ const addAccount = () => {
                                             name="ctacte"
                                             label="Cuenta corriente"
                                             :help="cbuErrors[0][4]"
-                                            :validateStatus="
-                                                cbuErrors[0][4] ? 'error' : 'success'
-                                            "
+                                            :validateStatus="cbuErrors[0][4] ? 'error' : 'success'"
                                         >
                                             <a-input
                                                 v-model:value="companyForm.cbus[0].ctaCte"
@@ -473,14 +404,9 @@ const addAccount = () => {
                                             name="alias"
                                             label="Alias"
                                             :help="cbuErrors[0][1]"
-                                            :validateStatus="
-                                                cbuErrors[0][1] ? 'error' : 'success'
-                                            "
+                                            :validateStatus="cbuErrors[0][1] ? 'error' : 'success'"
                                         >
-                                            <a-input
-                                                v-model:value="companyForm.cbus[0].alias"
-                                                placeholder="Alias"
-                                            />
+                                            <a-input v-model:value="companyForm.cbus[0].alias" placeholder="Alias" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="2" :xs="24" :sm="24">
@@ -490,31 +416,20 @@ const addAccount = () => {
                                             :style="{ 'margin-top': '31px' }"
                                         >
                                             <template #icon>
-                                                <unicon
-                                                    name="trash-alt"
-                                                    width="14"
-                                                ></unicon>
+                                                <unicon name="trash-alt" width="14"></unicon>
                                             </template>
                                         </a-button>
                                     </a-col>
                                 </a-row>
 
-                                <a-row
-                                    :gutter="10"
-                                    v-for="(cbu, index) in companyForm.cbus.slice(1)"
-                                    :key="index"
-                                >
+                                <a-row :gutter="10" v-for="(cbu, index) in companyForm.cbus.slice(1)" :key="index">
                                     <a-col :md="10" :xs="24" :sm="24">
                                         <a-form-item
                                             :ref="'bank_id_' + index"
                                             :name="'bank_' + index"
                                             label="Banco"
                                             :help="cbuErrors[index + 1][2]"
-                                            :validateStatus="
-                                                cbuErrors[index + 1][2]
-                                                    ? 'error'
-                                                    : 'success'
-                                            "
+                                            :validateStatus="cbuErrors[index + 1][2] ? 'error' : 'success'"
                                         >
                                             <a-selected-bank :index="index + 1" />
                                         </a-form-item>
@@ -525,16 +440,9 @@ const addAccount = () => {
                                             :name="'cbu_' + index"
                                             label="CBU - Necesario para Facturas MiPyme"
                                             :help="cbuErrors[index + 1][0]"
-                                            :validateStatus="
-                                                cbuErrors[index + 1][0]
-                                                    ? 'error'
-                                                    : 'success'
-                                            "
+                                            :validateStatus="cbuErrors[index + 1][0] ? 'error' : 'success'"
                                         >
-                                            <a-input
-                                                v-model:value="cbu.cbu"
-                                                placeholder="CBU"
-                                            />
+                                            <a-input v-model:value="cbu.cbu" placeholder="CBU" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="3" :xs="24" :sm="24">
@@ -543,16 +451,9 @@ const addAccount = () => {
                                             :name="'ctaCte_' + index"
                                             label="Cuenta corriente"
                                             :help="cbuErrors[index + 1][4]"
-                                            :validateStatus="
-                                                cbuErrors[index + 1][4]
-                                                    ? 'error'
-                                                    : 'success'
-                                            "
+                                            :validateStatus="cbuErrors[index + 1][4] ? 'error' : 'success'"
                                         >
-                                            <a-input
-                                                v-model:value="cbu.ctaCte"
-                                                placeholder="Cta. cte"
-                                            />
+                                            <a-input v-model:value="cbu.ctaCte" placeholder="Cta. cte" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="4" :xs="24" :sm="24">
@@ -561,16 +462,9 @@ const addAccount = () => {
                                             :name="'alias_' + index"
                                             label="Alias"
                                             :help="cbuErrors[index + 1][1]"
-                                            :validateStatus="
-                                                cbuErrors[index + 1][1]
-                                                    ? 'error'
-                                                    : 'success'
-                                            "
+                                            :validateStatus="cbuErrors[index + 1][1] ? 'error' : 'success'"
                                         >
-                                            <a-input
-                                                v-model:value="cbu.alias"
-                                                placeholder="Alias"
-                                            />
+                                            <a-input v-model:value="cbu.alias" placeholder="Alias" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="2" :xs="24" :sm="24">
@@ -580,29 +474,19 @@ const addAccount = () => {
                                             :style="{ 'margin-top': '31px' }"
                                         >
                                             <template #icon>
-                                                <unicon
-                                                    name="trash-alt"
-                                                    width="14"
-                                                ></unicon>
+                                                <unicon name="trash-alt" width="14"></unicon>
                                             </template>
                                         </a-button>
                                     </a-col>
                                 </a-row>
 
-                                <a-button
-                                    @click="addAccount"
-                                    :disabled="companyForm.cbus.length >= 3"
+                                <a-button @click="addAccount" :disabled="companyForm.cbus.length >= 3"
                                     >Agregar Cuenta Corriente</a-button
                                 >
 
                                 <a-row :gutter="25" justify="center">
                                     <a-col :md="6" :xs="24" :sm="24">
-                                        <a-form-item
-                                            ref="phone1"
-                                            name="phone1"
-                                            label="Teléfono 1"
-                                            extra="Sólo números"
-                                        >
+                                        <a-form-item ref="phone1" name="phone1" label="Teléfono 1" extra="Sólo números">
                                             <a-input
                                                 v-model:value="companyForm.phone1"
                                                 placeholder="Teléfono 1"
@@ -612,12 +496,7 @@ const addAccount = () => {
                                     </a-col>
 
                                     <a-col :md="6" :xs="24" :sm="24">
-                                        <a-form-item
-                                            ref="phone2"
-                                            name="phone2"
-                                            label="Teléfono 2"
-                                            extra="Sólo números"
-                                        >
+                                        <a-form-item ref="phone2" name="phone2" label="Teléfono 2" extra="Sólo números">
                                             <a-input
                                                 v-model:value="companyForm.phone2"
                                                 placeholder="Teléfono 2"
@@ -627,11 +506,7 @@ const addAccount = () => {
                                     </a-col>
 
                                     <a-col :md="6" :xs="24" :sm="24">
-                                        <a-form-item
-                                            ref="email"
-                                            name="email"
-                                            label="Correo Electrónico"
-                                        >
+                                        <a-form-item ref="email" name="email" label="Correo Electrónico">
                                             <a-input
                                                 v-model:value="companyForm.email"
                                                 placeholder="Correo Electrónico"
@@ -639,59 +514,38 @@ const addAccount = () => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :md="6" :xs="24" :sm="24">
-                                        <a-form-item
-                                            ref="webSite"
-                                            name="webSite"
-                                            label="Sitio Web"
-                                        >
-                                            <a-input
-                                                v-model:value="companyForm.webSite"
-                                                placeholder="Sitio Web"
-                                            />
+                                        <a-form-item ref="webSite" name="webSite" label="Sitio Web">
+                                            <a-input v-model:value="companyForm.webSite" placeholder="Sitio Web" />
                                         </a-form-item>
                                     </a-col>
                                 </a-row>
 
                                 <a-row :gutter="[20, 50]" align="middle">
                                     <a-col :md="12" :xs="24" :sm="24">
-                                        <a-typography-title :level="4"
-                                            >Entorno de Facturación</a-typography-title
-                                        >
+                                        <a-typography-title :level="4">Entorno de Facturación</a-typography-title>
                                         <a-radio-group
                                             v-model:value="companyForm.afip_environment"
                                             button-style="solid"
                                         >
-                                            <a-radio-button value="production"
-                                                >Producción</a-radio-button
-                                            >
-                                            <a-radio-button
-                                                value="testing"
-                                                v-if="UserGetter.userLevel === 1000"
+                                            <a-radio-button value="production">Producción</a-radio-button>
+                                            <a-radio-button value="testing" v-if="UserGetter.userLevel === 1000"
                                                 >Testing</a-radio-button
                                             >
                                         </a-radio-group>
                                     </a-col>
                                     <a-col :md="12" :xs="24" :sm="24">
-                                        <a-typography-title :level="4"
-                                            >Domicilio</a-typography-title
-                                        >
+                                        <a-typography-title :level="4">Domicilio</a-typography-title>
                                         <a-form-item
                                             ref="address"
                                             name="address"
                                             label="Domicilio"
                                             :extra="
-                                                !isValid
-                                                    ? 'Es necesario definir un domicilio'
-                                                    : 'Cambiar domicilio'
+                                                !isValid ? 'Es necesario definir un domicilio' : 'Cambiar domicilio'
                                             "
                                         >
                                             <a-badge :dot="!isValid ? true : false">
                                                 <AddressForm
-                                                    :title="
-                                                        isValid
-                                                            ? 'Actualizar domicilio'
-                                                            : 'Agregar domicilio'
-                                                    "
+                                                    :title="isValid ? 'Actualizar domicilio' : 'Agregar domicilio'"
                                                 />
                                             </a-badge>
                                         </a-form-item>
@@ -699,32 +553,18 @@ const addAccount = () => {
                                 </a-row>
 
                                 <a-divider class="divider" />
-                                <a-typography-title :level="4"
-                                    >Percepciones</a-typography-title
-                                >
+                                <a-typography-title :level="4">Percepciones</a-typography-title>
 
                                 <a-row :gutter="25" justify="center">
                                     <a-col :md="12" :xs="24" :sm="24">
-                                        <span id="iibb" v-if="isMobile"
-                                            >Percepción de IIBB</span
-                                        >
-                                        <span id="iibb" v-else
-                                            >Realiza percepción de Ingresos Brutos</span
-                                        >
-                                        <a-switch
-                                            v-model:checked="companyForm.perception_iibb"
-                                        />
+                                        <span id="iibb" v-if="isMobile">Percepción de IIBB</span>
+                                        <span id="iibb" v-else>Realiza percepción de Ingresos Brutos</span>
+                                        <a-switch v-model:checked="companyForm.perception_iibb" />
                                     </a-col>
                                     <a-col :md="12" :xs="24" :sm="24">
-                                        <span id="iva" v-if="isMobile"
-                                            >Percepción de Iva</span
-                                        >
-                                        <span id="iva" v-else
-                                            >Realiza percepción de Iva</span
-                                        >
-                                        <a-switch
-                                            v-model:checked="companyForm.perception_iva"
-                                        />
+                                        <span id="iva" v-if="isMobile">Percepción de Iva</span>
+                                        <span id="iva" v-else>Realiza percepción de Iva</span>
+                                        <a-switch v-model:checked="companyForm.perception_iva" />
                                     </a-col>
                                 </a-row>
 
@@ -732,17 +572,8 @@ const addAccount = () => {
                                     <!-- <sdButton type="primary" @click.prevent="onSubmit" class="ant-btn-primary">
 										Guardar
 									</sdButton> -->
-                                    <a-button
-                                        type="primary"
-                                        size="large"
-                                        :loading="loading"
-                                        @click.prevent="onSubmit"
-                                    >
-                                        <span>{{
-                                            props.isSaveButton
-                                                ? "Guardar datos"
-                                                : "Actualizar datos"
-                                        }}</span>
+                                    <a-button type="primary" size="large" :loading="loading" @click.prevent="onSubmit">
+                                        <span>{{ props.isSaveButton ? 'Guardar datos' : 'Actualizar datos' }}</span>
                                     </a-button>
                                     <sdButton
                                         @click="resetForm"
