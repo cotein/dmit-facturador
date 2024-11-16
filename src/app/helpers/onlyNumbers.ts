@@ -1,27 +1,28 @@
 export const onlyNumeric = (event: KeyboardEvent) => {
-    const key = event.key;
+    let key = event.key;
     const input = event.target as HTMLInputElement;
 
-    // Permitir solo números y un punto
+    if (key === ',') {
+        key = '.';
+    }
+
     if ((key < '0' || key > '9') && key !== '.') {
         event.preventDefault();
         return;
     }
 
-    // Si se presiona un punto y ya hay un punto en el valor, prevenir la entrada
     if (key === '.' && input.value.includes('.')) {
         event.preventDefault();
         return;
     }
 
-    // Si ya hay dos dígitos después del punto, prevenir la entrada de más números
     const decimalPointIndex = input.value.indexOf('.');
     if (
         decimalPointIndex !== -1 &&
         input.value.substring(decimalPointIndex + 1).length >= 2 &&
         key >= '0' &&
         key <= '9' &&
-        input.selectionStart !== null && // Add null check here
+        input.selectionStart !== null &&
         input.selectionStart > decimalPointIndex + 2
     ) {
         event.preventDefault();
@@ -34,16 +35,11 @@ export const selectText = (event: FocusEvent) => {
     input.select();
 };
 
-export const onlyNumericInputEvent = (event: Event) => {
-    const input = event.target as HTMLInputElement;
-    const value = input.value;
-
-    // Remover cualquier carácter que no sea un número
-    const numericValue = value.replace(/[^0-9]/g, '');
-
-    // Actualizar el valor del input con el valor numérico
-    if (value !== numericValue) {
-        input.value = numericValue;
+export const onlyNumericInputEvent = (event: KeyboardEvent) => {
+    const key = event.key;
+    // Permitir solo números
+    if (key < '0' || key > '9') {
         event.preventDefault();
+        return;
     }
 };

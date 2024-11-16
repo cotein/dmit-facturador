@@ -8,6 +8,8 @@ export const useVisibleStore = defineStore('visible', () => {
         visible.value = value;
     };
 
+    const openDrawerDatosCliente = ref<boolean>(false);
+
     return {
         //State properties
         visible,
@@ -15,5 +17,6 @@ export const useVisibleStore = defineStore('visible', () => {
         //Actions
         //Getters
         VisibleGetter: computed(() => visible.value),
+        openDrawerDatosCliente,
     };
 });

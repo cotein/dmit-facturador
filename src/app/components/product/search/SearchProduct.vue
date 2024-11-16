@@ -3,6 +3,7 @@
         <a-col :span="props.viewPriceList ? 14 : 24">
             <a-form-item label="Producto">
                 <a-select
+                    ref="aSelectProduct"
                     v-model:value="product"
                     show-search
                     :show-arrow="false"
@@ -52,6 +53,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     viewPriceList: false,
 });
+
+const aSelectProduct = ref<HTMLInputElement | null>(null);
 
 const price = ref();
 
@@ -143,5 +146,9 @@ const closeModal = (event: KeyboardEvent) => {
 
 onMounted(() => {
     window.addEventListener('keydown', closeModal);
+
+    if (aSelectProduct.value) {
+        aSelectProduct.value.focus();
+    }
 });
 </script>

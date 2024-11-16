@@ -50,11 +50,12 @@ app.config.globalProperties.$filters = {
 };
 
 app.config.globalProperties.$environment = import.meta.env;
-//app.use(DatePicker);
+
 app.use(PerfectScrollbarPlugin);
 app.use(pinia);
 app.use(VueQueryPlugin);
 app.use(router);
+
 app.component('QuillEditor', QuillEditor);
 app.mount('#app');
 

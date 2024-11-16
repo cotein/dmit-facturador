@@ -11,6 +11,7 @@ type Props = {
     record: ProductOnInvoiceTable;
     index: number;
 };
+
 const props = withDefaults(defineProps<Props>(), {
     record: undefined,
     index: undefined,

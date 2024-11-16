@@ -150,6 +150,17 @@ onMounted(() => {
             </a-menu-item> -->
         </a-sub-menu>
 
+        <NavTitle class="ninjadash-sidebar-nav-title">Configuración del sistema</NavTitle>
+        <a-sub-menu key="settings">
+            <template #icon>
+                <unicon name="dollar-sign-alt"></unicon>
+            </template>
+            <template #title>Lista de precios</template>
+            <a-menu-item @click="toggleCollapsed" key="settings-add">
+                <router-link :to="{ name: 'AddPriceList' }"> Alta </router-link>
+            </a-menu-item>
+        </a-sub-menu>
+
         <a-sub-menu key="categories">
             <template #icon>
                 <unicon name="layer-group"></unicon>
@@ -167,17 +178,6 @@ onMounted(() => {
             <template #title>Productos</template>
             <a-menu-item @click="toggleCollapsed" key="products-new">
                 <router-link :to="{ name: 'AddProduct' }"> Alta </router-link>
-            </a-menu-item>
-        </a-sub-menu>
-
-        <NavTitle class="ninjadash-sidebar-nav-title">Configuración del sistema</NavTitle>
-        <a-sub-menu key="settings">
-            <template #icon>
-                <unicon name="dollar-sign-alt"></unicon>
-            </template>
-            <template #title>Lista de precios</template>
-            <a-menu-item @click="toggleCollapsed" key="settings-add">
-                <router-link :to="{ name: 'AddPriceList' }"> Alta </router-link>
             </a-menu-item>
         </a-sub-menu>
     </a-menu>

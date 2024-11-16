@@ -12,6 +12,7 @@
         :options="Vouchers"
         v-model:value="defaultVoucher"
         @select="select"
+        defaultOpen="true"
     ></a-select>
 </template>
 <script setup lang="ts">

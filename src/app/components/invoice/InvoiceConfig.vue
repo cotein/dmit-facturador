@@ -9,7 +9,7 @@
         <a-drawer
             title="Datos del Cliente"
             :width="720"
-            :visible="visible"
+            :visible="openDrawerDatosCliente"
             :body-style="{ paddingBottom: '80px' }"
             :footer-style="{ textAlign: 'right' }"
             :maskClosable="false"
@@ -38,16 +38,6 @@
                         </a-form-item>
                     </a-col>
                 </a-row>
-                <!-- <a-row :gutter="16">
-				<a-col :sm="24" :lg="24" :xs="24">
-					<a-form-item label="Detalle de la factura" name="type_details">
-						<a-radio-group v-model:value="invoice.type_details" name="radioGroup">
-							<a-radio value="1">Desea seleccionar productos</a-radio>
-							<a-radio value="2">Desea escribir texto libre</a-radio>
-						</a-radio-group>
-					</a-form-item>
-				</a-col>
-			</a-row> -->
                 <a-row :gutter="16">
                     <a-col :lg="12" :sm="24" :xs="24">
                         <a-form-item label="Fecha Factura" name="date">
@@ -129,6 +119,10 @@ import type { Dayjs } from 'dayjs';
 import VoucherSelect from './VoucherSelect.vue';
 import PaymentTypes from '@/app/components/paymentType/PaymentTypes.vue';
 import type { Rule } from 'ant-design-vue/lib/form';
+import { useVisibleComposable } from '@/app/composables/visible/useVisibleComposable';
+
+const { openDrawerDatosCliente } = useVisibleComposable();
+
 const { selectedCustomer } = useCustomerComposable();
 
 const { invoice, invoiceConfigIsValidated } = useInvoiceComposable();
@@ -203,7 +197,7 @@ const rules = ref({
     ],
 });
 
-const onCloseCancel = () => (visible.value = false);
+const onCloseCancel = () => (openDrawerDatosCliente.value = false);
 
 const onClose = async (e: Event) => {
     const isValid = await invoiceConfigForm.value.validate().catch((error: any) => {
@@ -213,16 +207,14 @@ const onClose = async (e: Event) => {
 
     if (isValid) {
         invoiceConfigIsValidated.value = true;
-        visible.value = false;
+        openDrawerDatosCliente.value = false;
     } else {
         invoiceConfigIsValidated.value = false;
     }
 };
 
-const visible = ref<boolean>(false);
-
 const showDrawer = () => {
-    visible.value = true;
+    openDrawerDatosCliente.value = true;
 };
 
 const afterVisibleChange = (visible: boolean) => {
@@ -242,8 +234,6 @@ const formatDate = (dateObj: any) => {
 };
 
 const servDatesMethod = (date: any) => {
-    console.log('🚀 ~ servDates ~ date:', date);
-
     if (date && date.length >= 2) {
         // Asumiendo que date[0] es la fecha de inicio y date[1] es la fecha de fin
         invoice.value.FchServDesde = formatDate(date[0]);
@@ -371,23 +361,25 @@ watch(
 onMounted(() => {
     const date = moment();
 
-    if (invoice && invoice.value) {
-        invoice.value.Concepto = String(CompanyGetter!.value.billing_concept);
-        invoice.value.company_id = CompanyGetter!.value.id;
-        invoice.value.PtoVta = Number(CompanyGetter!.value.pto_vta_fe);
+    if (CompanyGetter.value) {
+        if (invoice && invoice.value) {
+            invoice.value.Concepto = String(CompanyGetter!.value.billing_concept);
+            invoice.value.company_id = CompanyGetter!.value.id;
+            invoice.value.PtoVta = Number(CompanyGetter!.value.pto_vta_fe);
 
-        let day = null;
+            let day = null;
 
-        if (date.date() < 10) {
-            day = '0' + date.date();
-        } else {
-            day = date.date();
-        }
+            if (date.date() < 10) {
+                day = '0' + date.date();
+            } else {
+                day = date.date();
+            }
 
-        if (date.month() + 1 < 10) {
-            invoice.value.CbteFch = `${date.year()}0${date.month() + 1}${day}`;
-        } else {
-            invoice.value.CbteFch = `${date.year()}${date.month() + 1}${day}`;
+            if (date.month() + 1 < 10) {
+                invoice.value.CbteFch = `${date.year()}0${date.month() + 1}${day}`;
+            } else {
+                invoice.value.CbteFch = `${date.year()}${date.month() + 1}${day}`;
+            }
         }
     }
 });

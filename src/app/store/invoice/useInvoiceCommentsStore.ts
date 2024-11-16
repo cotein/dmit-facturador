@@ -1,9 +1,13 @@
-import type { individualInvoice, InvoiceList } from '@/app/types/Invoice';
+import type { individualInvoice, InvoiceList, PaymentHistory } from '@/app/types/Invoice';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export const useInvoiceListStore = defineStore('invoice-list', () => {
-    const invoiceList = ref<InvoiceList[]>([]);
+type Comments = {
+    comment: string;
+};
+
+export const useInvoiceCommentsStore = defineStore('invoice-comments', () => {
+    const commentsList = ref<Comments[]>([]);
 
     const currentPage = ref<number>();
 
@@ -15,15 +19,12 @@ export const useInvoiceListStore = defineStore('invoice-list', () => {
 
     const status_id = ref<number | null>(null);
 
-    const individualInvoice = ref<individualInvoice | null>(null);
-
     return {
-        invoiceList,
+        commentsList,
         currentPage,
         itemsPerPage,
         totalPages,
         status_id,
         totalItems,
-        individualInvoice,
     };
 });

@@ -180,6 +180,7 @@ import RowNumber from '../../shared/RowNumber.vue';
 import SearchCustomer from '../../customer/SearchCustomer.vue';
 import ShowSomeStringData from '../../shared/ShowSomeStringData.vue';
 import type { InvoiceList } from '@/app/types/Invoice';
+import { ColumnProps } from 'ant-design-vue/lib/table';
 
 const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
@@ -236,7 +237,7 @@ const print = async () => {
     excel.download(resp.data, 'Listado Ventas');
 };
 
-const invoiceTableColumns: InvoiceTableColumn[] = [
+const invoiceTableColumns: ColumnProps<InvoiceTableColumn>[] = [
     {
         title: '#',
         dataIndex: 'row',
@@ -264,6 +265,8 @@ const invoiceTableColumns: InvoiceTableColumn[] = [
             },
             multiple: 1,
         },
+        width: '17%',
+        align: 'left',
     },
     {
         title: 'Fecha',
@@ -286,11 +289,15 @@ const invoiceTableColumns: InvoiceTableColumn[] = [
             },
             multiple: 3,
         },
+        width: '9%',
+        align: 'center',
     },
     {
         title: 'Número',
         dataIndex: 'number',
         key: 'number',
+        width: '16%',
+        align: 'center',
     },
     {
         title: 'Importe',
@@ -313,11 +320,15 @@ const invoiceTableColumns: InvoiceTableColumn[] = [
             },
             multiple: 2,
         },
+        width: '16%',
+        align: 'right',
     },
     {
         title: 'Vto. Pago',
         dataIndex: 'vto_pago',
         key: 'vto_pago',
+        width: '10%',
+        align: 'center',
     },
     {
         title: 'Cond. de venta',
@@ -328,6 +339,7 @@ const invoiceTableColumns: InvoiceTableColumn[] = [
         title: 'Estado',
         dataIndex: 'status',
         key: 'status',
+        width: '10%',
     },
 ];
 
@@ -336,6 +348,8 @@ if (props.isSale) {
         title: 'Acción',
         dataIndex: 'actions',
         key: 'actions',
+        width: '3%',
+        align: 'center',
     });
 }
 

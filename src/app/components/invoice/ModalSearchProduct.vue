@@ -9,6 +9,7 @@
                 height: '8rem',
             }"
             :footer="null"
+            :inert="!openSearchProduct"
         >
             <SearchProduct ref="searchProductRef" :view-price-list="true" />
         </a-modal>

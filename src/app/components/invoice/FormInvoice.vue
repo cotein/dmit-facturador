@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
-import { computed, onUnmounted, watch, onBeforeMount } from 'vue';
+import { computed, onUnmounted, watch, onBeforeMount, onMounted, ref } from 'vue';
 import { InvoiceHeader, InvoiceLetterBox } from './Style';
 import { Main } from '../../styled';
 import { storeToRefs } from 'pinia';
@@ -66,7 +66,7 @@ watch(
 
 onBeforeMount(() => {
     //fetchVouchers(CompanyGetter.value.id);
-    fetchPaymentTypes(CompanyGetter.value.id);
+    fetchPaymentTypes();
     fetchSaleConditions();
 });
 
@@ -79,6 +79,14 @@ onUnmounted(() => {
 <template>
     <Main>
         <DrawerPtoVta />
+        <a-row :gutter="30">
+            <a-col :md="6">
+                <div :style="{ margin: '10px 0px' }">CTRL + F11 para abrir datos del cliente</div>
+            </a-col>
+            <a-col :md="6">
+                <div :style="{ margin: '10px 0px' }">CTRL + F10 para ingresar cliente nuevo</div>
+            </a-col>
+        </a-row>
         <Cards>
             <template #title>
                 <div class="ninjadash-card-title-wrap">

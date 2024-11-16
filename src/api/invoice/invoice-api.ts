@@ -19,7 +19,7 @@ export const getInvoiceList = async (
     from: string | null = null,
     to: string | null = null,
     page: number | null = 1,
-    per_page: number | null = PAGINATION_ITEMS_PER_PAGE,
+    per_page: number | null = 5,
     print: string = 'no',
     invoice_id: number | null = null,
     getPaymentOnReceipt: boolean = false,
@@ -69,6 +69,43 @@ export const getInvoiceList = async (
         //await sleep(1000);
 
         const response = await ApiHttp.get<InvoiceListWithPagination>(URL, { params });
+
+        return response;
+    } catch (error) {
+        console.log('🚀 ~ error:', error);
+        throw new Error();
+    }
+};
+
+export const getInvoiceComments = async (
+    company_id: number,
+    customer_id: number | null = null,
+    page: number | null = 1,
+    per_page: number | null = 5,
+): Promise<AxiosResponse<any>> => {
+    try {
+        const params: URLSearchParams = new URLSearchParams();
+
+        params.append('comments', 'comments');
+
+        if (company_id != null) {
+            params.append('company_id', company_id.toString());
+        }
+
+        if (customer_id != null) {
+            params.append('customer_id', customer_id.toString());
+        }
+
+        if (page != null) {
+            params.append('page', page.toString());
+        }
+
+        if (per_page != null) {
+            params.append('per_page', per_page.toString());
+        }
+        //await sleep(1000);
+
+        const response = await ApiHttp.get<any>(URL, { params });
 
         return response;
     } catch (error) {

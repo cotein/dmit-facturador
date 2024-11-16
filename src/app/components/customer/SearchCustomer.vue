@@ -16,6 +16,7 @@
         @dropdownVisibleChange="cleanVouchers"
         :mode="props.multiple ? 'multiple' : ''"
         v-model:value="defaultCustomer"
+        autofocus
     >
         <template v-if="fetching" #notFoundContent>
             <a-spin size="small" />

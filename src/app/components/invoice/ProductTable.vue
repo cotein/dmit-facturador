@@ -1,6 +1,12 @@
 <template>
     <Main>
-        <Cards>
+        <a-typography-title :level="5" v-if="loading">Generando comprobante de venta...</a-typography-title>
+        <a-skeleton active :loading="loading" v-if="loading" />
+        <a-skeleton active :loading="loading" v-if="loading" />
+        <a-skeleton active :loading="loading" v-if="loading" />
+        <a-skeleton active :loading="loading" v-if="loading" />
+        <a-skeleton active :loading="loading" v-if="loading" />
+        <Cards v-else>
             <template #title>
                 <div class="ninjadash-card-title-wrap">
                     <span class="ninjadash-card-title-text"> Detalle </span>
@@ -15,6 +21,9 @@
                             :pagination="false"
                             :scroll="{ x: '1000px' }"
                         >
+                            <template #headerCell="{ title }">
+                                <div style="text-align: center">{{ title }}</div>
+                            </template>
                             <template #bodyCell="{ column, record, index }">
                                 <template v-if="column.key === 'product'">
                                     <ProductItem :record="record" :index="index" />
@@ -46,6 +55,7 @@
                 </ProductTable>
             </TableWrapper>
             <FreeText />
+            <DrawerInvoiceComments />
             <Totals />
             <a-row justify="end">
                 <a-col :lg="12" :md="18" :sm="24" :offset="0">
@@ -84,7 +94,7 @@ import { CloudUploadOutlined } from '@ant-design/icons-vue';
 import { InvoiceAction, ProductTable } from './Style';
 import { Main, TableWrapper } from '../../styled';
 import { message } from 'ant-design-vue';
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, watch } from 'vue';
 import { SELECT_INVOICE_TYPE } from '@/app/types/Constantes';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
@@ -103,6 +113,7 @@ import Totals from './Totals.vue';
 import Unit from './product/Unit.vue';
 import FreeText from './FreeText.vue';
 import ModalMiPyme from './ModalMiPyme.vue';
+import DrawerInvoiceComments from './DrawerInvoiceComments.vue';
 
 const { printPdf } = usePrinterPdfComposable();
 
@@ -128,16 +139,21 @@ const productTableColumns = [
         title: '#',
         dataIndex: 'row',
         key: 'row',
+        width: '5%',
+        align: 'center',
     },
     {
         title: 'Producto',
         dataIndex: 'product',
         key: 'product',
+        width: '22%',
+        align: 'left',
     },
     {
         title: 'Precio/U',
         dataIndex: 'unit',
         key: 'unit',
+        align: 'center',
     },
     {
         title: 'Cantidad',
@@ -168,6 +184,8 @@ const productTableColumns = [
         title: 'Acciones',
         dataIndex: 'actions',
         key: 'actions',
+        width: '5%',
+        align: 'center',
     },
 ];
 

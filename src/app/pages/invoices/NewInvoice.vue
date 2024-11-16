@@ -14,6 +14,11 @@ import { Main } from '../../styled';
 import FormInvoice from '../../components/invoice/FormInvoice.vue';
 import ModalSearchProduct from '@/app/components/invoice/ModalSearchProduct.vue';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
+import { useVisibleComposable } from '@/app/composables/visible/useVisibleComposable';
+import { useDrawerAddCustomerStore } from '@/app/store/panels/useDrawerAddCustomerStore';
+
+const { openDrawerAddCustomer } = useDrawerAddCustomerStore();
+const { openDrawerDatosCliente } = useVisibleComposable();
 const { openSearchProduct } = useInvoiceComposable();
 
 const openModal = (event: KeyboardEvent) => {
@@ -22,7 +27,30 @@ const openModal = (event: KeyboardEvent) => {
         openSearchProduct.value = true;
     }
 };
+
+const openDrawerCliente = (event: KeyboardEvent) => {
+    if (event.ctrlKey && event.code === 'F11') {
+        event.preventDefault();
+        openDrawerDatosCliente.value = true;
+
+        // Primero, hacemos clic en el botón
+    }
+};
+
+const drawerAddCustomer = (event: KeyboardEvent) => {
+    if (event.ctrlKey && event.code === 'F10') {
+        event.preventDefault();
+        openDrawerAddCustomer();
+
+        // Primero, hacemos clic en el botón
+    }
+};
+
 onMounted(() => {
-    window.addEventListener('keydown', openModal);
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+        openModal(event);
+        openDrawerCliente(event);
+        drawerAddCustomer(event);
+    });
 });
 </script>
