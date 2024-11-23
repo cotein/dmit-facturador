@@ -1,6 +1,9 @@
 import axios from 'axios';
-//axios.defaults.baseURL = 'https://api.dmit.ar';
-axios.defaults.baseURL = import.meta.env.VITE_API_REPORTS_URL;
+
+// Crear una instancia de Axios para la API de reportes
+const reportsAxios = axios.create({
+    baseURL: import.meta.env.VITE_API_REPORTS_URL, // Reemplaza con la URL base de la API de reportes
+});
 
 axios.interceptors.request.use(
     function (config) {
@@ -15,10 +18,10 @@ axios.interceptors.request.use(
 );
 
 export const fetchReport = async (url: string, fileName: string, data: any) => {
-    const urlHttp = `/${url}`;
+    const urlHttp = `${url}`;
 
     try {
-        const response = await axios.post(urlHttp, data, {
+        const response = await reportsAxios.post(urlHttp, data, {
             responseType: 'blob', // Configura la respuesta como un blob
         });
 
