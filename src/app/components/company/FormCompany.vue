@@ -20,7 +20,7 @@ import { storeToRefs } from 'pinia';
 import { showMessage } from '@/app/helpers/mesaages';
 import ASelectedBank from '@/app/components/banks/ASelectedBank.vue';
 import { onlyNumeric } from '@/app/helpers/onlyNumbers';
-import { FormInstance, Rule } from 'ant-design-vue/lib/form';
+import { FormInstance } from 'ant-design-vue/lib/form';
 
 const { sujeto } = storeToRefs(usePadronAfipStore());
 const { lastNameIsRequired, rules, companyForm, CompanyGetter } = useCompanyComposable();
@@ -95,15 +95,10 @@ const validateCBUs = () => {
     formIsValid.value = true; // Reset form validity
     companyForm.value.cbus.forEach((cbuItem: any, index: number) => {
         validateCBU(cbuItem.cbu, index);
-        console.log('object ' + cbuItem.cbu, index, formIsValid.value);
         validateAlias(cbuItem.alias, index);
-        console.log('object ' + cbuItem.alias, index, formIsValid.value);
         validateBankId(cbuItem.bank_id, index);
-        console.log('object ' + cbuItem.bank_id, index, formIsValid.value);
-        /* validateBank(cbuItem.bank, index);
-        console.log("object " + cbuItem, index, formIsValid.value); */
+        /* validateBank(cbuItem.bank, index);*/
         validateCtaCte(cbuItem.ctaCte, index);
-        console.log('object ' + cbuItem.ctaCte, index, formIsValid.value);
     });
 };
 
@@ -114,7 +109,7 @@ const loading = ref(false);
 const onSubmit = async () => {
     validateCBUs();
     if (!formIsValid.value) {
-        showMessage('error', 'Error al validar el formulario qqq', 3);
+        showMessage('error', 'Error al validar el formulario', 3);
         return;
     }
 

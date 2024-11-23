@@ -72,50 +72,50 @@ watch(
         const today = dayjs();
 
         switch (newVal) {
-        case 'today':
-            // Utiliza el método updateOptions en el componente apexchart referenciado
-            //chartOptions.value = { ...chartOptions, subtitle: { text: 'Hoy' } };
-            await getData(today.format('YYYY-MM-DD'), today.format('YYYY-MM-DD'));
-            chart.value?.updateOptions({
-                subtitle: {
-                    text: `Desde: ${today.format('DD-MM-YYYY')} hasta: ${today.format('DD-MM-YYYY')}`,
-                },
-            });
-            break;
-        case 'yesterday':
-            await getData(
-                today.subtract(1, 'day').format('YYYY-MM-DD'),
-                today.subtract(1, 'day').format('YYYY-MM-DD'),
-            );
-            chart.value?.updateOptions({
-                subtitle: {
-                    text: `Desde: ${today.subtract(1, 'day').format('DD-MM-YYYY')} hasta: ${today
-                        .subtract(1, 'day')
-                        .format('DD-MM-YYYY')}`,
-                },
-            });
-            break;
-        case 'week':
-            await getData(today.subtract(1, 'week').format('YYYY-MM-DD'), today.format('YYYY-MM-DD'));
-            chart.value?.updateOptions({
-                subtitle: {
-                    text: `Desde: ${today.subtract(1, 'week').format('DD-MM-YYYY')} hasta: ${today.format(
+            case 'today':
+                // Utiliza el método updateOptions en el componente apexchart referenciado
+                //chartOptions.value = { ...chartOptions, subtitle: { text: 'Hoy' } };
+                await getData(today.format('YYYY-MM-DD'), today.format('YYYY-MM-DD'));
+                chart.value?.updateOptions({
+                    subtitle: {
+                        text: `Desde: ${today.format('DD-MM-YYYY')} hasta: ${today.format('DD-MM-YYYY')}`,
+                    },
+                });
+                break;
+            case 'yesterday':
+                await getData(
+                    today.subtract(1, 'day').format('YYYY-MM-DD'),
+                    today.subtract(1, 'day').format('YYYY-MM-DD'),
+                );
+                chart.value?.updateOptions({
+                    subtitle: {
+                        text: `Desde: ${today.subtract(1, 'day').format('DD-MM-YYYY')} hasta: ${today
+                            .subtract(1, 'day')
+                            .format('DD-MM-YYYY')}`,
+                    },
+                });
+                break;
+            case 'week':
+                await getData(today.subtract(1, 'week').format('YYYY-MM-DD'), today.format('YYYY-MM-DD'));
+                chart.value?.updateOptions({
+                    subtitle: {
+                        text: `Desde: ${today.subtract(1, 'week').format('DD-MM-YYYY')} hasta: ${today.format(
                         'DD-MM-YYYY',
                     )}`,
-                },
-            });
-            break;
-        case 'month':
-            await getData(today.subtract(1, 'month').format('YYYY-MM-DD'), today.format('YYYY-MM-DD'));
-            chart.value?.updateOptions({
-                subtitle: {
-                    text: `Desde: ${today.subtract(1, 'month').format('DD-MM-YYYY')} hasta: ${today.format(
+                    },
+                });
+                break;
+            case 'month':
+                await getData(today.subtract(1, 'month').format('YYYY-MM-DD'), today.format('YYYY-MM-DD'));
+                chart.value?.updateOptions({
+                    subtitle: {
+                        text: `Desde: ${today.subtract(1, 'month').format('DD-MM-YYYY')} hasta: ${today.format(
                         'DD-MM-YYYY',
                     )}`,
-                },
-            });
+                    },
+                });
 
-            break;
+                break;
         }
     },
 );
@@ -331,7 +331,6 @@ const chartOptions = ref<ApexOptions>({
                         color: undefined,
                         offsetY: 16,
                         formatter: function (val) {
-                            console.log('🚀 ~ qqq:', val);
                             return formatCurrency(parseFloat(val));
                         },
                     },

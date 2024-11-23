@@ -14,8 +14,10 @@ axios.interceptors.request.use(
     },
 );
 
+const apiReportsUrl = import.meta.env.VITE_API_REPORTS_URL;
+
 export const fetchReport = async (url: string, fileName: string, data: any) => {
-    const urlHttp = `http://localhost:3000/api/reports/${url}`;
+    const urlHttp = `${apiReportsUrl}/${url}`;
 
     try {
         const response = await axios.post(urlHttp, data, {
@@ -24,11 +26,17 @@ export const fetchReport = async (url: string, fileName: string, data: any) => {
 
         // Crea un enlace temporal para descargar el archivo PDF
         const downloadUrl = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+
         const link = document.createElement('a');
+
         link.href = downloadUrl;
+
         link.setAttribute('download', fileName); // Nombre del archivo PDF
+
         document.body.appendChild(link);
+
         link.click();
+
         document.body.removeChild(link);
 
         return response.data;
