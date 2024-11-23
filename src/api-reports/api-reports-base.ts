@@ -1,6 +1,6 @@
 import axios from 'axios';
 //axios.defaults.baseURL = 'https://api.dmit.ar';
-axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
+axios.defaults.baseURL = import.meta.env.VITE_API_REPORTS_URL;
 
 axios.interceptors.request.use(
     function (config) {
@@ -14,10 +14,8 @@ axios.interceptors.request.use(
     },
 );
 
-const apiReportsUrl = import.meta.env.VITE_API_REPORTS_URL;
-
 export const fetchReport = async (url: string, fileName: string, data: any) => {
-    const urlHttp = `${apiReportsUrl}/${url}`;
+    const urlHttp = `/${url}`;
 
     try {
         const response = await axios.post(urlHttp, data, {
