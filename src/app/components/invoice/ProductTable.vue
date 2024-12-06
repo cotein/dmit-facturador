@@ -1,5 +1,5 @@
 <template>
-    <Main>
+    <div>
         <a-typography-title :level="5" v-if="loading">Generando comprobante de venta...</a-typography-title>
         <a-skeleton active :loading="loading" v-if="loading" />
         <a-skeleton active :loading="loading" v-if="loading" />
@@ -12,51 +12,101 @@
                     <span class="ninjadash-card-title-text"> Detalle </span>
                 </div>
             </template>
-            <TableWrapper>
-                <ProductTable>
-                    <div class="table-invoice table-responsive">
-                        <a-table
-                            :dataSource="invoiceTableData"
-                            :columns="productTableColumns"
-                            :pagination="false"
-                            :scroll="{ x: '1000px' }"
-                        >
-                            <template #headerCell="{ title }">
-                                <div style="text-align: center">{{ title }}</div>
-                            </template>
-                            <template #bodyCell="{ column, record, index }">
-                                <template v-if="column.key === 'product'">
-                                    <ProductItem :record="record" :index="index" />
-                                </template>
-                                <template v-if="column.key === 'unit'">
-                                    <Unit :record="record" :index="index" />
-                                </template>
-                                <template v-if="column.key === 'quantity'">
-                                    <Quantity :record="record" :index="index" />
-                                </template>
-                                <template v-if="column.key === 'iva'">
-                                    <Iva :record="record" :index="index" />
-                                </template>
-                                <template v-if="column.key === 'discount'">
-                                    <Discount :record="record" :index="index" />
-                                </template>
-                                <template v-if="column.key === 'subtotal'">
-                                    <Subtotal :record="record" :index="index" />
-                                </template>
-                                <template v-if="column.key === 'total'">
-                                    <Total :record="record" :index="index" />
-                                </template>
-                                <template v-if="column.key === 'actions'">
-                                    <Actions :record="record" :index="index" />
-                                </template>
-                            </template>
-                        </a-table>
-                    </div>
-                </ProductTable>
-            </TableWrapper>
-            <FreeText />
-            <DrawerInvoiceComments />
-            <Totals />
+            <a-row>
+                <a-col :span="24">
+                    <TableWrapper>
+                        <ProductTable>
+                            <div class="table-invoice table-responsive">
+                                <a-table
+                                    :dataSource="invoiceTableData"
+                                    :columns="www"
+                                    :pagination="false"
+                                    :scroll="{ x: '1000px' }"
+                                >
+                                    <template #headerCell="{ title }">
+                                        <div style="text-align: left">{{ title }}</div>
+                                    </template>
+                                    <template #bodyCell="{ column, record, index }">
+                                        <div>
+                                            <a-row align="middle" justify="left" :gutter="31">
+                                                <a-col :span="1">{{ index + 1 }}</a-col>
+                                                <a-col :span="8" class="col">
+                                                    <a-typography-text type="secondary">Producto</a-typography-text>
+                                                    <ProductItem :record="record" :index="index" class="mt5" />
+                                                </a-col>
+                                                <a-col :span="8">
+                                                    <a-typography-text type="secondary"
+                                                        >Precio unitario</a-typography-text
+                                                    >
+                                                    <Unit :record="record" :index="index" class="mt5"
+                                                /></a-col>
+                                            </a-row>
+                                            <a-row justify="left">
+                                                <a-col class="width" :span="4">
+                                                    <a-typography-text type="secondary">Cantidad</a-typography-text>
+                                                    <Quantity :record="record" :index="index" class="mt5"
+                                                /></a-col>
+                                                <a-col class="width" :span="4">
+                                                    <a-typography-text type="secondary">Iva</a-typography-text>
+                                                    <Iva :record="record" :index="index" class="mt5"
+                                                /></a-col>
+                                                <a-col class="width" :span="4"
+                                                    ><a-typography-text type="secondary">Descuento</a-typography-text>
+                                                    <Discount :record="record" :index="index" class="mt5"
+                                                /></a-col>
+                                                <a-col class="width" :span="4"
+                                                    ><a-typography-text type="secondary">Subtotal</a-typography-text>
+                                                    <Subtotal :record="record" :index="index" class="mt5"
+                                                /></a-col>
+                                                <a-col class="width" :span="4"
+                                                    ><a-typography-text type="secondary">Total</a-typography-text>
+                                                    <Total :record="record" :index="index" class="mt5"
+                                                /></a-col>
+                                                <a-col class="width" :span="4"
+                                                    ><a-typography-text type="secondary">Eliminar</a-typography-text>
+                                                    <Actions :record="record" :index="index" class="mt5"
+                                                /></a-col>
+                                            </a-row>
+                                        </div>
+
+                                        <!-- <template v-if="column.key === 'index'">
+                                            {{ index + 1 }}
+                                        </template>
+                                        <template v-if="column.key === 'product'">
+                                            <ProductItem :record="record" :index="index" />
+                                        </template>
+                                        <template v-if="column.key === 'unit'">
+                                            <Unit :record="record" :index="index" />
+                                        </template>
+                                        <template v-if="column.key === 'quantity'">
+                                            <Quantity :record="record" :index="index" />
+                                        </template>
+                                        <template v-if="column.key === 'iva'">
+                                            <Iva :record="record" :index="index" />
+                                        </template>
+                                        <template v-if="column.key === 'discount'">
+                                            <Discount :record="record" :index="index" />
+                                        </template>
+                                        <template v-if="column.key === 'subtotal'">
+                                            <Subtotal :record="record" :index="index" />
+                                        </template>
+                                        <template v-if="column.key === 'total'">
+                                            <Total :record="record" :index="index" />
+                                        </template>
+                                        <template v-if="column.key === 'actions'">
+                                            <Actions :record="record" :index="index" />
+                                        </template> -->
+                                    </template>
+                                </a-table>
+                            </div>
+                        </ProductTable>
+                    </TableWrapper>
+                    <FreeText />
+                    <DrawerInvoiceComments />
+                    <Totals />
+                </a-col>
+            </a-row>
+
             <a-row justify="end">
                 <a-col :lg="12" :md="18" :sm="24" :offset="0">
                     <InvoiceAction>
@@ -86,7 +136,7 @@
         </Cards>
         <Html2CanvasPdf />
         <ModalMiPyme />
-    </Main>
+    </div>
 </template>
 
 <script setup lang="tsx">
@@ -134,19 +184,27 @@ const { CompanyGetter } = useCompanyComposable();
 
 const loading = ref<boolean>(false);
 
+const www = [
+    {
+        title: 'Productos a facturar',
+        dataIndex: 'index',
+        key: 'index',
+        width: '100%',
+    },
+];
 const productTableColumns = [
     {
         title: '#',
-        dataIndex: 'row',
-        key: 'row',
-        width: '5%',
+        dataIndex: 'index',
+        key: 'index',
+        width: '1%',
         align: 'center',
     },
     {
         title: 'Producto',
         dataIndex: 'product',
         key: 'product',
-        width: '22%',
+        width: '20%',
         align: 'left',
     },
     {
@@ -159,6 +217,7 @@ const productTableColumns = [
         title: 'Cantidad',
         dataIndex: 'quantity',
         key: 'quantity',
+        width: '10%',
     },
     {
         title: 'Iva',
@@ -288,5 +347,15 @@ onUnmounted(() => {
         font-size: 12px;
         padding: 8px;
     }
+}
+.col {
+    text-align: left !important;
+    padding: 1rem !important;
+}
+.width {
+    text-align: center;
+}
+.mt5 {
+    margin-top: 5px;
 }
 </style>

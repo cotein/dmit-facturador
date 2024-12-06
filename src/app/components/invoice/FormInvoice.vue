@@ -77,13 +77,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <Main>
+    <div>
         <DrawerPtoVta />
         <a-row :gutter="30">
-            <a-col :md="6">
+            <a-col :md="8" :xl="8">
                 <div :style="{ margin: '10px 0px' }">CTRL + F11 para abrir datos del cliente</div>
             </a-col>
-            <a-col :md="6">
+            <a-col :md="8" :xl="8">
                 <div :style="{ margin: '10px 0px' }">CTRL + F10 para ingresar cliente nuevo</div>
             </a-col>
         </a-row>
@@ -98,10 +98,10 @@ onUnmounted(() => {
                     <sdCards headless>
                         <InvoiceHeader>
                             <a-row>
-                                <a-col :sm="12" :xs="24">
+                                <a-col :sm="12" :xs="24" :xl="12">
                                     <InvoiceConfig />
                                 </a-col>
-                                <a-col :sm="12" :xs="24">
+                                <a-col :sm="12" :xs="24" :xl="12">
                                     <div>
                                         <address class="invoice-info" v-if="CompanyGetter">
                                             {{ CompanyGetter.name }}
@@ -197,7 +197,7 @@ onUnmounted(() => {
                 </a-col>
             </a-row>
         </Cards>
-    </Main>
+    </div>
 </template>
 <style scoped>
 /* Para tablets en orientación landscape y desktops con el viewport menor a 1200px */

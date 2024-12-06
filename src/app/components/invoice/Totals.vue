@@ -1,6 +1,6 @@
 <template>
-    <a-row justify="space-around">
-        <a-col :xxl="20">
+    <a-row justify="end" class="no-padding-margin">
+        <a-col :xxl="6" :xl="6">
             <div class="switch-open-editor">
                 <!-- <a-switch
 					v-model:checked="openEditor"
@@ -19,7 +19,7 @@
 				></quill-editor> -->
             </div>
         </a-col>
-        <a-col :xxl="4" :xl="5" :sm="8" :xs="14">
+        <a-col :xxl="6" :xl="5" :sm="8" :xs="14">
             <OrderSummary>
                 <div class="invoice-summary-inner">
                     <ul class="summary-list">
@@ -125,5 +125,9 @@ watch(openEditor, (value) => {
 }
 .switch-open-editor {
     padding: 15px;
+}
+.no-padding-margin {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
 }
 </style>

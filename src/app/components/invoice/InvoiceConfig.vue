@@ -1,6 +1,6 @@
 <template>
     <a-row :gutter="30">
-        <a-col :sm="24" :lg="6" :xs="24">
+        <a-col :sm="24" :lg="6" :xs="24" :xl="12">
             <a-button type="primary" @click="showDrawer">
                 <template #icon><PlusOutlined /></template>
                 Datos del Cliente
