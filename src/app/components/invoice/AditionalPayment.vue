@@ -49,6 +49,7 @@ const PaymentTypePercentageInfo = computed(() => {
     margin: 0.5rem;
     padding-left: 1rem;
     display: flex;
+    font-size: medium;
 }
 .sale--condition--info {
     margin: 0 0.5rem;

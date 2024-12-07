@@ -2,7 +2,7 @@
     <div>
         <sdPageHeader title="Mí Compañía" class="ninjadash-page-header-main"> </sdPageHeader>
 
-        <Main>
+        <Main style="padding-top: 1rem">
             <a-row :gutter="25">
                 <a-col :md="12" :sm="24" :xs="24">
                     <TotalInvoiced />
