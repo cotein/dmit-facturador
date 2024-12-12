@@ -1,6 +1,7 @@
 # Use the node image from official Docker Hub
 FROM node:20.15.0 as build-stage
 
+RUN mkdir /app
 # set the working directory
 WORKDIR /app
 
@@ -26,9 +27,15 @@ RUN npm run build-only
 # use the lighweight Nignx image from the previus state to the nginx container
 FROM nginx:stable-alpine as production-stage
 
+# Set working directory to nginx asset directory
+WORKDIR /usr/share/nginx/html
+
+# Remove default nginx static assets
+RUN rm -rf ./*
+
 # Copy the build application from the previos state to the Nginx container
 # her we can see the path of the build application and the path where we want to copy it
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY --from=build-stage /app/dist .
 
 # Copy the nginx configuration file
 # here should be the same name as the nginx configuration file in the project
@@ -38,4 +45,4 @@ COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
 # start nginx to server the application
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
