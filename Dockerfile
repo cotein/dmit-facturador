@@ -42,7 +42,7 @@ COPY --from=build-stage /app/dist .
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Expose the port 80
-EXPOSE 80
+EXPOSE 8889
 
 # start nginx to server the application
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
