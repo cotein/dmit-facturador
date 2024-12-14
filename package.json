@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "vite --mode development",
+        "build:dev": "DISABLE_ESLINT_PLUGIN=true vite build --mode development",
         "build": "run-p type-check build-only",
         "preview": "vite preview",
         "build-only": "DISABLE_ESLINT_PLUGIN=true vite build --mode production",

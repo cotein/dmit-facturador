@@ -188,4 +188,3 @@ const login = async () => {
         </a-col>
     </a-row>
 </template>
-@/app/store/user/user-store @/app/types/OauthToken@/app/types/User

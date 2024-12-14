@@ -107,7 +107,7 @@ const emit = defineEmits(['submitCompanyForm']);
 const loading = ref(false);
 /**METHODS */
 const onSubmit = async () => {
-    validateCBUs();
+    //validateCBUs();
     if (!formIsValid.value) {
         showMessage('error', 'Error al validar el formulario', 3);
         return;

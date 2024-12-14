@@ -2,7 +2,7 @@ import type { UserToken } from '@/app/types/User';
 import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
-//axios.defaults.baseURL = 'https://api.dmit.ar';
+//axios.defaults.baseURL = 'http://localhost:7000';
 axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
 
 const userStore = useUserStore();

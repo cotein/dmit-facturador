@@ -7,14 +7,22 @@
             :destroyOnClose="true"
             :closable="false"
             :maskClosable="false"
-            :disabled="loading || !CompanyGetter?.cbus || CompanyGetter.cbus[0].cbu == ''"
-            @ok="generateMiPymeInvoice"
+            :disabled="
+                loading || !CompanyGetter?.cbus || (CompanyGetter?.cbus.length && CompanyGetter.cbus[0].cbu == '')
+            "
+            @ok="handleOk"
             :confirmLoading="loading"
             :bodyStyle="{
                 height: '8rem',
             }"
+            :cancelButtonProps="{
+                disabled: true,
+            }"
         >
-            <a-row :gutter="16" v-if="CompanyGetter?.cbus && CompanyGetter.cbus[0].cbu != ''">
+            <a-row
+                :gutter="16"
+                v-if="CompanyGetter?.cbus && CompanyGetter?.cbus.length && CompanyGetter.cbus[0].cbu != ''"
+            >
                 <a-col :span="12">
                     <a-radio-group v-model:value="transferType" @change="setOptional">
                         <a-radio :value="'SCA'">TRANSFERENCIA AL SISTEMA DE CIRCULACION ABIERTA</a-radio>
@@ -33,7 +41,10 @@
                 </a-col>
             </a-row>
             <a-row :gutter="16" v-else>
-                <a-col :span="12"> No se encuentra configurado el CBU de la empresa </a-col>
+                <a-col :span="12">
+                    <p>No se encuentra configurado el CBU de la empresa</p>
+                    <p>Debe editar la compañía para agregar una cuenta registrada en ARCA</p>
+                </a-col>
             </a-row>
         </a-modal>
     </div>
@@ -81,6 +92,24 @@ const setOptional = (e: Event) => {
 
     FECAESolicitarObject.value!.FECAEDetRequest.Opcionales = [...optional, ...optional1];
 };
+
+const handleOk = () => {
+    if (CompanyGetter) {
+        if (CompanyGetter && CompanyGetter.value && CompanyGetter.value.cbus.length === 0) {
+            closeModal();
+            invoice.value.isMiPyme = false;
+            console.log('🚀 ~ handleOk ~ closeModal:');
+        } else {
+            generateMiPymeInvoice();
+            console.log('🚀 ~ handleOk ~ generateMiPymeInvoice:');
+        }
+    }
+};
+
+const closeModal = () => {
+    openModalMiPyme.value = false;
+};
+
 const servicesDateFchVtoPago = (date: any) => {
     let day = null;
 

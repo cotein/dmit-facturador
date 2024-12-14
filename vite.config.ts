@@ -59,5 +59,5 @@ export default defineConfig({
             ? process.env.VITE_URL_BASE_API
                 ? process.env.VITE_URL_BASE_API
                 : process.env.VITE_URL_BASE_API
-            : 'http://localhost:8001',
+            : 'http://localhost:7000',
 });
