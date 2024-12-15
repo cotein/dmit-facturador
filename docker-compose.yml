@@ -19,6 +19,8 @@ services:
             - 8889:80
         depends_on:
             - dmit-vue-app
+        networks:
+            - dmit_network
 
 networks:
     dmit_network:
