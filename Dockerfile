@@ -1,48 +1,35 @@
-# Use the node image from official Docker Hub
-FROM node:20.15.0 as build-stage
+# Utiliza una imagen base de Node.js para construir la aplicación
+FROM node:20.15.0 AS build-stage
 
-RUN mkdir /app
-# set the working directory
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copy the working directory in the container
+# Copia los archivos package.json y package-lock.json
 COPY package*.json ./
 
-ENV NODE_OPTIONS="--max-old-space-size=4096"
-
-# Update npm to the latest version
-RUN npm install -g npm@10.9.2
-
-# Install the project dependecies
-# if you npm then npm install
+# Instala las dependencias
 RUN npm install
 
-# Copy the rest of the project files to the container
+# Copia el resto del código de la aplicación
 COPY . .
 
-#Build the Vue.js application to the production mode to dist folder
-# here also if you use npm then npm run build
+# Construye la aplicación para producción
 RUN npm run build-only
 
-# use the lighweight Nignx image from the previus state to the nginx container
-FROM nginx:stable-alpine as production-stage
+# Utiliza una imagen base de Node.js para servir la aplicación
+FROM node:20.15.0 AS production-stage
 
-# Set working directory to nginx asset directory
-WORKDIR /usr/share/nginx/html
+# Instala http-server globalmente
+RUN npm install -g http-server
 
-# Remove default nginx static assets
-RUN rm -rf ./*
+# Establece el directorio de trabajo
+WORKDIR /app
 
-# Copy the build application from the previos state to the Nginx container
-# her we can see the path of the build application and the path where we want to copy it
-COPY --from=build-stage /app/dist .
+# Copia los archivos construidos desde la etapa de construcción
+COPY --from=build-stage /app/dist /app
 
-# Copy the nginx configuration file
-# here should be the same name as the nginx configuration file in the project
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+# Expone el puerto 80
+EXPOSE 80
 
-# Expose the port 80
-EXPOSE 8889
-
-# start nginx to server the application
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+# Comando para ejecutar http-server
+CMD ["http-server", "-p", "80"]
