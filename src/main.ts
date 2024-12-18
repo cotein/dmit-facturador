@@ -21,8 +21,6 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
 
-const pinia = createPinia();
-
 app.component('SearchOutlined', SearchOutlined);
 
 app.component('NavTitle', NavTitle);
@@ -52,11 +50,12 @@ app.config.globalProperties.$filters = {
 app.config.globalProperties.$environment = import.meta.env;
 
 app.use(PerfectScrollbarPlugin);
-app.use(pinia);
 app.use(VueQueryPlugin);
 app.use(router);
 
 app.component('QuillEditor', QuillEditor);
+app.use(createPinia());
+
 app.mount('#app');
 
 if (import.meta.env.MODE === 'DEVELOPMENT') {
