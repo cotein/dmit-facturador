@@ -4,6 +4,9 @@ FROM node:20.15.0 AS build-stage
 # Establece el directorio de trabajo
 WORKDIR /app
 
+# Copia los archivos de entorno
+COPY .env.production .env.production
+
 # Copia los archivos package.json y package-lock.json
 COPY package*.json ./
 
