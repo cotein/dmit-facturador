@@ -182,7 +182,7 @@ const login = async () => {
                 <div class="ninjadash-authentication-bottom">
                     <p>¿No tienes una cuenta?<router-link to="/auth/register">Registrarse</router-link></p>
                     <br />
-                    <p>Ir al inicio<router-link :to="{ name: 'Home' }">Inicio</router-link></p>
+                    <!-- <p>Ir al inicio<router-link :to="{ name: 'Home' }">Inicio</router-link></p> -->
                 </div>
             </AuthWrapper>
         </a-col>

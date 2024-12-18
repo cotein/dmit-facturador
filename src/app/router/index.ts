@@ -9,10 +9,22 @@ import { useOpenCompanyPanelStore } from '@/app/store/panels/useOpenCompanyPanel
 import { useAddNewCompanyPanelStore } from '@/app/store/panels/useAddNewCompanyPanelStore';
 
 const routes: Array<RouteRecordRaw> = [
-    {
+    /* {
         name: 'Home',
         path: '/',
         component: () => import('@/app/layout/LandingLayout.vue'),
+        meta: { auth: false },
+    }, */
+    {
+        name: 'Home',
+        path: '/',
+        component: () => import('@/app/layout/AuthLayout.vue'),
+        children: [
+            {
+                path: '',
+                component: () => import('@/app/pages/authentication/SignIn.vue'),
+            },
+        ],
         meta: { auth: false },
     },
     {

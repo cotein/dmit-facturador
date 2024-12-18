@@ -1,0 +1,15 @@
+version: '3'
+services:
+    dmit-vue-app:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        container_name: dmit-vue-app
+        ports:
+            - 3131:80
+        networks:
+            - dmit_network
+
+networks:
+    dmit_network:
+        external: true
