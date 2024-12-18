@@ -3,13 +3,13 @@ import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
 //
-if (import.meta.env.MODE === 'DEVELOPMENT') {
-    axios.defaults.baseURL = 'http://localhost:7000';
+if (import.meta.env.VITE_MODE === 'development') {
+    axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
     console.log('🚀 ~ axios.defaults.baseURL:', axios.defaults.baseURL);
 }
 
-if (import.meta.env.MODE === 'PRODUCTION') {
-    axios.defaults.baseURL = 'https://api.dmit.ar';
+if (import.meta.env.VITE_MODE === 'production') {
+    axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
     console.log('🚀 ~ axios.defaults.baseURL:', axios.defaults.baseURL);
 }
 const userStore = useUserStore();
