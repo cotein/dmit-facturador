@@ -181,9 +181,9 @@ watch(isSuccess, () => {
                     </a-form>
                 </div>
                 <div class="ninjadash-authentication-bottom">
-                    <p>¿Ya posee una cuenta con nosotros?<router-link to="/auth/login">Iniciar sesión</router-link></p>
+                    <p>¿Ya posee una cuenta con nosotros?<router-link to="/">Iniciar sesión</router-link></p>
                     <br />
-                    <p>Ir al inicio<router-link :to="{ name: 'Home' }">Inicio</router-link></p>
+                    <!-- <p>Ir al inicio<router-link :to="{ name: 'Home' }">Inicio</router-link></p> -->
                 </div>
             </AuthWrapper>
         </a-col>
