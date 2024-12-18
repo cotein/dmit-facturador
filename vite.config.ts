@@ -36,6 +36,24 @@ export default defineConfig({
             hook: 'writeBundle', // ensure the files are copied before the bundle is written
         }),
     ],
+    build: {
+        minify: 'terser', // Usa Terser para minificar el código
+        terserOptions: {
+            compress: {
+                drop_console: true, // Elimina los console.log en producción
+            },
+        },
+        chunkSizeWarningLimit: 500, // Ajusta el límite de advertencia de tamaño de chunk
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        return id.toString().split('node_modules/')[1].split('/')[0].toString();
+                    }
+                },
+            },
+        },
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
