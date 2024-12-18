@@ -3,15 +3,15 @@ import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
 //
-if (import.meta.env.MODE === 'development') {
+if (import.meta.env.MODE === 'DEVELOPMENT') {
     axios.defaults.baseURL = 'http://localhost:7000';
     console.log('🚀 ~ axios.defaults.baseURL:', axios.defaults.baseURL);
 }
-if (import.meta.env.MODE === 'production') {
+
+if (import.meta.env.MODE === 'PRODUCTION') {
     axios.defaults.baseURL = 'https://api.dmit.ar';
     console.log('🚀 ~ axios.defaults.baseURL:', axios.defaults.baseURL);
 }
-
 const userStore = useUserStore();
 
 axios.interceptors.request.use(

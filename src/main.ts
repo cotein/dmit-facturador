@@ -59,8 +59,8 @@ app.use(router);
 app.component('QuillEditor', QuillEditor);
 app.mount('#app');
 
-if (import.meta.env.MODE === 'development') {
+if (import.meta.env.MODE === 'DEVELOPMENT') {
     console.log('🚀 ~ development:', 'development');
-} else if (import.meta.env.MODE === 'production') {
-    console.log('🚀 ~ production:', 'production');
+} else if (import.meta.env.MODE === 'PRODUCTION') {
+    console.log('🚀 ~ production:', 'PRODUCTION');
 }
