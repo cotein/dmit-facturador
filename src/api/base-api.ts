@@ -2,16 +2,9 @@ import type { UserToken } from '@/app/types/User';
 import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
-//
-if (import.meta.env.VITE_MODE === 'development') {
-    axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
-    console.log('🚀 ~ axios.defaults.baseURL:', axios.defaults.baseURL);
-}
+axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
+console.log('🚀 ~ import.meta.env.VITE_URL_BASE_API:', import.meta.env.VITE_URL_BASE_API);
 
-if (import.meta.env.VITE_MODE === 'production') {
-    axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
-    console.log('🚀 ~ axios.defaults.baseURL:', axios.defaults.baseURL);
-}
 const userStore = useUserStore();
 
 axios.interceptors.request.use(
