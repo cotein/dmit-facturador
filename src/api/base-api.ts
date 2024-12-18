@@ -2,8 +2,15 @@ import type { UserToken } from '@/app/types/User';
 import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
-//axios.defaults.baseURL = 'http://localhost:7000';
-axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
+//
+if (import.meta.env.MODE === 'development') {
+    axios.defaults.baseURL = 'http://localhost:7000';
+    console.log('🚀 ~ axios.defaults.baseURL:', axios.defaults.baseURL);
+}
+if (import.meta.env.MODE === 'production') {
+    axios.defaults.baseURL = 'https://api.dmit.ar';
+    console.log('🚀 ~ axios.defaults.baseURL:', axios.defaults.baseURL);
+}
 
 const userStore = useUserStore();
 
