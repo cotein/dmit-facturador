@@ -3,7 +3,6 @@ import { useUserStore } from '@/app/store/user/user-store';
 import axios from 'axios';
 
 axios.defaults.baseURL = import.meta.env.VITE_URL_BASE_API;
-console.log('🚀 ~ import.meta.env.VITE_URL_BASE_API:', import.meta.env.VITE_URL_BASE_API);
 
 const userStore = useUserStore();
 
