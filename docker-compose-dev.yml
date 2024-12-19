@@ -3,7 +3,7 @@ services:
     dmit-vue-app:
         build:
             context: .
-            dockerfile: Dockerfile.dev
+            dockerfile: Dockerfile__
         container_name: dmit-vue-app
         ports:
             - 3131:80
