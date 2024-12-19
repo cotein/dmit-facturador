@@ -1,38 +1,51 @@
-# Utiliza una imagen base de Node.js para construir la aplicación
-FROM node:20.15.0 AS build-stage
+# Use the node image from official Docker Hub
+FROM node:20.15.0 as build-stage
 
-# Establece el directorio de trabajo
+RUN mkdir /app
+# set the working directory
 WORKDIR /app
 
 # Copia los archivos de entorno
 COPY .env.production .env.production
 
-# Copia los archivos package.json y package-lock.json
+# Copy the working directory in the container
 COPY package*.json ./
 
-# Instala las dependencias
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+# Update npm to the latest version
+RUN npm install -g npm@10.9.2
+
+# Install the project dependecies
+# if you npm then npm install
 RUN npm install
 
-# Copia el resto del código de la aplicación
+# Copy the rest of the project files to the container
 COPY . .
 
-# Construye la aplicación para producción
+#Build the Vue.js application to the production mode to dist folder
+# here also if you use npm then npm run build
 RUN npm run build-only
 
-# Utiliza una imagen base de Node.js para servir la aplicación
-FROM node:20.15.0 AS production-stage
+# use the lighweight Nignx image from the previus state to the nginx container
+FROM nginx:stable-alpine as production-stage
 
-# Instala http-server globalmente
-RUN npm install -g http-server
+# Set working directory to nginx asset directory
+WORKDIR /usr/share/nginx/html
 
-# Establece el directorio de trabajo
-WORKDIR /app
+# Remove default nginx static assets
+RUN rm -rf ./*
 
-# Copia los archivos construidos desde la etapa de construcción
-COPY --from=build-stage /app/dist /app
+# Copy the build application from the previos state to the Nginx container
+# her we can see the path of the build application and the path where we want to copy it
+COPY --from=build-stage /app/dist .
 
-# Expone el puerto 80
-EXPOSE 80
+# Copy the nginx configuration file
+# here should be the same name as the nginx configuration file in the project
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Comando para ejecutar http-server
-CMD ["http-server", "-p", "80"]
+# Expose the port 80
+EXPOSE 3131
+
+# start nginx to server the application
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
