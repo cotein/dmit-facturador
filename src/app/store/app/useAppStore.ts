@@ -14,7 +14,7 @@ export const useAppStore = defineStore('store-base', () => {
         mainTemplate: 'lightMode',
     };
 
-    const state = ref({
+    const state = ref<any>({
         data: config.darkMode,
         rtlData: config.rtl,
         topMenu: config.topMenu,

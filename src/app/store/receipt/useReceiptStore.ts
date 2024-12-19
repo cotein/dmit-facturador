@@ -11,11 +11,11 @@ export const useReceiptStore = defineStore('receipt', () => {
         disabled: boolean;
     };
 
-    const drawerVisible = ref(false);
+    const drawerVisible = ref<boolean>(false);
 
-    const enableButtonOpenDocumentCancelationDrawer = ref(false);
+    const enableButtonOpenDocumentCancelationDrawer = ref<boolean>(false);
 
-    const isEditingDocumentCancelation = ref(false);
+    const isEditingDocumentCancelation = ref<boolean>(false);
 
     const sourceData = ref<SourceData[]>([]);
 

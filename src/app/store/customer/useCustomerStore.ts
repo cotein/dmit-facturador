@@ -8,7 +8,7 @@ import { computed, reactive, ref, type UnwrapRef } from 'vue';
 export const useCustomerStore = defineStore('customer', () => {
     const lastNameIsRequired = ref<boolean>(true);
 
-    const customers = ref([]);
+    const customers = ref<any>([]);
 
     const setCustomers = (value: any) => (customers.value = value);
 
