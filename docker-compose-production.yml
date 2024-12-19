@@ -6,7 +6,7 @@ services:
             dockerfile: Dockerfile
         container_name: dmit-vue-app
         ports:
-            - 8888:80
+            - 3131:80
         networks:
             - dmit_network
 
