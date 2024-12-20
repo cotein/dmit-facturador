@@ -427,7 +427,10 @@ export class A extends Invoice {
 
         await this.printCommentImage(this.typeA);
 
-        this.pdf.save(`${this.customer?.cuit} ${this.voucher?.pto_vta}-${this.voucher?.cbte_desde}.pdf`);
+        const customer_name = `${this.customer?.name} ${this.customer?.last_name ? this.customer?.last_name : ''}`;
+        this.pdf.save(
+            `${customer_name} - ${this.customer?.cuit} ${this.voucher?.name} ${this.voucher?.pto_vta}-${this.voucher?.cbte_desde}.pdf`,
+        );
 
         this.cleanTempDivsWithCommentsToConverterImages();
     }
