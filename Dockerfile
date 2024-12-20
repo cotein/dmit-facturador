@@ -25,7 +25,7 @@ COPY . .
 
 #Build the Vue.js application to the production mode to dist folder
 # here also if you use npm then npm run build
-RUN npm run build-only
+RUN npm run build:dev
 
 # use the lighweight Nignx image from the previus state to the nginx container
 FROM nginx:stable-alpine as production-stage
