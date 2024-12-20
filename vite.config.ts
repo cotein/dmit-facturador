@@ -36,7 +36,7 @@ export default defineConfig({
             hook: 'writeBundle', // ensure the files are copied before the bundle is written
         }),
     ],
-    build: {
+    /*  build: {
         minify: 'terser', // Usa Terser para minificar el código
         terserOptions: {
             compress: {
@@ -53,7 +53,7 @@ export default defineConfig({
                 },
             },
         },
-    },
+    }, */
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
