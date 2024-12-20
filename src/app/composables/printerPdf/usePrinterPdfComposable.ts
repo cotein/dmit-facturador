@@ -13,14 +13,22 @@ export const usePrinterPdfComposable = () => {
         case 2:
         case 3:
         case 92:
+        case 93:
+        case 94:
             return A;
         case 6:
         case 7:
         case 8:
+        case 95:
+        case 96:
+        case 97:
             return B;
         case 11:
         case 12:
         case 13:
+        case 98:
+        case 99:
+        case 100:
             return C;
         default:
             throw new Error(`Tipo de factura no válido: ${CbteTipo}`);
