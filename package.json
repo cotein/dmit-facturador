@@ -49,6 +49,7 @@
         "pinia": "^2.3.0",
         "qrcode": "^1.5.3",
         "qrious": "^4.0.2",
+        "resend": "^4.0.1",
         "rollup-plugin-copy": "^3.5.0",
         "svgmap": "^2.10.1",
         "swiper": "8.4.5",

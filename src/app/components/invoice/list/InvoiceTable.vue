@@ -6,6 +6,7 @@
                     <div class="ninjadash-card-title-wrap">
                         <span class="ninjadash-card-title-text"> Ventas </span>
                         <DrawerNotaCredito :invoice-list="invoiceForNotaCredito" />
+                        <DrawerSendEmail />
                     </div>
                 </template>
                 <template #button>
@@ -181,6 +182,7 @@ import SearchCustomer from '../../customer/SearchCustomer.vue';
 import ShowSomeStringData from '../../shared/ShowSomeStringData.vue';
 import type { InvoiceList } from '@/app/types/Invoice';
 import { ColumnProps } from 'ant-design-vue/lib/table';
+import DrawerSendEmail from '@/app/componentsBase/email/DrawerSendEmail.vue';
 
 const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();

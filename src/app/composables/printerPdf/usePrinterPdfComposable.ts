@@ -7,6 +7,7 @@ import { useCompanyComposable } from '../company/useCompanyComposable';
 
 export const usePrinterPdfComposable = () => {
     const { CompanyGetter } = useCompanyComposable();
+
     const getPdfInvoice = (CbteTipo: number): any => {
         switch (CbteTipo) {
         case 1:
@@ -35,10 +36,10 @@ export const usePrinterPdfComposable = () => {
         }
     };
 
-    const printPdf = (invoice: InvoiceList) => {
+    const createInvoicePdf = (invoice: InvoiceList) => {
         const invoicePdf = getPdfInvoice(invoice.voucher!.voucher_type);
 
-        const pdf = new invoicePdf(
+        return new invoicePdf(
             invoice.company,
             invoice.customer,
             invoice.voucher,
@@ -46,11 +47,20 @@ export const usePrinterPdfComposable = () => {
             invoice.comment,
             CompanyGetter.value?.logo_base64,
         ) as Invoice;
+    };
 
+    const printPdf = (invoice: InvoiceList) => {
+        const pdf = createInvoicePdf(invoice);
         pdf.print();
+    };
+
+    const getPdfFile = async (invoice: InvoiceList) => {
+        const pdf = createInvoicePdf(invoice);
+        return await pdf.getFilePdf();
     };
 
     return {
         printPdf,
+        getPdfFile,
     };
 };

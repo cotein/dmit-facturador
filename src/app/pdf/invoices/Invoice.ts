@@ -746,4 +746,5 @@ export abstract class Invoice extends Pdf {
     abstract printInternalVerticalsLines(yCoordinate: number): void;
     abstract printProducts(pp: any): void;
     abstract printTotals(): void;
+    abstract getFilePdf(): any;
 }

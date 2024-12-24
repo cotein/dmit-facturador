@@ -271,7 +271,6 @@ export class A extends Invoice {
             } else {
                 acc[index].total += parseFloat(item.percep_iibb_import);
             }
-            console.log('🚀 ~ A ~ coniiiibbbbbb ~ acc:', acc);
             return acc;
         }, []);
 
@@ -287,11 +286,8 @@ export class A extends Invoice {
                 acc[index].total += parseFloat(item.percep_iva_import);
             }
 
-            console.log('🚀 ~ A ~ constpercep_iva=this.items!.reduce ~ item:', item);
-            console.log('🚀 ~ A ~ constpercep_iva=this.items!.reduce ~ acc:', acc);
             return acc;
         }, []);
-        console.log('🚀 ~ A ~ constpercep_iva=this.items!.reduce ~ percep_iva:', percep_iva);
 
         this.height_position = this.margin_bottom - 40;
 
@@ -433,5 +429,59 @@ export class A extends Invoice {
         );
 
         this.cleanTempDivsWithCommentsToConverterImages();
+    }
+
+    async getFilePdf(): Promise<any> {
+        this.printStructure(this.typeA);
+
+        this.printProducts();
+
+        this.printHorizontalLineAfterLastProduct();
+
+        if (this.comment != '' && this.comment != null) {
+            await this.convertCommentsToImage(this.comment);
+        }
+
+        this.printPageNumber(this.typeA);
+
+        this.cae(this.voucher!.cae, this.voucher!.cae_fch_vto);
+
+        this.printAfipQr(
+            1,
+            dayjs(this.voucher!.cbte_fch).format('YYYY-MM-DD'),
+            parseInt(this.company!.cuit, 10),
+            parseInt(this.voucher!.pto_vta, 10),
+            this.voucher!.voucher_type,
+            parseInt(this.voucher!.cbte_desde, 10),
+            this.voucher!.total,
+            'PES',
+            1,
+            this.customer!.afipDocTipo,
+            parseInt(this.customer!.cuit, 10),
+            'E',
+            parseInt(this.voucher!.cae, 10),
+        );
+
+        this.afipLogo();
+
+        this.afipLegend();
+
+        if (
+            this.company?.afipInscription_id === AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO &&
+            (this.customer?.afipInscription_id === AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO ||
+                this.customer?.afipInscription_id === AFIP_INSCRIPTION.MONOTRIBUTISTA_SOCIAL)
+        ) {
+            this.afipLegendRItoMonotributo();
+        }
+
+        await this.printCommentImage(this.typeA);
+
+        const customer_name = `${this.customer?.name} ${this.customer?.last_name ? this.customer?.last_name : ''}`;
+        const fileName = `${customer_name} - ${this.customer?.cuit} ${this.voucher?.name} ${this.voucher?.pto_vta}-${this.voucher?.cbte_desde}.pdf`;
+        const file = this.pdf.output('datauristring', { filename: fileName });
+
+        this.cleanTempDivsWithCommentsToConverterImages();
+
+        return Promise.resolve(file);
     }
 }
