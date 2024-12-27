@@ -272,4 +272,50 @@ export class C extends Invoice {
 
         this.cleanTempDivsWithCommentsToConverterImages();
     }
+
+    async getFilePdf(): Promise<any> {
+        this.printStructure(this.typeC);
+
+        this.printProducts();
+
+        this.printHorizontalLineAfterLastProduct();
+
+        if (this.comment != '' && this.comment != null) {
+            await this.convertCommentsToImage(this.comment);
+        }
+
+        this.printPageNumber(this.typeC);
+
+        this.cae(this.voucher!.cae, this.voucher!.cae_fch_vto);
+
+        this.printAfipQr(
+            1,
+            dayjs(this.voucher!.cbte_fch).format('YYYY-MM-DD'),
+            parseInt(this.company!.cuit, 10),
+            parseInt(this.voucher!.pto_vta, 10),
+            this.voucher!.voucher_type,
+            parseInt(this.voucher!.cbte_desde, 10),
+            this.voucher!.total,
+            'PES',
+            1,
+            this.customer!.afipDocTipo,
+            parseInt(this.customer!.cuit, 10),
+            'E',
+            parseInt(this.voucher!.cae, 10),
+        );
+
+        this.afipLogo();
+
+        this.afipLegend();
+
+        await this.printCommentImage(this.typeC);
+
+        const customer_name = `${this.customer?.name} ${this.customer?.last_name ? this.customer?.last_name : ''}`;
+        const fileName = `${customer_name} - ${this.customer?.cuit} ${this.voucher?.name} ${this.voucher?.pto_vta}-${this.voucher?.cbte_desde}.pdf`;
+        const file = this.pdf.output('datauristring', { filename: fileName });
+
+        this.cleanTempDivsWithCommentsToConverterImages();
+
+        return Promise.resolve(file);
+    }
 }
