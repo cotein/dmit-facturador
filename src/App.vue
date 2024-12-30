@@ -4,6 +4,8 @@ import { ThemeProvider } from 'vue3-styled-components';
 import { themeColor } from './config/theme/themeVariables';
 import { computed, onMounted } from 'vue';
 import { useAppStore } from './app/store/app/useAppStore';
+import { useStoreCompany } from './app/store/company/store-company';
+import { useUserStore } from './app/store/user/user-store';
 import 'v-calendar/dist/style.css';
 
 const { state } = useAppStore();
