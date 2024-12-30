@@ -7,7 +7,7 @@ const { sleep } = useSleepComposable();
 
 export const getMyData = async (): Promise<any> => {
     try {
-        await sleep(1500);
+        await sleep(5000);
         const response = await ApiHttp.get<AxiosResponse<LoggedUser>>('/api/users');
 
         return response;
