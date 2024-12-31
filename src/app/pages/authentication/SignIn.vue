@@ -12,10 +12,9 @@ import 'ant-design-vue/lib/notification/style/index.css';
 import type { LoggedUser } from '@/app/types/User';
 import { useSleepComposable } from '@/app/composables/sleep/useSleepComposable';
 import { showMessage } from '@/app/helpers/mesaages';
-import { onMounted } from 'vue';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 
-const { company } = useCompanyComposable();
+const { setCompanyToWork } = useCompanyComposable();
 const { sleep } = useSleepComposable();
 
 const router = useRouter();
@@ -66,7 +65,7 @@ const login = async () => {
         setUserToken(data);
 
         textButton.value = 'Buscando datos del usuario';
-        sleep(1000);
+        sleep(150);
         const me = await getMyData()
             .catch((e) => {
                 message.error({
@@ -92,6 +91,8 @@ const login = async () => {
 
             setAvatar(user.avatar);
 
+            setCompanyToWork(user.companies[0]);
+
             if (user.isActive) {
                 showMessage('success', 'Bienvenido', 2);
                 router.push({ name: 'Dashboard' });
@@ -102,10 +103,6 @@ const login = async () => {
         }
     }
 };
-onMounted(() => {
-    setUser({});
-    company.value = {};
-});
 </script>
 
 <template>
