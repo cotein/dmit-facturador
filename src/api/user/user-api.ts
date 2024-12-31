@@ -1,13 +1,9 @@
 import type { LoggedUser } from '@/app/types/User';
 import { ApiHttp } from '../base-api';
 import type { AxiosResponse } from 'axios';
-import { useSleepComposable } from '@/app/composables/sleep/useSleepComposable';
-
-const { sleep } = useSleepComposable();
 
 export const getMyData = async (): Promise<any> => {
     try {
-        await sleep(5000);
         const response = await ApiHttp.get<AxiosResponse<LoggedUser>>('/api/users');
 
         return response;

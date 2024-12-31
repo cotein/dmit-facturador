@@ -10,9 +10,16 @@ import { getMyData } from '@/api/user/user-api';
 import 'ant-design-vue/lib/message/style/index.css';
 import 'ant-design-vue/lib/notification/style/index.css';
 import type { LoggedUser } from '@/app/types/User';
+import { useSleepComposable } from '@/app/composables/sleep/useSleepComposable';
 import { showMessage } from '@/app/helpers/mesaages';
+import { onMounted } from 'vue';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+
+const { company } = useCompanyComposable();
+const { sleep } = useSleepComposable();
 
 const router = useRouter();
+
 const loginData = reactive<LoginDataOAuthToken>({
     grant_type: import.meta.env.VITE_GRANT_TYPE!,
     client_id: import.meta.env.VITE_CLIENT_ID!,
@@ -23,6 +30,7 @@ const loginData = reactive<LoginDataOAuthToken>({
 });
 
 const msg = 'Ingresar';
+
 const textButton = ref<string>(msg);
 
 const isLoading = ref<boolean>(false);
@@ -58,7 +66,7 @@ const login = async () => {
         setUserToken(data);
 
         textButton.value = 'Buscando datos del usuario';
-
+        sleep(1000);
         const me = await getMyData()
             .catch((e) => {
                 message.error({
@@ -94,6 +102,10 @@ const login = async () => {
         }
     }
 };
+onMounted(() => {
+    setUser({});
+    company.value = {};
+});
 </script>
 
 <template>

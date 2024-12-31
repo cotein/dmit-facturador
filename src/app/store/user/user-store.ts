@@ -1,10 +1,10 @@
 import type { Company } from '@/app/types/Company';
 import type { LoggedUser, UserToken } from '@/app/types/User';
 import { defineStore } from 'pinia';
-import { computed, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export const useUserStore = defineStore('user', () => {
-    const user = reactive<LoggedUser | any>({});
+    const user = ref<LoggedUser | any>({});
     const userToken = ref<UserToken>(undefined);
     const auth = ref<boolean>(false);
     const addNewCompany = ref<boolean>(false);
@@ -55,17 +55,17 @@ export const useUserStore = defineStore('user', () => {
         AuthUser: computed(() => auth.value),
         Avatar: computed(() => avatar.value),
         IHaveMoreThanOneCompany: computed(() => {
-            if (user.value && user.value.companies.length > 1) return true;
+            if (user.value && user.value.companies && user.value.companies.length > 1) return true;
 
             return false;
         }),
         IHaveOneCompany: computed(() => {
-            if (user.value && user.value.companies.length === 1) return true;
+            if (user.value && user.value.companies && user.value.companies.length === 1) return true;
 
             return false;
         }),
         IHaventGotCompanies: computed(() => {
-            if (user.value && user.value.companies === false) return true;
+            if (user.value && user.value.companies && user.value.companies === false) return true;
             return false;
         }),
     };
