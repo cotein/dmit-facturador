@@ -19,7 +19,7 @@ export const getInvoiceList = async (
     from: string | null = null,
     to: string | null = null,
     page: number | null = 1,
-    per_page: number | null = 5,
+    per_page: number | null = PAGINATION_ITEMS_PER_PAGE,
     print: string = 'no',
     invoice_id: number | null = null,
     getPaymentOnReceipt: boolean = false,
@@ -81,7 +81,7 @@ export const getInvoiceComments = async (
     company_id: number,
     customer_id: number | null = null,
     page: number | null = 1,
-    per_page: number | null = 5,
+    per_page: number | null = PAGINATION_ITEMS_PER_PAGE,
 ): Promise<AxiosResponse<any>> => {
     try {
         const params: URLSearchParams = new URLSearchParams();

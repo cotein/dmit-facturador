@@ -117,7 +117,7 @@ export enum TYPE_USER {
     USUARIO = 100,
 }
 
-export const PAGINATION_ITEMS_PER_PAGE = 20;
+export const PAGINATION_ITEMS_PER_PAGE = 30;
 export const PAGINATION_ITEMS_PER_PAGE_10 = 10;
 export const PAGINATION_ITEMS_PER_PAGE_5 = 5;
 export const PAGINATION_PAGE_ONE = 1;
