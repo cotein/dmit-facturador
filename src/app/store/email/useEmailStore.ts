@@ -1,7 +1,7 @@
 import type { EmailAttachment, SenderEmailData } from '@/app/types/Email';
 import type { InvoiceList } from '@/app/types/Invoice';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 export const useEmailStore = defineStore('email', () => {
     const openDrawerEmail = ref<boolean>(false);
@@ -15,7 +15,7 @@ export const useEmailStore = defineStore('email', () => {
         html: '',
         text: '',
         scheduled_at: '',
-        attachments: [] as EmailAttachment[],
+        attachments: [{ content: '', filename: '' }] as EmailAttachment[],
     });
 
     const invoiceToBeConvertedToPdf = ref<InvoiceList | {}>({});
@@ -24,10 +24,20 @@ export const useEmailStore = defineStore('email', () => {
         openDrawerEmail.value = !openDrawerEmail.value;
     };
 
+    const updateFormSenderEmailData = (data: Partial<SenderEmailData>) => {
+        Object.assign(formSenderEmailData.value, data);
+    };
+
+    const formSenderEmailDataComputed = computed(() => {
+        return formSenderEmailData.value;
+    });
+
     return {
         openDrawerEmail,
         toggleDrawerEmail,
         formSenderEmailData,
         invoiceToBeConvertedToPdf,
+        updateFormSenderEmailData,
+        formSenderEmailDataComputed,
     };
 });

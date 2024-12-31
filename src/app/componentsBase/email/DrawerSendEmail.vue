@@ -3,7 +3,7 @@
         v-model:visible="openDrawerEmail"
         class="custom-class"
         style="color: red"
-        title="Basic Drawer"
+        title="Envíar comprobante por e-mail"
         placement="right"
         width="31%"
     >
@@ -11,7 +11,7 @@
     </a-drawer>
 </template>
 <script setup lang="ts">
-import MailComposer from "./overview/ComposeEmailSender.vue";
-import { useEmailComposable } from "@/app/composables/email/useEmailComposable";
+import MailComposer from './overview/ComposeEmailSender.vue';
+import { useEmailComposable } from '@/app/composables/email/useEmailComposable';
 const { openDrawerEmail } = useEmailComposable();
 </script>

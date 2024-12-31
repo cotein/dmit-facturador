@@ -1,8 +1,10 @@
 import { storeToRefs } from 'pinia';
 import { useEmailStore } from '@/app/store/email/useEmailStore';
 
-const { toggleDrawerEmail } = useEmailStore();
-const { openDrawerEmail, formSenderEmailData, invoiceToBeConvertedToPdf } = storeToRefs(useEmailStore());
+const { toggleDrawerEmail, updateFormSenderEmailData } = useEmailStore();
+const { openDrawerEmail, formSenderEmailData, invoiceToBeConvertedToPdf, formSenderEmailDataComputed } = storeToRefs(
+    useEmailStore(),
+);
 
 export const useEmailComposable = () => {
     return {
@@ -10,5 +12,7 @@ export const useEmailComposable = () => {
         toggleDrawerEmail,
         formSenderEmailData,
         invoiceToBeConvertedToPdf,
+        updateFormSenderEmailData,
+        formSenderEmailDataComputed,
     };
 };
