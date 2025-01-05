@@ -20,6 +20,7 @@ import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
+import Vue3GoogleLogin from 'vue3-google-login';
 
 app.use(createPinia());
 
