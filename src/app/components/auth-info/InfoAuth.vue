@@ -44,8 +44,9 @@ const uploadCompanyLogo = () => {
 const openEditPanel = async () => {
     infoUserVisible.value = false;
     setTimeout(() => {
-        sujetoIsEditable.value = true;
+        //TODO: Revisar sujetoIsEditable por que inabilita el input de cuit
         if (CompanyGetter.value) {
+            sujetoIsEditable.value = true;
             setCompany(CompanyGetter.value);
         }
         openEditCompanyPanel();

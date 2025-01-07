@@ -20,9 +20,13 @@ import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
-import Vue3GoogleLogin from 'vue3-google-login';
+import vue3GoogleLogin from 'vue3-google-login';
 
 app.use(createPinia());
+
+app.use(vue3GoogleLogin, {
+    clientId: '52556351943-3lonos68ihpsaq3le6l2d6irbumkm5g1.apps.googleusercontent.com',
+});
 
 app.component('SearchOutlined', SearchOutlined);
 

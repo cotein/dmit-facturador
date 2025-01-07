@@ -696,11 +696,7 @@ export abstract class Invoice extends Pdf {
     afipLegend() {
         this.pdf.setFontSize(7);
         this.pdf.text('Comprobante Autorizado', 45, 287);
-        this.pdf.text(
-            'Esta Administración Federal no se responsabiliza por los datos ingresados en el detalle de la operación',
-            45,
-            291,
-        );
+        this.pdf.text('ARCA no se responsabiliza por los datos ingresados en el detalle de la operación', 45, 291);
     }
 
     paymentTypeLegend(paymentType: string) {

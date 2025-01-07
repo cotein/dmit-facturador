@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import { AuthWrapper } from './style';
 import { reactive, watch, h } from 'vue';
-import type { RegisterUser } from '@/app/types/User';
+import type { LoggedUser, RegisterUser } from '@/app/types/User';
 import { useRegister } from '@/app/composables/register/useRegisterComposable';
 import { useRouter } from 'vue-router';
 import { notification, Button } from 'ant-design-vue';
 import 'ant-design-vue/lib/message/style/index.css';
 import 'ant-design-vue/lib/notification/style/index.css';
+import { showMessage } from '@/app/helpers/mesaages';
+import type { CallbackTypes } from 'vue3-google-login';
+import { decodeCredential } from 'vue3-google-login';
+import { GoogleLoginMethod } from '@/api/auth/login-api';
+import { useUserStore } from '@/app/store/user/user-store';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+
+const { setCompanyToWork } = useCompanyComposable();
+
+const { setUser, setLogin, setUserToken, setAvatar } = useUserStore();
 
 const router = useRouter();
 /** Properties */
@@ -70,6 +80,38 @@ watch(isSuccess, () => {
         });
     }
 });
+
+const callback: CallbackTypes.CredentialCallback = async (response) => {
+    // This callback will be triggered when the user selects or login to
+    // his Google account from the popup
+    const userData = decodeCredential(response.credential);
+
+    const { data } = await GoogleLoginMethod(userData);
+
+    console.log('userData', userData);
+    console.log('userDataooooooooooooooooooo');
+    data.user.avatar = userData.picture;
+    console.log('data', data);
+    const user: LoggedUser = data.user;
+
+    setUserToken(data.userToken);
+
+    setLogin();
+
+    setUser(user);
+
+    setAvatar(user.avatar);
+
+    setCompanyToWork(user.companies[0]);
+
+    if (user.isActive) {
+        showMessage('success', 'Bienvenido', 2);
+        router.push({ name: 'Dashboard' });
+    } else {
+        showMessage('error', 'Usuario no activo', 2);
+        router.push({ name: 'Home' });
+    }
+};
 </script>
 <template>
     <a-row justify="center">
@@ -153,16 +195,14 @@ watch(isSuccess, () => {
                                 <span>{{ isLoading ? 'Procesando datos' : 'Crear Cuenta' }}</span>
                             </a-button>
                         </a-form-item>
-                        <!-- <p class="ninjadash-form-divider">
-							<span>Or</span>
-						</p>
-						<ul class="ninjadash-social-login">
-							<li>
-								<a class="google-social" href="#">
-									<img :src="require('/src/assets/img/icon/google-plus.svg')" alt="" class="svg" />
-								</a>
-							</li>
-							<li>
+                        <p class="ninjadash-form-divider">
+                            <span>Ó</span>
+                        </p>
+                        <ul class="ninjadash-social-login">
+                            <li>
+                                <GoogleLogin :callback="callback" prompt />
+                            </li>
+                            <!-- <li>
 								<a class="facebook-social" href="#">
 									<unicon name="facebook-f"></unicon>
 								</a>
@@ -176,8 +216,8 @@ watch(isSuccess, () => {
 								<a class="twitter-social" href="#">
 									<unicon name="github"></unicon>
 								</a>
-							</li>
-						</ul> -->
+							</li> -->
+                        </ul>
                     </a-form>
                 </div>
                 <div class="ninjadash-authentication-bottom">
