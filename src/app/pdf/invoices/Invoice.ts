@@ -372,11 +372,12 @@ export abstract class Invoice extends Pdf {
             );
         }
         if (voucher.fch_vto_pago) {
-            this.pdf.text(
+            this.pdf.text(`Fecha de Vto. para el pago: ${voucher.fch_vto_pago}`, 130, this.first_line_height + 6);
+            /* this.pdf.text(
                 `Fecha de Vto. para el pago: ${dayjs(voucher.fch_vto_pago).format('DD-MM-YYYY')}`,
                 130,
                 this.first_line_height + 6,
-            );
+            ); */
         }
     }
 
