@@ -39,6 +39,10 @@ export const useReceiptListComposable = () => {
     );
 
     watch(data, (receipts) => {
+        if (receipts === null || receipts === undefined) {
+            receiptList.value = [];
+        }
+
         if (receipts!.data) {
             const { data: list, pagination } = receipts!.data;
             console.log('🚀 ~ watch ~ list:', list);
