@@ -340,10 +340,13 @@ export class A extends Invoice {
             this.height_position = this.height_position + 5;
         });
         ///////////////// PERCEPCION IVA //////////////////
-        percep_iva.forEach((percep_iva: any) => {
-            this.pdf.text(percep_iva.name, this.first_column_text() * 8.5, this.height_position, this.options);
+        percep_iva.forEach((piva: any) => {
+            if (piva.total === 0) {
+                return;
+            }
+            this.pdf.text(piva.name, this.first_column_text() * 8.5, this.height_position, this.options);
             this.pdf.text(
-                this.CurrencyFormat(percep_iva.total),
+                this.CurrencyFormat(piva.total),
                 this.first_column_text() * 11.5,
                 this.height_position,
                 this.options,
