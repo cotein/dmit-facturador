@@ -1,7 +1,7 @@
 <template>
-    <a-button class="config--button" type="primary" @click="openDrawerAddCustomer">Ingresar Cliente</a-button>
+    <a-button class="config--button" type="primary" @click="openDrawerAddCustomer">Ingresar cliente nuevo</a-button>
     <a-drawer
-        title="Ingresar Cliente"
+        title="Ingresar Cliente "
         :visible="drawerAddCustomerIsVisible"
         @close="closeDrawerAddCustomer"
         :width="'80%'"

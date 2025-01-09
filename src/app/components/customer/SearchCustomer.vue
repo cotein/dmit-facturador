@@ -35,7 +35,6 @@ import { getVouchers } from '@/api/voucher/voucher-api';
 import { useVoucherStore } from '@/app/store/voucher/useVoucherStore';
 import { useCustomerListComposable } from '@/app/composables/customer/useCustomerListComposable';
 import { useArbaComposable } from '@/app/composables/arba/useArbaComposable';
-import { getReceipts } from '@/api/receipt/receipt-api';
 
 const { customerName } = useCustomerListComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());

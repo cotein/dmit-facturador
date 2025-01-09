@@ -3,7 +3,7 @@
         <a-col :sm="24" :lg="6" :xs="24" :xl="12">
             <a-button type="primary" @click="showDrawer">
                 <template #icon><PlusOutlined /></template>
-                Datos del Cliente
+                Buscar cliente ya ingresado
             </a-button>
         </a-col>
         <a-drawer
