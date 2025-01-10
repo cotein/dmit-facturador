@@ -47,7 +47,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
         Iva: null,
         MonCotiz: 1,
         MonId: 'pesos',
-        paymentType: 1,
+        paymentType: null,
         percepIIBB: 0,
         percepIva: 0,
         products: [],
@@ -92,6 +92,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
         invoice.voucher = null;
         invoice.comments = null;
         invoice.aditional_percentage = 0;
+        invoice.paymentType = null;
     };
 
     const details = ref<[]>([]);

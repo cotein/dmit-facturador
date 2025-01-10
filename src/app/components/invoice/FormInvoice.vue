@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
-import { computed, onUnmounted, watch, onBeforeMount, onMounted, ref } from 'vue';
+import { computed, onUnmounted, watch, onBeforeMount } from 'vue';
 import { InvoiceHeader, InvoiceLetterBox } from './Style';
-import { Main } from '../../styled';
 import { storeToRefs } from 'pinia';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useDrawerPtoVtaStore } from '@/app/store/panels/useDrawerPtoVtaStore';

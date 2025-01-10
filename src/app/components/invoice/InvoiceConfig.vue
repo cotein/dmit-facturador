@@ -16,20 +16,35 @@
             @close="onClose"
             @afterVisibleChange="afterVisibleChange"
         >
-            <a-form :model="invoice" :rules="rules" layout="vertical" ref="invoiceConfigForm" @submit="onClose">
+            <a-form :model="invoice" layout="vertical" ref="invoiceConfigForm" @submit="onClose">
                 <a-row :gutter="16">
                     <a-col :sm="24" :lg="24" :xs="24">
-                        <a-form-item label="Buscar cliente" name="customer">
-                            <SearchCustomer :context="'invoice'" />
+                        <a-form-item
+                            label="Buscar cliente"
+                            name="customer"
+                            :validate-status="errors.customer ? 'error' : ''"
+                            :help="errors.customer"
+                        >
+                            <SearchCustomer :context="'invoice'" :multiple="false" />
                         </a-form-item>
                     </a-col>
                     <a-col :sm="24" :lg="24" :xs="24">
-                        <a-form-item label="Seleccionar tipo de comprobante a relizar" name="voucher">
+                        <a-form-item
+                            label="Seleccionar tipo de comprobante a realizar"
+                            name="voucher"
+                            :validate-status="errors.voucher ? 'error' : ''"
+                            :help="errors.voucher"
+                        >
                             <VoucherSelect />
                         </a-form-item>
                     </a-col>
                     <a-col :sm="24" :lg="24" :xs="24">
-                        <a-form-item label="Concepto de facturación" name="Concepto">
+                        <a-form-item
+                            label="Concepto de facturación"
+                            name="Concepto"
+                            :validate-status="errors.Concepto ? 'error' : ''"
+                            :help="errors.Concepto"
+                        >
                             <a-radio-group v-model:value="invoice.Concepto" name="radioGroup">
                                 <a-radio v-for="(item, index) in BillingConcepts" :key="index" :value="item.value">{{
                                     item.key
@@ -40,35 +55,62 @@
                 </a-row>
                 <a-row :gutter="16">
                     <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item label="Fecha Factura" name="date">
+                        <a-form-item
+                            label="Fecha Factura"
+                            name="date"
+                            :validate-status="errors.date ? 'error' : ''"
+                            :help="errors.date"
+                        >
                             <a-date-picker
                                 v-model:value="invoice.date"
                                 style="width: 100%"
                                 showToday
                                 format="DD-MM-YYYY"
                                 placeholder="Fecha de factura"
-                                @change="changeDate"
+                                @change="setInvoiceDate"
                                 :disabled-date="disabledDate"
                             />
                         </a-form-item>
                     </a-col>
-
                     <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item label="Condición de venta" name="SaleCondition">
+                        <a-form-item
+                            label="Condición de venta"
+                            name="SaleCondition"
+                            :validate-status="errors.SaleCondition ? 'error' : ''"
+                            :help="errors.SaleCondition"
+                        >
                             <SaleCondition />
                         </a-form-item>
                     </a-col>
                 </a-row>
                 <a-row :gutter="16">
                     <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item label="Modo de pago" name="paymentType">
-                            <PaymentTypes />
+                        <a-form-item
+                            label="Modo de pago"
+                            name="paymentType"
+                            :validate-status="errors.paymentType ? 'error' : ''"
+                            :help="errors.paymentType"
+                        >
+                            <a-select
+                                v-model="defaultPaymentType"
+                                placeholder="Modo de pago"
+                                style="width: 100%"
+                                :default-active-first-option="true"
+                                :field-names="{ label: 'name', value: 'id' }"
+                                :options="PaymentTypesGetter"
+                                @change="handleChangePaymentType"
+                            ></a-select>
                         </a-form-item>
                     </a-col>
                 </a-row>
                 <a-row :gutter="16" v-if="invoice.Concepto != '1'">
                     <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item label="Fecha Servicios" name="servicesDate">
+                        <a-form-item
+                            label="Fecha Servicios"
+                            name="servicesDate"
+                            :validate-status="errors.FchServDesde ? 'error' : ''"
+                            :help="errors.FchServDesde"
+                        >
                             <a-range-picker
                                 style="width: 100%"
                                 :format="dateFormat"
@@ -79,7 +121,12 @@
                         </a-form-item>
                     </a-col>
                     <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item label="Fecha vencimiento de pago" name="FchVtoPago">
+                        <a-form-item
+                            label="Fecha vencimiento de pago"
+                            name="FchVtoPago"
+                            :validate-status="errors.dateVtoPago ? 'error' : ''"
+                            :help="errors.dateVtoPago"
+                        >
                             <a-date-picker
                                 v-model:value="invoice.dateVtoPago"
                                 style="width: 100%"
@@ -105,105 +152,51 @@
 </template>
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useCustomerComposable } from '@/app/composables/customer/useCustomerComposable';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 import DrawerAddCustomer from '../customer/DrawerAddCustomer.vue';
-import moment from 'moment';
 import SaleCondition from './SaleCondition.vue';
 import SearchCustomer from '../customer/SearchCustomer.vue';
-import type { Dayjs } from 'dayjs';
 import VoucherSelect from './VoucherSelect.vue';
 import PaymentTypes from '@/app/components/paymentType/PaymentTypes.vue';
 import type { Rule } from 'ant-design-vue/lib/form';
 import { useVisibleComposable } from '@/app/composables/visible/useVisibleComposable';
+import { z } from 'zod';
+import { showMessage } from '@/app/helpers/mesaages';
+import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
+
+const { PaymentTypesGetter } = usePaymentTypeComposable();
+const errors = ref<Record<string, string | undefined>>({});
 
 const { openDrawerDatosCliente } = useVisibleComposable();
 
 const { selectedCustomer } = useCustomerComposable();
 
-const { invoice, invoiceConfigIsValidated } = useInvoiceComposable();
+const { invoice, invoiceConfigIsValidated, invoiceInitialStatus } = useInvoiceComposable();
 
 const { CompanyGetter } = useCompanyComposable();
 
 const invoiceConfigForm = ref();
 
-// Agrega un cero al inicio del número si es menor a 10
-const appendZero = function (number: number) {
-    return Number(number) < 10 ? '0' + number : number;
-};
-
 const dateFormat = 'DD-MM-YYYY';
 
 const serviceDate = ref<[Dayjs, Dayjs]>([dayjs('2015/01/01', dateFormat), dayjs('2015/01/01', dateFormat)]);
 
-const invoiceDateValidator = (rule: Rule, value: any) => {
-    return new Promise((resolve, reject) => {
-        if (value === null) {
-            reject('La fecha del comprobante no puede estar vacía');
-        } else {
-            resolve(true);
-        }
-    });
+const onCloseCancel = () => {
+    errors.value = {};
+    openDrawerDatosCliente.value = false;
+    invoiceInitialStatus();
 };
 
-const invoiceVoucherValidator = (rule: Rule, value: any) => {
-    return new Promise((resolve, reject) => {
-        if (value === null) {
-            reject('Debe seleccionar un comprobante a emitir');
-        } else {
-            resolve(true);
-        }
-    });
-};
+const onClose = (e: Event) => {
+    errors.value = {};
 
-const vtoPagoValidator = (rule: Rule, value: Dayjs) => {
-    return new Promise((resolve, reject) => {
-        if (invoice.value.Concepto === '2' || invoice.value.Concepto === '3') {
-            if (value) {
-                resolve(true);
-            } else {
-                reject('Si la factura es de servicios, la fecha de vencimiento de pago es requerida');
-            }
-        }
-    });
-};
-
-const rules = ref({
-    Concepto: [{ required: true, message: 'Debe seleccionar un concepto de facturación' }],
-    customer: [{ required: true, message: 'Debe buscar un cliente' }],
-    SaleCondition: [{ required: true, message: 'La condición de venta es requerida' }],
-    voucher: [
-        {
-            required: true,
-            validator: invoiceVoucherValidator,
-        },
-    ],
-    //type_details: [{ required: true, message: 'Debe seleccionar el tipo de detalle de la factura' }],
-    FchVtoPago: [
-        {
-            validator: vtoPagoValidator,
-        },
-    ],
-    paymentType: [{ required: true, message: 'El modo de pago es requerido' }],
-    date: [
-        {
-            required: true,
-            validator: invoiceDateValidator,
-        },
-    ],
-});
-
-const onCloseCancel = () => (openDrawerDatosCliente.value = false);
-
-const onClose = async (e: Event) => {
-    const isValid = await invoiceConfigForm.value.validate().catch((error: any) => {
-        invoiceConfigIsValidated.value = false;
-        return false;
-    });
+    const isValid = validateForm();
 
     if (isValid) {
         invoiceConfigIsValidated.value = true;
@@ -226,6 +219,7 @@ const afterVisibleChange = (visible: boolean) => {
         invoice.value.CbteFch = date.format('YYYYMMDD').toString();
     }
 };
+
 const formatDate = (dateObj: any) => {
     const day = dateObj.$D < 10 ? `0${dateObj.$D}` : `${dateObj.$D}`;
     const month = dateObj.$M + 1 < 10 ? `0${dateObj.$M + 1}` : `${dateObj.$M + 1}`;
@@ -282,39 +276,17 @@ const disabledDate = (current: any) => {
     return current < beforeDate || current > afterDate;
 };
 
-const setDate = (date: any) => {
-    let day = null;
-
-    if (date.$D < 10) {
-        day = '0' + date.$D;
-    } else {
-        day = date.$D;
-    }
-
-    if (date.$M + 1 < 10) {
-        invoice.value.CbteFch = `${date.$y}0${date.$M + 1}${day}`;
-    } else {
-        invoice.value.CbteFch = `${date.$y}${date.$M + 1}${day}`;
-    }
+const setLastDayOfMonth = () => {
+    const lastDay = dayjs().endOf('month').format('YYYYMMDD');
+    invoice.value.FchVtoPago = lastDay;
+};
+const servicesDateFchVtoPago = () => {
+    setLastDayOfMonth();
 };
 
-const servicesDateFchVtoPago = (date: any) => {
-    let day = null;
-
-    if (date.$D < 10) {
-        day = '0' + date.$D;
-    } else {
-        day = date.$D;
-    }
-
-    if (date.$M + 1 < 10) {
-        invoice.value.FchVtoPago = `${date.$y}0${date.$M + 1}${day}`;
-    } else {
-        invoice.value.FchVtoPago = `${date.$y}${date.$M + 1}${day}`;
-    }
-};
-const changeDate = (date: any) => {
-    setDate(date);
+const setInvoiceDate = (date: Dayjs) => {
+    const formattedDate = dayjs(date).format('YYYYMMDD');
+    invoice.value.CbteFch = formattedDate;
 };
 
 watch(
@@ -328,18 +300,19 @@ watch(
 watch(
     () => invoice.value.Concepto,
     (newValue) => {
+        const d = dayjs();
+
         if (newValue === '2' || newValue === '3') {
-            const d = dayjs(new Date());
+            const lastMonthStart = d.subtract(1, 'month').startOf('month');
+            const lastMonthEnd = d.subtract(1, 'month').endOf('month');
+            const paymentDueDate = d.add(invoice.value.SaleCondition.days, 'day');
 
-            serviceDate.value[0] = d.subtract(1, 'month').startOf('M');
+            serviceDate.value[0] = lastMonthStart;
+            serviceDate.value[1] = lastMonthEnd;
 
-            serviceDate.value[1] = d.subtract(1, 'month').endOf('M');
-
-            invoice.value.FchServDesde = d.subtract(1, 'month').startOf('M').format('YYYYMMDD').toString();
-
-            invoice.value.FchServHasta = d.subtract(1, 'month').endOf('M').format('YYYYMMDD').toString();
-
-            invoice.value.FchVtoPago = d.add(invoice.value.SaleCondition.days, 'day').format('YYYYMMDD').toString();
+            invoice.value.FchServDesde = lastMonthStart.format('YYYYMMDD');
+            invoice.value.FchServHasta = lastMonthEnd.format('YYYYMMDD');
+            invoice.value.FchVtoPago = paymentDueDate.format('YYYYMMDD');
         } else {
             invoice.value.FchServDesde = '';
             invoice.value.FchServHasta = '';
@@ -348,7 +321,6 @@ watch(
     },
     { deep: true, immediate: true },
 );
-
 watch(
     () => invoice.value.SaleCondition,
     (newValue) => {
@@ -359,7 +331,7 @@ watch(
 );
 
 onMounted(() => {
-    const date = moment();
+    const date = dayjs();
 
     if (CompanyGetter.value) {
         if (invoice && invoice.value) {
@@ -367,20 +339,120 @@ onMounted(() => {
             invoice.value.company_id = CompanyGetter!.value.id;
             invoice.value.PtoVta = Number(CompanyGetter!.value.pto_vta_fe);
 
-            let day = null;
-
-            if (date.date() < 10) {
-                day = '0' + date.date();
-            } else {
-                day = date.date();
-            }
-
-            if (date.month() + 1 < 10) {
-                invoice.value.CbteFch = `${date.year()}0${date.month() + 1}${day}`;
-            } else {
-                invoice.value.CbteFch = `${date.year()}${date.month() + 1}${day}`;
-            }
+            invoice.value.CbteFch = date.format('YYYYMMDD');
         }
     }
 });
+
+const handleChangePaymentType = (value: any) => {
+    console.log('🚀 ~ handleChangePaymentType ~ value:', value);
+    invoice.value.paymentType = value;
+};
+
+const defaultPaymentType = computed({
+    get() {
+        return invoice.value.paymentType;
+    },
+    set(val) {
+        invoice.value.paymentType = val;
+    },
+});
+const createSchema = (invoice: any) => {
+    let schema = z.object({
+        customer: z.preprocess(
+            (value) => {
+                return value ?? null;
+            },
+            z
+                .union([
+                    z.object({
+                        value: z.number(),
+                        label: z.string(),
+                        cuit: z.number(),
+                        afip_inscription: z.object({
+                            id: z.number(),
+                            name: z.string(),
+                        }),
+                        afip_document: z.object({
+                            id: z.number(),
+                            name: z.string(),
+                            afip_code: z.string(),
+                        }),
+                    }),
+                    z.null(),
+                ])
+                .refine((data) => data !== null, {
+                    message: 'Buscar cliente es requerido',
+                }),
+        ),
+        voucher: z.preprocess(
+            (value) => {
+                return value ?? null;
+            },
+            z.union([z.number(), z.null()]).refine((data) => data !== null, {
+                message: 'Seleccionar tipo de comprobante es requerido',
+            }),
+        ),
+        Concepto: z.preprocess(
+            (value) => value ?? '',
+            z.any().refine((data) => data !== null, {
+                message: 'Concepto de facturación es requerido',
+            }),
+        ),
+        date: z.preprocess(
+            (value) => {
+                return value ?? null;
+            },
+            z.any().refine((data) => data !== null, {
+                message: 'Fecha Factura es requerida',
+            }),
+        ),
+        SaleCondition: z.preprocess(
+            (value) => value ?? '',
+            z.any().refine((data) => data !== null, {
+                message: 'La condición de venta es requerida',
+            }),
+        ),
+        paymentType: z.preprocess(
+            (value) => {
+                return value ?? null;
+            },
+            z.union([z.number(), z.null()]).refine((data) => data !== null, {
+                message: 'El modo de pago es requerido',
+            }),
+        ),
+    });
+
+    if (invoice.value.Concepto === '2' || invoice.value.Concepto === '3') {
+        schema = schema.extend({
+            FchServDesde: z.string().nonempty('Fecha de servicios desde es requerida'),
+            dateVtoPago: z.preprocess(
+                (value) => {
+                    return value ?? null;
+                },
+                z.any().refine((data) => data !== null, {
+                    message: 'La fecha de vencimiento de pago es requerida',
+                }),
+            ),
+        });
+    }
+
+    return schema;
+};
+
+const validateForm = () => {
+    const schema = createSchema(invoice);
+
+    const result = schema.safeParse(invoice.value);
+
+    if (!result.success) {
+        errors.value = result.error.errors.reduce((acc, err) => {
+            acc[err.path[0]] = err.message;
+            return acc;
+        }, {} as Record<string, string>);
+        return false;
+    }
+    errors.value = {};
+    return true;
+};
 </script>

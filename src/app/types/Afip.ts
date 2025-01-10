@@ -146,7 +146,7 @@ export type AfipInvoice = {
     Iva?: Iva | null;
     MonCotiz: number;
     MonId: string;
-    paymentType: number;
+    paymentType: number | null;
     percepIIBB: number | null;
     percepIva: number | null;
     periodoAsoc?: [FchDesde: string, FchHasta: string] | undefined;

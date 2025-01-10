@@ -21,7 +21,7 @@
                 <a-form-item label="Importe" name="import" :rules="rules.import">
                     <a-input-number v-model:value="form.import" style="width: 100%" />
                 </a-form-item>
-                <a-form-item label="Ingresa a Cta. Cte." name="ctacte">
+                <a-form-item label="Ingresa a Cta. Cte." name="ctacte" :rules="rules.cbu_id">
                     <a-select
                         v-model="form.cbu_id"
                         placeholder="Cuenta corriente"
@@ -79,12 +79,16 @@ import DatePickerBase from '@/app/componentsBase/DatePickerBase.vue';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Dayjs from 'dayjs';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { Rule } from 'ant-design-vue/lib/form';
 
 Dayjs.extend(customParseFormat);
+
 const handlerCbuChange = (value: any) => {
     form.value.cbu_id = value;
 };
+
 const { CompanyGetter } = useCompanyComposable();
+
 const {
     documentsCancelation,
     drawerVisible,
@@ -106,6 +110,19 @@ const form = ref<DocumentCancelation>({
     comments: '',
 });
 
+const cbuValidator = (rule: Rule, value: any) => {
+    console.log('🚀 ~ cbuValidator ~ value:', value);
+    console.log('🚀 ~ cbuValidator ~ rule:', rule);
+    console.log('🚀 ~ cbuValidator ~ form:', form.value);
+    return new Promise((resolve, reject) => {
+        if (value === null) {
+            reject('Debe seleccionar un comprobante a emitir');
+        } else {
+            resolve(true);
+        }
+    });
+};
+
 const rules = {
     payment_type_id: [
         {
@@ -116,6 +133,13 @@ const rules = {
                 }
                 return Promise.resolve();
             },
+        },
+    ],
+
+    cbu_id: [
+        {
+            message: 'La cuenta corriente es requerida',
+            validator: cbuValidator,
         },
     ],
     //number: [{ required: true, message: 'Por favor ingrese el número', trigger: 'blur' }],
@@ -183,10 +207,6 @@ const closeDrawer = () => {
 
 const sendDataToFormByEdit = (visible: boolean) => {
     if (visible && isEditingDocumentCancelation.value && dataDocumentCancelation.value!.data) {
-        console.log(
-            '🚀 ~ sendDataToFormByEdit ~ dataDocumentCancelation.value!.data:',
-            dataDocumentCancelation.value!.data,
-        );
         form.value = {
             payment_type_id: dataDocumentCancelation.value?.data.payment_type_id ?? null,
             number: dataDocumentCancelation.value?.data.number ?? '',

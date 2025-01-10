@@ -3,7 +3,7 @@
         v-model="internalValue"
         placeholder="Modo de pago"
         style="width: 100%"
-        :default-active-first-option="false"
+        :default-active-first-option="true"
         :field-names="{ label: 'name', value: 'id' }"
         :options="PaymentTypesGetter"
         :size="props.size ? props.size : 'default'"
@@ -13,8 +13,7 @@
 
 <script setup lang="ts">
 import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
-import type { PaymentType } from '@/app/types/PaymentType';
-import { ref, defineProps, toRefs, watch, defineEmits } from 'vue';
+import { ref, defineProps, toRefs, defineEmits } from 'vue';
 
 const { PaymentTypesGetter } = usePaymentTypeComposable();
 
