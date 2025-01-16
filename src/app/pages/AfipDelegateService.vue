@@ -1,6 +1,6 @@
 <template>
     <div>
-        <sdPageHeader title="AFIP - Factura electrónica" class="ninjadash-page-header-main"> </sdPageHeader>
+        <sdPageHeader title="ARCA - Factura electrónica" class="ninjadash-page-header-main"> </sdPageHeader>
         <Main>
             <a-row :gutter="25">
                 <a-col :xxl="6" :lg="8" :md="10" :sm="11">
@@ -47,7 +47,7 @@
                                 </template>
                                 <a-collapse-panel header="Certificados digitales" key="1">
                                     <ol>
-                                        <li>Ingresar al sitio web de AFIP: https://www.afip.gob.ar/</li>
+                                        <li>Ingresar al sitio web de ARCA: https://www.afip.gob.ar/</li>
                                         <li>Acceder al "Administrador de Relaciones de Clave Fiscal":</li>
                                         <ul>
                                             <li>En el menú superior, seleccionar "Mis Servicios".</li>

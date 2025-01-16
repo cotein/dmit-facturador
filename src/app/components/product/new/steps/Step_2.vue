@@ -238,14 +238,14 @@ defineExpose({ validateForm });
                 </a-col>
                 <a-col :span="4">
                     <a-form-item ref="iva" label="Iva del producto" name="iva">
-                        <p v-if="IvaZeroPercent">De acuerdo a su inscripción en AFIP sus artículos no gravan IVA</p>
+                        <p v-if="IvaZeroPercent">De acuerdo a su inscripción en ARCA sus artículos no gravan IVA</p>
                         <a-select
                             v-else
                             v-model:value="productStore.product.iva"
                             size="large"
                             :disabled="IvaZeroPercent ? true : false"
                             show-search
-                            placeholder="Inscripción en Afip"
+                            placeholder="Inscripción en Arca"
                             :default-active-first-option="false"
                             :show-arrow="false"
                             :filter-option="false"

@@ -16,7 +16,7 @@
         :closable="false"
     >
         <a-row justify="space-between">
-            <a-button type="primary" @click="fetchPtoVta" :loading="loading">Buscar en AFIP</a-button>
+            <a-button type="primary" @click="fetchPtoVta" :loading="loading">Buscar en Arca</a-button>
             <a-typography-paragraph v-model:content="text" v-if="ptoVta" id="typography"> </a-typography-paragraph>
             <a-tooltip v-if="ptoVta">
                 <template #title>Guardar punto de venta</template>

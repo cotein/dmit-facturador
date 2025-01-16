@@ -18,7 +18,7 @@
                         <a-select
                             v-model:value="addressInStore.state_id"
                             size="large"
-                            placeholder="Inscripción en Afip"
+                            placeholder="Inscripción en Arca"
                             :default-active-first-option="false"
                             :show-arrow="false"
                             :filter-option="false"
