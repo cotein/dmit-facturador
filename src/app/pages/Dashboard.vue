@@ -33,7 +33,7 @@
                             <a-col :lg="12" :md="12" :sm="12" :xs="24">
                                 <Suspense>
                                     <template #default>
-                                        <OverviewCard :ocData="OverviewDataTotalCustomers" />
+                                        <OverviewCard :ocData="OverviewDataTotalCustomers" :bottomStatus="false" />
                                     </template>
                                     <template #fallback>
                                         <sdCards headless>
@@ -46,7 +46,7 @@
                             <a-col :lg="12" :md="12" :sm="12" :xs="24">
                                 <Suspense>
                                     <template #default>
-                                        <OverviewCard :ocData="OverviewDataTotalProducts" />
+                                        <OverviewCard :ocData="OverviewDataTotalProducts" :bottomStatus="false" />
                                     </template>
                                     <template #fallback>
                                         <sdCards headless>
