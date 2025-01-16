@@ -1,10 +1,9 @@
-import type { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { ApiHttp } from '../base-api';
-import type { InvoiceList, InvoiceListWithPagination } from '@/app/types/Invoice';
-
-import { useSleepComposable } from '@/app/composables/sleep/useSleepComposable';
+import type { InvoiceListWithPagination } from '@/app/types/Invoice';
 import { PAGINATION_ITEMS_PER_PAGE } from '@/app/types/Constantes';
-const { sleep } = useSleepComposable();
+import type { Invoiced, SalesReportType } from '@/app/types/DashBoard';
+
 const URL = '/api/invoice';
 
 type ErrorData = {
@@ -108,6 +107,56 @@ export const getInvoiceComments = async (
         const response = await ApiHttp.get<any>(URL, { params });
 
         return response;
+    } catch (error) {
+        console.log('🚀 ~ error:', error);
+        throw new Error();
+    }
+};
+
+export const getLastMonthInvoiced = async (
+    company_id: number,
+    getLastMonthInvoiced: string = 'getLastMonthInvoiced',
+): Promise<Invoiced> => {
+    try {
+        const params: URLSearchParams = new URLSearchParams();
+
+        if (company_id) params.append('company_id', company_id.toString());
+
+        // Calculate the dates for the last 30 days
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(endDate.getDate() - 30);
+
+        // Format the dates to YYYY-MM-DD
+        const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
+        params.append('getLastMonthInvoiced', getLastMonthInvoiced.toString());
+        params.append('startDate', formatDate(startDate));
+        params.append('endDate', formatDate(endDate));
+
+        const response = await ApiHttp.get<Invoiced>(URL, { params });
+
+        return response.data;
+    } catch (error) {
+        console.log('🚀 ~ error:', error);
+        throw new Error();
+    }
+};
+
+export const getDailySalesReport = async (
+    company_id: number,
+    getDailySalesReport: string = 'getDailySalesReport',
+): Promise<SalesReportType> => {
+    try {
+        const params: URLSearchParams = new URLSearchParams();
+
+        if (company_id) params.append('company_id', company_id.toString());
+
+        params.append('getDailySalesReport', getDailySalesReport.toString());
+
+        const response = await ApiHttp.get<SalesReportType>(URL, { params });
+
+        return response.data;
     } catch (error) {
         console.log('🚀 ~ error:', error);
         throw new Error();

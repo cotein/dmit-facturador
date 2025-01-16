@@ -48,3 +48,23 @@ export const getProducts = async (
         throw new Error(error);
     }
 };
+
+export const getTotalProducts = async (company_id: number | undefined, dashboard: string = 'yes'): Promise<number> => {
+    try {
+        const params = new URLSearchParams();
+
+        params.append('company_id', company_id!.toString());
+
+        if (dashboard) params.append('dashboard', dashboard.toString());
+
+        const response = await ApiHttp.get<number>(URL, { params });
+
+        return response.data;
+    } catch (error: any) {
+        if (ApiHttp.isAxiosError<ErrorData, Record<string, unknown>>(error)) {
+            console.error(' product ' + error.response?.data.message);
+            throw new Error(error.response?.data.message);
+        }
+        throw new Error(error);
+    }
+};

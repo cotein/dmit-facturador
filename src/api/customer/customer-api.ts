@@ -2,7 +2,7 @@ import type { AxiosResponse } from 'axios';
 import { ApiHttp } from '../base-api';
 import type { Sujeto } from '@/app/types/Company';
 import { PAGINATION_ITEMS_PER_PAGE } from '@/app/types/Constantes';
-import type { CustomerResponse } from '@/app/types/Customer';
+import type { CustomerResponse, DashBoardTotalCustomers } from '@/app/types/Customer';
 const URL = '/api/customer';
 
 type IsActiveType = 'active' | 'inactive' | 'all';
@@ -85,6 +85,25 @@ export const getCustomerCuentaCorriente = async (
         const { data } = await ApiHttp.get<[]>(URL, { params });
 
         return data;
+    } catch (error) {
+        throw new Error();
+    }
+};
+
+export const dashBoardTotalcustomers = async (company_id: number, dashboard: string = 'yes'): Promise<number> => {
+    // Modifica aquí el tipo de retorno
+    try {
+        const params = new URLSearchParams();
+
+        if (company_id) params.append('company_id', company_id.toString());
+        if (dashboard) params.append('dashboard', dashboard.toString());
+
+        // Asume que tu API devuelve un objeto con la estructura { data: Customer[], pagination: PaginationInfo }
+        const response: AxiosResponse<number> = await ApiHttp.get<number>(URL, {
+            params,
+        });
+
+        return response.data; // Devuelve directamente el objeto con la estructura deseada
     } catch (error) {
         throw new Error();
     }

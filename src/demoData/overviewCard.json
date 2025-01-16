@@ -8,7 +8,7 @@
         "prefix": "",
         "label": "Total Products",
         "growth": "downward",
-        "growthRate": "15.65",
+        "growthRate": "15.31",
         "dataPeriod": "Since Last Month",
         "decimal": 0
     },
@@ -22,7 +22,7 @@
         "label": "Total Orders",
         "growth": "upward",
         "growthRate": "25.36",
-        "dataPeriod": "Since Last Month",
+        "dataPeriod": "Since wwwwwwww Month",
         "decimal": 0
     },
     {
@@ -100,7 +100,7 @@
         "label": "Performance",
         "growth": "upward",
         "growthRate": "8.54",
-        "dataPeriod": "Since Last Month",
+        "dataPeriod": "Since www Month",
         "decimal": 0
     }
-  ]
+]

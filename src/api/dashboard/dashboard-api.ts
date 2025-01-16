@@ -31,27 +31,3 @@ export const savePriceList = async (payload: {
         }
     }
 };
-
-export const getPriceList = async (company_id: number): Promise<AxiosResponse<PriceList[]>> => {
-    try {
-        const params = new URLSearchParams();
-
-        params.append('company_id', company_id.toString());
-
-        const response = await ApiHttp.get<PriceList[]>(URL, { params });
-
-        return response;
-    } catch (error) {
-        throw new Error();
-    }
-};
-
-export const updatePriceList = async (priceList: PriceList): Promise<AxiosResponse<PriceList[]>> => {
-    try {
-        const response = await ApiHttp.put<PriceList[]>(`${URL}/${priceList.id}`, { priceList }, { method: 'PUT' });
-
-        return response;
-    } catch (error) {
-        throw new Error();
-    }
-};

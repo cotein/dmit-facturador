@@ -97,3 +97,7 @@ export type CustomerResponse = {
     data: Customer[];
     pagination: PaginationInfo;
 };
+
+export type DashBoardTotalCustomers = {
+    totalCustomers: number;
+};
