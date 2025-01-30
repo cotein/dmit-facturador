@@ -19,4 +19,11 @@
 import { Main } from '../../styled';
 import { FormComponentsWrap } from '@/views/forms/overview/Style';
 import AddProduct from '@/app/components/product/new/AddProduct.vue';
+import { useProductComposable } from '@/app/composables/product/useProductComposable';
+import { onMounted } from 'vue';
+
+const { productInitialState } = useProductComposable();
+onMounted(() => {
+    //productInitialState();
+});
 </script>

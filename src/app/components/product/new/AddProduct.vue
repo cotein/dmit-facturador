@@ -23,22 +23,24 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, onBeforeMount } from 'vue';
+import { onMounted, onUnmounted, ref, onBeforeMount, computed } from 'vue';
 import { usePriceListComposable } from '@/app/composables/priceList/usePriceListComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useProductComposable } from '@/app/composables/product/useProductComposable';
+import { useIvaComposable } from '@/app/composables/afip/useIvaComposable';
 
 import Step_1 from '@/app/components/product/new/steps/Step_1.vue';
 import Step_2 from '@/app/components/product/new/steps/Step_2.vue';
 import Step_3 from '@/app/components/product/new/steps/Step_3.vue';
 import Step_4 from '@/app/components/product/new/steps/Step_4.vue';
 import ProductModal from '../view/ProductModal.vue';
+import { AFIP_INSCRIPTION, AFIP_IVAS } from '@/app/types/Constantes';
 
 interface StepComponent {
     validateForm: () => void;
 }
 
-const { productStore } = useProductComposable();
+const { productInitialState, openModalImg } = useProductComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { fetchPriceList } = usePriceListComposable(CompanyGetter.value.id);
 
@@ -113,17 +115,23 @@ const nextButtonsStep = [
 ];
 
 const submit = async () => {
-    productStore.openModalViewImg = !productStore.openModalViewImg;
+    openModalImg();
 };
 
-onBeforeMount(() => {
-    fetchPriceList();
+onBeforeMount(async () => {
+    await fetchPriceList();
+    await useIvaComposable();
 });
 
-onMounted(() => {});
+/* onMounted(() => {
+    const newIva = IvaZeroPercent.value ? AFIP_IVAS.AFIP_ID_CERO : AFIP_IVAS.AFIP_ID_VEINTI_UNO;
+    console.log('🚀 ~ onMounted ~ newIva:', newIva);
+    product.value.iva = newIva;
+    console.log('🚀 ~ onMounted ~ product.value.iva:', product.value.iva);
+}); */
 
 onUnmounted(() => {
-    productStore.productInitialState();
+    productInitialState();
 });
 </script>
 <style scoped>

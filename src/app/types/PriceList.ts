@@ -17,6 +17,7 @@ export type PriceListTranferData = {
     title: string;
     description?: string;
     disabled?: boolean;
+    profit_percentage?: number;
 };
 
 export type PriceListFromDataBase = {

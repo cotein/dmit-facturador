@@ -10,8 +10,9 @@ export const usePriceListStore = defineStore('price-list', () => {
     const setPriceListTranferData = (list: PriceList[]) => {
         list.map((priceList: PriceList) => {
             priceListForTransferComponent.value.push({
-                key: priceList.value,
-                title: priceList.label,
+                key: String(priceList.value),
+                title: priceList.label ?? '',
+                profit_percentage: priceList.profit_percentage,
             });
         });
     };

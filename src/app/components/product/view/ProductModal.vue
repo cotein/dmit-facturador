@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-modal
-            v-model:visible="productStore.openModalViewImg"
+            v-model:visible="openModalViewImg"
             title="Información del producto a ingresar"
             @ok="storeProduct"
             okText="Guardar producto"
@@ -16,46 +16,53 @@
 import { ref } from 'vue';
 import ProductInfo from './ProductInfo.vue';
 import { defineEmits } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import { useProductComposable } from '@/app/composables/product/useProductComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { updateProduct } from '@/api/product/product-api';
+import { saveProduct } from '@/api/product/product-api';
+
+const route = useRoute();
+
+const router = useRouter();
 
 const emit = defineEmits(['initialStepsProductEvent']);
 
 const { CompanyGetter } = useCompanyComposable();
 
-const emitEvent = () => {
+const emitEventinitialStepsProductEvent = () => {
     emit('initialStepsProductEvent', true);
 };
 
 const loading = ref<boolean>(false);
 
-const { productStore, saveProduct } = useProductComposable();
+const { product, openModalImg, openModalViewImg } = useProductComposable();
 
 const storeProduct = async () => {
     loading.value = true;
 
     const payload = {
         company_id: CompanyGetter.value?.id,
-        product: productStore.product,
+        product: product.value,
     };
 
-    const data = await saveProduct(payload)
-        .catch((err) => {
-            message.error({
-                content: err.message,
-            });
-        })
-        .finally(() => (loading.value = false));
+    try {
+        if (route.path.startsWith('/productos/actualizar')) {
+            await updateProduct(payload as any);
+            message.success('Producto actualizado con éxito');
+        } else {
+            await saveProduct(payload as any);
+            message.success('Producto guardado con éxito');
+        }
 
-    if (data) {
-        message.success({
-            content: 'El producto ha sido guardado correctamente.',
-            duration: 3,
-        });
-        productStore.openModalViewImg = false;
-        productStore.productInitialState();
-        emitEvent();
+        emitEventinitialStepsProductEvent();
+    } catch (error) {
+        message.error('Error al guardar el producto');
+    } finally {
+        loading.value = false;
+        openModalImg();
+        router.push('/productos/grilla');
     }
 };
 </script>

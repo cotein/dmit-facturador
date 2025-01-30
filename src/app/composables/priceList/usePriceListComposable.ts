@@ -21,16 +21,20 @@ const extractPriceList = async (company_id: number) => {
 
 export const usePriceListComposable = (company_id: number) => {
     const queryClient = useQueryClient();
-    const fetchPriceList = () => {
-        return useQuery(['price-list'], () => getPriceList(company_id), {
-            onSuccess(data: AxiosResponse<PriceList[]>) {
-                console.log('🚀 ~ file: usePriceListComposable.ts:38 ~ onSuccess ~ data:', data);
-
-                setPriceList(data.data);
-                setPriceListTranferData(data.data);
-            },
-            staleTime: 1000 * 60 * 60,
-        });
+    const fetchPriceList = async () => {
+        try {
+            const { isLoading, data } = await useQuery(['price-list'], async () => await getPriceList(company_id), {
+                onSuccess(data: AxiosResponse<PriceList[]>) {
+                    setPriceList(data.data);
+                    setPriceListTranferData(data.data);
+                },
+                staleTime: 1000 * 60 * 60,
+            });
+            return data;
+        } catch (error) {
+            console.error('Error fetching price list:', error);
+            throw error;
+        }
     };
 
     const { mutateAsync, isLoading } = useMutation(savePriceList, {

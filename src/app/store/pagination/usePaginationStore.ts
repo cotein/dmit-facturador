@@ -24,6 +24,13 @@ export const usePaginationStore = defineStore('pagination', () => {
         totalItems.value = items;
     };
 
+    const resetPagination = () => {
+        currentPage.value = 1;
+        itemsPerPage.value = 10;
+        totalPages.value = 0;
+        totalItems.value = 0;
+    };
+
     return {
         currentPage,
         itemsPerPage,
@@ -33,5 +40,6 @@ export const usePaginationStore = defineStore('pagination', () => {
         setItemsPerPage,
         setTotalPages,
         setTotalItems,
+        resetPagination,
     };
 });

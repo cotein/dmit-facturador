@@ -7,16 +7,20 @@ import { storeToRefs } from 'pinia';
 const { IvasGetter, loaded } = storeToRefs(useAfipIvaStore());
 const { setIvasAction } = useAfipIvaStore();
 
-export const useIvaComposable = () => {
+export const useIvaComposable = async () => {
     if (!loaded.value) {
-        const { isLoading } = useQuery(['ivas-cache'], () => apiAfipGetIvas(), {
-            cacheTime: Infinity,
-
-            onSuccess(data: AfipIva[]) {
-                loaded.value = true;
-                setIvasAction(data);
-            },
-        });
+        try {
+            const { isLoading, data } = await useQuery(['ivas-cache'], async () => await apiAfipGetIvas(), {
+                cacheTime: Infinity,
+                onSuccess(data: AfipIva[]) {
+                    loaded.value = true;
+                    setIvasAction(data);
+                },
+            });
+        } catch (error) {
+            console.error('Error loading IVAs:', error);
+            throw error;
+        }
     }
     return { IvasGetter };
 };

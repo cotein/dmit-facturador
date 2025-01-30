@@ -5,6 +5,7 @@ interface Filters {
     argentinianDate: (value: any) => any;
     afipDate: (value: any) => any;
     formatCurrency: (value: any) => any;
+    formatNumberWithThousandsSeparator: (value: any) => any;
 }
 
 declare module '@vue/runtime-core' {

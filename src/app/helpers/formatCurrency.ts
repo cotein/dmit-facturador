@@ -2,7 +2,9 @@ export const formatCurrency = (value: number, useToFixed: boolean = true): strin
     if (value === null) {
         return '';
     }
+
     let formattedValue = value.toString();
+
     if (useToFixed) {
         formattedValue = value
             .toFixed(2)

@@ -1,14 +1,8 @@
 <template>
     <div class="content--step">
-        <a-form
-            name="ninjadash_validation-form"
-            ref="step4FormRef"
-            :model="productStore.product"
-            :rules="rules"
-            layout="vertical"
-        >
+        <a-form name="ninjadash_validation-form" ref="step4FormRef" :model="product" :rules="rules" layout="vertical">
             <a-upload
-                v-model:file-list="productStore.product.pictures"
+                v-model:file-list="product.pictures"
                 list-type="picture-card"
                 @preview="handlePreview"
                 action="http://localhost:8001/api/product/img"
@@ -36,7 +30,7 @@ import { message } from 'ant-design-vue';
 import { useProductComposable } from '@/app/composables/product/useProductComposable';
 import { useUserComposable } from '@/app/composables/user/useUserComposable';
 const { UserTokenGetter } = useUserComposable();
-const { productStore } = useProductComposable();
+const { product } = useProductComposable();
 
 const step4FormRef = ref();
 

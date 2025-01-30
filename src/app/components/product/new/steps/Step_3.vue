@@ -15,30 +15,31 @@ if (CompanyGetter.value) {
 
 const { priceListForTransferComponent, PriceListGetter } = usePriceListComposable(company_id.value);
 
-const { productStore } = useProductComposable();
+const { selectedKeysInPriceListTransfer, product, selectedPriceList } = useProductComposable();
 
 const step3FormRef = ref();
 
 const disabled = ref<boolean>(false);
 
-const selectedKeys = ref<string[]>([]);
-
 const handleChange = (nextTargetKeys: number[], direction: string, moveKeys: string[]) => {
-    console.log('🚀 ~ handleChange ~ nextTargetKeys:', nextTargetKeys);
-    productStore.selectedPriceList = [];
+    selectedPriceList.value = [];
 
     nextTargetKeys.map((id: number) => {
         PriceListGetter.value.map((pl: PriceList) => {
-            console.log('🚀 ~ file: Step_3.vue:23 ~ PriceListGetter.value.map ~ pl:', pl, id);
             if (pl.value === id) {
-                productStore.selectedPriceList.push(`${pl.label} - Gcia. ${pl.profit_percentage} %`);
+                selectedPriceList.value.push(`${pl.label} - Gcia. ${pl.profit_percentage} %`);
             }
         });
     });
 };
 
 const handleSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
-    //console.log('targetSelectedKeys: ', targetSelectedKeys);
+    // Si hay elementos seleccionados en el lado izquierdo, deselecciona todos los del lado derecho
+    if (sourceSelectedKeys.length > 0) {
+        selectedKeysInPriceListTransfer.value = sourceSelectedKeys;
+    } else {
+        selectedKeysInPriceListTransfer.value = targetSelectedKeys;
+    }
 };
 
 const handleScroll = (direction: string, e: Event) => {
@@ -100,33 +101,27 @@ defineExpose({ validateForm });
 </script>
 <template>
     <div class="content--step">
-        <a-form
-            name="ninjadash_validation-form"
-            ref="step3FormRef"
-            :model="productStore.product"
-            :rules="rules"
-            layout="vertical"
-        >
+        <a-form name="ninjadash_validation-form" ref="step3FormRef" :model="product" :rules="rules" layout="vertical">
             <a-row justify="space-between" align="middle" :gutter="31">
                 <a-col :span="5">
                     <a-form-item ref="cost" label="Precio de costo del producto" name="cost">
-                        <a-input v-model:value="productStore.product.cost" placeholder="Costo" />
+                        <a-input v-model:value="product.cost" placeholder="Costo" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="19">
                     <a-form-item ref="price_list" label="Seleccionar listas de precio" name="price_list">
                         <a-transfer
-                            v-model:target-keys="productStore.product.price_list"
-                            v-model:selected-keys="selectedKeys"
+                            v-model:target-keys="product.price_list"
+                            v-model:selected-keys="selectedKeysInPriceListTransfer"
                             :data-source="priceListForTransferComponent"
-                            :one-way="true"
+                            :one-way="false"
                             :list-style="{
                                 width: '300px',
                                 height: '300px',
                                 'text-align': 'left',
                             }"
                             :titles="[' Listas de precio', ' Seleccionado/s']"
-                            :render="(item:PriceListTranferData) => item.title"
+                            :render="(item:PriceListTranferData) => `${item.title} - Gcia. ${item.profit_percentage} %`"
                             :disabled="disabled"
                             @change="handleChange"
                             @selectChange="handleSelectChange"

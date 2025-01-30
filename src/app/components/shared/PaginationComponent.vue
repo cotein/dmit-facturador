@@ -11,7 +11,7 @@
             :show-total="showTotal"
         >
             <template #buildOptionText="props">
-                <span>{{ props.value }} Comprobantes por pág.</span>
+                <span>{{ props.value }} {{ itemsPerPageText }}</span>
             </template>
             <template #itemRender="{ type, originalElement }">
                 <a v-if="type === 'prev'" @click="prevPage">Ant.</a>
@@ -27,11 +27,16 @@ import { ref, watch } from 'vue';
 import { usePaginationComposable } from '@/app/composables/pagination/usePaginationComposable';
 
 // Definir las props
-const props = defineProps<{
+type Props = {
     initialCurrentPage: number;
     initialItemsPerPage: number;
     initialTotalItems: number;
-}>();
+    itemsPerPageText: string;
+};
+
+const props = withDefaults(defineProps<Props>(), {
+    itemsPerPageText: 'Ítems por pág.',
+});
 
 // Usar el composable de paginación
 const { currentPage, itemsPerPage, totalItems, setCurrentPage, setItemsPerPage, setTotalPages, prevPage, nextPage } =
@@ -40,18 +45,23 @@ const { currentPage, itemsPerPage, totalItems, setCurrentPage, setItemsPerPage, 
 // Inicializar valores de paginación con las props
 setCurrentPage(props.initialCurrentPage);
 setItemsPerPage(props.initialItemsPerPage);
-setTotalPages(props.initialTotalItems);
+//setTotalPages(props.initialTotalItems);
 
-const pageSizeOptions = ref<string[]>(['10', '20', '30', '40', '50', '100']);
+const pageSizeOptions = ref<string[]>(['1', '2', '10', '20', '30', '40', '50', '100']);
 
 // Manejar el cambio de página
 const changeCurrentPage = (current: number, pageSize: number) => {
-    setCurrentPage(current);
-    setItemsPerPage(pageSize);
+    currentPage.value = current;
+    //setCurrentPage(current);
+    //setItemsPerPage(pageSize);
+    itemsPerPage.value = pageSize;
 };
 
 const onShowSizeChange = (current: number, pageSize: number) => {
-    setItemsPerPage(pageSize);
+    currentPage.value = current;
+    //setCurrentPage(current);
+    //setItemsPerPage(pageSize);
+    itemsPerPage.value = pageSize;
 };
 
 const showTotal = (totalPages: number, range: [number, number]) => {
@@ -64,11 +74,11 @@ const showTotal = (totalPages: number, range: [number, number]) => {
     if (isNaN(totalPages) || newRange.some(isNaN)) {
         return 'Cargando...';
     }
-    return `${newRange[0]}-${newRange[1]} de ${totalPages} comprobantes`;
+    return `${newRange[0]}-${newRange[1]} de ${totalPages} 'Ítems'`;
 };
 
 // Sincronizar las props con los valores internos
-watch(
+/* watch(
     () => props.initialCurrentPage,
     (newVal) => setCurrentPage(newVal),
 );
@@ -79,5 +89,5 @@ watch(
 watch(
     () => props.initialTotalItems,
     (newVal) => setTotalPages(newVal),
-);
+); */
 </script>

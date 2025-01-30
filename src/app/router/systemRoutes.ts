@@ -27,6 +27,34 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/app/pages/products/AddNewProduct.vue'),
     },
     {
+        name: 'ProductList',
+        path: '/productos',
+        component: () => import('@/app/components/product/list/Products.vue'),
+        children: [
+            {
+                name: 'pro-grid',
+                path: 'grilla',
+                components: {
+                    default: () => import('@/app/components/product/list/Products.vue'),
+                    grid: () => import('@/app/components/product/list/overview/Grid.vue'),
+                },
+            },
+            {
+                name: 'pro-list',
+                path: 'listado',
+                components: {
+                    default: () => import('@/app/components/product/list/Products.vue'),
+                    grid: () => import('@/app/components/product/list/overview/List.vue'),
+                },
+            },
+        ],
+    },
+    {
+        name: 'pro-edit',
+        path: '/productos/actualizar/:id',
+        component: () => import('@/app/pages/products/EditProduct.vue'),
+    },
+    {
         name: 'NewReceiptPage',
         path: 'cancelar/facturas',
         component: () => import('@/app/pages/receipts/NewReceiptPage.vue'),

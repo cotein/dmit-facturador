@@ -42,15 +42,29 @@ app.config.globalProperties.$filters = {
     afipDate(date: any) {
         return moment(date).format('YYYYMMDD');
     },
-    formatCurrency(value: number): string {
+    formatCurrency(value: number, useToFixed: boolean = true) {
         if (value === null) {
             return '';
         }
-        const formattedValue = value
-            .toFixed(2)
-            .replace(/\./g, ',')
-            .replace(/\d(?=(\d{3})+,)/g, '$&.');
+
+        let formattedValue = value.toString();
+
+        if (useToFixed) {
+            formattedValue = value
+                .toFixed(2)
+                .replace(/\./g, ',')
+                .replace(/\d(?=(\d{3})+,)/g, '$&.');
+        } else {
+            formattedValue = formattedValue.replace(/\./g, ',').replace(/\d(?=(\d{3})+,)/g, '$&.');
+        }
         return `$${formattedValue}`;
+    },
+    formatNumberWithThousandsSeparator(value: number) {
+        if (value === null || value === undefined) {
+            return '';
+        }
+
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     },
 };
 

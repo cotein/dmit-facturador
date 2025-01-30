@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
-import { useCategoryComposable } from '@/app/composables/category/useCategoryComposable';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useProductComposable } from '@/app/composables/product/useProductComposable';
-import type { CategoryRawData } from '@/app/types/Category';
+import { reactive, ref, onBeforeMount } from "vue";
+import { useCategoryComposable } from "@/app/composables/category/useCategoryComposable";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import { useProductComposable } from "@/app/composables/product/useProductComposable";
+import type { CategoryRawData } from "@/app/types/Category";
 
-const { productStore } = useProductComposable();
+const { product } = useProductComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { CategoriesGetter, fetchCategories } = useCategoryComposable();
 
@@ -15,27 +15,27 @@ const rules = reactive({
     name: [
         {
             required: true,
-            message: 'El nombre es requerido',
-            trigger: 'blur',
+            message: "El nombre es requerido",
+            trigger: "blur",
         },
     ],
     code: [
         {
             required: true,
-            message: 'El código es requerido',
-            trigger: 'blur',
+            message: "El código es requerido",
+            trigger: "blur",
         },
     ],
     category: [
         {
             required: true,
-            message: 'La categoría es requerida',
-            trigger: 'blur',
+            message: "La categoría es requerida",
+            trigger: "blur",
         },
     ],
 });
 
-const filter: any['filter'] = (inputValue: string, path: Array<string>) => {
+const filter: any["filter"] = (inputValue: string, path: Array<string>) => {
     return path.some((option) => {
         return option.name.toUpperCase().indexOf(inputValue.toUpperCase()) > -1;
     });
@@ -43,7 +43,7 @@ const filter: any['filter'] = (inputValue: string, path: Array<string>) => {
 
 const validateForm = async () => {
     const isValid = await step1FormRef.value.validate().catch((error: any) => {
-        console.log('error wwwwwwww', error);
+        console.log("error wwwwwwww", error);
         return false;
     });
 
@@ -54,7 +54,10 @@ const validateForm = async () => {
     }
 };
 
-const findEmptyChildrenIds = (data: CategoryRawData[], parentId: number): CategoryRawData[] => {
+const findEmptyChildrenIds = (
+    data: CategoryRawData[],
+    parentId: number
+): CategoryRawData[] => {
     const childCategories = data.filter((category) => category.parent_id === parentId);
 
     if (childCategories.length === 0) {
@@ -69,7 +72,10 @@ const findEmptyChildrenIds = (data: CategoryRawData[], parentId: number): Catego
     }
     return [
         //...childCategories,
-        ...allChildCategories.filter((category, index, self) => self.findIndex((c) => c.id === category.id) === index),
+        ...allChildCategories.filter(
+            (category, index, self) =>
+                self.findIndex((c) => c.id === category.id) === index
+        ),
     ];
 };
 
@@ -85,38 +91,52 @@ onBeforeMount(async () => {
         <a-form
             name="ninjadash_validation-form"
             ref="step1FormRef"
-            :model="productStore.product"
+            :model="product"
             :rules="rules"
             layout="vertical"
         >
             <a-row justify="center" align="middle" :gutter="31">
                 <a-col :span="10">
-                    <a-form-item ref="name" label="Nombre ó título del producto" name="name">
-                        <a-input v-model:value="productStore.product.name" placeholder="Nombre" />
+                    <a-form-item
+                        ref="name"
+                        label="Nombre ó título del producto"
+                        name="name"
+                    >
+                        <a-input v-model:value="product.name" placeholder="Nombre" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="2">
                     <a-form-item ref="code" label="Código" name="code">
-                        <a-input v-model:value="productStore.product.code" placeholder="Código" />
+                        <a-input v-model:value="product.code" placeholder="Código" />
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
-                    <a-form-item ref="category" label="Categoría a la que pertenece el producto" name="category">
+                    <a-form-item
+                        ref="category"
+                        label="Categoría a la que pertenece el producto"
+                        name="category"
+                    >
                         <a-cascader
                             class="custom-format"
-                            v-model:value="productStore.product.category"
+                            v-model:value="product.category"
                             :match-input-width="true"
                             :change-on-select="true"
                             :options="CategoriesGetter"
                             :show-search="{ filter }"
                             dropdownClassName="custom-drop-down"
                             placeholder="Buscar categoría"
-                            :field-names="{ label: 'name', value: 'id', children: 'children' }"
+                            :field-names="{
+                                label: 'name',
+                                value: 'id',
+                                children: 'children',
+                            }"
                             size="large"
                             multiple
                         >
                             <template #tagRender="data">
-                                <a-tag :key="data.value" color="blue">{{ data.label }}</a-tag>
+                                <a-tag :key="data.value" color="blue">{{
+                                    data.label
+                                }}</a-tag>
                             </template>
                         </a-cascader>
                     </a-form-item>

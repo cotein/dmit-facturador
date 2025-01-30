@@ -1,16 +1,21 @@
 // src/composables/usePagination.ts
 import { computed } from 'vue';
 import { usePaginationStore } from '@/app/store/pagination/usePaginationStore';
+import { storeToRefs } from 'pinia';
 
 export const usePaginationComposable = () => {
-    const paginationStore = usePaginationStore();
+    //const paginationStore = usePaginationStore();
 
-    const currentPage = computed(() => paginationStore.currentPage);
+    const { currentPage, itemsPerPage, totalPages, totalItems } = storeToRefs(usePaginationStore());
+
+    const { setCurrentPage, setItemsPerPage, setTotalPages, setTotalItems, resetPagination } = usePaginationStore();
+
+    /*     const currentPage = computed(() => paginationStore.currentPage);
     const itemsPerPage = computed(() => paginationStore.itemsPerPage);
     const totalPages = computed(() => paginationStore.totalPages);
-    const totalItems = computed(() => paginationStore.totalItems);
+    const totalItems = computed(() => paginationStore.totalItems); */
 
-    const setCurrentPage = (page: number) => {
+    /*  const setCurrentPage = (page: number) => {
         paginationStore.setCurrentPage(page);
     };
 
@@ -24,19 +29,23 @@ export const usePaginationComposable = () => {
 
     const setTotalItems = (items: number) => {
         paginationStore.setTotalItems(items);
-    };
+    }; */
 
-    const prevPage = () => {
-        if (paginationStore.currentPage > 1) {
-            paginationStore.setCurrentPage(paginationStore.currentPage - 1);
+    /* const prevPage = () => {
+        console.log('🚀 ~ prevPage ~ paginationStore.totalPages:', totalPages);
+        console.log('🚀 ~ prevPage ~ currentPage:', currentPage);
+        if (currentPage.value > 1) {
+            setCurrentPage(currentPage.value - 1);
         }
     };
 
     const nextPage = () => {
-        if (paginationStore.currentPage < paginationStore.totalPages) {
-            paginationStore.setCurrentPage(paginationStore.currentPage + 1);
+        console.log('🚀 ~ nextPage ~ totalPages:', totalPages);
+        console.log('🚀 ~ nextPage ~ currentPage:', currentPage);
+        if (currentPage.value < totalPages.value) {
+            currentPage.value + 1;
         }
-    };
+    }; */
 
     return {
         currentPage,
@@ -47,7 +56,8 @@ export const usePaginationComposable = () => {
         setItemsPerPage,
         setTotalPages,
         setTotalItems,
-        prevPage,
-        nextPage,
+        /* prevPage,
+        nextPage, */
+        resetPagination,
     };
 };

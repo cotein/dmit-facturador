@@ -179,6 +179,9 @@ onMounted(() => {
             <a-menu-item @click="toggleCollapsed" key="products-new">
                 <router-link :to="{ name: 'AddProduct' }"> Alta </router-link>
             </a-menu-item>
+            <a-menu-item @click="toggleCollapsed" key="products-list">
+                <router-link :to="{ name: 'ProductList' }"> Listado </router-link>
+            </a-menu-item>
         </a-sub-menu>
     </a-menu>
 </template>
