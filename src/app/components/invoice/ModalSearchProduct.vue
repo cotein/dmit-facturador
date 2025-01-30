@@ -2,11 +2,13 @@
     <div>
         <a-modal
             v-model:visible="openSearchProduct"
-            width="1000px"
+            width="75%"
             title="Búsqueda de producto"
             :destroyOnClose="true"
             :bodyStyle="{
+                'min-height': '8rem',
                 height: '8rem',
+                'background-color': '#00f2ff',
             }"
             :footer="null"
             :inert="!openSearchProduct"

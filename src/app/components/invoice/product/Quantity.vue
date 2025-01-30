@@ -8,6 +8,7 @@
             @keypress="onlyNumericInputEvent"
             v-model:value="invoiceTableData[props.index].quantity"
             class="custom--input"
+            @focus="selectText"
         />
         <!-- {{ invoiceTableData[props.index].quantity }} -->
         <sdButton class="btn-inc" type="default" @click="up">
@@ -19,7 +20,7 @@
 <script setup lang="ts">
 import type { ProductOnInvoiceTable } from '@/app/types/Product';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
-import { onlyNumericInputEvent } from '@/app/helpers/onlyNumbers';
+import { onlyNumericInputEvent, selectText } from '@/app/helpers/onlyNumbers';
 
 const { invoiceTableData } = useInvoiceComposable();
 

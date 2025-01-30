@@ -14,6 +14,7 @@
             :footer-style="{ textAlign: 'right' }"
             :maskClosable="false"
             @close="onClose"
+            @open="onOpen"
             @afterVisibleChange="afterVisibleChange"
         >
             <a-form :model="invoice" layout="vertical" ref="invoiceConfigForm" @submit="onClose">
@@ -25,7 +26,7 @@
                             :validate-status="errors.customer ? 'error' : ''"
                             :help="errors.customer"
                         >
-                            <SearchCustomer :context="'invoice'" :multiple="false" />
+                            <SearchCustomer :context="'invoice'" :multiple="false" ref="searchCustomerRef" />
                         </a-form-item>
                     </a-col>
                     <a-col :sm="24" :lg="24" :xs="24">
@@ -152,7 +153,7 @@
 </template>
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, ref, watch, computed, nextTick } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useCustomerComposable } from '@/app/composables/customer/useCustomerComposable';
@@ -171,7 +172,10 @@ import { showMessage } from '@/app/helpers/mesaages';
 import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
 
 const { PaymentTypesGetter } = usePaymentTypeComposable();
+
 const errors = ref<Record<string, string | undefined>>({});
+
+const searchCustomerRef = ref<any>(null);
 
 const { openDrawerDatosCliente } = useVisibleComposable();
 
@@ -217,6 +221,14 @@ const afterVisibleChange = (visible: boolean) => {
         invoice.value.date = date;
 
         invoice.value.CbteFch = date.format('YYYYMMDD').toString();
+        console.log('🚀 ~ nextTick ~ searchCustomerInput:', searchCustomerRef.value?.$el);
+        // Focus the SearchCustomer component
+        nextTick(() => {
+            const searchCustomerInput = searchCustomerRef.value?.$el.querySelector('input');
+            if (searchCustomerInput) {
+                searchCustomerInput.focus();
+            }
+        });
     }
 };
 

@@ -19,7 +19,7 @@
                             <div class="table-invoice table-responsive">
                                 <a-table
                                     :dataSource="invoiceTableData"
-                                    :columns="www"
+                                    :columns="columns"
                                     :pagination="false"
                                     :scroll="{ x: '1000px' }"
                                 >
@@ -31,7 +31,9 @@
                                             <a-row align="middle" justify="left" :gutter="31">
                                                 <a-col :span="1">{{ index + 1 }}</a-col>
                                                 <a-col :span="8" class="col">
-                                                    <a-typography-text type="secondary">Producto</a-typography-text>
+                                                    <a-typography-text type="secondary">{{
+                                                        columnTitle
+                                                    }}</a-typography-text>
                                                     <ProductItem :record="record" :index="index" class="mt5" />
                                                 </a-col>
                                                 <a-col :span="8">
@@ -68,34 +70,6 @@
                                                 /></a-col>
                                             </a-row>
                                         </div>
-
-                                        <!-- <template v-if="column.key === 'index'">
-                                            {{ index + 1 }}
-                                        </template>
-                                        <template v-if="column.key === 'product'">
-                                            <ProductItem :record="record" :index="index" />
-                                        </template>
-                                        <template v-if="column.key === 'unit'">
-                                            <Unit :record="record" :index="index" />
-                                        </template>
-                                        <template v-if="column.key === 'quantity'">
-                                            <Quantity :record="record" :index="index" />
-                                        </template>
-                                        <template v-if="column.key === 'iva'">
-                                            <Iva :record="record" :index="index" />
-                                        </template>
-                                        <template v-if="column.key === 'discount'">
-                                            <Discount :record="record" :index="index" />
-                                        </template>
-                                        <template v-if="column.key === 'subtotal'">
-                                            <Subtotal :record="record" :index="index" />
-                                        </template>
-                                        <template v-if="column.key === 'total'">
-                                            <Total :record="record" :index="index" />
-                                        </template>
-                                        <template v-if="column.key === 'actions'">
-                                            <Actions :record="record" :index="index" />
-                                        </template> -->
                                     </template>
                                 </a-table>
                             </div>
@@ -184,69 +158,16 @@ const { CompanyGetter } = useCompanyComposable();
 
 const loading = ref<boolean>(false);
 
-const www = [
+const titulo = ref<string>('Productos a facturar www');
+
+const columns = ref<any>([
     {
-        title: 'Productos a facturar',
+        title: 'Ítems a facturar',
         dataIndex: 'index',
         key: 'index',
         width: '100%',
     },
-];
-const productTableColumns = [
-    {
-        title: '#',
-        dataIndex: 'index',
-        key: 'index',
-        width: '1%',
-        align: 'center',
-    },
-    {
-        title: 'Producto',
-        dataIndex: 'product',
-        key: 'product',
-        width: '20%',
-        align: 'left',
-    },
-    {
-        title: 'Precio/U',
-        dataIndex: 'unit',
-        key: 'unit',
-        align: 'center',
-    },
-    {
-        title: 'Cantidad',
-        dataIndex: 'quantity',
-        key: 'quantity',
-        width: '10%',
-    },
-    {
-        title: 'Iva',
-        dataIndex: 'iva',
-        key: 'iva',
-    },
-    {
-        title: 'Desc.',
-        dataIndex: 'discount',
-        key: 'discount',
-    },
-    {
-        title: 'Subtotal',
-        dataIndex: 'subtotal',
-        key: 'subtotal',
-    },
-    {
-        title: 'Total',
-        dataIndex: 'total',
-        key: 'total',
-    },
-    {
-        title: 'Acciones',
-        dataIndex: 'actions',
-        key: 'actions',
-        width: '5%',
-        align: 'center',
-    },
-];
+]);
 
 const generateInvoice = async () => {
     loading.value = true;
@@ -334,6 +255,22 @@ const generateInvoice = async () => {
         }
     }
 };
+
+const columnTitle = ref<string>('Producto');
+
+watch(
+    () => invoice.value.Concepto, // Observamos la propiedad "concepto"
+    (newConcepto) => {
+        if (newConcepto === '2' || newConcepto === '3') {
+            // Si "concepto" es igual a "2" o "3", cambiamos el título
+            columnTitle.value = 'Servicio';
+        } else {
+            // Si no, restauramos el título original
+            columnTitle.value = 'Producto';
+        }
+    },
+    { immediate: true }, // Ejecutar el watch inmediatamente al montar el componente
+);
 
 onUnmounted(() => {
     invoiceInitialStatus();

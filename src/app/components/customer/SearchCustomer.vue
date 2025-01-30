@@ -4,6 +4,7 @@
         placeholder="Búsqueda de clientes"
         style="width: 100%"
         :default-active-first-option="false"
+        label-in-value
         :show-arrow="false"
         :allowClear="true"
         :filter-option="false"

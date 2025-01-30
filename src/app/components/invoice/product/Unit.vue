@@ -71,7 +71,7 @@ div {
     vertical-align: middle;
     border-radius: 5px;
     width: 100%;
-    min-height: 36px;
+    min-height: 41px;
     background-color: #ffffff;
     border: 1px solid rgba(157, 155, 153, 0.491);
     transition: all 0.2s ease-in-out 0s;
