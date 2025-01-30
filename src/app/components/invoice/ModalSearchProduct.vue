@@ -6,9 +6,8 @@
             title="Búsqueda de producto"
             :destroyOnClose="true"
             :bodyStyle="{
-                'min-height': '8rem',
-                height: '8rem',
-                'background-color': '#00f2ff',
+                'min-height': '4rem',
+                height: '4rem',
             }"
             :footer="null"
             :inert="!openSearchProduct"
