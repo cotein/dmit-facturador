@@ -31,14 +31,18 @@
                     </div>
                 </template>
                 <TopToolBox>
-                    <a-row :gutter="15" class="justify-content-center" v-if="props.viewSearch">
+                    <a-row :gutter="15" class="justify-content-center responsive-row" v-if="props.viewSearch">
                         <a-col :xxl="6" :lg="6" :xs="24" v-if="props.isSale">
                             <SearchCustomer :multiple="false" :context="'invoice'" />
                         </a-col>
                         <a-col :xxl="9" :lg="9" :xs="24">
                             <div class="table-toolbox-menu">
                                 <span class="toolbox-menu-title"> Estado:</span>
-                                <a-radio-group @change="handleChangeForFilter" v-model:value="sortDefault">
+                                <a-radio-group
+                                    @change="handleChangeForFilter"
+                                    v-model:value="sortDefault"
+                                    class="small-text"
+                                >
                                     <a-radio-button :class="stateValue === '' && 'active'" value="all"
                                         >Todas</a-radio-button
                                     >
@@ -73,7 +77,7 @@
                 </TopToolBox>
                 <TableDefaultStyle class="ninjadash-having-header-bg">
                     <TopSellerWrap>
-                        <div class="table-bordered top-seller-table table-responsive">
+                        <div class="table-bordered top-seller-table table-responsive responsive-table">
                             <a-table
                                 :columns="invoiceTableColumns"
                                 :dataSource="props.list"
@@ -83,7 +87,9 @@
                                 :showSorterTooltip="{ title: 'Clic para ordenar' }"
                             >
                                 <template #headerCell="{ title }">
-                                    <div style="text-align: center">{{ title }}</div>
+                                    <div :class="isMobile ? 'normal-screen' : 'mobile-screen'">
+                                        {{ title }}
+                                    </div>
                                 </template>
 
                                 <template #bodyCell="{ column, record, index }">
@@ -183,6 +189,7 @@ import ShowSomeStringData from '../../shared/ShowSomeStringData.vue';
 import type { InvoiceList } from '@/app/types/Invoice';
 import { ColumnProps } from 'ant-design-vue/lib/table';
 import DrawerSendEmail from '@/app/componentsBase/email/DrawerSendEmail.vue';
+import { isMobile } from '@/app/helpers/isMobile';
 
 const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
@@ -450,5 +457,44 @@ const rowSelection = {
 .custom-class {
     color: red;
     text-align: left;
+}
+
+@media (max-width: 1280px) and (max-height: 768px) {
+    .responsive-row {
+        flex-wrap: nowrap;
+        font-size: 10px;
+    }
+
+    .responsive-row .table-toolbox-menu,
+    .responsive-row .table-toolbox-actions {
+        display: flex;
+        align-items: left;
+    }
+
+    .responsive-row .table-toolbox-menu {
+        flex: 1;
+    }
+
+    .responsive-row .table-toolbox-actions {
+        flex: 0 0 auto;
+    }
+    .responsive-table {
+        font-size: 10px;
+    }
+
+    .responsive-table .custom-class {
+        font-size: 10px;
+    }
+}
+.normal-screen {
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+}
+.mobile-screen {
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.6rem;
 }
 </style>

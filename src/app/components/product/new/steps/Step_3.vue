@@ -103,12 +103,12 @@ defineExpose({ validateForm });
     <div class="content--step">
         <a-form name="ninjadash_validation-form" ref="step3FormRef" :model="product" :rules="rules" layout="vertical">
             <a-row justify="space-between" align="middle" :gutter="31">
-                <a-col :span="5">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="cost" label="Precio de costo del producto" name="cost">
                         <a-input v-model:value="product.cost" placeholder="Costo" />
                     </a-form-item>
                 </a-col>
-                <a-col :span="19">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="price_list" label="Seleccionar listas de precio" name="price_list">
                         <a-transfer
                             v-model:target-keys="product.price_list"
@@ -126,6 +126,7 @@ defineExpose({ validateForm });
                             @change="handleChange"
                             @selectChange="handleSelectChange"
                             @scroll="handleScroll"
+                            class="responsive-transfer"
                         />
                     </a-form-item>
                 </a-col>
@@ -135,7 +136,15 @@ defineExpose({ validateForm });
 </template>
 
 <style scoped>
-.content--step {
-    min-height: 25rem;
+.responsive-transfer .ant-transfer-list {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .responsive-transfer .ant-transfer-list {
+        display: block;
+        width: 100%;
+        margin-bottom: 16px;
+    }
 }
 </style>

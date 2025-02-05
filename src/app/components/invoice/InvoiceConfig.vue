@@ -1,6 +1,6 @@
 <template>
-    <a-row :gutter="30">
-        <a-col :sm="24" :lg="6" :xs="24" :xl="12">
+    <a-row :gutter="30" class="scale-down">
+        <a-col :sm="24" :lg="6" :xs="24" :xl="12" class="center-buttons">
             <a-button type="primary" @click="showDrawer">
                 <template #icon><PlusOutlined /></template>
                 Buscar cliente ya ingresado
@@ -8,13 +8,12 @@
         </a-col>
         <a-drawer
             title="Datos del Cliente"
-            :width="720"
+            :width="drawerWidth"
             :visible="openDrawerDatosCliente"
             :body-style="{ paddingBottom: '80px' }"
             :footer-style="{ textAlign: 'right' }"
             :maskClosable="false"
             @close="onClose"
-            @open="onOpen"
             @afterVisibleChange="afterVisibleChange"
         >
             <a-form :model="invoice" layout="vertical" ref="invoiceConfigForm" @submit="onClose">
@@ -146,7 +145,7 @@
             </a-form>
             <template #extra> </template>
         </a-drawer>
-        <a-col :sm="24" :lg="6" :xs="24">
+        <a-col :sm="24" :lg="6" :xs="24" class="center-buttons">
             <DrawerAddCustomer />
         </a-col>
     </a-row>
@@ -164,12 +163,10 @@ import DrawerAddCustomer from '../customer/DrawerAddCustomer.vue';
 import SaleCondition from './SaleCondition.vue';
 import SearchCustomer from '../customer/SearchCustomer.vue';
 import VoucherSelect from './VoucherSelect.vue';
-import PaymentTypes from '@/app/components/paymentType/PaymentTypes.vue';
-import type { Rule } from 'ant-design-vue/lib/form';
 import { useVisibleComposable } from '@/app/composables/visible/useVisibleComposable';
 import { z } from 'zod';
-import { showMessage } from '@/app/helpers/mesaages';
 import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
+import { isMobile } from '@/app/helpers/isMobile';
 
 const { PaymentTypesGetter } = usePaymentTypeComposable();
 
@@ -467,4 +464,34 @@ const validateForm = () => {
     errors.value = {};
     return true;
 };
+
+/* const isMobile = () => {
+    return window.matchMedia('(max-width: 768px)').matches;
+}; */
+
+const drawerWidth = computed(() => {
+    return isMobile ? '75%' : '50%';
+});
 </script>
+<style scoped>
+@media (max-width: 1280px) and (max-height: 768px) {
+    .scale-down {
+        transform: scale(0.95);
+        transform-origin: top left;
+        font-size: small;
+    }
+    .center-buttons {
+        display: flex;
+        justify-content: center;
+        margin: 1rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .center-buttons {
+        flex: 1 1 50%;
+        font-size: 0.8rem;
+        margin-bottom: 2rem;
+    }
+}
+</style>

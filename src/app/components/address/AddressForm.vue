@@ -5,15 +5,15 @@
     </a-button>
     <a-drawer
         title="Domicilio"
-        :width="720"
-        :body-style="{ paddingBottom: '80px' }"
+        :width="isMobile ? '85%' : '70%'"
+        :body-style="bodyStyle"
         :footer-style="{ textAlign: 'right' }"
         :visible="open"
         @close="onClose"
     >
         <a-form :model="addressInStore" :rules="rules" layout="vertical" ref="addressFormRef" autocomplete="off-off">
             <a-row :gutter="16">
-                <a-col :span="12">
+                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <a-form-item ref="state_id" name="state_id" label="Provincia">
                         <a-select
                             v-model:value="addressInStore.state_id"
@@ -31,33 +31,33 @@
                         </a-select>
                     </a-form-item>
                 </a-col>
-                <a-col :span="12">
+                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <a-form-item ref="city" name="city" label="Localidad">
                         <a-input v-model:value="addressInStore.city" autocomplete="off-off" />
                     </a-form-item>
                 </a-col>
             </a-row>
             <a-row :gutter="16">
-                <a-col :span="24">
+                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <a-form-item ref="street" name="street" label="Calle">
                         <a-input v-model:value="addressInStore.street" autocomplete="off-off" />
                     </a-form-item>
                 </a-col>
             </a-row>
             <a-row :gutter="16">
-                <a-col :span="12">
+                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <a-form-item ref="cp" name="cp" label="Código Postal">
                         <a-input type="text" v-model:value="addressInStore.cp" autocomplete="off-off" />
                     </a-form-item>
                 </a-col>
-                <a-col :span="12">
+                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <a-form-item ref="number" name="number" label="Número">
                         <a-input v-model:value="addressInStore.number" autocomplete="off-off" />
                     </a-form-item>
                 </a-col>
             </a-row>
             <a-row :gutter="16">
-                <a-col :span="24">
+                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <a-form-item label="Entre calles" name="between_streets">
                         <a-textarea
                             v-model:value="addressInStore.between_streets"
@@ -69,7 +69,7 @@
                 </a-col>
             </a-row>
             <a-row :gutter="16">
-                <a-col :span="24">
+                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <a-form-item label="Observaciones" name="obs">
                         <a-textarea
                             v-model:value="addressInStore.obs"
@@ -91,7 +91,7 @@
     </a-drawer>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, watch, reactive } from 'vue';
+import { ref, onMounted, computed, reactive } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { useState } from '@/app/composables/afip/useStateComposable';
@@ -99,6 +99,8 @@ import { useState } from '@/app/composables/afip/useStateComposable';
 import { useAddressStore } from '@/app/store/address/address-store';
 import { storeToRefs } from 'pinia';
 import type { Address } from '@/app/types/Address';
+import { isMobile } from '@/app/helpers/isMobile';
+
 interface Props {
     title: string;
 }
@@ -122,6 +124,10 @@ const open = ref<boolean>(false);
   addressable_id: "",
   addressable_type: "",
 }); */
+
+const bodyStyle = computed(() => {
+    return isMobile ? { paddingBottom: '80px' } : { paddingBottom: '80px' };
+});
 const rules = reactive<Record<string, Rule[]>>({
     state_id: [
         {

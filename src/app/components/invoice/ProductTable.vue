@@ -13,7 +13,7 @@
                 </div>
             </template>
             <a-row>
-                <a-col :span="24">
+                <a-col :span="24" class="smaller-text">
                     <TableWrapper>
                         <ProductTable>
                             <div class="table-invoice table-responsive">
@@ -27,7 +27,7 @@
                                         <div style="text-align: left">{{ title }}</div>
                                     </template>
                                     <template #bodyCell="{ column, record, index }">
-                                        <div>
+                                        <div class="scale-down">
                                             <a-row align="middle" justify="left" :gutter="31">
                                                 <a-col :span="1">{{ index + 1 }}</a-col>
                                                 <a-col :span="8" class="col">
@@ -138,6 +138,7 @@ import Unit from './product/Unit.vue';
 import FreeText from './FreeText.vue';
 import ModalMiPyme from './ModalMiPyme.vue';
 import DrawerInvoiceComments from './DrawerInvoiceComments.vue';
+import { isMobile } from '@/app/helpers/isMobile';
 
 const { printPdf } = usePrinterPdfComposable();
 

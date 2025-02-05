@@ -46,15 +46,24 @@ const PaymentTypePercentageInfo = computed(() => {
 
 <style scoped>
 .aditional--container {
-    margin: 0.5rem;
-    padding-left: 1rem;
     display: flex;
-    font-size: medium;
+    flex-wrap: wrap;
 }
-.sale--condition--info {
-    margin: 0 0.5rem;
+
+.aditional--container span {
+    flex: 1 1 100%;
 }
-.payment--type--info {
-    margin: 0 0.5rem;
+
+@media (max-width: 768px) {
+    .aditional--container span {
+        flex: 1 1 100%;
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .aditional--container span {
+        flex: 1;
+    }
 }
 </style>

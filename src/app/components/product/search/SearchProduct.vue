@@ -1,7 +1,11 @@
 <template>
     <a-row :gutter="16">
-        <a-col :span="props.viewPriceList ? 14 : 24">
-            <a-form-item label="Producto">
+        <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <a-form-item
+                label="Producto"
+                :labelCol="{ xs: { span: 24 }, sm: { span: 6 } }"
+                :wrapperCol="{ xs: { span: 24 }, sm: { span: 18 } }"
+            >
                 <a-select
                     ref="aSelectProduct"
                     v-model:value="product"
@@ -23,8 +27,12 @@
                 </a-select>
             </a-form-item>
         </a-col>
-        <a-col v-if="props.viewPriceList" :span="10">
-            <a-form-item label="Lista de precio">
+        <a-col v-if="props.viewPriceList" :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+            <a-form-item
+                label="Lista de precio"
+                :labelCol="{ xs: { span: 24 }, sm: { span: 6 } }"
+                :wrapperCol="{ xs: { span: 24 }, sm: { span: 18 } }"
+            >
                 <a-select v-model:value="price" style="width: 100%" @select="selectPriceList">
                     <a-select-option v-for="item in priceList" :key="item" :value="item.id">
                         <span style="margin-right: 8px"
@@ -32,6 +40,11 @@
                         >
                     </a-select-option>
                 </a-select>
+            </a-form-item>
+        </a-col>
+        <a-col v-if="isMobile" :xs="24" :sm="24" :md="24" :lg="24" :xl="24" style="text-align: center">
+            <a-form-item>
+                <a-button type="primary" @click="cloneProductByInsert"> Asignar producto </a-button>
             </a-form-item>
         </a-col>
     </a-row>
@@ -43,6 +56,7 @@ import { useCompanyComposable } from '@/app/composables/company/useCompanyCompos
 import { useSearchProductComposable } from '@/app/composables/product/useSearchProductComposable';
 import type { Product, ProductTransformer } from '@/app/types/Product';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
+import { isMobile } from '@/app/helpers/isMobile';
 
 const { priceList } = useSearchProductComposable();
 const { openSearchProduct, productOnInvoiceTable, insertProductOnInvoiceTable } = useInvoiceComposable();
@@ -112,26 +126,31 @@ const setInitalDataOnSelectComponents = () => {
     product.value = null;
 };
 
-const closeModal = (event: KeyboardEvent) => {
-    let isInserting = false;
+const cloneProductByInsert = () => {
+    const clonedProduct = JSON.parse(JSON.stringify(productOnInvoiceTable.value));
 
-    if (event.key === 'Enter' && !isInserting && price.value !== undefined) {
+    insertProductOnInvoiceTable(clonedProduct);
+
+    openSearchProduct.value = false;
+
+    isInserting.value = true;
+
+    priceList.value = [];
+
+    setInitalDataOnSelectComponents();
+};
+
+const isInserting = ref<boolean>(false);
+
+const closeModal = (event: KeyboardEvent) => {
+    isInserting.value = false;
+    if (event.key === 'Enter' && !isInserting.value && price.value !== undefined) {
         event.preventDefault();
 
-        const clonedProduct = JSON.parse(JSON.stringify(productOnInvoiceTable.value));
-
-        insertProductOnInvoiceTable(clonedProduct);
-
-        openSearchProduct.value = false;
-
-        isInserting = true;
-
-        priceList.value = [];
-
-        setInitalDataOnSelectComponents();
+        cloneProductByInsert();
 
         setTimeout(() => {
-            isInserting = false;
+            isInserting.value = false;
         }, 250);
     }
 

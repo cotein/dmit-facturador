@@ -141,17 +141,17 @@ defineExpose({ validateForm });
     <div class="content--step">
         <a-form name="ninjadash_validation-form" ref="step2FormRef" :model="product" :rules="rules" layout="vertical">
             <a-row justify="space-between" align="middle" :gutter="31">
-                <a-col :span="3">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="quantity" label="Cantidad inicial" name="quantity">
                         <a-input v-model:value="product.quantity" placeholder="Cantidad" />
                     </a-form-item>
                 </a-col>
-                <a-col :span="3">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="critical_stock" label="Stock crítico" name="critical_stock">
                         <a-input v-model:value="product.critical_stock" placeholder="Cantidad" />
                     </a-form-item>
                 </a-col>
-                <a-col :span="3">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="sale_by_meter" label="Se vende por metro?" name="sale_by_meter">
                         <a-switch
                             v-model:checked="product.sale_by_meter"
@@ -161,7 +161,7 @@ defineExpose({ validateForm });
                         />
                     </a-form-item>
                 </a-col>
-                <a-col :span="3">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="meters_by_unity" label="Metros de cada unidad" name="meters_by_unity">
                         <a-input
                             v-model:value="product.meters_by_unity"
@@ -170,7 +170,7 @@ defineExpose({ validateForm });
                         />
                     </a-form-item>
                 </a-col>
-                <a-col :span="3">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="published_here" label="Publicar en la tienda" name="published_here">
                         <a-switch
                             v-model:checked="product.published_here"
@@ -180,7 +180,7 @@ defineExpose({ validateForm });
                         />
                     </a-form-item>
                 </a-col>
-                <a-col :span="3">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="priority" label="Prioridad de vista" name="priority">
                         <a-input
                             v-model:value="product.priority"
@@ -192,7 +192,7 @@ defineExpose({ validateForm });
             </a-row>
 
             <a-row justify="space-between" align="middle" :gutter="31">
-                <a-col :span="3">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="view_price" label="Visualizar precio en la tienda" name="view_price">
                         <a-switch
                             v-model:checked="product.view_price"
@@ -203,7 +203,7 @@ defineExpose({ validateForm });
                     </a-form-item>
                 </a-col>
 
-                <a-col :span="4">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="apply_discount" label="Aplicar descuento" name="apply_discount">
                         <a-switch
                             v-model:checked="product.apply_discount"
@@ -213,7 +213,7 @@ defineExpose({ validateForm });
                         />
                     </a-form-item>
                 </a-col>
-                <a-col :span="4">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item
                         ref="apply_discount_amount"
                         label="Monto que aplicará el descuento"
@@ -226,7 +226,7 @@ defineExpose({ validateForm });
                         />
                     </a-form-item>
                 </a-col>
-                <a-col :span="4">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item
                         ref="apply_discount_percentage"
                         label="Descuento que aplicará (%)"
@@ -239,7 +239,7 @@ defineExpose({ validateForm });
                         />
                     </a-form-item>
                 </a-col>
-                <a-col :span="4">
+                <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="iva" label="Iva del producto" name="iva">
                         <p v-if="IvaZeroPercent">De acuerdo a su inscripción en ARCA sus artículos no gravan IVA</p>
                         <a-select

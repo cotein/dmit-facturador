@@ -32,8 +32,6 @@ const openDrawerCliente = (event: KeyboardEvent) => {
     if (event.ctrlKey && event.code === 'F11') {
         event.preventDefault();
         openDrawerDatosCliente.value = true;
-
-        // Primero, hacemos clic en el botón
     }
 };
 
@@ -41,8 +39,6 @@ const drawerAddCustomer = (event: KeyboardEvent) => {
     if (event.ctrlKey && event.code === 'F10') {
         event.preventDefault();
         openDrawerAddCustomer();
-
-        // Primero, hacemos clic en el botón
     }
 };
 

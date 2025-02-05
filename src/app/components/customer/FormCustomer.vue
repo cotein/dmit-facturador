@@ -104,35 +104,6 @@ watch(
         if (newValue.type_company === 2) {
             lastNameIsRequired.value = true;
         }
-
-        /* if (
-		afipData && afipData.datosGenerales &&
-		getTipoPersona(afipData) === 'FISICA'
-	) {
-		customerForm.value.type_customer = TypeCompany.FISICA;
-	} else {
-		customerForm.value.type_customer = TypeCompany.JURIDICA;
-	}
- */
-        /* if(afipData && afipData.idPersonaListReturn){
-		sujeto.cuit = afipData.idPersonaListReturn.idPersona.toString();
-	}else if (afipData && afipData.datosMonotributo) {
-		customerForm.value.inscription = AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO;
-	}else if (afipData && afipData.datosGenerales){
-		const impuestos = afipData.datosRegimenGeneral.impuesto;
-
-		if (Array.isArray(impuestos)) {
-			impuestos.forEach((impuesto:Impuesto) => {
-				if (impuesto.descripcionImpuesto === 'IVA') {
-					customerForm.value.inscription = AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO;
-				}
-			});
-		}
-
-	}else if (afipData && afipData.errorConstancia) {
-		customerForm.value.inscription = AFIP_INSCRIPTION.CONSUMIDOR_FINAL;
-		customerForm.value.type_customer = TypeCompany.FISICA;
-		} */
     },
     { deep: true },
 );
@@ -154,7 +125,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <a-row :gutter="25">
+    <a-row :gutter="25" class="componente">
         <a-col :xs="24">
             <sdCards title="Datos" caption="Datos del Cliente">
                 <FormValidationWrap>
@@ -255,21 +226,30 @@ onBeforeMount(() => {
                             </a-row>
 
                             <div class="ninjadash_form-action mt-20">
-                                <!-- <sdButton type="primary" @click.prevent="onSubmit" class="ant-btn-primary">
-									Guardar
-								</sdButton> -->
-                                <a-button type="primary" size="large" @click.prevent="onSubmit" :loading="loading">
-                                    <span>Guardar Cliente</span>
-                                </a-button>
-                                <sdButton
-                                    @click="resetForm"
-                                    class="btn-outlined"
-                                    size="default"
-                                    :outlined="true"
-                                    type="light"
-                                >
-                                    Limpiar datos
-                                </sdButton>
+                                <a-row :gutter="16">
+                                    <a-col :xs="24" :sm="12" :md="12" :lg="6">
+                                        <a-button
+                                            type="primary"
+                                            size="large"
+                                            @click.prevent="onSubmit"
+                                            :loading="loading"
+                                            block
+                                        >
+                                            <span>Guardar Cliente</span>
+                                        </a-button>
+                                    </a-col>
+                                    <a-col :xs="24" :sm="12" :md="12" :lg="6">
+                                        <a-button
+                                            type="default"
+                                            size="large"
+                                            @click="resetForm"
+                                            :loading="loading"
+                                            block
+                                        >
+                                            <span>Limpiar datos</span>
+                                        </a-button>
+                                    </a-col>
+                                </a-row>
                             </div>
                         </a-form>
                     </VerticalFormStyleWrap>
@@ -278,7 +258,7 @@ onBeforeMount(() => {
         </a-col>
     </a-row>
 </template>
-<style>
+<style scoped>
 .ant-picker-input input {
     height: 46px;
     text-align: center;
@@ -298,5 +278,13 @@ onBeforeMount(() => {
 .fade-enter,
 .fade-leave-to {
     opacity: 0;
+}
+
+/* Media query para pantallas con resolución 1280x768 */
+@media screen and (max-width: 1280px) and (max-height: 768px) {
+    .componente {
+        transform: scale(0.95); /* Reduce el tamaño al 95% (5% más pequeño) */
+        transform-origin: center; /* Asegura que la reducción sea proporcional */
+    }
 }
 </style>

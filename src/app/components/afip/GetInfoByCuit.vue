@@ -202,7 +202,7 @@ const buttonSize = computed(() => (window.innerWidth <= 500 ? 'small' : 'large')
 </script>
 <template>
     <a-form
-        class="flex-container"
+        class="flex-container scale-down"
         name="ninjadash_validation-form"
         ref="afipGetPersonForm"
         :model="sujeto"
@@ -272,13 +272,10 @@ const buttonSize = computed(() => (window.innerWidth <= 500 ? 'small' : 'large')
     margin-top: 2rem;
 }
 
-@media (max-width: 768px) {
-    .search-button {
-        margin-top: 0.1rem;
-    }
-    .button-parent {
-        display: flex;
-        justify-content: center;
+@media (max-width: 1280px) and (max-height: 768px) {
+    .scale-down {
+        transform: scale(0.9);
+        transform-origin: top left;
     }
 }
 </style>

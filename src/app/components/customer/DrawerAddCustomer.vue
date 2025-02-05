@@ -4,7 +4,7 @@
         title="Ingresar Cliente "
         :visible="drawerAddCustomerIsVisible"
         @close="closeDrawerAddCustomer"
-        :width="'80%'"
+        :width="drawerWidth"
     >
         <template #extra>
             <a-button style="margin-right: 8px" @click="closeDrawerAddCustomer">Cerrar</a-button>
@@ -17,9 +17,12 @@
 import { storeToRefs } from 'pinia';
 import FormCustomer from './FormCustomer.vue';
 import { useDrawerAddCustomerStore } from '@/app/store/panels/useDrawerAddCustomerStore';
+import { isMobile } from '@/app/helpers/isMobile';
 
 const { drawerAddCustomerIsVisible } = storeToRefs(useDrawerAddCustomerStore());
 const { openDrawerAddCustomer, closeDrawerAddCustomer } = useDrawerAddCustomerStore();
+
+const drawerWidth = isMobile ? '80%' : '75%';
 </script>
 
 <style scoped>

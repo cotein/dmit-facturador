@@ -16,12 +16,13 @@ import InvoiceConfig from './InvoiceConfig.vue';
 import moment from 'moment';
 import ProductTable from './ProductTable.vue';
 import Cards from '@/components/cards/frame/CardsFrame.vue';
+import { isMobile } from '@/app/helpers/isMobile';
 
 const { CompanyGetter } = useCompanyComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
 const { fetchSaleConditions } = useSaleConditionComposable();
 const { Vouchers } = useVoucherComposable();
-const { invoice, isSale } = useInvoiceComposable();
+const { invoice, isSale, openSearchProduct } = useInvoiceComposable();
 const { InvoiceGetter } = useInvoiceComposable();
 const { openDrawerPtoVta } = useDrawerPtoVtaStore();
 const { fetchPaymentTypes } = usePaymentTypeComposable();
@@ -76,13 +77,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div>
+    <div class="scale-down">
         <DrawerPtoVta />
         <a-row :gutter="30">
-            <a-col :md="8" :xl="8">
+            <a-col :xs="24" :sm="24">
                 <div :style="{ margin: '10px 0px' }">CTRL + F11 para abrir datos del cliente</div>
             </a-col>
-            <a-col :md="8" :xl="8">
+            <a-col :xs="24" :sm="24">
                 <div :style="{ margin: '10px 0px' }">CTRL + F10 para ingresar cliente nuevo</div>
             </a-col>
         </a-row>
@@ -93,14 +94,14 @@ onUnmounted(() => {
                 </div>
             </template>
             <a-row :gutter="15">
-                <a-col :md="24">
+                <a-col :xs="24" :sm="24">
                     <sdCards headless>
                         <InvoiceHeader>
                             <a-row>
-                                <a-col :sm="12" :xs="24" :xl="12">
+                                <a-col :xs="24" :sm="24">
                                     <InvoiceConfig />
                                 </a-col>
-                                <a-col :sm="12" :xs="24" :xl="12">
+                                <a-col :xs="24" :sm="24">
                                     <div>
                                         <address class="invoice-info" v-if="CompanyGetter">
                                             {{ CompanyGetter.name }}
@@ -116,7 +117,7 @@ onUnmounted(() => {
                         <InvoiceLetterBox>
                             <div class="invoice-letter-inner">
                                 <a-row align="middle">
-                                    <a-col :lg="12" :xs="24">
+                                    <a-col :xs="24" :sm="24">
                                         <article class="invoice-author">
                                             <sdHeading class="invoice-customer__title" as="h5">
                                                 {{
@@ -173,7 +174,7 @@ onUnmounted(() => {
 										</sdCards>
 									</div>
 								</a-col> -->
-                                    <a-col :lg="12" :xs="24" :sm="24">
+                                    <a-col :xs="24" :sm="24">
                                         <address class="invoice-customer">
                                             <sdHeading class="invoice-customer__title" as="h5"> Facturar a: </sdHeading>
                                             <p v-if="InvoiceGetter && InvoiceGetter.customer">
@@ -191,6 +192,16 @@ onUnmounted(() => {
                         <AditionalPayment v-if="InvoiceGetter" />
                         <br />
                         <!-- Facturo por productos -->
+                        <a-col :xs="24" :sm="24" v-if="isMobile">
+                            <div :style="{ margin: '10px 0px', textAlign: 'center' }">
+                                <a-button class="orange-button" @click="openSearchProduct = true">
+                                    Buscar producto
+                                    <template #icon>
+                                        <a-icon type="search" />
+                                    </template>
+                                </a-button>
+                            </div>
+                        </a-col>
                         <ProductTable v-if="isSale" />
                     </sdCards>
                 </a-col>
@@ -199,27 +210,9 @@ onUnmounted(() => {
     </div>
 </template>
 <style scoped>
-/* Para tablets en orientación landscape y desktops con el viewport menor a 1200px */
-@media (max-width: 1200px) {
-    .invoice-customer__title {
-        /* Estilos específicos para esta resolución aquí */
-        font-size: 18px;
-    }
-}
-
-/* Para tablets en orientación portrait y smartphones grandes con el viewport menor a 900px */
-@media (max-width: 900px) {
-    .invoice-customer__title {
-        /* Estilos específicos para esta resolución aquí */
-        font-size: 16px;
-    }
-}
-
-/* Para smartphones en orientación landscape y smartphones pequeños con el viewport menor a 600px */
-@media (max-width: 600px) {
-    .invoice-customer__title {
-        /* Estilos específicos para esta resolución aquí */
-        font-size: 12px;
-    }
+.orange-button {
+    background-color: orange;
+    border-color: orange;
+    color: white;
 }
 </style>

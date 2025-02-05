@@ -138,7 +138,7 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
 </script>
 
 <template>
-    <a-row justify="center" style="background-color: #f8f9fb">
+    <a-row justify="center" style="background-color: #f8f9fb" class="scale-down">
         <a-col :xxl="6" :xl="12" :md="12" :sm="18">
             <AuthWrapper>
                 <div class="ninjadash-authentication-top">
@@ -230,3 +230,13 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
         </a-col>
     </a-row>
 </template>
+<style scoped>
+/* ...existing code... */
+
+@media (max-width: 1280px) and (max-height: 768px) {
+    .scale-down {
+        transform: scale(0.95);
+        transform-origin: top left;
+    }
+}
+</style>

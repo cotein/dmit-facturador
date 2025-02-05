@@ -44,9 +44,9 @@ const toggleCollapsedMobile = () => {
         aside.scrollTop = 0;
     }
 
-    /* if (innerWidth <= 990) {
-    collapsed.value = !collapsed.value;
-  } */
+    if (innerWidth <= 768) {
+        collapsed.value = !collapsed.value;
+    }
 };
 if (innerWidth <= 990) {
     document.body.addEventListener('click', (e: any) => {
