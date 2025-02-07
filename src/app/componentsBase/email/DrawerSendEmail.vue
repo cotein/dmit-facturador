@@ -5,7 +5,7 @@
         style="color: red"
         title="Envíar comprobante por e-mail"
         placement="right"
-        :width="drawerWidth"
+        :width="drawerWidth()"
     >
         <MailComposer />
     </a-drawer>

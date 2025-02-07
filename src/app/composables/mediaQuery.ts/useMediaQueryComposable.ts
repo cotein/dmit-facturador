@@ -18,27 +18,15 @@ export const useMediaQueryComposable = () => {
     };
 
     const drawerWidth = (): string => {
-        if (isMobile.value) {
-            return '80%';
-        }
-        if (isTablet.value) {
-            return '80%';
-        }
-        if (isDesktop.value) {
-            return '50%';
-        }
-        if (isLargeDesktop.value) {
-            return '50%';
-        }
-        return '50%';
-    };
+        const screenWidth = window.innerWidth;
 
-    const getMobileWidth = (): string | number => {
         if (isMobile.value || isTablet.value) {
-            const screenWidth = window.innerWidth;
+            console.log('🚀 ~ drawerWidth ~ `${screenWidth * 0.9}px`:', `${screenWidth * 0.9}`);
+
             return `${screenWidth * 0.9}`;
         }
-        return window.innerWidth * 0.7;
+        console.log('🚀 ~ drawerWidth ~ `${screenWidth * 0.9}px`:', `${screenWidth * 0.9}`);
+        return `${screenWidth * 0.6}`;
     };
 
     /*  watch(isMobile, (newVal) => {
@@ -57,5 +45,5 @@ export const useMediaQueryComposable = () => {
         console.log('isLargeDesktop changed:', newVal);
     }); */
 
-    return { isMobile, isTablet, isDesktop, isLargeDesktop, sizeButton, drawerWidth, getMobileWidth };
+    return { isMobile, isTablet, isDesktop, isLargeDesktop, sizeButton, drawerWidth };
 };

@@ -4,7 +4,7 @@
         {{ props.title }}
     </a-button>
     <a-drawer
-        :width="drawerWidth"
+        :width="drawerWidth()"
         :body-style="bodyStyle"
         :footer-style="{ textAlign: 'right' }"
         :visible="open"

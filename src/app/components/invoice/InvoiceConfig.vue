@@ -8,7 +8,7 @@
         </a-col>
         <a-drawer
             title="Datos del Cliente"
-            :width="drawerWidth"
+            :width="drawerWidth()"
             :visible="openDrawerDatosCliente"
             :body-style="{ paddingBottom: '80px' }"
             :footer-style="{ textAlign: 'right' }"
@@ -473,6 +473,19 @@ const validateForm = () => {
 </script>
 <style scoped>
 @media (max-width: 1280px) and (max-height: 768px) {
+    .scale-down {
+        transform: scale(0.95);
+        transform-origin: top left;
+        font-size: small;
+    }
+    .center-buttons {
+        display: flex;
+        justify-content: center;
+        margin: 1rem;
+    }
+}
+
+@media only screen and (max-width: 480px) {
     .scale-down {
         transform: scale(0.95);
         transform-origin: top left;

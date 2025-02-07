@@ -2,7 +2,7 @@
     <a-button class="config--button" type="primary" @click="openDrawerAddCustomer" :size="sizeButton"
         >Ingresar cliente nuevo</a-button
     >
-    <a-drawer :visible="drawerAddCustomerIsVisible" @close="closeDrawerAddCustomer" :width="getMobileWidth">
+    <a-drawer :visible="drawerAddCustomerIsVisible" @close="closeDrawerAddCustomer" :width="drawerWidth()">
         <template #title>
             <h2 class="title">Ingresar Cliente</h2>
         </template>
@@ -22,7 +22,7 @@ import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMedi
 const { drawerAddCustomerIsVisible } = storeToRefs(useDrawerAddCustomerStore());
 const { openDrawerAddCustomer, closeDrawerAddCustomer } = useDrawerAddCustomerStore();
 
-const { sizeButton, drawerWidth, getMobileWidth } = useMediaQueryComposable();
+const { sizeButton, drawerWidth } = useMediaQueryComposable();
 </script>
 
 <style scoped>
