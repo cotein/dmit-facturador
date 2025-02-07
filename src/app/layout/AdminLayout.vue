@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { Div, SmallScreenSearch, SmallScreenAuthInfo, TopMenuSearch } from "./style";
-import { Layout } from "ant-design-vue";
-import { useAppStore } from "../store/app/useAppStore";
-import { useCompanyComposable } from "../composables/company/useCompanyComposable";
-import AsideItems from "./Aside.vue";
-import AuthInfo from "@/app/components/auth-info/InfoAuth.vue";
-import TopMenu from "./TopMenuItems.vue";
+import { computed, ref } from 'vue';
+import { Div, SmallScreenSearch, SmallScreenAuthInfo, TopMenuSearch } from './style';
+import { Layout } from 'ant-design-vue';
+import { useAppStore } from '../store/app/useAppStore';
+import { useCompanyComposable } from '../composables/company/useCompanyComposable';
+import AsideItems from './Aside.vue';
+import AuthInfo from '@/app/components/auth-info/InfoAuth.vue';
+import TopMenu from './TopMenuItems.vue';
 
-import esLocale from "ant-design-vue/es/locale/es_ES";
+import esLocale from 'ant-design-vue/es/locale/es_ES';
 
 const { CompanyGetter } = useCompanyComposable();
 
@@ -39,7 +39,7 @@ const onShowHide = (h: any) => {
 };
 
 const toggleCollapsedMobile = () => {
-    const aside = document.querySelector(".ps--active-y");
+    const aside = document.querySelector('.ps--active-y');
     if (aside) {
         aside.scrollTop = 0;
     }
@@ -49,11 +49,8 @@ const toggleCollapsedMobile = () => {
     }
 };
 if (innerWidth <= 990) {
-    document.body.addEventListener("click", (e: any) => {
-        if (
-            !e.target.closest(".ant-layout-sider") &&
-            !e.target.closest(".navbar-brand .ant-btn")
-        ) {
+    document.body.addEventListener('click', (e: any) => {
+        if (!e.target.closest('.ant-layout-sider') && !e.target.closest('.navbar-brand .ant-btn')) {
             collapsed.value = true;
         }
     });
@@ -84,49 +81,30 @@ const onEventChange = {
                         <div class="ninjadash-header-content__left">
                             <div class="navbar-brand align-cener-v">
                                 <router-link
-                                    :class="
-                                        topMenu && innerWidth > 991
-                                            ? 'ninjadash-logo top-menu'
-                                            : 'ninjadash-logo'
-                                    "
+                                    :class="topMenu && innerWidth > 991 ? 'ninjadash-logo top-menu' : 'ninjadash-logo'"
                                     to="/"
                                 >
                                     <img
                                         id="logo"
                                         :src="
                                             !darkMode
-                                                ? $environment.VITE_SRC_ASSETS +
-                                                  `/img/dmit-logo.png`
-                                                : $environment.VITE_SRC_ASSETS +
-                                                  `/img/Logo_White.svg`
+                                                ? $environment.VITE_SRC_ASSETS + `/img/dmit-logo.png`
+                                                : $environment.VITE_SRC_ASSETS + `/img/Logo_White.svg`
                                         "
                                         alt="logo"
                                     />
                                 </router-link>
-                                <a-button
-                                    v-if="!topMenu || innerWidth <= 991"
-                                    @click="toggleCollapsed"
-                                    type="white"
-                                >
+                                <a-button v-if="!topMenu || innerWidth <= 991" @click="toggleCollapsed" type="white">
                                     <img
-                                        :src="
-                                            $environment.VITE_SRC_ASSETS +
-                                            `/img/icon/align-center-alt.svg`
-                                        "
+                                        :src="$environment.VITE_SRC_ASSETS + `/img/icon/align-center-alt.svg`"
                                         alt="menu"
                                         width="20px"
                                     />
                                 </a-button>
                             </div>
                         </div>
-                        <div
-                            class="ninjadash-header-content__right d-flex align-center-v"
-                        >
-                            <a-typography-title
-                                :level="3"
-                                class="company-name"
-                                v-if="CompanyGetter"
-                            >
+                        <div class="ninjadash-header-content__right d-flex align-center-v">
+                            <a-typography-title :level="3" class="company-name" v-if="CompanyGetter">
                                 {{ CompanyGetter.name }}
                                 {{ CompanyGetter.lastName }}</a-typography-title
                             >
@@ -154,10 +132,7 @@ const onEventChange = {
                     <a-row>
                         <a-col :md="0" :sm="24" :xs="24">
                             <div class="small-screen-headerRight">
-                                <SmallScreenSearch
-                                    :hide="searchHide"
-                                    :darkMode="darkMode"
-                                >
+                                <SmallScreenSearch :hide="searchHide" :darkMode="darkMode">
                                     <!-- <HeaderSearch /> -->
                                 </SmallScreenSearch>
                                 <SmallScreenAuthInfo :hide="hide" :darkMode="darkMode">
@@ -173,9 +148,7 @@ const onEventChange = {
                             :width="280"
                             :style="{
                                 margin: '0 0 0 0',
-                                padding: `${
-                                    !rtl ? '0px 0px 10px 0px' : '20px 0px 55px 20px'
-                                }`,
+                                padding: `${!rtl ? '0px 0px 10px 0px' : '20px 0px 55px 20px'}`,
                                 overflowY: 'auto',
                                 height: '100vh',
                                 position: 'fixed',
@@ -205,16 +178,18 @@ const onEventChange = {
                     <Layout class="ninjadash-main-layout">
                         <Content>
                             <RouterView v-slot="{ Component }">
-                                <template v-if="Component">
-                                    <Suspense>
-                                        <component :is="Component"></component>
-                                        <template #fallback>
-                                            <div class="spin">
-                                                <a-spin />
-                                            </div>
-                                        </template>
-                                    </Suspense>
-                                </template>
+                                <transition name="fade" mode="out-in">
+                                    <template v-if="Component">
+                                        <Suspense>
+                                            <component :is="Component"></component>
+                                            <template #fallback>
+                                                <div class="spin">
+                                                    <a-spin />
+                                                </div>
+                                            </template>
+                                        </Suspense>
+                                    </template>
+                                </transition>
                             </RouterView>
 
                             <Footer
@@ -232,11 +207,7 @@ const onEventChange = {
                                     <a-col :md="12" :xs="24">
                                         <span class="admin-footer__copyright"
                                             >2023 ©
-                                            <a
-                                                :href="$environment.VITE_URL as string"
-                                                style=""
-                                                >DMIT</a
-                                            >
+                                            <a :href="$environment.VITE_URL as string" style="">DMIT</a>
                                         </span>
                                     </a-col>
                                     <a-col :md="12" :xs="24">
@@ -282,5 +253,12 @@ const onEventChange = {
     .company-fantasy-name {
         display: none;
     }
+}
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0;
 }
 </style>

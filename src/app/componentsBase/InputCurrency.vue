@@ -6,6 +6,7 @@
             class="custom--input fixed-width"
             @keypress="onlyNumeric"
             @focus="selectText"
+            inputmode="numeric"
             @blur="formatCurrency"
             @change="formatCurrency"
         />
@@ -13,22 +14,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineProps, withDefaults, defineEmits } from "vue";
-import { onlyNumeric, selectText } from "@/app/helpers/onlyNumbers";
+import { ref, onMounted, defineProps, withDefaults, defineEmits } from 'vue';
+import { onlyNumeric, selectText } from '@/app/helpers/onlyNumbers';
 
 type Props = {
     modelValue: any;
 };
 
 const props = withDefaults(defineProps<Props>(), {
-    modelValue: "",
+    modelValue: '',
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(['update:modelValue']);
 
 const onInput = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    emit("update:modelValue", parseFloat(target.value));
+    emit('update:modelValue', parseFloat(target.value));
 };
 
 const formatCurrency = (e: Event) => {
@@ -36,22 +37,22 @@ const formatCurrency = (e: Event) => {
     const value = parseFloat(target.value);
 
     if (!isNaN(value)) {
-        target.value = new Intl.NumberFormat("es-AR", {
-            style: "currency",
-            currency: "ARS",
+        target.value = new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: 'ARS',
         }).format(value);
 
-        emit("update:modelValue", target.value);
+        emit('update:modelValue', target.value);
     }
 };
 
 onMounted(() => {
     emit(
-        "update:modelValue",
-        new Intl.NumberFormat("es-AR", {
-            style: "currency",
-            currency: "ARS",
-        }).format(props.modelValue)
+        'update:modelValue',
+        new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: 'ARS',
+        }).format(props.modelValue),
     );
 });
 </script>

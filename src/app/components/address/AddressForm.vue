@@ -54,7 +54,7 @@
                 </a-col>
                 <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                     <a-form-item ref="number" name="number" label="Número">
-                        <a-input v-model:value="addressInStore.number" autocomplete="off-off" />
+                        <a-input v-model:value="addressInStore.number" autocomplete="off-off" inputmode="numeric" />
                     </a-form-item>
                 </a-col>
             </a-row>

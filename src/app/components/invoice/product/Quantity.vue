@@ -6,6 +6,7 @@
         <a-input
             @input="input"
             @keypress="onlyNumericInputEvent"
+            inputmode="numeric"
             v-model:value="invoiceTableData[props.index].quantity"
             class="custom--input"
             @focus="selectText"

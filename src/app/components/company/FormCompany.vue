@@ -318,7 +318,11 @@ const addAccount = () => {
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                         <a-form-item ref="iibb" name="iibb" label="N° de Ingresos Brutos">
-                                            <a-input v-model:value="companyForm.iibb" placeholder="IIBB" />
+                                            <a-input
+                                                v-model:value="companyForm.iibb"
+                                                placeholder="IIBB"
+                                                inputmode="numeric"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -378,7 +382,11 @@ const addAccount = () => {
                                             :help="cbuErrors[0][0]"
                                             :validateStatus="cbuErrors[0][0] ? 'error' : 'success'"
                                         >
-                                            <a-input v-model:value="companyForm.cbus[0].cbu" placeholder="CBU" />
+                                            <a-input
+                                                v-model:value="companyForm.cbus[0].cbu"
+                                                placeholder="CBU"
+                                                inputmode="numeric"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -440,7 +448,7 @@ const addAccount = () => {
                                             :help="cbuErrors[index + 1][0]"
                                             :validateStatus="cbuErrors[index + 1][0] ? 'error' : 'success'"
                                         >
-                                            <a-input v-model:value="cbu.cbu" placeholder="CBU" />
+                                            <a-input v-model:value="cbu.cbu" placeholder="CBU" inputmode="numeric" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -497,6 +505,7 @@ const addAccount = () => {
                                                 v-model:value="companyForm.phone1"
                                                 placeholder="Teléfono 1"
                                                 @keypress="onlyNumeric"
+                                                inputmode="numeric"
                                             />
                                         </a-form-item>
                                     </a-col>
@@ -507,6 +516,7 @@ const addAccount = () => {
                                                 v-model:value="companyForm.phone2"
                                                 placeholder="Teléfono 2"
                                                 @keypress="onlyNumeric"
+                                                inputmode="numeric"
                                             />
                                         </a-form-item>
                                     </a-col>

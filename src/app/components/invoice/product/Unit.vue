@@ -4,6 +4,7 @@
         :value="invoiceTableData[props.index].unit"
         class="custom-input"
         @keypress="onlyNumeric"
+        inputmode="numeric"
         @focus="selectText"
     />
 </template>

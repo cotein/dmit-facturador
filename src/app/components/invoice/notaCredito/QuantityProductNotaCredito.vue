@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import { onlyNumeric } from '@/app/helpers/onlyNumbers';
 import { ref, toRefs, computed, isProxy, onBeforeMount } from 'vue';
 import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
 import type { ProductForNotaCredito } from '@/app/types/Product';
