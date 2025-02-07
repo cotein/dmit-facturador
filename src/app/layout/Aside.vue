@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue';
-import CreateCompanyForm from '../components/company/CreateCompanyForm.vue';
-import { useOpenCompanyPanelStore } from '@/app/store/panels/useOpenCompanyPanelStore';
-import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAddNewCompanyPanelComposable';
-import { useUserComposable } from '../composables/user/useUserComposable';
-import { useCompanyComposable } from '../composables/company/useCompanyComposable';
-import type { CompanyRawData } from '../types/Company';
+import { reactive, ref, onMounted } from "vue";
+import CreateCompanyForm from "../components/company/CreateCompanyForm.vue";
+import { useOpenCompanyPanelStore } from "@/app/store/panels/useOpenCompanyPanelStore";
+import { useAddNewCompanyPanelComposable } from "@/app/composables/panels/useAddNewCompanyPanelComposable";
+import { useUserComposable } from "../composables/user/useUserComposable";
+import { useCompanyComposable } from "../composables/company/useCompanyComposable";
+import type { CompanyRawData } from "../types/Company";
 
 const { IHaventGotCompanies } = useUserComposable();
 const { createCompanyMutation } = useCompanyComposable();
@@ -22,17 +22,20 @@ const props = defineProps({
 });
 
 const darkMode = ref<boolean>(false);
-const mode = ref('inline');
+const mode = ref("inline");
 
 const state = reactive({
-    rootSubmenuKeys: ['sub1', 'sub2', 'sub4'],
-    selectedKeys: ['home'],
-    openKeys: ['dashboard'],
-    preOpenKeys: ['dashboard'],
+    rootSubmenuKeys: ["sub1", "sub2", "sub4"],
+    selectedKeys: ["home"],
+    openKeys: ["dashboard"],
+    preOpenKeys: ["dashboard"],
 });
 
 const onOpenChange = (keys: any) => {
-    state.openKeys = keys[keys.length - 1] !== 'recharts' ? [keys.length && keys[keys.length - 1]] : keys;
+    state.openKeys =
+        keys[keys.length - 1] !== "recharts"
+            ? [keys.length && keys[keys.length - 1]]
+            : keys;
 };
 
 const onClick = (item: { keyPath: any }) => {
@@ -113,7 +116,9 @@ onMounted(() => {
                 <router-link :to="{ name: 'Dashboard' }"> Dashboard </router-link>
             </a-menu-item>
             <a-menu-item @click="toggleCollapsed" key="generate">
-                <router-link :to="{ name: 'NewInvoice' }"> Generar comprobante</router-link>
+                <router-link :to="{ name: 'NewInvoice' }">
+                    Generar comprobante</router-link
+                >
             </a-menu-item>
             <a-menu-item @click="toggleCollapsed" key="vouchers">
                 <router-link :to="{ name: 'ListInvoice' }"> Comprobantes </router-link>

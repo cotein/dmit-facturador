@@ -6,11 +6,13 @@ import { useCompanyComposable } from '@/app/composables/company/useCompanyCompos
 import { useRouter } from 'vue-router';
 import { useUserComposable } from '@/app/composables/user/useUserComposable';
 import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
-import Settings from './Settings.vue';
 import EditCompanyForm from '@/app/components/company/EditCompanyForm.vue';
 import { ref } from 'vue';
 import uploadLogo from '../uploadFiles/uploadLogo.vue';
 import { URL_UPLOAD_COMPANY_LOGO } from '@/app/types/Constantes';
+import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMediaQueryComposable';
+
+const { drawerWidth, getMobileWidth } = useMediaQueryComposable();
 const { sujetoIsEditable } = usePadronComposable();
 const { CompanyGetter, updateCompanyMutation, setCompany } = useCompanyComposable();
 const { openEditCompanyPanel, closeEditCompanyPanel, EditCompanyPanel } = useAddNewCompanyPanelComposable();
@@ -55,7 +57,12 @@ const openEditPanel = async () => {
 </script>
 
 <template>
-    <a-drawer title="Editar datos de la compañía" width="80%" :visible="EditCompanyPanel" @close="closeEditPanel">
+    <a-drawer
+        title="Editar datos de la compañía"
+        :width="getMobileWidth"
+        :visible="EditCompanyPanel"
+        @close="closeEditPanel"
+    >
         <EditCompanyForm
             @submitCompanyForm="handleSubmitCompanyForm"
             :loadingButton="!updateCompanyMutation.isLoading"

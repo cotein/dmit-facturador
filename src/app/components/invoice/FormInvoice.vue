@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { BillingConcepts } from '@/app/types/Afip';
-import { computed, onUnmounted, watch, onBeforeMount } from 'vue';
-import { InvoiceHeader, InvoiceLetterBox } from './Style';
-import { storeToRefs } from 'pinia';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useDrawerPtoVtaStore } from '@/app/store/panels/useDrawerPtoVtaStore';
-import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
-import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
-import { useSaleConditionComposable } from '@/app/composables/sale-condition/useSaleConditionComposable';
-import { useVoucherComposable } from '@/app/composables/voucher/useVoucherComposable';
-import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
-import DrawerPtoVta from './DrawerPtoVta.vue';
-import AditionalPayment from './AditionalPayment.vue';
-import InvoiceConfig from './InvoiceConfig.vue';
-import moment from 'moment';
-import ProductTable from './ProductTable.vue';
-import Cards from '@/components/cards/frame/CardsFrame.vue';
-import { isMobile } from '@/app/helpers/isMobile';
+import { BillingConcepts } from "@/app/types/Afip";
+import { computed, onUnmounted, watch, onBeforeMount } from "vue";
+import { InvoiceHeader, InvoiceLetterBox } from "./Style";
+import { storeToRefs } from "pinia";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import { useDrawerPtoVtaStore } from "@/app/store/panels/useDrawerPtoVtaStore";
+import { useFilterSearchByCustomerStore } from "@/app/store/filter-search/useFilterSearchByCustomerStore";
+import { useInvoiceComposable } from "@/app/composables/invoice/useInvoiceComposable";
+import { useSaleConditionComposable } from "@/app/composables/sale-condition/useSaleConditionComposable";
+import { useVoucherComposable } from "@/app/composables/voucher/useVoucherComposable";
+import { usePaymentTypeComposable } from "@/app/composables/payment-type/usePaymentTypeComposable";
+import DrawerPtoVta from "./DrawerPtoVta.vue";
+import AditionalPayment from "./AditionalPayment.vue";
+import InvoiceConfig from "./InvoiceConfig.vue";
+import moment from "moment";
+import ProductTable from "./ProductTable.vue";
+import Cards from "@/components/cards/frame/CardsFrame.vue";
+import { isMobile } from "@/app/helpers/isMobile";
 
 const { CompanyGetter } = useCompanyComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
@@ -28,7 +28,7 @@ const { openDrawerPtoVta } = useDrawerPtoVtaStore();
 const { fetchPaymentTypes } = usePaymentTypeComposable();
 
 const VoucherDate = computed(() => {
-    if (InvoiceGetter.value.CbteFch != '') {
+    if (InvoiceGetter.value.CbteFch != "") {
         const date = InvoiceGetter.value.CbteFch;
         const day = String(date).substring(6, 8);
         const month = String(date).substring(4, 6);
@@ -37,31 +37,33 @@ const VoucherDate = computed(() => {
         return `${day}-${month}-${year}`;
     }
 
-    return '';
+    return "";
 });
 
 const VoucherName = computed(() => {
     if (InvoiceGetter.value.voucher) {
-        const index = Vouchers.value.findIndex((v) => v.id === InvoiceGetter.value.voucher);
+        const index = Vouchers.value.findIndex(
+            (v) => v.id === InvoiceGetter.value.voucher
+        );
 
         return Vouchers.value[index].name;
     }
 
-    return '';
+    return "";
 });
 
 watch(
     () => CompanyGetter.value,
     (newValue) => {
         if (
-            parseInt(newValue?.pto_vta_fe ?? '') === 0 ||
+            parseInt(newValue?.pto_vta_fe ?? "") === 0 ||
             newValue?.pto_vta_fe === undefined ||
             newValue?.pto_vta_fe === null
         ) {
             openDrawerPtoVta();
         }
     },
-    { deep: true, immediate: true },
+    { deep: true, immediate: true }
 );
 
 onBeforeMount(() => {
@@ -72,25 +74,31 @@ onBeforeMount(() => {
 
 onUnmounted(() => {
     invoice.value.customer = null;
-    customer.value = { value: null, label: '', cuit: '' };
+    customer.value = { value: null, label: "", cuit: "" };
 });
 </script>
 
 <template>
     <div class="scale-down">
         <DrawerPtoVta />
-        <a-row :gutter="30">
+        <a-row :gutter="30" v-if="!isMobile">
             <a-col :xs="24" :sm="24">
-                <div :style="{ margin: '10px 0px' }">CTRL + F11 para abrir datos del cliente</div>
+                <div :style="{ margin: '10px 0px' }">
+                    CTRL + F11 para abrir datos del cliente
+                </div>
             </a-col>
             <a-col :xs="24" :sm="24">
-                <div :style="{ margin: '10px 0px' }">CTRL + F10 para ingresar cliente nuevo</div>
+                <div :style="{ margin: '10px 0px' }">
+                    CTRL + F10 para ingresar cliente nuevo
+                </div>
             </a-col>
         </a-row>
         <Cards>
             <template #title>
                 <div class="ninjadash-card-title-wrap">
-                    <span class="ninjadash-card-title-text"> Genera comprobante de venta </span>
+                    <span class="ninjadash-card-title-text">
+                        Genera comprobante de venta
+                    </span>
                 </div>
             </template>
             <a-row :gutter="15">
@@ -103,9 +111,16 @@ onUnmounted(() => {
                                 </a-col>
                                 <a-col :xs="24" :sm="24">
                                     <div>
-                                        <address class="invoice-info" v-if="CompanyGetter">
+                                        <address
+                                            class="invoice-info"
+                                            v-if="CompanyGetter"
+                                        >
                                             {{ CompanyGetter.name }}
-                                            {{ CompanyGetter.lastName ? CompanyGetter.lastName : '' }}<br />
+                                            {{
+                                                CompanyGetter.lastName
+                                                    ? CompanyGetter.lastName
+                                                    : ""
+                                            }}<br />
                                             <!-- 795 Folsom Ave, Suite 600 <br />
 										San Francisco, CA 94107, USA <br />
 										Reg. number : 245000003513 -->
@@ -119,9 +134,14 @@ onUnmounted(() => {
                                 <a-row align="middle">
                                     <a-col :xs="24" :sm="24">
                                         <article class="invoice-author">
-                                            <sdHeading class="invoice-customer__title" as="h5">
+                                            <sdHeading
+                                                class="invoice-customer__title"
+                                                as="h5"
+                                            >
                                                 {{
-                                                    InvoiceGetter && InvoiceGetter.voucher ? VoucherName : ''
+                                                    InvoiceGetter && InvoiceGetter.voucher
+                                                        ? VoucherName
+                                                        : ""
                                                 }}</sdHeading
                                             >
                                             <!--  <p>
@@ -138,26 +158,40 @@ onUnmounted(() => {
                                             </p> -->
                                             <p>
                                                 Fecha factura:
-                                                {{ InvoiceGetter && InvoiceGetter.CbteFch != '' ? VoucherDate : '' }}
+                                                {{
+                                                    InvoiceGetter &&
+                                                    InvoiceGetter.CbteFch != ""
+                                                        ? VoucherDate
+                                                        : ""
+                                                }}
                                             </p>
                                             <p>
                                                 {{
-                                                    InvoiceGetter && InvoiceGetter.CbteNro && InvoiceGetter.Concepto
+                                                    InvoiceGetter &&
+                                                    InvoiceGetter.CbteNro &&
+                                                    InvoiceGetter.Concepto
                                                         ? `${String(
-                                                              BillingConcepts[Number(InvoiceGetter.Concepto) - 1].key,
+                                                              BillingConcepts[
+                                                                  Number(
+                                                                      InvoiceGetter.Concepto
+                                                                  ) - 1
+                                                              ].key
                                                           )}`
-                                                        : ''
+                                                        : ""
                                                 }}
                                                 {{
-                                                    InvoiceGetter && InvoiceGetter.Concepto != '1'
+                                                    InvoiceGetter &&
+                                                    InvoiceGetter.Concepto != "1"
                                                         ? ` - Desde: ${moment(
                                                               InvoiceGetter.FchServDesde,
-                                                              'YYYYMMDD',
-                                                          ).format('DD/MM/YYYY')} Hasta: ${moment(
+                                                              "YYYYMMDD"
+                                                          ).format(
+                                                              "DD/MM/YYYY"
+                                                          )} Hasta: ${moment(
                                                               InvoiceGetter.FchServHasta,
-                                                              'YYYYMMDD',
-                                                          ).format('DD/MM/YYYY')}`
-                                                        : ''
+                                                              "YYYYMMDD"
+                                                          ).format("DD/MM/YYYY")}`
+                                                        : ""
                                                 }}
                                             </p>
                                         </article>
@@ -176,8 +210,18 @@ onUnmounted(() => {
 								</a-col> -->
                                     <a-col :xs="24" :sm="24">
                                         <address class="invoice-customer">
-                                            <sdHeading class="invoice-customer__title" as="h5"> Facturar a: </sdHeading>
-                                            <p v-if="InvoiceGetter && InvoiceGetter.customer">
+                                            <sdHeading
+                                                class="invoice-customer__title"
+                                                as="h5"
+                                            >
+                                                Facturar a:
+                                            </sdHeading>
+                                            <p
+                                                v-if="
+                                                    InvoiceGetter &&
+                                                    InvoiceGetter.customer
+                                                "
+                                            >
                                                 {{ InvoiceGetter.customer!.label }} <br />
                                                 <!-- 795 Folsom Ave, Suite 600 <br />
 											San Francisco, CA 94107, USA -->
@@ -194,7 +238,10 @@ onUnmounted(() => {
                         <!-- Facturo por productos -->
                         <a-col :xs="24" :sm="24" v-if="isMobile">
                             <div :style="{ margin: '10px 0px', textAlign: 'center' }">
-                                <a-button class="orange-button" @click="openSearchProduct = true">
+                                <a-button
+                                    class="orange-button"
+                                    @click="openSearchProduct = true"
+                                >
                                     Buscar producto
                                     <template #icon>
                                         <a-icon type="search" />

@@ -1,13 +1,13 @@
 <template>
-    <a-button class="config--button" type="primary" @click="openDrawerAddCustomer">Ingresar cliente nuevo</a-button>
-    <a-drawer
-        title="Ingresar Cliente "
-        :visible="drawerAddCustomerIsVisible"
-        @close="closeDrawerAddCustomer"
-        :width="drawerWidth"
+    <a-button class="config--button" type="primary" @click="openDrawerAddCustomer" :size="sizeButton"
+        >Ingresar cliente nuevo</a-button
     >
+    <a-drawer :visible="drawerAddCustomerIsVisible" @close="closeDrawerAddCustomer" :width="getMobileWidth">
+        <template #title>
+            <h2 class="title">Ingresar Cliente</h2>
+        </template>
         <template #extra>
-            <a-button style="margin-right: 8px" @click="closeDrawerAddCustomer">Cerrar</a-button>
+            <a-button style="margin-right: 8px" @click="closeDrawerAddCustomer" :size="sizeButton">Cerrar</a-button>
         </template>
         <FormCustomer :should-use-address-rule="false" />
     </a-drawer>
@@ -17,16 +17,28 @@
 import { storeToRefs } from 'pinia';
 import FormCustomer from './FormCustomer.vue';
 import { useDrawerAddCustomerStore } from '@/app/store/panels/useDrawerAddCustomerStore';
-import { isMobile } from '@/app/helpers/isMobile';
+import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMediaQueryComposable';
 
 const { drawerAddCustomerIsVisible } = storeToRefs(useDrawerAddCustomerStore());
 const { openDrawerAddCustomer, closeDrawerAddCustomer } = useDrawerAddCustomerStore();
 
-const drawerWidth = isMobile ? '80%' : '75%';
+const { sizeButton, drawerWidth, getMobileWidth } = useMediaQueryComposable();
 </script>
 
 <style scoped>
 .config--button {
     margin: 0 10px;
+}
+/* Estilos para cambiar el tamaño del título según el dispositivo */
+@media (max-width: 768px) {
+    .title {
+        font-size: 10px; /* Tamaño del título para dispositivos móviles */
+    }
+}
+
+@media (min-width: 769px) {
+    .title {
+        font-size: 18px; /* Tamaño del título para dispositivos de escritorio */
+    }
 }
 </style>

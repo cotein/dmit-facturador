@@ -17,6 +17,7 @@ import GetInfoByCuit from '../afip/GetInfoByCuit.vue';
 import { usePadronAfipStore } from '@/app/store/afip/usePadronAfipStore';
 import type { Impuesto, PersonaReturn } from '@/app/types/Afip';
 import { showMessage } from '@/app/helpers/mesaages';
+import { isMobile, isTablet, isDesktop, isLargeDesktop } from '@/app/helpers/isMobile';
 
 interface Props {
     shouldUseAddressRule: boolean;
@@ -42,6 +43,16 @@ const { isLoading: inscriptionLoading, store } = useInscriptionsComposable();
 const { isValid } = storeToRefs(useAddressStore());
 
 const addressStore = useAddressStore();
+
+const sizeButton = () => {
+    if (isMobile.value) {
+        return 'small';
+    }
+    if (isTablet.value) {
+        return 'small';
+    }
+    return 'default';
+};
 
 /**METHODS */
 const onSubmit = async () => {
@@ -121,6 +132,13 @@ onBeforeMount(() => {
             },
         });
     }
+});
+
+onMounted(() => {
+    console.log('🚀 ~ onMounted ~ isMobile:', isMobile.value);
+    console.log('🚀 ~ onMounted ~ isTablet:', isTablet.value);
+    console.log('🚀 ~ onMounted ~ isDesktop:', isDesktop.value);
+    console.log('🚀 ~ onMounted ~ isLargeDesktop:', isLargeDesktop.value);
 });
 </script>
 
@@ -225,12 +243,12 @@ onBeforeMount(() => {
                                 </a-col>
                             </a-row>
 
-                            <div class="ninjadash_form-action mt-20">
-                                <a-row :gutter="16">
+                            <div>
+                                <a-row :gutter="16" class="button-group">
                                     <a-col :xs="24" :sm="12" :md="12" :lg="6">
                                         <a-button
                                             type="primary"
-                                            size="large"
+                                            :size="sizeButton"
                                             @click.prevent="onSubmit"
                                             :loading="loading"
                                             block
@@ -241,7 +259,7 @@ onBeforeMount(() => {
                                     <a-col :xs="24" :sm="12" :md="12" :lg="6">
                                         <a-button
                                             type="default"
-                                            size="large"
+                                            :size="sizeButton"
                                             @click="resetForm"
                                             :loading="loading"
                                             block
@@ -281,10 +299,32 @@ onBeforeMount(() => {
 }
 
 /* Media query para pantallas con resolución 1280x768 */
-@media screen and (max-width: 1280px) and (max-height: 768px) {
+/* @media screen and (max-width: 1280px) and (max-height: 768px) {
     .componente {
-        transform: scale(0.95); /* Reduce el tamaño al 95% (5% más pequeño) */
-        transform-origin: center; /* Asegura que la reducción sea proporcional */
+        transform: scale(0.95);
+        transform-origin: center;
+    }
+} */
+
+.button-group {
+    display: flex;
+    justify-content: center; /* Centra los botones horizontalmente */
+    align-items: center;
+    gap: 8px; /* Espacio entre los botones */
+}
+
+@media (max-width: 768px) {
+    .button-group {
+        flex-direction: column; /* Coloca los botones uno debajo del otro en dispositivos móviles y tabletas */
+    }
+
+    .button-group .ant-col {
+        width: 100%; /* Asegura que los botones ocupen todo el ancho disponible */
+        margin-bottom: 8px; /* Agrega separación entre los botones */
+    }
+
+    .button-group .ant-col:last-child {
+        margin-bottom: 0; /* Elimina la separación del último botón */
     }
 }
 </style>

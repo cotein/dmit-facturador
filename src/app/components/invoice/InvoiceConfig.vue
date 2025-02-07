@@ -166,7 +166,9 @@ import VoucherSelect from './VoucherSelect.vue';
 import { useVisibleComposable } from '@/app/composables/visible/useVisibleComposable';
 import { z } from 'zod';
 import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
-import { isMobile } from '@/app/helpers/isMobile';
+import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMediaQueryComposable';
+
+const { drawerWidth } = useMediaQueryComposable();
 
 const { PaymentTypesGetter } = usePaymentTypeComposable();
 
@@ -468,10 +470,6 @@ const validateForm = () => {
 /* const isMobile = () => {
     return window.matchMedia('(max-width: 768px)').matches;
 }; */
-
-const drawerWidth = computed(() => {
-    return isMobile ? '75%' : '50%';
-});
 </script>
 <style scoped>
 @media (max-width: 1280px) and (max-height: 768px) {

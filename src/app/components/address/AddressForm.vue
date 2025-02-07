@@ -4,13 +4,15 @@
         {{ props.title }}
     </a-button>
     <a-drawer
-        title="Domicilio"
-        :width="isMobile ? '85%' : '70%'"
+        :width="drawerWidth"
         :body-style="bodyStyle"
         :footer-style="{ textAlign: 'right' }"
         :visible="open"
         @close="onClose"
     >
+        <template #title>
+            <h2 class="title">Domicilio</h2>
+        </template>
         <a-form :model="addressInStore" :rules="rules" layout="vertical" ref="addressFormRef" autocomplete="off-off">
             <a-row :gutter="16">
                 <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -81,12 +83,12 @@
                 </a-col>
             </a-row>
         </a-form>
-        <template #extra>
-            <a-space>
-                <a-button @click="onClose">Cerrar</a-button>
-                <a-button @click="resetForm" danger>Limpiar datos</a-button>
-                <a-button type="primary" @click="onSubmit">Guardar</a-button>
-            </a-space>
+        <template #footer>
+            <div class="button-group">
+                <a-button :size="sizeButton" @click="onClose" :block="isMobile ? true : false">Cerrar</a-button>
+                <a-button :size="sizeButton" @click="resetForm" danger>Limpiar datos</a-button>
+                <a-button :size="sizeButton" type="primary" @click="onSubmit">Guardar</a-button>
+            </div>
         </template>
     </a-drawer>
 </template>
@@ -95,16 +97,15 @@ import { ref, onMounted, computed, reactive } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 import { useState } from '@/app/composables/afip/useStateComposable';
-//import { useAddressComposable } from "@/app/composables/address/useAddressComposable";
 import { useAddressStore } from '@/app/store/address/address-store';
 import { storeToRefs } from 'pinia';
-import type { Address } from '@/app/types/Address';
-import { isMobile } from '@/app/helpers/isMobile';
+import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMediaQueryComposable';
 
 interface Props {
     title: string;
 }
 
+const { drawerWidth, isMobile, isTablet, sizeButton } = useMediaQueryComposable();
 const { addressInStore } = storeToRefs(useAddressStore());
 const { isValid } = storeToRefs(useAddressStore());
 const { statesLoading, statesStore } = useState();
@@ -113,21 +114,11 @@ const props = defineProps<Props>();
 const addressFormRef = ref();
 
 const open = ref<boolean>(false);
-/* const address = reactive<Address>({
-  state_id: "",
-  city: "",
-  street: "",
-  cp: "",
-  number: "",
-  obs: "",
-  between_streets: "",
-  addressable_id: "",
-  addressable_type: "",
-}); */
 
 const bodyStyle = computed(() => {
-    return isMobile ? { paddingBottom: '80px' } : { paddingBottom: '80px' };
+    return isMobile || isTablet ? { paddingBottom: '80px' } : { paddingBottom: '80px' };
 });
+
 const rules = reactive<Record<string, Rule[]>>({
     state_id: [
         {
@@ -208,3 +199,38 @@ const onSubmit = async () => {
     }
 };
 </script>
+<style scoped>
+.button-group {
+    margin-bottom: 5rem;
+    display: flex;
+    gap: 8px; /* Espacio entre los botones */
+}
+
+/* Estilos para cambiar el tamaño del título según el dispositivo */
+@media (max-width: 768px) {
+    .title {
+        font-size: 14px; /* Tamaño del título para dispositivos móviles */
+    }
+    .button-group {
+        flex-direction: column; /* Coloca los botones uno debajo del otro en dispositivos móviles */
+    }
+    .button-group a-button {
+        width: 100%; /* Asegura que los botones ocupen todo el ancho disponible */
+    }
+}
+
+@media (min-width: 769px) {
+    .title {
+        font-size: 18px; /* Tamaño del título para dispositivos de escritorio */
+    }
+}
+.drawer-slide-enter-active,
+.drawer-slide-leave-active {
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+.drawer-slide-enter,
+.drawer-slide-leave-to {
+    transform: translateX(100%);
+    opacity: 0;
+}
+</style>

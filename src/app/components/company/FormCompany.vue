@@ -195,6 +195,8 @@ watch(
 );
 const isMobile = ref<boolean>(false);
 
+const sizeButton = isMobile.value === true ? 'small' : 'default';
+
 onMounted(async () => {
     if (window.innerWidth <= 768) {
         isMobile.value = true;
@@ -579,14 +581,19 @@ const addAccount = () => {
                                     </a-col>
                                 </a-row>
 
-                                <div class="ninjadash_form-action mt-20">
-                                    <a-button type="primary" size="large" :loading="loading" @click.prevent="onSubmit">
+                                <div class="button-group">
+                                    <a-button
+                                        type="primary"
+                                        :size="sizeButton"
+                                        :loading="loading"
+                                        @click.prevent="onSubmit"
+                                    >
                                         <span>{{ props.isSaveButton ? 'Guardar datos' : 'Actualizar datos' }}</span>
                                     </a-button>
                                     <a-button
                                         @click="resetForm"
                                         class="btn-outlined"
-                                        size="large"
+                                        :size="sizeButton"
                                         :outlined="true"
                                         type="light"
                                     >
@@ -602,6 +609,13 @@ const addAccount = () => {
     </Main>
 </template>
 <style>
+.button-group {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* Espacio entre los botones */
+}
 .ant-picker-input input {
     height: 46px;
     text-align: center;
@@ -626,6 +640,11 @@ const addAccount = () => {
     .radio-group {
         flex-direction: column !important;
     }
+    .button-group a-button {
+        display: block; /* Hace que los botones sean de tipo block */
+        width: 100%; /* Asegura que los botones ocupen todo el ancho disponible */
+        size: small; /* Cambia el tamaño de los botones a small */
+    }
 }
 #iibb,
 #iva {
@@ -646,6 +665,12 @@ const addAccount = () => {
     .radio-group .ant-radio-button-wrapper {
         flex: 1;
         margin-bottom: 0;
+    }
+
+    .button-group a-button {
+        display: block; /* Hace que los botones sean de tipo block */
+        width: 100%; /* Asegura que los botones ocupen todo el ancho disponible */
+        size: small; /* Cambia el tamaño de los botones a small */
     }
 }
 .mobile-space {
