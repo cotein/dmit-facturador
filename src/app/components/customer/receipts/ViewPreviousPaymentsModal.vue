@@ -5,7 +5,7 @@
             title="Detalle de pagos"
             @ok="onClose"
             width="75%"
-            class="custom-modal"
+            class="custom-modal no-black-background"
         >
             <template v-if="individualInvoice === null">
                 <div class="spin-container">
@@ -186,6 +186,6 @@ const handleCancel = () => {
     flex-direction: row;
 }
 .custom-modal .ant-modal-mask {
-    background-color: rgba(0, 0, 0, 0) !important; /* Hacer el fondo transparente */
+    background-color: rgba(247, 241, 241, 0.471) !important; /* Hacer el fondo transparente */
 }
 </style>
