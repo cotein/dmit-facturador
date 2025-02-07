@@ -218,6 +218,7 @@ const buttonSize = computed(() => (window.innerWidth <= 500 ? 'small' : 'large')
                     <a-input
                         :disabled="sujetoIsEditable"
                         v-model:value="sujeto.cuit"
+                        inputmode="numeric"
                         autocomplete="off"
                         @keypress="onlyNumeric"
                         @change="(e:any) => e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"

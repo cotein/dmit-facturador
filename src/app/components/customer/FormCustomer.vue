@@ -156,7 +156,7 @@ onMounted(() => {
                             layout="vertical"
                         >
                             <a-row :gutter="30">
-                                <a-col :md="8" :xs="24">
+                                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                     <GetInfoByCuit :only-cuit="false" />
                                 </a-col>
                                 <a-col :md="lastNameIsRequired ? 8 : 16" :xs="24">
@@ -168,12 +168,12 @@ onMounted(() => {
                                         <a-input v-model:value="customerForm.name" placeholder="Nombre" />
                                     </a-form-item>
                                 </a-col>
-                                <a-col :md="8" :xs="24" v-if="lastNameIsRequired">
+                                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" v-if="lastNameIsRequired">
                                     <a-form-item ref="lastName" name="lastName" label="Apellido">
                                         <a-input v-model:value="customerForm.lastName" placeholder="Apellido" />
                                     </a-form-item>
                                 </a-col>
-                                <a-col :md="10" :xs="24">
+                                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                     <a-form-item ref="fantasy_name" name="fantasy_name" label="Nombre de Fantasía">
                                         <a-input
                                             v-model:value="customerForm.fantasy_name"
@@ -181,7 +181,7 @@ onMounted(() => {
                                         />
                                     </a-form-item>
                                 </a-col>
-                                <a-col :md="8" :xs="24">
+                                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                     <a-form-item ref="inscription" name="inscription" label="Inscripción en AFIP">
                                         <a-select
                                             v-model:value="customerForm.inscription"
@@ -205,7 +205,7 @@ onMounted(() => {
                                         </a-select>
                                     </a-form-item>
                                 </a-col>
-                                <a-col :md="4" :xs="24">
+                                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                     <a-form-item ref="type_customer" name="type_customer" label="Tipo de Empresa">
                                         <a-select
                                             v-model:value="customerForm.type_customer"
@@ -227,7 +227,7 @@ onMounted(() => {
                             <a-divider class="divider" />
                             <a-typography-title :level="4">Domicilio</a-typography-title>
                             <a-row :gutter="30">
-                                <a-col :md="4" :xs="24">
+                                <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                     <a-form-item
                                         ref="address"
                                         name="address"
@@ -245,7 +245,7 @@ onMounted(() => {
 
                             <div>
                                 <a-row :gutter="16" class="button-group">
-                                    <a-col :xs="24" :sm="12" :md="12" :lg="6">
+                                    <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                         <a-button
                                             type="primary"
                                             :size="sizeButton"
@@ -256,7 +256,7 @@ onMounted(() => {
                                             <span>Guardar Cliente</span>
                                         </a-button>
                                     </a-col>
-                                    <a-col :xs="24" :sm="12" :md="12" :lg="6">
+                                    <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                         <a-button
                                             type="default"
                                             :size="sizeButton"

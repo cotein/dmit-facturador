@@ -485,7 +485,7 @@ const validateForm = () => {
     }
 }
 
-@media only screen and (max-width: 480px) {
+@media (max-width: 1280px) {
     .scale-down {
         transform: scale(0.95);
         transform-origin: top left;
