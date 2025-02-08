@@ -33,6 +33,7 @@
                 <TopToolBox>
                     <a-row :gutter="15" class="justify-content-center responsive-row" v-if="props.viewSearch">
                         <a-col :xxl="6" :lg="6" :xs="24" v-if="props.isSale">
+                            <span>Buscar cliente:</span>
                             <SearchCustomer :multiple="false" :context="'invoice'" />
                         </a-col>
                         <a-col :xxl="9" :lg="9" :xs="24">
@@ -62,15 +63,16 @@
                         </a-col>
                         <a-col :xxl="2" :lg="2" :xs="24" v-if="props.isSale">
                             <div class="table-toolbox-actions text-right">
-                                <sdButton
+                                <a-button
                                     size="sm"
                                     type="secondary"
                                     transparented
                                     @click="print"
                                     :loading="printSpinner"
+                                    style="background-color: green; color: white"
                                 >
                                     Exportar
-                                </sdButton>
+                                </a-button>
                             </div>
                         </a-col>
                     </a-row>
@@ -190,6 +192,7 @@ import type { InvoiceList } from '@/app/types/Invoice';
 import { ColumnProps } from 'ant-design-vue/lib/table';
 import DrawerSendEmail from '@/app/componentsBase/email/DrawerSendEmail.vue';
 import { isMobile } from '@/app/helpers/isMobile';
+import { showMessage } from '@/app/helpers/mesaages';
 
 const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
@@ -240,6 +243,11 @@ const print = async () => {
         itemsPerPage.value,
         print,
     );
+
+    if (resp.data.length === 0) {
+        showMessage('info', 'No hay datos para exportar', 4);
+        return;
+    }
 
     const excel = new ExcelService();
 
@@ -398,19 +406,6 @@ const handleChangeForFilter = (e: any): void => {
     status_id.value = statusesArray[index].value;
 };
 
-/* const rowSelection = {
-    hideSelectAll: true,
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: InvoiceList) => {
-        invoiceForNotaCredito.value = selectedRows;
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: InvoiceList) => {
-        console.log('🚀 ~ record:', record);
-        invoiceForNotaCredito.value = selectedRows;
-    },
-    onSelectAll: (selected: boolean, selectedRows: InvoiceList) => {
-        invoiceForNotaCredito.value = selectedRows;
-    },
-}; */
 const rowSelection = {
     hideSelectAll: true,
     onChange: (selectedRowKeys: (string | number)[], selectedRows: InvoiceList) => {

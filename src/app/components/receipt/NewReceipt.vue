@@ -1,59 +1,81 @@
 <template>
-    <div>
-        <div id="filter-data">
-            <SearchCustomer :context="'receipt'" />
-            <DatePickerRangeBase v-model="selectedDates" @change="onDateChange" />
-            <a-button @click="getInvoicesToPay" :loading="loading" type="primary">Buscar</a-button>
-        </div>
-        <a-transfer
-            v-model:target-keys="targetKeys"
-            :data-source="sourceData"
-            :disabled="disabled"
-            :show-search="showSearch"
-            :filter-option="(inputValue, item) => item.title.indexOf(inputValue) !== -1"
-            :show-select-all="false"
-            @change="onChange"
-            :pagination="true"
-            :titles="[' Comprobantes adeudados', ' Comprobantes a cancelar']"
-            listStyle="height: 400px"
-        >
-            <template
-                #children="{
-                    direction,
-                    filteredItems,
-                    selectedKeys,
-                    disabled: listDisabled,
-                    onItemSelectAll,
-                    onItemSelect,
-                }"
+    <div class="new-receipt">
+        <a-row :gutter="[15, 15]" style="margin-bottom: 2rem">
+            <a-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11">
+                <span>Buscar cliente</span>
+                <SearchCustomer :context="'receipt'" />
+            </a-col>
+            <a-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11" style="padding-top: 1rem">
+                <DatePickerRangeBase v-model="selectedDates" @change="onDateChange" />
+            </a-col>
+            <a-col
+                :xs="24"
+                :sm="24"
+                :md="2"
+                :lg="2"
+                :xl="2"
+                style="display: flex; justify-content: center; padding-top: 1rem"
             >
-                <a-table
-                    :row-selection="
-                        getRowSelection({
-                            disabled: listDisabled,
+                <div id="button-filter-data">
+                    <a-button @click="getInvoicesToPay" :loading="loading" type="primary" style="margin-bottom: 1rem"
+                        >Buscar</a-button
+                    >
+                </div>
+            </a-col>
+        </a-row>
+        <a-row :gutter="[15, 15]" style="margin-bottom: 2rem">
+            <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                <a-transfer
+                    v-model:target-keys="targetKeys"
+                    :data-source="sourceData"
+                    :disabled="disabled"
+                    :show-search="showSearch"
+                    :filter-option="(inputValue, item) => item.title.indexOf(inputValue) !== -1"
+                    :show-select-all="false"
+                    @change="onChange"
+                    :pagination="true"
+                    :titles="[' Comprobantes adeudados', ' Comprobantes a cancelar']"
+                    listStyle="height: 400px"
+                >
+                    <template
+                        #children="{
+                            direction,
+                            filteredItems,
                             selectedKeys,
+                            disabled: listDisabled,
                             onItemSelectAll,
                             onItemSelect,
-                        })
-                    "
-                    :columns="direction === 'left' ? leftColumns : rightColumns"
-                    :data-source="filteredItems"
-                    size="small"
-                    :pagination="false"
-                    :style="{ pointerEvents: listDisabled ? 'none' : null }"
-                    :custom-row="
-                        ({ key, disabled: itemDisabled }) => ({
-                            onClick: () => {
-                                if (itemDisabled || listDisabled) return;
-                                onItemSelect(key, !selectedKeys.includes(key));
-                            },
-                        })
-                    "
-                    :row-class-name="rowClassName"
-                    class="transfer-table"
-                />
-            </template>
-        </a-transfer>
+                        }"
+                    >
+                        <a-table
+                            :row-selection="
+                                getRowSelection({
+                                    disabled: listDisabled,
+                                    selectedKeys,
+                                    onItemSelectAll,
+                                    onItemSelect,
+                                })
+                            "
+                            :columns="direction === 'left' ? leftColumns : rightColumns"
+                            :data-source="filteredItems"
+                            size="small"
+                            :pagination="false"
+                            :style="{ pointerEvents: listDisabled ? 'none' : null }"
+                            :custom-row="
+                                ({ key, disabled: itemDisabled }) => ({
+                                    onClick: () => {
+                                        if (itemDisabled || listDisabled) return;
+                                        onItemSelect(key, !selectedKeys.includes(key));
+                                    },
+                                })
+                            "
+                            :row-class-name="rowClassName"
+                            class="transfer-table"
+                        />
+                    </template>
+                </a-transfer>
+            </a-col>
+        </a-row>
     </div>
 </template>
 
@@ -240,6 +262,14 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.new-receipt {
+    padding-top: 2rem;
+}
+.button-filter-data {
+    width: 100%;
+    text-align: center;
+}
+
 #filter-data {
     display: flex;
     gap: 1rem;
@@ -252,5 +282,15 @@ onUnmounted(() => {
     max-height: 400px; /* Ajusta este valor según tus necesidades */
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+    .filter-data {
+        flex-direction: column;
+    }
+
+    .filter-data > * {
+        width: 100%;
+    }
 }
 </style>

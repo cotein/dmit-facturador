@@ -1,69 +1,77 @@
 <template>
-    <div>
-        <a-button type="primary" @click="showDrawer" :disabled="!enableButtonOpenDocumentCancelationDrawer"
-            >Ingresar documento de cancelación</a-button
-        >
+    <a-row :gutter="[15, 15]">
+        <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+            <!-- <a-button type="primary" @click="showDrawer" :disabled="!enableButtonOpenDocumentCancelationDrawer"
+                >Ingresar documento de cancelación</a-button
+            > -->
+            <a-button type="primary" @click="showDrawer">Ingreswwwwwwwwwwwación</a-button>
+        </a-col>
 
-        <a-drawer
-            title="Documento de Cancelación"
-            :visible="drawerVisible"
-            @close="closeDrawer"
-            width="400"
-            @afterVisibleChange="sendDataToFormByEdit"
-        >
-            <a-form :model="form" :rules="rules" ref="formRef" layout="vertical">
-                <a-form-item label="Tipo de Pago" name="payment_type_id" :rules="rules.payment_type_id">
-                    <PaymentType v-model="form.payment_type_id" @update:modelValue="handlePaymentTypeChange" />
-                </a-form-item>
-                <a-form-item label="Número de transferencia / comprobante" name="number">
-                    <a-input v-model:value="form.number" />
-                </a-form-item>
-                <a-form-item label="Importe" name="import" :rules="rules.import">
-                    <a-input-number v-model:value="form.import" style="width: 100%" />
-                </a-form-item>
-                <a-form-item label="Ingresa a Cta. Cte." name="ctacte" :rules="rules.cbu_id">
-                    <a-select
-                        v-model="form.cbu_id"
-                        placeholder="Cuenta corriente"
-                        style="width: 100%"
-                        :default-active-first-option="false"
-                        :field-names="{ label: 'ctaCte', value: 'id' }"
-                        :options="CompanyGetter!.cbus"
-                        :size="'default'"
-                        @select="handlerCbuChange"
-                    ></a-select>
-                </a-form-item>
-                <!-- <a-form-item label="Ingresa a Cta. Cte." name="ctacte">
+        <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+            <a-drawer
+                title="Documento de Cancelación"
+                :visible="drawerVisible"
+                @close="closeDrawer"
+                :width="drawerWidth()"
+                @afterVisibleChange="sendDataToFormByEdit"
+            >
+                <a-form :model="form" :rules="rules" ref="formRef" layout="vertical">
+                    <a-form-item label="Tipo de Pago" name="payment_type_id" :rules="rules.payment_type_id">
+                        <PaymentType v-model="form.payment_type_id" @update:modelValue="handlePaymentTypeChange" />
+                    </a-form-item>
+                    <a-form-item label="Número de transferencia / comprobante" name="number">
+                        <a-input v-model:value="form.number" />
+                    </a-form-item>
+                    <a-form-item label="Importe" name="import" :rules="rules.import">
+                        <a-input-number v-model:value="form.import" style="width: 100%" inputmode="numeric" />
+                    </a-form-item>
+                    <a-form-item label="Ingresa a Cta. Cte." name="ctacte" :rules="rules.cbu_id">
+                        <a-select
+                            v-model="form.cbu_id"
+                            placeholder="Cuenta corriente"
+                            style="width: 100%"
+                            :default-active-first-option="false"
+                            :field-names="{ label: 'ctaCte', value: 'id' }"
+                            :options="CompanyGetter!.cbus"
+                            :size="'default'"
+                            @select="handlerCbuChange"
+                        ></a-select>
+                    </a-form-item>
+                    <!-- <a-form-item label="Ingresa a Cta. Cte." name="ctacte">
                     <a-input v-model:value="form.ctacte" />
                 </a-form-item> -->
-                <a-form-item label="Fecha Imputación" name="imputation_date">
-                    <DatePickerBase v-model="form.imputation_date" @update:modelValue="handleImputationDateChange" />
-                </a-form-item>
-                <a-form-item label="Banco emisor" name="bank">
-                    <!-- <a-input v-model:value="form.bank" /> -->
-                    <SelectBank v-model="form.bank" @update:modelValue="handleBankChange" />
-                </a-form-item>
-                <a-form-item label="Propietario Cheque" name="chequeOwner">
-                    <a-input v-model:value="form.chequeOwner" />
-                </a-form-item>
-                <a-form-item label="Fecha Emisión del cheque" name="chequeDate">
-                    <DatePickerBase v-model="form.chequeDate" @update:modelValue="handleChequeDateChange" />
-                </a-form-item>
-                <a-form-item label="Fecha Vencimiento del cheque" name="chequeExpirate">
-                    <DatePickerBase v-model="form.chequeExpirate" @update:modelValue="handleChequeExpirateChange" />
-                </a-form-item>
-                <a-form-item label="Comentarios" name="chequeExpirate">
-                    <a-textarea v-model:value="form.comments" show-count :maxlength="200" />
-                </a-form-item>
-                <a-form-item v-if="!isEditingDocumentCancelation">
-                    <a-button type="primary" @click="handleSubmit">Ingresar</a-button>
-                </a-form-item>
-                <a-form-item v-else>
-                    <a-button type="primary" @click="handleEdit">Editar</a-button>
-                </a-form-item>
-            </a-form>
-        </a-drawer>
-    </div>
+                    <a-form-item label="Fecha Imputación" name="imputation_date">
+                        <DatePickerBase
+                            v-model="form.imputation_date"
+                            @update:modelValue="handleImputationDateChange"
+                        />
+                    </a-form-item>
+                    <a-form-item label="Banco emisor" name="bank">
+                        <!-- <a-input v-model:value="form.bank" /> -->
+                        <SelectBank v-model="form.bank" @update:modelValue="handleBankChange" />
+                    </a-form-item>
+                    <a-form-item label="Propietario Cheque" name="chequeOwner">
+                        <a-input v-model:value="form.chequeOwner" />
+                    </a-form-item>
+                    <a-form-item label="Fecha Emisión del cheque" name="chequeDate">
+                        <DatePickerBase v-model="form.chequeDate" @update:modelValue="handleChequeDateChange" />
+                    </a-form-item>
+                    <a-form-item label="Fecha Vencimiento del cheque" name="chequeExpirate">
+                        <DatePickerBase v-model="form.chequeExpirate" @update:modelValue="handleChequeExpirateChange" />
+                    </a-form-item>
+                    <a-form-item label="Comentarios" name="chequeExpirate">
+                        <a-textarea v-model:value="form.comments" show-count :maxlength="200" />
+                    </a-form-item>
+                    <a-form-item v-if="!isEditingDocumentCancelation">
+                        <a-button type="primary" @click="handleSubmit">Ingresar</a-button>
+                    </a-form-item>
+                    <a-form-item v-else>
+                        <a-button type="primary" @click="handleEdit">Editar</a-button>
+                    </a-form-item>
+                </a-form>
+            </a-drawer>
+        </a-col>
+    </a-row>
 </template>
 
 <script setup lang="ts">
@@ -80,8 +88,11 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Dayjs from 'dayjs';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { Rule } from 'ant-design-vue/lib/form';
+import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMediaQueryComposable';
 
 Dayjs.extend(customParseFormat);
+
+const { drawerWidth } = useMediaQueryComposable();
 
 const handlerCbuChange = (value: any) => {
     form.value.cbu_id = value;
