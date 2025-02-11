@@ -1,20 +1,20 @@
 <template>
     <a-row :gutter="[15, 15]">
         <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-            <!-- <a-button type="primary" @click="showDrawer" :disabled="!enableButtonOpenDocumentCancelationDrawer"
+            <a-button type="primary" @click="showDrawer" :disabled="enableButtonOpenDocumentCancelationDrawer"
                 >Ingresar documento de cancelación</a-button
-            > -->
-            <a-button type="primary" @click="showDrawer">Ingresar documento de cancelación</a-button>
+            >
         </a-col>
-
-        <a-drawer
-            title="Documento de Cancelación"
-            :visible="drawerVisible"
-            @close="closeDrawer"
-            :width="drawerWidth()"
-            @afterVisibleChange="sendDataToFormByEdit"
-        >
-            <a-form :model="form" :rules="rules" ref="formRef" layout="vertical">
+    </a-row>
+    <a-drawer
+        title="Documento de Cancelación"
+        :visible="drawerVisible"
+        @close="closeDrawer"
+        :width="drawerWidth()"
+        @afterVisibleChange="sendDataToFormByEdit"
+    >
+        <a-row>
+            <a-form :model="form" :rules="rules" ref="formRef" layout="vertical" style="width: 100%; padding-right: 5%">
                 <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Tipo de Pago" name="payment_type_id" :rules="rules.payment_type_id">
                         <PaymentType v-model="form.payment_type_id" @update:modelValue="handlePaymentTypeChange" />
@@ -104,8 +104,8 @@
                     </a-form-item>
                 </a-col>
             </a-form>
-        </a-drawer>
-    </a-row>
+        </a-row>
+    </a-drawer>
 </template>
 
 <script setup lang="ts">
@@ -327,5 +327,18 @@ const handleChequeExpirateChange = (value: number) => {
 </script>
 
 <style scoped>
-/* Add any custom styles here */
+@media (max-width: 768px) {
+    .ant-drawer-content {
+        padding: 0 16px;
+    }
+    .ant-form-item {
+        margin-bottom: 16px;
+    }
+    .ant-input,
+    .ant-input-number,
+    .ant-select-selector,
+    .ant-picker {
+        width: 100% !important;
+    }
+}
 </style>
