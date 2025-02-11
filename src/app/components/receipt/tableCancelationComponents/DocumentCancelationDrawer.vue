@@ -1,7 +1,7 @@
 <template>
     <a-row :gutter="[15, 15]">
         <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-            <a-button type="primary" @click="showDrawer" :disabled="enableButtonOpenDocumentCancelationDrawer"
+            <a-button type="primary" @click="showDrawer" :disabled="!enableButtonOpenDocumentCancelationDrawer"
                 >Ingresar documento de cancelación</a-button
             >
         </a-col>
