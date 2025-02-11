@@ -4,27 +4,36 @@
             <!-- <a-button type="primary" @click="showDrawer" :disabled="!enableButtonOpenDocumentCancelationDrawer"
                 >Ingresar documento de cancelación</a-button
             > -->
-            <a-button type="primary" @click="showDrawer">Ingreswwwwwwwwwwwación</a-button>
+            <a-button type="primary" @click="showDrawer">Ingresar documento de cancelación</a-button>
         </a-col>
 
-        <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-            <a-drawer
-                title="Documento de Cancelación"
-                :visible="drawerVisible"
-                @close="closeDrawer"
-                :width="drawerWidth()"
-                @afterVisibleChange="sendDataToFormByEdit"
-            >
-                <a-form :model="form" :rules="rules" ref="formRef" layout="vertical">
+        <a-drawer
+            title="Documento de Cancelación"
+            :visible="drawerVisible"
+            @close="closeDrawer"
+            :width="drawerWidth()"
+            @afterVisibleChange="sendDataToFormByEdit"
+        >
+            <a-form :model="form" :rules="rules" ref="formRef" layout="vertical">
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Tipo de Pago" name="payment_type_id" :rules="rules.payment_type_id">
                         <PaymentType v-model="form.payment_type_id" @update:modelValue="handlePaymentTypeChange" />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Número de transferencia / comprobante" name="number">
                         <a-input v-model:value="form.number" />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Importe" name="import" :rules="rules.import">
                         <a-input-number v-model:value="form.import" style="width: 100%" inputmode="numeric" />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Ingresa a Cta. Cte." name="ctacte" :rules="rules.cbu_id">
                         <a-select
                             v-model="form.cbu_id"
@@ -37,40 +46,65 @@
                             @select="handlerCbuChange"
                         ></a-select>
                     </a-form-item>
-                    <!-- <a-form-item label="Ingresa a Cta. Cte." name="ctacte">
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24"
+                    ><!--
+                <a-form-item label="Ingresa a Cta. Cte." name="ctacte">
                     <a-input v-model:value="form.ctacte" />
                 </a-form-item> -->
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Fecha Imputación" name="imputation_date">
                         <DatePickerBase
                             v-model="form.imputation_date"
                             @update:modelValue="handleImputationDateChange"
                         />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Banco emisor" name="bank">
                         <!-- <a-input v-model:value="form.bank" /> -->
                         <SelectBank v-model="form.bank" @update:modelValue="handleBankChange" />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Propietario Cheque" name="chequeOwner">
                         <a-input v-model:value="form.chequeOwner" />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Fecha Emisión del cheque" name="chequeDate">
                         <DatePickerBase v-model="form.chequeDate" @update:modelValue="handleChequeDateChange" />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Fecha Vencimiento del cheque" name="chequeExpirate">
                         <DatePickerBase v-model="form.chequeExpirate" @update:modelValue="handleChequeExpirateChange" />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item label="Comentarios" name="chequeExpirate">
                         <a-textarea v-model:value="form.comments" show-count :maxlength="200" />
                     </a-form-item>
+                </a-col>
+
+                <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                     <a-form-item v-if="!isEditingDocumentCancelation">
                         <a-button type="primary" @click="handleSubmit">Ingresar</a-button>
                     </a-form-item>
                     <a-form-item v-else>
                         <a-button type="primary" @click="handleEdit">Editar</a-button>
                     </a-form-item>
-                </a-form>
-            </a-drawer>
-        </a-col>
+                </a-col>
+            </a-form>
+        </a-drawer>
     </a-row>
 </template>
 

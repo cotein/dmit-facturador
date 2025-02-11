@@ -54,7 +54,7 @@ const onSubmit = async () => {
 <template>
     <a-form :model="formSenderEmailData" :rules="rules" ref="formRef" layout="vertical">
         <a-form-item label="De" name="from" :rules="[{ required: true, message: 'Please input the sender email!' }]">
-            <a-input v-model:value="formSenderEmailData.from" :disabled="loading" />
+            <a-input v-model:value="formSenderEmailData.from" disabled />
         </a-form-item>
 
         <a-form-item label="A" name="to" :rules="[{ required: true, message: 'Please input the recipient email!' }]">
