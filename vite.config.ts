@@ -7,8 +7,10 @@ import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 import { theme } from './src/config/theme/themeVariables';
 import copy from 'rollup-plugin-copy';
 import compression from 'vite-plugin-compression';
-
+import { terser } from 'rollup-plugin-terser';
+import { minifyHtml } from 'vite-plugin-html';
 // https://vitejs.dev/config/
+const isProduction = process.env.NODE_ENV === 'production';
 export default defineConfig({
     /* build: {
 		rollupOptions: {
@@ -35,25 +37,25 @@ export default defineConfig({
 
             hook: 'writeBundle', // ensure the files are copied before the bundle is written
         }),
+        minifyHtml(),
     ],
-    /*  build: {
-        minify: 'terser', // Usa Terser para minificar el código
-        terserOptions: {
-            compress: {
-                drop_console: true, // Elimina los console.log en producción
-            },
-        },
-        chunkSizeWarningLimit: 500, // Ajusta el límite de advertencia de tamaño de chunk
+    build: {
         rollupOptions: {
-            output: {
-                manualChunks(id) {
-                    if (id.includes('node_modules')) {
-                        return id.toString().split('node_modules/')[1].split('/')[0].toString();
-                    }
-                },
-            },
+            plugins: isProduction
+                ? [
+                    terser({
+                          compress: {
+                            drop_console: true,
+                            drop_debugger: true,
+                        },
+                        format: {
+                              comments: false,
+                        },
+                    }),
+                  ]
+                : [],
         },
-    }, */
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
