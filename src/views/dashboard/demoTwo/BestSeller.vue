@@ -44,7 +44,7 @@ const bestSellerData = computed(() => {
                 sellerName: (
                     <div className="ninjadash-info-element align-center-v">
                         <div className="ninjadash-info-element__media">
-                            <img src={`/src/assets/img/sellers/${img}`} alt="HexaDash Product" />
+                            <img src={`/src/assets/img/sellers/${img}`} alt="DMIT Product" />
                         </div>
                         <div className="ninjadash-info-element__content">
                             <span className="ninjadash-info-element__text">{name}</span>

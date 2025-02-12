@@ -12,8 +12,14 @@ const loading = ref<boolean>(false);
 
 const rules = ref({
     from: [{ required: true, message: 'Please input the sender email!', trigger: 'blur' }],
-    to: [{ required: true, message: 'Please input the recipient email!', trigger: 'blur' }],
-    subject: [{ required: true, message: 'Please input the subject!', trigger: 'blur' }],
+    to: [{ required: true, message: 'El email de destino es requerido', trigger: 'blur' }],
+    subject: [
+        {
+            required: true,
+            message: 'El asunto del mensaje es requerido',
+            trigger: 'blur',
+        },
+    ],
     html: [{ required: true, message: 'Please input the email content!', trigger: 'blur' }],
 });
 
@@ -57,7 +63,7 @@ const onSubmit = async () => {
             <a-input v-model:value="formSenderEmailData.from" disabled />
         </a-form-item>
 
-        <a-form-item label="A" name="to" :rules="[{ required: true, message: 'Please input the recipient email!' }]">
+        <a-form-item label="A" name="to" :rules="[{ required: true, message: 'El email de destino es requerido' }]">
             <a-input v-model:value="formSenderEmailData.to" :disabled="loading" />
         </a-form-item>
 
@@ -69,7 +75,11 @@ const onSubmit = async () => {
             <a-input v-model:value="formSenderEmailData.bcc" :disabled="loading" />
         </a-form-item>
 
-        <a-form-item label="Asunto" name="subject" :rules="[{ required: true, message: 'Please input the subject!' }]">
+        <a-form-item
+            label="Asunto"
+            name="subject"
+            :rules="[{ required: true, message: 'El asunto del mensaje es requerido' }]"
+        >
             <a-input v-model:value="formSenderEmailData.subject" :disabled="loading" />
         </a-form-item>
 
@@ -78,7 +88,8 @@ const onSubmit = async () => {
             name="html"
             :rules="[{ required: true, message: 'Please input the email content!' }]"
         >
-            <ckeditor :editor="ClassicEditor" v-model="formSenderEmailData.html"></ckeditor>
+            <!-- <ckeditor :editor="ClassicEditor" v-model="formSenderEmailData.html"></ckeditor> -->
+            <div v-html="formSenderEmailData.html"></div>
         </a-form-item>
 
         <!-- <a-form-item label="Text Content" name="text">

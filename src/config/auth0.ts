@@ -1,6 +1,6 @@
 export const auth0options = {
     theme: {
-        logo: 'https://demo.dashboardmarket.com/hexadash-vue/img/Logo_Dark.d6cbc632.svg',
+        logo: 'https://www.facturador.dmit.ar/assets/img/dmit-logo.png',
         primaryColor: '#8231D3',
         labeledSubmitButton: true,
     },

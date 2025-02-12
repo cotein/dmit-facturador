@@ -170,9 +170,9 @@ export const generateInvoiceEmailHtml = (invoice: any, companyName: string): str
 																	<p style="margin: 0; word-break: break-word;">&nbsp;</p>
 																	<p style="margin: 0;">Le informamos que ha recibido una factura por la compra realizada.</p>
 																	<p style="margin: 0;">&nbsp;</p>
-																	<p style="margin: 0;">Mediante el presente e-mail se adjunta factura N° ${invoice.voucher?.name} ${
-        invoice.voucher!.pto_vta
-} - ${invoice.voucher!.cbte_desde} con fecha ${invoice.voucher!.cbte_fch}</p>
+																	<p style="margin: 0;">Mediante el presente e-mail se adjunta: </p>
+<p style="margin: 0;">${invoice.voucher?.name} ${invoice.voucher!.pto_vta}-${invoice.voucher!.cbte_desde}</p>
+<p style="margin: 0;">Fecha del comprobante: ${invoice.voucher!.cbte_fch}</p>
 																</div>
 															</td>
 														</tr>
@@ -281,12 +281,7 @@ export const generateInvoiceEmailHtml = (invoice: any, companyName: string): str
 														<tr>
 															<td class="pad" style="vertical-align: middle; color: #1e0e4b; font-family: 'Inter', sans-serif; font-size: 15px; padding-bottom: 5px; padding-top: 5px; text-align: center;"><!--[if vml]><table align="center" cellpadding="0" cellspacing="0" role="presentation" style="display:inline-block;padding-left:0px;padding-right:0px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"><![endif]-->
 																<!--[if !vml]><!-->
-																<table class="icons-inner" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block; padding-left: 0px; padding-right: 0px;" cellpadding="0" cellspacing="0" role="presentation"><!--<![endif]-->
-																	<tr>
-																		<td style="vertical-align: middle; text-align: center; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 6px;"><a href="http://designedwithbeefree.com/" target="_blank" style="text-decoration: none;"><img class="icon" alt="Beefree Logo" src="https://d1oco4z2z1fhwp.cloudfront.net/assets/Beefree-logo.png" height="auto" width="34" align="center" style="display: block; height: auto; margin: 0 auto; border: 0;"></a></td>
-																		<td style="font-family: 'Inter', sans-serif; font-size: 15px; font-weight: undefined; color: #1e0e4b; vertical-align: middle; letter-spacing: undefined; text-align: center; line-height: normal;"><a href="http://designedwithbeefree.com/" target="_blank" style="color: #1e0e4b; text-decoration: none;">Designed with Beefree</a></td>
-																	</tr>
-																</table>
+
 															</td>
 														</tr>
 													</table>
