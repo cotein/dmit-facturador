@@ -8,7 +8,7 @@ import { theme } from './src/config/theme/themeVariables';
 import copy from 'rollup-plugin-copy';
 import compression from 'vite-plugin-compression';
 import { terser } from 'rollup-plugin-terser';
-import { minifyHtml } from 'vite-plugin-html';
+import { createHtmlPlugin } from 'vite-plugin-html';
 // https://vitejs.dev/config/
 const isProduction = process.env.NODE_ENV === 'production';
 export default defineConfig({
@@ -27,6 +27,9 @@ export default defineConfig({
                 },
             },
         }),
+        createHtmlPlugin({
+            minify: isProduction,
+        }),
         vueJsx(),
         compression(),
         Components({
@@ -37,9 +40,8 @@ export default defineConfig({
 
             hook: 'writeBundle', // ensure the files are copied before the bundle is written
         }),
-        minifyHtml(),
     ],
-    /* build: {
+    build: {
         rollupOptions: {
             plugins: isProduction
                 ? [
@@ -55,7 +57,7 @@ export default defineConfig({
                   ]
                 : [],
         },
-    }, */
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
