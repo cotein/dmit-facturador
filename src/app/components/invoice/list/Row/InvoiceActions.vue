@@ -114,7 +114,7 @@ const emailSettings = async () => {
 
     const filename = filenameMatch ? filenameMatch[1] : 'default.pdf';
 
-    const html = generateInvoiceEmailHtml(company_name, base64Content, filename);
+    const html = generateInvoiceEmailHtml(invoiceToBeConvertedToPdf.value, company_name);
 
     formSenderEmailData.value.from = `${company_name} <info@dmit.ar>`;
     formSenderEmailData.value.to = CompanyGetter.value!.email;
