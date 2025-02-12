@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BillingConcepts } from '@/app/types/Afip';
-import { computed, onUnmounted, watch, onBeforeMount } from 'vue';
+import { computed, onUnmounted, watch, onBeforeMount, onMounted } from 'vue';
 import { InvoiceHeader, InvoiceLetterBox } from './Style';
 import { storeToRefs } from 'pinia';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
@@ -68,6 +68,11 @@ onBeforeMount(() => {
     //fetchVouchers(CompanyGetter.value.id);
     fetchPaymentTypes();
     fetchSaleConditions();
+});
+
+onMounted(() => {
+    invoice.value.CondicionIVAReceptorId = CompanyGetter.value?.inscription_id;
+    console.log('🚀 ~ afterVisibleChange ~ invoice.value:', invoice.value);
 });
 
 onUnmounted(() => {

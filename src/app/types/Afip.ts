@@ -131,6 +131,7 @@ export type AfipInvoice = {
     company_id: number | undefined;
     Concepto: string;
     customer: Customer | null;
+    CondicionIVAReceptorId: number;
     date: Dayjs | undefined;
     dateVtoPago: Dayjs | undefined;
     DocTipo: number | null;
@@ -183,6 +184,7 @@ export type FECAEDetRequest = {
     CbtesAsoc?: CbteAsoc[] | null;
     Compradores?: Comprador[] | null;
     Concepto: number;
+    CondicionIVAReceptorId: number;
     DocNro: number;
     DocTipo: number;
     FchServDesde: string;

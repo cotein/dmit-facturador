@@ -45,6 +45,7 @@ import { useInvoiceListComposable } from '@/app/composables/invoice/useInvoiceLi
 import { useEmailComposable } from '@/app/composables/email/useEmailComposable';
 import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
 import { useSleepComposable } from '@/app/composables/sleep/useSleepComposable';
+import { generateInvoiceEmailHtml } from '@/app/helpers/email/invoicetemplateHtml';
 
 const { sleep } = useSleepComposable();
 const { toggleDrawerEmail, formSenderEmailData, invoiceToBeConvertedToPdf, updateFormSenderEmailData } =
@@ -113,10 +114,12 @@ const emailSettings = async () => {
 
     const filename = filenameMatch ? filenameMatch[1] : 'default.pdf';
 
-    formSenderEmailData.value.from = 'info@dmit.ar';
+    const html = generateInvoiceEmailHtml(company_name, base64Content, filename);
+
+    formSenderEmailData.value.from = `${company_name} <info@dmit.ar>`;
     formSenderEmailData.value.to = CompanyGetter.value!.email;
     formSenderEmailData.value.subject = `${company_name} le ha enviado una factura`;
-    formSenderEmailData.value.html = `<div style="font-family: Arial, sans-serif; color: #333;">
+    /* formSenderEmailData.value.html = `<div style="font-family: Arial, sans-serif; color: #333;">
             <div style="background-color: #f7f7f7; padding: 20px; border-radius: 10px; max-width: 600px; margin: auto;">
             <h2 style="color: #4CAF50;">Estimado cliente,</h2>
             <p style="font-size: 16px;">Le informamos que ha recibido una factura por la compra realizada.</p>
@@ -129,7 +132,8 @@ const emailSettings = async () => {
             <p style="font-size: 16px;">Atentamente,</p>
             <p style="font-size: 16px; font-weight: bold;">El equipo de ventas de ${company_name}</p>
             </div>
-        </div>`;
+        </div>`; */
+    formSenderEmailData.value.html = html;
     formSenderEmailData.value.text = '';
     formSenderEmailData.value.attachments![0].content = base64Content;
     formSenderEmailData.value.attachments![0].filename = filename;

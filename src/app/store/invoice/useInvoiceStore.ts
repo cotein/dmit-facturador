@@ -31,6 +31,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
         CbteTipo: null,
         company_id: undefined,
         Concepto: '1',
+        CondicionIVAReceptorId: 1,
         customer: null,
         date: undefined,
         dateVtoPago: undefined,

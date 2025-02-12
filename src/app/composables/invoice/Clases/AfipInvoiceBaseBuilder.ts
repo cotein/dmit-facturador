@@ -22,6 +22,7 @@ export abstract class AfipInvoiceBaseBuilder {
             CbteDesde: 0,
             CbteHasta: 0,
             CbteFch: '',
+            CondicionIVAReceptorId: 1,
             ImpTotal: 0,
             ImpTotConc: 0,
             ImpNeto: 0,
@@ -60,6 +61,7 @@ export abstract class AfipInvoiceBaseBuilder {
             CbteDesde: 0,
             CbteHasta: 0,
             CbteFch: '',
+            CondicionIVAReceptorId: 1,
             ImpTotal: 0,
             ImpTotConc: 0,
             ImpNeto: 0,
@@ -84,6 +86,9 @@ export abstract class AfipInvoiceBaseBuilder {
         };
     }
 
+    setCondicionIVAReceptorId(CondicionIVAReceptorId: number): void {
+        this.FECAEDetRequest.CondicionIVAReceptorId = CondicionIVAReceptorId;
+    }
     /**
      *
      * @param CantReg int (4)

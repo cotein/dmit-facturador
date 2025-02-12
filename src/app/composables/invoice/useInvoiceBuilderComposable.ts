@@ -29,6 +29,7 @@ export const useInvoiceBuilderComposable = () => {
     ) => {
         const concreteInvoiceBuilder = new builder() as AfipInvoiceBaseBuilder;
         concreteInvoiceBuilder.setCantReg(invoice.CantReg);
+        concreteInvoiceBuilder.setCondicionIVAReceptorId(invoice.CondicionIVAReceptorId);
         concreteInvoiceBuilder.setPtoVta(invoice.PtoVta);
         concreteInvoiceBuilder.setCbteTipo(invoice.CbteTipo);
         concreteInvoiceBuilder.setConcepto(invoice.Concepto);

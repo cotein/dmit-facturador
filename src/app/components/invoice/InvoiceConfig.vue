@@ -220,7 +220,7 @@ const afterVisibleChange = (visible: boolean) => {
         invoice.value.date = date;
 
         invoice.value.CbteFch = date.format('YYYYMMDD').toString();
-        console.log('🚀 ~ nextTick ~ searchCustomerInput:', searchCustomerRef.value?.$el);
+
         // Focus the SearchCustomer component
         nextTick(() => {
             const searchCustomerInput = searchCustomerRef.value?.$el.querySelector('input');
