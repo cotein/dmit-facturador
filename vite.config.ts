@@ -39,7 +39,7 @@ export default defineConfig({
         }),
         minifyHtml(),
     ],
-    build: {
+    /* build: {
         rollupOptions: {
             plugins: isProduction
                 ? [
@@ -55,7 +55,7 @@ export default defineConfig({
                   ]
                 : [],
         },
-    },
+    }, */
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
