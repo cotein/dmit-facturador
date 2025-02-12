@@ -76,10 +76,20 @@ app.use(router);
 
 app.component('QuillEditor', QuillEditor);
 
-app.mount('#app');
+const isProduction = import.meta.env.MODE === 'production';
 
-if (import.meta.env.MODE === 'DEVELOPMENT') {
-    console.log('🚀 ~ development:', 'development');
-} else if (import.meta.env.MODE === 'PRODUCTION') {
-    console.log('🚀 ~ production:', 'PRODUCTION');
-}
+app.config.errorHandler = (err, vm, info) => {
+    if (isProduction) {
+        // Maneja el error de manera silenciosa en producción
+        console.error = () => {};
+    } else {
+        console.log('#############################');
+        // Muestra el error en desarrollo
+        console.error(err);
+        console.log(vm);
+        console.info(info);
+        console.log('#############################');
+    }
+};
+
+app.mount('#app');
