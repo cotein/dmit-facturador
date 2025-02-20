@@ -190,6 +190,7 @@ export abstract class AfipInvoiceBaseBuilder {
      * a la fecha de generación. Si no se envía
      * la fecha del comprobante se asignará la
      * fecha de proceso.
+     *
      * Para comprobantes del tipo MiPyMEs
      * (FCE) del tipo Factura, la fecha de
      * emisión del comprobante debe ser desde

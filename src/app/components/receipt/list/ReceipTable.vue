@@ -52,16 +52,22 @@
                                     <template v-if="column.key === 'number'">
                                         {{
                                             zeroLeft(record.receipt.pto_vta_receipt, 4) +
-                                            '-' +
+                                            "-" +
                                             zeroLeft(record.receipt.number, 8)
                                         }}
                                     </template>
                                     <template v-if="column.key === 'date'">
-                                        {{ $filters.argentinianDate(record.receipt.date) }}
+                                        {{
+                                            $filters.argentinianDate(record.receipt.date)
+                                        }}
                                     </template>
 
                                     <template v-if="column.key === 'importe'">
-                                        {{ $filters.formatCurrency(parseFloat(record.receipt.total)) }}
+                                        {{
+                                            $filters.formatCurrency(
+                                                parseFloat(record.receipt.total)
+                                            )
+                                        }}
                                     </template>
 
                                     <template v-if="column.key === 'actions'">
@@ -100,31 +106,37 @@
 </template>
 
 <script setup lang="ts">
-import { BorderLessHeading, TableDefaultStyle } from '../../../styled';
-import { ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { TopSellerWrap } from '../../../../views/dashboard/style';
-import { TopToolBox } from '../../invoice/Style';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
-import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
-import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
-import { useReceiptListComposable } from '@/app/composables/receipt/useReceiptListComposable';
-import BetweenDaysRangePicker from '../../shared/BetweenDaysRangePicker.vue';
-import Cards from '../../cards/frame/CardsFrame.vue';
-import dayjs from 'dayjs';
-import RowNumber from '../../shared/RowNumber.vue';
-import SearchCustomer from '../../customer/SearchCustomer.vue';
-import { ColumnProps } from 'ant-design-vue/lib/table';
-import type { PrinteableReceiptData } from '@/app/types/Receipt';
-import ReceiptPrint from './ReceiptPrint.vue';
-import { zeroLeft } from '@/app/helpers/zero-left';
+import { BorderLessHeading, TableDefaultStyle } from "../../../styled";
+import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { TopSellerWrap } from "../../../../views/dashboard/style";
+import { TopToolBox } from "../../invoice/Style";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import { useFilterSearchByBetweenDaysStore } from "@/app/store/filter-search/useFilterSearchByBetweenDaysStore";
+import { useFilterSearchByCustomerStore } from "@/app/store/filter-search/useFilterSearchByCustomerStore";
+import { useInvoiceNotaCreditoComposable } from "@/app/composables/invoice/useInvoiceNotaCreditoComposable";
+import { useReceiptListComposable } from "@/app/composables/receipt/useReceiptListComposable";
+import BetweenDaysRangePicker from "../../shared/BetweenDaysRangePicker.vue";
+import Cards from "../../cards/frame/CardsFrame.vue";
+import dayjs from "dayjs";
+import RowNumber from "../../shared/RowNumber.vue";
+import SearchCustomer from "../../customer/SearchCustomer.vue";
+import { ColumnProps } from "ant-design-vue/lib/table";
+import type { PrinteableReceiptData } from "@/app/types/Receipt";
+import ReceiptPrint from "./ReceiptPrint.vue";
+import { zeroLeft } from "@/app/helpers/zero-left";
 
 const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
-const { currentPage, itemsPerPage, status_id, receiptList, totalItems } = useReceiptListComposable();
+const {
+    currentPage,
+    itemsPerPage,
+    status_id,
+    receiptList,
+    totalItems,
+} = useReceiptListComposable();
 
 type Props = {
     loading: boolean;
@@ -134,9 +146,9 @@ const props = withDefaults(defineProps<Props>(), {
     loading: false,
 });
 
-const pageSizeOptions = ref<string[]>(['10', '20', '30', '40', '50', '100']);
+const pageSizeOptions = ref<string[]>(["10", "20", "30", "40", "50", "100"]);
 /* const filterKey = ref(['Adeudada', 'Parcialmente Cancelada', 'Cancelada']); */
-const stateValue = ref('');
+const stateValue = ref("");
 const sortDefault = ref();
 const printSpinner = ref<boolean>(false);
 const dataExcel = ref([]);
@@ -144,15 +156,15 @@ const selectedCustomerId = ref<any>(null);
 
 const receipTableColum: ColumnProps<PrinteableReceiptData>[] = [
     {
-        title: '#',
-        dataIndex: 'row',
-        key: 'row',
+        title: "#",
+        dataIndex: "row",
+        key: "row",
     },
     {
-        title: 'Cliente',
-        dataIndex: 'customer',
-        key: 'customer',
-        align: 'left',
+        title: "Cliente",
+        dataIndex: "customer",
+        key: "customer",
+        align: "left",
         sorter: {
             compare: (a: PrinteableReceiptData, b: PrinteableReceiptData) => {
                 const nameA = `${a.customer.name} ${a.customer.lastname}`;
@@ -173,10 +185,10 @@ const receipTableColum: ColumnProps<PrinteableReceiptData>[] = [
         },
     },
     {
-        title: 'Fecha',
-        dataIndex: 'date',
-        key: 'date',
-        align: 'center',
+        title: "Fecha",
+        dataIndex: "date",
+        key: "date",
+        align: "center",
         sorter: {
             compare: (a: PrinteableReceiptData, b: PrinteableReceiptData) => {
                 const dayA = dayjs(a.receipt.date);
@@ -193,16 +205,16 @@ const receipTableColum: ColumnProps<PrinteableReceiptData>[] = [
         },
     },
     {
-        title: 'Número',
-        dataIndex: 'number',
-        key: 'number',
-        align: 'center',
+        title: "Número",
+        dataIndex: "number",
+        key: "number",
+        align: "center",
     },
     {
-        title: 'Importe',
-        dataIndex: 'importe',
-        key: 'importe',
-        align: 'right',
+        title: "Importe",
+        dataIndex: "importe",
+        key: "importe",
+        align: "right",
         sorter: {
             compare: (a: PrinteableReceiptData, b: PrinteableReceiptData) => {
                 if (a.receipt.total < b.receipt.total) {
@@ -219,10 +231,10 @@ const receipTableColum: ColumnProps<PrinteableReceiptData>[] = [
         },
     },
     {
-        title: 'Acciones',
-        dataIndex: 'actions',
-        key: 'actions',
-        align: 'center',
+        title: "Acciones",
+        dataIndex: "actions",
+        key: "actions",
+        align: "center",
     },
 ];
 
@@ -234,7 +246,7 @@ const showTotal = (totalPages: number, range: [number, number]) => {
 
     // Comprobar si los datos son números válidos
     if (isNaN(totalPages) || newRange.some(isNaN)) {
-        return 'Cargando...';
+        return "Cargando...";
     }
     return `${newRange[0]}-${newRange[1]} de ${totalPages} comprobantes`;
 };
@@ -252,10 +264,10 @@ const handleChangeForFilter = (e: any): void => {
     stateValue.value = e.target.value;
 
     const statusesArray = [
-        { name: 'all', value: null },
-        { name: 'Adeudada', value: 1 },
-        { name: 'Parcialmente Cancelada', value: 2 },
-        { name: 'Cancelada', value: 3 },
+        { name: "all", value: null },
+        { name: "Adeudada", value: 1 },
+        { name: "Parcialmente Cancelada", value: 2 },
+        { name: "Cancelada", value: 3 },
     ];
 
     const index = statusesArray.findIndex((row) => row.name === e.target.value);

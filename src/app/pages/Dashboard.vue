@@ -140,7 +140,9 @@ import { getLastMonthInvoiced, getDailySalesReport } from '@/api/invoice/invoice
 import type { Invoiced, LastMonthInvoiced, SalesReportType } from '../types/DashBoard';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es'; // Importa la localización en español
+import { useSleepComposable } from '../composables/sleep/useSleepComposable';
 
+const { sleep } = useSleepComposable();
 dayjs.locale('es');
 
 const OverviewDataList = defineAsyncComponent(() => import('./dashBoard/OverviewDataList.vue'));
@@ -275,8 +277,16 @@ onBeforeMount(async () => {
             decimal: 0,
         };
 
+        salesReportData.value = undefined;
+
+        await sleep(1000);
+
         salesReportData.value = await getDailySalesReport(CompanyGetter.value.id);
     }
+});
+
+const SalesReportData = computed(() => {
+    return salesReportData.value;
 });
 
 onMounted(() => {

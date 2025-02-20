@@ -13,7 +13,7 @@ export const useInvoiceListStore = defineStore('invoice-list', () => {
 
     const totalItems = ref<number>();
 
-    const status_id = ref<number | null>(1); //adeudada
+    const status_id = ref<number | null>();
 
     const individualInvoice = ref<individualInvoice | null>(null);
 

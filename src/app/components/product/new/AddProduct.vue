@@ -3,12 +3,14 @@
         <a-steps :current="current">
             <a-step v-for="item in steps" :key="item.title" :title="item.content" />
         </a-steps>
+
         <div class="steps-content">
             <Step_1 v-show="current === 0" ref="step1Component" />
             <Step_2 v-show="current === 1" ref="step2Component" />
             <Step_3 v-show="current === 2" ref="step3Component" />
-            <Step_4 v-show="current === 3" ref="step4Component" />
+            <!--  <Step_4 v-show="current === 3" ref="step4Component" /> -->
         </div>
+
         <div class="steps-action">
             <a-button
                 v-if="current < steps.length - 1"
@@ -16,31 +18,48 @@
                 @click="next(nextButtonsStep[current].fnValidateForm)"
                 >Siguiente</a-button
             >
-            <a-button v-if="current == steps.length - 1" type="primary" @click="submit"> Guardar </a-button>
-            <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">Anterior</a-button>
+            <a-button v-if="current == steps.length - 1" type="primary" @click="submit">
+                Guardar
+            </a-button>
+            <a-button v-if="current > 0" style="margin-left: 8px" @click="prev"
+                >Anterior</a-button
+            >
             <ProductModal v-on:initialStepsProductEvent="handleCustomEvent" />
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, onBeforeMount, computed } from 'vue';
-import { usePriceListComposable } from '@/app/composables/priceList/usePriceListComposable';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useProductComposable } from '@/app/composables/product/useProductComposable';
-import { useIvaComposable } from '@/app/composables/afip/useIvaComposable';
+import { onUnmounted, ref, onBeforeMount } from "vue";
+import { usePriceListComposable } from "@/app/composables/priceList/usePriceListComposable";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import { useProductComposable } from "@/app/composables/product/useProductComposable";
+import { useIvaComposable } from "@/app/composables/afip/useIvaComposable";
+import { useRoute } from "vue-router";
 
-import Step_1 from '@/app/components/product/new/steps/Step_1.vue';
-import Step_2 from '@/app/components/product/new/steps/Step_2.vue';
-import Step_3 from '@/app/components/product/new/steps/Step_3.vue';
-import Step_4 from '@/app/components/product/new/steps/Step_4.vue';
-import ProductModal from '../view/ProductModal.vue';
-import { AFIP_INSCRIPTION, AFIP_IVAS } from '@/app/types/Constantes';
+import Step_1 from "@/app/components/product/new/steps/Step_1.vue";
+import Step_2 from "@/app/components/product/new/steps/Step_2.vue";
+import Step_3 from "@/app/components/product/new/steps/Step_3.vue";
+import Step_4 from "@/app/components/product/new/steps/Step_4.vue";
+import ProductModal from "../view/ProductModal.vue";
+
+const route = useRoute();
 
 interface StepComponent {
     validateForm: () => void;
 }
 
-const { productInitialState, openModalImg } = useProductComposable();
+/* if (route.params.slug) {
+    isEdit.value = true;
+    productSlug.value = route.params.slug as string;
+} */
+
+const {
+    productInitialState,
+    openModalImg,
+    product,
+    products,
+    selectedKeysInPriceListTransfer,
+} = useProductComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { fetchPriceList } = usePriceListComposable(CompanyGetter.value.id);
 
@@ -70,29 +89,29 @@ const handleCustomEvent = (data: boolean) => {
 
 const steps = [
     {
-        title: 'Nombre y Categoría',
-        content: 'Nombre y Categoría',
+        title: "Nombre y Categoría",
+        content: "Nombre y Categoría",
         component: Step_1,
-        ref: 'step1Component',
+        ref: "step1Component",
     },
     {
-        title: 'Completá la ficha técnica de tu producto',
-        content: 'Completá la ficha técnica de tu producto',
+        title: "Completá la ficha técnica de tu producto",
+        content: "Completá la ficha técnica de tu producto",
         component: Step_2,
-        ref: 'step2FormRef',
+        ref: "step2FormRef",
     },
     {
-        title: 'Precio y listas de precios',
-        content: 'Precio y listas de precios',
+        title: "Precio y listas de precios",
+        content: "Precio y listas de precios",
         component: Step_3,
-        ref: 'step3FormRef',
+        ref: "step3FormRef",
     },
-    {
+    /* {
         title: 'Agregar imágenes',
         content: 'Agregar imágenes',
         component: Step_4,
         ref: 'step3FormRef',
-    },
+    }, */
 ];
 
 const nextButtonsStep = [
@@ -119,19 +138,17 @@ const submit = async () => {
 };
 
 onBeforeMount(async () => {
+    /*  const foundProduct: any = products.value.find((product) => product.slug === productSlug.value);
+        product.value = foundProduct; */
+
+    //productInitialState();
     await fetchPriceList();
     await useIvaComposable();
 });
 
-/* onMounted(() => {
-    const newIva = IvaZeroPercent.value ? AFIP_IVAS.AFIP_ID_CERO : AFIP_IVAS.AFIP_ID_VEINTI_UNO;
-    console.log('🚀 ~ onMounted ~ newIva:', newIva);
-    product.value.iva = newIva;
-    console.log('🚀 ~ onMounted ~ product.value.iva:', product.value.iva);
-}); */
-
 onUnmounted(() => {
-    productInitialState();
+    //productInitialState();
+    console.log("🚀 ~ onUnmounted ~ ADDPRODUCT:");
 });
 </script>
 <style scoped>
@@ -151,7 +168,7 @@ onUnmounted(() => {
     margin-top: 24px;
 }
 
-[data-theme='dark'] .steps-content {
+[data-theme="dark"] .steps-content {
     background-color: #2f2f2f;
     border: 1px dashed #404040;
 }

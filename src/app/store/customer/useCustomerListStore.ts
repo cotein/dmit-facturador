@@ -1,4 +1,4 @@
-import { PAGINATION_ITEMS_PER_PAGE } from '@/app/types/Constantes';
+import { PAGINATION_ITEMS_PER_PAGE_50 } from '@/app/types/Constantes';
 import type { Customer } from '@/app/types/Invoice';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
@@ -10,7 +10,7 @@ export const useCustomerListStore = defineStore('customer-list', () => {
 
     const currentPage = ref<number>(1);
 
-    const itemsPerPage = ref<number>(PAGINATION_ITEMS_PER_PAGE);
+    const itemsPerPage = ref<number>(PAGINATION_ITEMS_PER_PAGE_50);
 
     const totalPages = ref<number>();
 

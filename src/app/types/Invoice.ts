@@ -48,6 +48,7 @@ export type Voucher = {
     fch_vto_pago: string;
     isNotaCredito: boolean;
     isNotaDebito: boolean;
+    isExpirated: boolean;
     name: string;
     nota_credito_o_debito_text: string;
     parents: [];

@@ -4,6 +4,7 @@ import { useProductComposable } from '@/app/composables/product/useProductCompos
 import { usePriceListComposable } from '@/app/composables/priceList/usePriceListComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import type { PriceListTranferData, PriceList } from '@/app/types/PriceList';
+import { onlyNumeric, selectText } from '@/app/helpers/onlyNumbers';
 
 const company_id = ref<number>(0);
 
@@ -100,15 +101,24 @@ const validateForm = async () => {
 defineExpose({ validateForm });
 </script>
 <template>
-    <div class="content--step">
+    <div class="www">
         <a-form name="ninjadash_validation-form" ref="step3FormRef" :model="product" :rules="rules" layout="vertical">
-            <a-row justify="space-between" align="middle" :gutter="31">
+            <a-row justify="space-between" align="middle" :gutter="[15, 15]">
                 <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="cost" label="Precio de costo del producto" name="cost">
-                        <a-input v-model:value="product.cost" placeholder="Costo" />
+                        <input
+                            v-model="product.cost"
+                            placeholder="Costo"
+                            @keypress="onlyNumeric"
+                            inputmode="numeric"
+                            @focus="selectText"
+                            class="custom-input"
+                        />
                     </a-form-item>
                 </a-col>
-                <a-col :xs="24" :sm="12" :md="8" :lg="6">
+            </a-row>
+            <a-row justify="space-between" align="middle" :gutter="[15, 15]">
+                <a-col :xs="24" :sm="24" :md="24" :lg="24">
                     <a-form-item ref="price_list" label="Seleccionar listas de precio" name="price_list">
                         <a-transfer
                             v-model:target-keys="product.price_list"
@@ -116,7 +126,7 @@ defineExpose({ validateForm });
                             :data-source="priceListForTransferComponent"
                             :one-way="false"
                             :list-style="{
-                                width: '300px',
+                                width: '100%',
                                 height: '300px',
                                 'text-align': 'left',
                             }"
@@ -146,5 +156,26 @@ defineExpose({ validateForm });
         width: 100%;
         margin-bottom: 16px;
     }
+}
+
+.custom-input {
+    padding: 0 8px;
+    vertical-align: middle;
+    border-radius: 5px;
+    width: 100%;
+    min-height: 41px;
+    background-color: #ffffff;
+    border: 1px solid rgba(157, 155, 153, 0.491);
+    transition: all 0.2s ease-in-out 0s;
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: normal;
+    text-align: right;
+}
+
+.custom-input:focus {
+    outline: none;
+    border: 1px solid #a2d2df;
+    box-shadow: inset 0 0 0 1px #007c89;
 }
 </style>

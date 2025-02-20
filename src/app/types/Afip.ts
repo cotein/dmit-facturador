@@ -251,7 +251,7 @@ export const BillingConcepts = [
 
 export type Opcional = {
     Id: string;
-    Valor: string;
+    Valor: string | number;
 };
 
 export type Comprador = {

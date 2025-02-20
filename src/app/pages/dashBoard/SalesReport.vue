@@ -41,7 +41,7 @@ const salesReport = defineComponent({
                     // Verifica si el dato es un importe o un número
                     if (dstLabel.toLowerCase().includes('ventas')) {
                         // Formatea como moneda
-                        const fvalue = formatCurrency(raw, false);
+                        const fvalue = formatCurrency(raw, true);
                         return ` ${fvalue}`;
                     } else {
                         // Formatea como número sin formato

@@ -72,7 +72,6 @@ onBeforeMount(() => {
 
 onMounted(() => {
     invoice.value.CondicionIVAReceptorId = CompanyGetter.value?.inscription_id;
-    console.log('🚀 ~ afterVisibleChange ~ invoice.value:', invoice.value);
 });
 
 onUnmounted(() => {
@@ -85,11 +84,14 @@ onUnmounted(() => {
     <div class="scale-down">
         <DrawerPtoVta />
         <a-row :gutter="30" v-if="!isMobile">
-            <a-col :xs="24" :sm="24">
+            <a-col :xs="24" :sm="24" :md="8" :lg="8">
                 <div :style="{ margin: '10px 0px' }">CTRL + F11 para abrir datos del cliente</div>
             </a-col>
-            <a-col :xs="24" :sm="24">
+            <a-col :xs="24" :sm="24" :md="8" :lg="8">
                 <div :style="{ margin: '10px 0px' }">CTRL + F10 para ingresar cliente nuevo</div>
+            </a-col>
+            <a-col :xs="24" :sm="24" :md="8" :lg="8">
+                <div :style="{ margin: '10px 0px' }">F12 para buscar productos ó servicios</div>
             </a-col>
         </a-row>
         <Cards>

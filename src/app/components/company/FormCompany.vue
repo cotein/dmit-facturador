@@ -21,6 +21,8 @@ import { showMessage } from '@/app/helpers/mesaages';
 import ASelectedBank from '@/app/components/banks/ASelectedBank.vue';
 import { onlyNumeric } from '@/app/helpers/onlyNumbers';
 import { FormInstance } from 'ant-design-vue/lib/form';
+import { z } from 'zod';
+import type { CBU } from '@/app/types/Company';
 
 const { sujeto } = storeToRefs(usePadronAfipStore());
 const { lastNameIsRequired, rules, companyForm, CompanyGetter } = useCompanyComposable();
@@ -43,77 +45,53 @@ const cbuErrors = ref<string[][]>([[], [], []]);
 
 const formIsValid = ref<boolean>(true);
 
-const validateCBU = (cbu: string, index: number) => {
-    if (!cbu) {
-        cbuErrors.value[index][0] = 'Este campo es obligatorio';
-        formIsValid.value = false;
-    } else if (cbu.length !== 22) {
-        cbuErrors.value[index][0] = 'El CBU debe tener 22 caracteres de longitud';
-        formIsValid.value = false;
-    } else {
-        cbuErrors.value[index][0] = '';
-    }
-};
-
-const validateAlias = (alias: string, index: number) => {
-    if (!alias) {
-        cbuErrors.value[index][1] = 'Este campo es obligatorio';
-        formIsValid.value = false;
-    } else {
-        cbuErrors.value[index][1] = '';
-    }
-};
-
-const validateBankId = (bank_id: number | undefined, index: number) => {
-    if (!bank_id) {
-        cbuErrors.value[index][2] = 'Este campo es obligatorio';
-        formIsValid.value = false;
-    } else {
-        cbuErrors.value[index][2] = '';
-    }
-};
-
-const validateBank = (bank: string, index: number) => {
-    if (!bank) {
-        cbuErrors.value[index][3] = 'Este campo es obligatorio';
-        formIsValid.value = false;
-    } else {
-        cbuErrors.value[index][3] = '';
-    }
-};
-
-const validateCtaCte = (ctaCte: string, index: number) => {
-    if (!ctaCte) {
-        cbuErrors.value[index][4] = 'Este campo es obligatorio';
-        formIsValid.value = false;
-    } else {
-        cbuErrors.value[index][4] = '';
-    }
-};
-
-const validateCBUs = () => {
-    formIsValid.value = true; // Reset form validity
-    companyForm.value.cbus.forEach((cbuItem: any, index: number) => {
-        validateCBU(cbuItem.cbu, index);
-        validateAlias(cbuItem.alias, index);
-        validateBankId(cbuItem.bank_id, index);
-        /* validateBank(cbuItem.bank, index);*/
-        validateCtaCte(cbuItem.ctaCte, index);
-    });
-};
-
 const companyFormRef = ref<FormInstance>();
+
 const emit = defineEmits(['submitCompanyForm']);
+
 const loading = ref(false);
 /**METHODS */
 const onSubmit = async () => {
-    //validateCBUs();
+    formIsValid.value = true; // Reset form validity
+
+    const uniqueCbu = hasDuplicateCBU(companyForm.value.cbus);
+
+    if (uniqueCbu) {
+        formIsValid.value = false;
+        showMessage('error', 'Los CBU deben ser únicos', 3);
+        return;
+    }
+
+    cbuErrors.value = companyForm.value.cbus.map(() => []); // Reset errors
+
+    companyForm.value.cbus.forEach((cbuItem: CBU, index: number) => {
+        const result = cbuSchema.safeParse(cbuItem);
+
+        if (!result.success) {
+            formIsValid.value = false;
+
+            result.error.errors.forEach((err) => {
+                console.log('🚀 ~ result.error.errors.forEach ~ err:', err);
+                if (err.path[0] == 'ctaCte') {
+                    cbuErrors.value[index][4] = err.message;
+                }
+                if (err.path[0] == 'bank_id') {
+                    cbuErrors.value[index][2] = err.message;
+                }
+                if (err.path[0] == 'cbu') {
+                    cbuErrors.value[index][0] = err.message;
+                }
+            });
+        }
+    });
+
     if (!formIsValid.value) {
         showMessage('error', 'Error al validar el formulario', 3);
         return;
     }
 
     loading.value = true;
+
     try {
         if (!lastNameIsRequired.value) {
             delete rules.lastName;
@@ -124,7 +102,9 @@ const onSubmit = async () => {
 
         if (validate) {
             companyForm.value.cuit = sujeto.value.cuit;
+
             companyForm.value.address = addressInStore.value;
+
             let inscription: any = companyForm.value.inscription;
 
             if (!Number.isInteger(inscription)) {
@@ -220,6 +200,36 @@ const addAccount = () => {
         });
     }
 };
+
+const cbuSchema = z.object({
+    alias: z.string().optional(),
+    bank_id: z
+        .number()
+        .optional()
+        .refine((val) => val !== undefined, {
+            message: 'El Banco es requerido',
+        }),
+    bank: z.string().optional(),
+    cbu: z
+        .string()
+        .nonempty('El CBU es requerido')
+        .refine((val) => val.length === 22, {
+            message: 'El CBU debe tener 22 caracteres de longitud',
+        }),
+    ctaCte: z.string().nonempty('El número de cuenta es requerido'),
+});
+
+const hasDuplicateCBU = (arr: Array<CBU>) => {
+    const cbuSet = new Set();
+
+    for (const item of arr) {
+        if (cbuSet.has(item.cbu)) {
+            return true; // Encontrado un valor de CBU repetido
+        }
+        cbuSet.add(item.cbu);
+    }
+    return false; // No se encontraron valores de CBU repetidos
+};
 </script>
 
 <template>
@@ -249,8 +259,8 @@ const addAccount = () => {
                                 :rules="rules"
                                 layout="vertical"
                             >
-                                <a-row :gutter="30">
-                                    <a-col :md="8" :xs="24" :sm="24">
+                                <a-row :gutter="[15, 15]">
+                                    <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                         <GetInfoByCuit :only-cuit="true" />
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -415,11 +425,13 @@ const addAccount = () => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-button type="default" @click="removeCBU(0)">
-                                            <template #icon>
-                                                <unicon name="trash-alt" width="14"></unicon>
-                                            </template>
-                                        </a-button>
+                                        <a-tooltip title="Eliminar cuenta">
+                                            <a-button type="default" @click="removeCBU(0)">
+                                                <template #icon>
+                                                    <unicon name="trash-alt" width="14"></unicon>
+                                                </template>
+                                            </a-button>
+                                        </a-tooltip>
                                     </a-col>
                                 </a-row>
 
@@ -474,6 +486,7 @@ const addAccount = () => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                                        <a-tooltip title="Eliminar cuenta"></a-tooltip>
                                         <a-button type="default" @click="removeCBU(index + 1)">
                                             <template #icon>
                                                 <unicon name="trash-alt" width="14"></unicon>
@@ -600,7 +613,7 @@ const addAccount = () => {
                                     >
                                         <span>{{ props.isSaveButton ? 'Guardar datos' : 'Actualizar datos' }}</span>
                                     </a-button>
-                                    <a-button
+                                    <!-- <a-button
                                         @click="resetForm"
                                         class="btn-outlined"
                                         :size="sizeButton"
@@ -608,7 +621,7 @@ const addAccount = () => {
                                         type="light"
                                     >
                                         <span> Limpiar datos</span>
-                                    </a-button>
+                                    </a-button> -->
                                 </div>
                             </a-form>
                         </VerticalFormStyleWrap>

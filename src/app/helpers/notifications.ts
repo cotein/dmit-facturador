@@ -8,7 +8,7 @@ type NotificationPlacement = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRigh
  *
  * @param {NotificationType} type - El tipo de notificación que se mostrará.
  * @param {string} msg - El mensaje que se mostrará.
- * @param {number} duration - La duración durante la cual se mostrará la notificación.
+ * @param {number} duration - La duración durante la cual se mostrará la notificación - en segundos.
  * @param {NotificationPlacement} placement - La posición donde se mostrará la notificación.
  *
  * @example

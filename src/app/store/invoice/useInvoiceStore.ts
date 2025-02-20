@@ -2,9 +2,13 @@ import type { AfipInvoice, FeCabReq } from '@/app/types/Afip';
 import type { FECAESolicitarRequest, InvoiceList } from '@/app/types/Invoice';
 import type { ProductOnInvoiceTable } from '@/app/types/Product';
 import { defineStore } from 'pinia';
-import { computed, reactive, ref, type UnwrapRef } from 'vue';
+import { computed, ref, reactive, type UnwrapRef } from 'vue';
+import dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 
 export const useInvoiceStore = defineStore('invoice', () => {
+    const date = dayjs(new Date());
+
     const invoiceType = ref<number>(1);
 
     const isSale = ref<boolean>(true);
@@ -33,7 +37,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
         Concepto: '1',
         CondicionIVAReceptorId: 1,
         customer: null,
-        date: undefined,
+        date: date,
         dateVtoPago: undefined,
         DocTipo: null,
         FchServDesde: '',
@@ -67,7 +71,7 @@ export const useInvoiceStore = defineStore('invoice', () => {
         invoice.CantReg = 1;
         invoice.CbteFch = '';
         invoice.CbtesAsoc = undefined;
-        invoice.date = undefined;
+        invoice.date = date;
         invoice.dateVtoPago = undefined;
         invoice.DocTipo = null;
         invoice.FchServDesde = '';

@@ -117,9 +117,18 @@ export enum TYPE_USER {
     USUARIO = 100,
 }
 
-export const PAGINATION_ITEMS_PER_PAGE = 30;
+// PAGINATION
+export const DEFAULT_CURRENT_PAGE = 1;
+export const PAGINATION_ITEMS_PER_PAGE_200 = 200;
+export const PAGINATION_ITEMS_PER_PAGE_150 = 150;
+export const PAGINATION_ITEMS_PER_PAGE_100 = 100;
+export const PAGINATION_ITEMS_PER_PAGE_50 = 50;
+export const PAGINATION_ITEMS_PER_PAGE_30 = 30;
 export const PAGINATION_ITEMS_PER_PAGE_10 = 10;
 export const PAGINATION_ITEMS_PER_PAGE_5 = 5;
 export const PAGINATION_PAGE_ONE = 1;
 
+//HOURS IN MLS
+export const ONE_DAY_IN_MS = 1000 * 60 * 60 * 24;
+export const ONE_MINUTE_IN_MS = 1000 * 60;
 export const ONE_HOUR_IN_MS = 1000 * 60 * 60;

@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import { ApiHttp } from '../base-api';
 import type { Sujeto } from '@/app/types/Company';
-import { PAGINATION_ITEMS_PER_PAGE } from '@/app/types/Constantes';
+import { PAGINATION_ITEMS_PER_PAGE_50 } from '@/app/types/Constantes';
 import type { CustomerResponse, DashBoardTotalCustomers } from '@/app/types/Customer';
 const URL = '/api/customer';
 
@@ -18,7 +18,7 @@ export const getCustomers = async (
     name: string = '',
     isActive: IsActiveType = 'all',
     page: number = 1,
-    itemsPerPage: number = PAGINATION_ITEMS_PER_PAGE,
+    itemsPerPage: number = PAGINATION_ITEMS_PER_PAGE_50,
 ): Promise<CustomerResponse> => {
     // Modifica aquí el tipo de retorno
     try {

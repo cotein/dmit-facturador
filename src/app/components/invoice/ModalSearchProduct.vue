@@ -3,7 +3,7 @@
         <a-modal
             v-model:visible="openSearchProduct"
             :width="widthModal"
-            title="Búsqueda de producto"
+            title="Búsqueda de producto - (Tecla Enter para confirmar)"
             :destroyOnClose="true"
             :footer="null"
             :inert="!openSearchProduct"

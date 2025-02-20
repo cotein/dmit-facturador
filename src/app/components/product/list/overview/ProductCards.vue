@@ -1,30 +1,29 @@
 <script setup lang="ts">
-import { ProductCard } from '@/app/components/product/Style';
-import { toRefs, computed, ref } from 'vue';
-import { useProductComposable } from '@/app/composables/product/useProductComposable';
-import { useRoute, useRouter } from 'vue-router';
-import DetailsRight from './DetailsRight.vue';
-import { ProductDetailsWrapper } from './../../Style';
+import { ProductCard } from "@/app/components/product/Style";
+import { toRefs, computed, ref } from "vue";
+import { useProductComposable } from "@/app/composables/product/useProductComposable";
+import { useRoute, useRouter } from "vue-router";
+import DetailsRight from "./DetailsRight.vue";
+import { ProductDetailsWrapper } from "./../../Style";
+import AddProduct from "@/app/components/product/new/AddProduct.vue";
 const props = defineProps({
-    product: Object,
+    product_data: Object,
 });
-//const { dispatch, state } = useStore();
-//const productsListSpinner = computed(() => state.ecommerce.isProductLoading);
-const { productsListSpinner } = useProductComposable();
-const router = useRouter();
-const { product } = toRefs(props);
-const renderData = computed(() => product?.value);
-const { matched } = useRoute();
-const addWishList = (value: any) => {
-    //dispatch('updateWishList', value);
-};
-const goToUpdateProduct = () => {
-    const product_id = renderData.value!.id;
 
-    router.push(`/productos/actualizar/${product_id}`);
-};
+const { productsListSpinner, product } = useProductComposable();
 
-const openModal = ref<boolean>(false);
+const { product_data } = toRefs(props);
+
+const renderData = computed(() => product_data?.value);
+
+const visibleModal = ref<boolean>(false);
+
+const openModal = () => {
+    product.value = renderData;
+    setTimeout(() => {
+        visibleModal.value = true;
+    }, 250);
+};
 
 interface Iva {
     id: number;
@@ -71,25 +70,30 @@ interface Product {
     priority: number;
     cost: number;
     lista_de_precios: PriceList[];
+    images: string[];
 }
+
+const cleanModal = () => {};
 </script>
 
 <template>
     <div class="spin" v-if="productsListSpinner"><a-spin /></div>
     <ProductCard v-else style="margin-bottom: 30px">
-        <figure>
-            <!-- <img :src="`../../../../../${renderData?.img}`" :alt="`img${renderData?.id}`" /> -->
-            <img :src="$environment.VITE_SRC_ASSETS + '/img/products/2.png'" :alt="renderData.slug" />
-        </figure>
+        <!--  <figure>
+            <img v-if="renderData?.images.length" :src="renderData.images[0].url" :alt="renderData.slug" />
+            <img v-else :src="$environment.VITE_SRC_ASSETS + '/img/products/2.png'" :alt="renderData?.slug" />
+        </figure> -->
         <figcaption>
             <!-- <a @click="() => addWishList(renderData?.id)" class="btn-heart" to="#"> -->
             <!-- <a class="btn-heart" to="#">
                 <unicon name="heart" width="14" :style="{ fill: renderData?.code ? '#ff4d4f' : '#9299B8' }"></unicon>
             </a> -->
             <sdHeading class="product-single-title" as="h5">
-                <router-link :to="`${matched[1].path}/ecommerce/productDetails/${renderData?.id}`">{{
-                    renderData?.name
-                }}</router-link>
+                <!-- <router-link
+                    :to="`${matched[1].path}/ecommerce/productDetails/${renderData?.id}`"
+                    >{{ renderData?.name }}</router-link
+                > -->
+                {{ renderData?.name }}
             </sdHeading>
 
             <!-- <div class="product-single-rating">
@@ -100,10 +104,15 @@ interface Product {
             <p>
                 <!-- <span class="product-single-price__new">${{ renderData.name }} </span> -->
                 <template v-if="renderData?.lista_de_precios.length">
-                    <template v-for="(price_list, index) in renderData.lista_de_precios" :key="index">
+                    <template
+                        v-for="(price_list, index) in renderData.lista_de_precios"
+                        :key="index"
+                    >
                         <span class="">
                             L. precio: {{ price_list.name }}
-                            {{ $filters.formatCurrency(parseFloat(price_list.sale_price)) }}
+                            {{
+                                $filters.formatCurrency(parseFloat(price_list.sale_price))
+                            }}
                         </span>
 
                         <br />
@@ -112,40 +121,29 @@ interface Product {
             </p>
 
             <div class="product-single-action">
-                <a-button @click="goToUpdateProduct"> Editar </a-button>
-                <!-- <a-button @click="openModal = true"> Ver </a-button>
+                <!-- <button @click="goToUpdate">Editar</button> -->
+                <a-button @click="openModal"> Editar </a-button>
                 <a-modal
-                    v-model:visible="openModal"
-                    title="Información del producto a ingresar"
-                    okText="Producto"
+                    v-model:visible="visibleModal"
+                    title="Editar informacion del producto"
                     width="auto"
+                    @afterClose="cleanModal"
+                    class="custom-modal"
+                    :closable="false"
                 >
-                    <ProductDetailsWrapper v-if="renderData">
-                        <div class="product-details-box">
-                            <a-row :gutter="30">
-                                <a-col :xs="24" :lg="10">
-                                    <div class="product-details-box__left pdbl">
-                                        <figure>
-                                            <img
-                                                :style="{ width: '100%' }"
-                                                :src="renderData && `${renderData.img}`"
-                                                alt=""
-                                            />
-                                        </figure>
-                                        <div class="pdbl__slider pdbs">
-
-                                        </div>
-                                    </div>
-                                </a-col>
-                                <a-col :xs="24" :lg="14">
-                                    <DetailsRight :product="renderData" />
-                                </a-col>
-                            </a-row>
-                        </div>
-                    </ProductDetailsWrapper>
-                </a-modal>  -->
+                    <template #footer>
+                        <a-button key="back" @click="visibleModal = false">
+                            Cancelar
+                        </a-button>
+                    </template>
+                    <AddProduct />
+                </a-modal>
             </div>
         </figcaption>
     </ProductCard>
 </template>
-<style scoped scss></style>
+<style scoped>
+.custom-modal .ant-modal-mask {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+</style>

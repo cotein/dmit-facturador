@@ -1,7 +1,7 @@
 import type { DocumentCancelation } from './../../app/types/Receipt';
 import type { AxiosError, AxiosResponse } from 'axios';
 import { ApiHttp } from '../base-api';
-import { PAGINATION_ITEMS_PER_PAGE, PAGINATION_PAGE_ONE } from '@/app/types/Constantes';
+import { PAGINATION_ITEMS_PER_PAGE_50, PAGINATION_PAGE_ONE } from '@/app/types/Constantes';
 
 const URL = '/api/receipt';
 
@@ -34,7 +34,7 @@ export const getReceipts = async (
     from: string | null = null,
     to: string | null = null,
     page: number | null = PAGINATION_PAGE_ONE,
-    per_page: number | null = PAGINATION_ITEMS_PER_PAGE,
+    per_page: number | null = PAGINATION_ITEMS_PER_PAGE_50,
 ): Promise<AxiosResponse<any>> => {
     try {
         const params: URLSearchParams = new URLSearchParams();

@@ -1,10 +1,11 @@
 <!-- eslint-disable indent -->
 <script setup lang="ts">
-import { reactive, ref, computed, watch } from 'vue';
-import { useProductComposable } from '@/app/composables/product/useProductComposable';
-import { useIvaComposable } from '@/app/composables/afip/useIvaComposable';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { AFIP_INSCRIPTION, AFIP_IVAS } from '@/app/types/Constantes';
+import { reactive, ref, computed, watch } from "vue";
+import { useProductComposable } from "@/app/composables/product/useProductComposable";
+import { useIvaComposable } from "@/app/composables/afip/useIvaComposable";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import { AFIP_INSCRIPTION, AFIP_IVAS } from "@/app/types/Constantes";
+import { onlyNumericInputEvent, selectText } from "@/app/helpers/onlyNumbers";
 
 const { product } = useProductComposable();
 const { CompanyGetter } = useCompanyComposable();
@@ -14,11 +15,11 @@ const step2FormRef = ref();
 const metersByUnityValidator = (rule: any, value: any) => {
     return new Promise((resolve, reject) => {
         if (!/^\d+(\.\d+)?$/.test(value)) {
-            reject('Sólo se permiten números.');
+            reject("Sólo se permiten números.");
         }
 
         if (product.value.sale_by_meter && value <= 0) {
-            reject('El valor debe ser mayor a cero.');
+            reject("El valor debe ser mayor a cero.");
         }
 
         resolve(true);
@@ -28,7 +29,7 @@ const metersByUnityValidator = (rule: any, value: any) => {
 const discountAmountValidator = (rule: any, value: any) => {
     return new Promise((resolve, reject) => {
         if (product.value.apply_discount && value <= 0) {
-            reject('El importe debe ser mayor a cero.');
+            reject("El importe debe ser mayor a cero.");
         } else {
             resolve(true);
         }
@@ -37,7 +38,7 @@ const discountAmountValidator = (rule: any, value: any) => {
 const discountPercentageValidator = (rule: any, value: any) => {
     return new Promise((resolve, reject) => {
         if (product.value.apply_discount && value <= 0) {
-            reject('El porcentaje de descuento debe ser mayor a cero.');
+            reject("El porcentaje de descuento debe ser mayor a cero.");
         } else {
             resolve(true);
         }
@@ -46,7 +47,7 @@ const discountPercentageValidator = (rule: any, value: any) => {
 const priorityValidator = (rule: any, value: any) => {
     return new Promise((resolve, reject) => {
         if (!/^\d+$/.test(value)) {
-            reject('La prioridad debe ser un número');
+            reject("La prioridad debe ser un número");
         }
         resolve(true);
     });
@@ -56,39 +57,39 @@ const rules = reactive({
     quantity: [
         {
             required: true,
-            message: 'La cantidad es requerida',
-            trigger: 'blur',
+            message: "La cantidad es requerida",
+            trigger: "blur",
         },
     ],
     critical_stock: [
         {
             required: true,
-            message: 'La cantidad es requerida',
-            trigger: 'blur',
+            message: "La cantidad es requerida",
+            trigger: "blur",
         },
     ],
     apply_discount_amount: [
         {
             validator: discountAmountValidator,
-            trigger: 'blur',
+            trigger: "blur",
         },
     ],
     apply_discount_percentage: [
         {
             validator: discountPercentageValidator,
-            trigger: 'blur',
+            trigger: "blur",
         },
     ],
     meters_by_unity: [
         {
             validator: metersByUnityValidator,
-            trigger: 'blur',
+            trigger: "blur",
         },
     ],
     priority: [
         {
             validator: priorityValidator,
-            trigger: 'blur',
+            trigger: "blur",
         },
     ],
 });
@@ -120,7 +121,8 @@ const validateForm = async () => {
 
 const IvaZeroPercent = computed(() => {
     return (
-        CompanyGetter.value?.inscription_id === AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO ||
+        CompanyGetter.value?.inscription_id ===
+            AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO ||
         CompanyGetter.value?.inscription_id === AFIP_INSCRIPTION.IVA_SUJETO_EXENTO
     );
 });
@@ -128,30 +130,74 @@ const IvaZeroPercent = computed(() => {
 watch(
     () => IvaZeroPercent.value,
     (newValue) => {
-        console.log('🚀 ~ watch ~ newValue:', newValue);
+        console.log("🚀 ~ watch ~ newValue:", newValue);
         if (newValue) {
             product.value.iva = AFIP_IVAS.AFIP_ID_CERO;
         }
-    },
+    }
 );
 
 defineExpose({ validateForm });
 </script>
 <template>
     <div class="content--step">
-        <a-form name="ninjadash_validation-form" ref="step2FormRef" :model="product" :rules="rules" layout="vertical">
+        <a-form
+            name="ninjadash_validation-form"
+            ref="step2FormRef"
+            :model="product"
+            :rules="rules"
+            layout="vertical"
+        >
             <a-row justify="space-between" align="middle" :gutter="31">
-                <a-col :xs="24" :sm="12" :md="8" :lg="6">
+                <a-col :xs="24" :sm="24" :md="8" :lg="8">
                     <a-form-item ref="quantity" label="Cantidad inicial" name="quantity">
-                        <a-input v-model:value="product.quantity" placeholder="Cantidad" />
+                        <a-input
+                            v-model:value="product.quantity"
+                            placeholder="Cantidad"
+                            @keypress="onlyNumericInputEvent"
+                            inputmode="numeric"
+                            @focus="selectText"
+                        />
                     </a-form-item>
                 </a-col>
-                <a-col :xs="24" :sm="12" :md="8" :lg="6">
-                    <a-form-item ref="critical_stock" label="Stock crítico" name="critical_stock">
-                        <a-input v-model:value="product.critical_stock" placeholder="Cantidad" />
+                <a-col :xs="24" :sm="24" :md="8" :lg="8">
+                    <a-form-item
+                        ref="critical_stock"
+                        label="Stock crítico"
+                        name="critical_stock"
+                    >
+                        <a-input
+                            v-model:value="product.critical_stock"
+                            placeholder="Cantidad"
+                            @keypress="onlyNumericInputEvent"
+                            inputmode="numeric"
+                            @focus="selectText"
+                        />
                     </a-form-item>
                 </a-col>
-                <a-col :xs="24" :sm="12" :md="8" :lg="6">
+                <a-col :xs="24" :sm="24" :md="8" :lg="8">
+                    <a-form-item ref="iva" label="Iva del producto" name="iva">
+                        <p v-if="IvaZeroPercent">
+                            De acuerdo a su inscripción en ARCA sus artículos no gravan
+                            IVA
+                        </p>
+                        <a-select
+                            v-else
+                            v-model:value="product.iva"
+                            size="large"
+                            :disabled="IvaZeroPercent ? true : false"
+                            show-search
+                            placeholder="Inscripción en Arca"
+                            :default-active-first-option="false"
+                            :show-arrow="false"
+                            :filter-option="false"
+                            allowClear
+                            :not-found-content="null"
+                            :options="IvasGetter"
+                        ></a-select>
+                    </a-form-item>
+                </a-col>
+                <!-- <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="sale_by_meter" label="Se vende por metro?" name="sale_by_meter">
                         <a-switch
                             v-model:checked="product.sale_by_meter"
@@ -188,11 +234,11 @@ defineExpose({ validateForm });
                             :disabled="!product.published_here"
                         />
                     </a-form-item>
-                </a-col>
+                </a-col> -->
             </a-row>
 
             <a-row justify="space-between" align="middle" :gutter="31">
-                <a-col :xs="24" :sm="12" :md="8" :lg="6">
+                <!-- <a-col :xs="24" :sm="12" :md="8" :lg="6">
                     <a-form-item ref="view_price" label="Visualizar precio en la tienda" name="view_price">
                         <a-switch
                             v-model:checked="product.view_price"
@@ -238,26 +284,7 @@ defineExpose({ validateForm });
                             :disabled="!product.apply_discount"
                         />
                     </a-form-item>
-                </a-col>
-                <a-col :xs="24" :sm="12" :md="8" :lg="6">
-                    <a-form-item ref="iva" label="Iva del producto" name="iva">
-                        <p v-if="IvaZeroPercent">De acuerdo a su inscripción en ARCA sus artículos no gravan IVA</p>
-                        <a-select
-                            v-else
-                            v-model:value="product.iva"
-                            size="large"
-                            :disabled="IvaZeroPercent ? true : false"
-                            show-search
-                            placeholder="Inscripción en Arca"
-                            :default-active-first-option="false"
-                            :show-arrow="false"
-                            :filter-option="false"
-                            allowClear
-                            :not-found-content="null"
-                            :options="IvasGetter"
-                        ></a-select>
-                    </a-form-item>
-                </a-col>
+                </a-col> -->
             </a-row>
         </a-form>
     </div>

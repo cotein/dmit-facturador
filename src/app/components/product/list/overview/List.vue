@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ProductCardsList from './ProductCardList.vue';
-import { PaginationWrapper } from '../../Style';
-import { computed, ref } from 'vue';
-import { useProductComposable } from '@/app/composables/product/useProductComposable';
-import { usePaginationComposable } from '@/app/composables/pagination/usePaginationComposable';
+import ProductCardsList from "./ProductCardList.vue";
+import { PaginationWrapper } from "../../Style";
+import { computed, ref } from "vue";
+import { useProductComposable } from "@/app/composables/product/useProductComposable";
+import { usePaginationComposable } from "@/app/composables/pagination/usePaginationComposable";
 
 const { currentPage, itemsPerPage, totalItems } = usePaginationComposable();
 
@@ -14,7 +14,7 @@ const onShowSizeChange = (newCurrent: number, newPageSize: number) => {
     itemsPerPage.value = newPageSize;
 };
 
-const pageSizeOptions = ref<string[]>(['1', '2', '10', '20', '30', '40', '50', '100']);
+const pageSizeOptions = ref<string[]>(["1", "2", "10", "20", "30", "40", "50", "100"]);
 
 const onHandleChange = (newCurrent: number, newPageSize: number) => {
     currentPage.value = newCurrent;
@@ -33,7 +33,7 @@ const onHandleChange = (newCurrent: number, newPageSize: number) => {
             <a-col v-for="(product, index) in products" :xs="24" :key="index">
                 <Suspense>
                     <template #default>
-                        <ProductCardsList :product="product" />
+                        <ProductCardsList :product_data="product" />
                     </template>
                     <template #fallback>
                         <sdCards headless>

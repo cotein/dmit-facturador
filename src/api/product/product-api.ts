@@ -57,6 +57,7 @@ export const getProducts = async (
         if (name != '') {
             params.append('name', name);
         }
+
         const response = await ApiHttp.get<Product[]>(URL, { params });
 
         return response;
@@ -83,7 +84,9 @@ export const fetchProducts = async (
         const params = new URLSearchParams();
 
         params.append('company_id', company_id!.toString());
+
         params.append('list', list.toString());
+
         if (page != null) {
             params.append('page', page.toString());
         }
@@ -91,6 +94,7 @@ export const fetchProducts = async (
         if (per_page != null) {
             params.append('per_page', per_page.toString());
         }
+
         const response = await ApiHttp.get<ProductListWithPagination>(URL, { params });
 
         return response;

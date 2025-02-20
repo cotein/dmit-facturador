@@ -20,36 +20,22 @@ export const useProductComposable = () => {
                 productsListSpinner.value = true;
 
                 const response = await fetchProducts(company_id, list, currentPage.value, itemsPerPage.value);
+
                 if (!response) {
                     productsListSpinner.value = false;
 
                     throw new Error('Failed to fetch products');
                 }
+
                 productsListSpinner.value = false;
 
                 return response.data;
             },
-
-            /* {
-                onSuccess: (data) => {
-                    console.log('🚀 ~ useProductComposable ~ data:', data);
-                    productsListSpinner.value = false;
-
-                    products.value = data.data;
-
-                    if (data.pagination) {
-                        //setCurrentPage(data.pagination.currentPage);
-                        currentPage.value = data.pagination.currentPage;
-                        console.log('🚀 ~ useFetchProducts ~ urrentPage.value:', urrentPage.value);
-                        //setTotalPages(data.pagination.last_page);
-                        totalPages.value = data.pagination.last_page;
-                        console.log('🚀 ~ useFetchProducts ~ totalPages.value:', totalPages.value);
-                        //setTotalItems(data.pagination.total);
-                        totalItems.value = data.pagination.total;
-                        console.log('🚀 ~ useFetchProducts ~ totalItems.value:', totalItems.value);
-                    }
-                },
-            }, */
+            {
+                refetchOnMount: false, // Evita refetch al montar el componente
+                refetchOnWindowFocus: false, // Evita refetch al enfocar la ventana
+                keepPreviousData: true, // Mantiene los datos anteriores durante el refetch
+            },
         );
 
         watch(query.data, (www) => {

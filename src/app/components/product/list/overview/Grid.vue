@@ -41,7 +41,7 @@ const onHandleChange = (newCurrent: number, newPageSize: number) => {
             >
                 <Suspense>
                     <template #default>
-                        <ProductCards :product="product" />
+                        <ProductCards :product_data="product" />
                     </template>
                     <template #fallback>
                         <sdCards headless>

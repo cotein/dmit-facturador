@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         name: 'ProductList',
-        path: '/productos',
+        path: 'productos',
         component: () => import('@/app/components/product/list/Products.vue'),
         children: [
             {
@@ -48,11 +48,6 @@ const routes: Array<RouteRecordRaw> = [
                 },
             },
         ],
-    },
-    {
-        name: 'pro-edit',
-        path: '/productos/actualizar/:id',
-        component: () => import('@/app/pages/products/EditProduct.vue'),
     },
     {
         name: 'NewReceiptPage',

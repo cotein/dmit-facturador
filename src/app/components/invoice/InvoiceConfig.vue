@@ -64,7 +64,6 @@
                             <a-date-picker
                                 v-model:value="invoice.date"
                                 style="width: 100%"
-                                showToday
                                 format="DD-MM-YYYY"
                                 placeholder="Fecha de factura"
                                 @change="setInvoiceDate"
@@ -167,6 +166,9 @@ import { useVisibleComposable } from '@/app/composables/visible/useVisibleCompos
 import { z } from 'zod';
 import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
 import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMediaQueryComposable';
+import { useSaleConditionComposable } from '@/app/composables/sale-condition/useSaleConditionComposable';
+
+const { saleConditions } = useSaleConditionComposable();
 
 const { drawerWidth } = useMediaQueryComposable();
 
@@ -217,7 +219,7 @@ const afterVisibleChange = (visible: boolean) => {
     if (visible) {
         const date = dayjs(new Date());
 
-        invoice.value.date = date;
+        //invoice.value.date = date;
 
         invoice.value.CbteFch = date.format('YYYYMMDD').toString();
 
@@ -332,11 +334,18 @@ watch(
     },
     { deep: true, immediate: true },
 );
+
 watch(
     () => invoice.value.SaleCondition,
     (newValue) => {
-        const date = dayjs(new Date());
-        //fchVtoPago.value = date.add(newValue.days, 'day');
+        const sc = saleConditions.value.find((sc) => sc.id === newValue);
+
+        console.log('🚀 ~ newValue:', newValue);
+        if (sc) {
+            const date = dayjs(new Date());
+            invoice.value.FchVtoPago = date.add(sc.days, 'day').format('YYYYMMDD');
+            invoice.value.dateVtoPago = date.add(sc.days, 'day');
+        }
     },
     { immediate: true },
 );

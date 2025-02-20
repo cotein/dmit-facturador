@@ -11,7 +11,7 @@
                     Authorization: `${UserTokenGetter!.token_type} ${UserTokenGetter!.access_token}`,
                 }"
             >
-                <div v-if="fileList.length < 4">
+                <div v-if="fileList.length < 2">
                     <plus-outlined />
                     <div style="margin-top: 8px">Upload</div>
                 </div>
@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts">
 import { PlusOutlined } from '@ant-design/icons-vue';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import type { UploadProps } from 'ant-design-vue';
 import { message } from 'ant-design-vue';
 import { useProductComposable } from '@/app/composables/product/useProductComposable';
@@ -43,19 +43,28 @@ function getBase64(file: File) {
     });
 }
 
-const www = ref();
-
 const beforeUpload = (file: UploadProps['fileList'][number], fileList: UploadProps['fileList']) => {
-    console.log('🚀 ~ file: Step_4.vue:56 ~ beforeUpload ~ file:', file);
-    console.log('🚀 ~ file: Step_4.vue:54 ~ beforeUpload ~ fileList:', fileList);
+    if (fileList!.length >= 1) {
+        message.error('Solo se puede cargar una imagen!');
+        fileList!.pop(); // Elimina la imagen adicional
+        return false;
+    }
+
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
     if (!isJpgOrPng) {
         message.error('Sólo se pueden cargar imágenes!');
+        fileList!.pop(); // Elimina la imagen adicional
+        return false;
     }
+
     const isLt2M = file.size / 1024 / 1024 < 2;
+
     if (!isLt2M) {
         message.error('La imagen tiene que ser más pequeña que 2MB!');
+        fileList!.pop(); // Elimina la imagen adicional
+        return false;
     }
+
     return isJpgOrPng && isLt2M;
 };
 
@@ -110,6 +119,10 @@ const validateForm = async () => {
         return false;
     }
 };
+
+onMounted(() => {
+    fileList.value = product.value.pictures;
+});
 defineExpose({ validateForm });
 </script>
 <style>
@@ -128,5 +141,6 @@ defineExpose({ validateForm });
 }
 .content--step {
     min-height: 25rem;
+    width: 100%;
 }
 </style>
