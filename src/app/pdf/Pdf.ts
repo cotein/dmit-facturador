@@ -40,7 +40,7 @@ export class Pdf {
         this.size_text_details = 8;
         this.size_text_totals = 10;
         this.first_line_where_write_details = 103;
-        this.last_line_where_write_details = 220;
+        this.last_line_where_write_details = 200;
         this.width_description_area = 135;
         this.current_page = 1;
 
@@ -80,14 +80,14 @@ export class Pdf {
         this.pdf.setFont('Helvetica', 'normal');
     }
 
-    CurrencyFormat(value: any) {
+    CurrencyFormat(value: number | string) {
         return new Intl.NumberFormat('es-AR', {
             style: 'currency',
             currency: 'ARS',
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
             useGrouping: true,
-        }).format(parseFloat(value));
+        }).format(parseFloat(value as string));
     }
 
     /* addImage(data: string) {

@@ -132,23 +132,30 @@ export const useInvoiceComposable = () => {
         invoiceTableData.value.forEach((item: ProductOnInvoiceTable) => {
             const unit = parseFloat(item.unit.toFixed(2));
 
-            const subtotal = (unit * item.quantity - item.discount).toFixed(2);
+            //const subtotal = (unit * item.quantity - item.discount).toFixed(2);
+            const subtotal = (unit * item.quantity).toFixed(2);
 
             item.subtotal = parseFloat(subtotal);
 
-            const iva_import = ((item.subtotal * item.iva.percentage) / 100).toFixed(2);
+            const iva_import = (((item.subtotal - item.discount) * item.iva.percentage) / 100).toFixed(2);
 
             item.iva_import = parseFloat(iva_import);
 
             if (CompanyGetter.value?.perception_iva) {
                 if (item.iva.afip_code === AFIP_IVAS.AFIP_CODE_VEINTI_UNO) {
-                    const percep_iva_import = ((item.subtotal * alicuotaIVATresPorciento.value) / 100).toFixed(2);
+                    const percep_iva_import = (
+                        ((item.subtotal - item.discount) * alicuotaIVATresPorciento.value) /
+                        100
+                    ).toFixed(2);
                     item.percep_iva_import = parseFloat(percep_iva_import);
                     item.percep_iva_alicuota = alicuotaIVATresPorciento.value;
                 }
 
                 if (item.iva.afip_code === AFIP_IVAS.AFIP_CODE_DIEZ_COMA_CINCO) {
-                    const percep_iva_import = ((item.subtotal * alicuotaIVAUnoComaCinco.value) / 100).toFixed(2);
+                    const percep_iva_import = (
+                        ((item.subtotal - item.discount) * alicuotaIVAUnoComaCinco.value) /
+                        100
+                    ).toFixed(2);
                     item.percep_iva_import = parseFloat(percep_iva_import);
                     item.percep_iva_alicuota = alicuotaIVAUnoComaCinco.value;
                 }
@@ -156,11 +163,13 @@ export const useInvoiceComposable = () => {
 
             if (CompanyGetter.value?.perception_iibb) {
                 item.percep_iibb_alicuota = alicuotaPercepcion.value;
-                const percep_iibb_import = ((item.subtotal * alicuotaPercepcion.value) / 100).toFixed(2);
+                const percep_iibb_import = (((item.subtotal - item.discount) * alicuotaPercepcion.value) / 100).toFixed(
+                    2,
+                );
                 item.percep_iibb_import = parseFloat(percep_iibb_import);
             }
 
-            item.total = item.subtotal + item.iva_import;
+            item.total = item.subtotal + item.iva_import - item.discount;
         });
 
         if (

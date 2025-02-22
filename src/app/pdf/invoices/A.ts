@@ -36,7 +36,7 @@ export class A extends Invoice {
         );
 
         this.write_text(
-            ['SUBTOTAL'],
+            ['DESCUENTO'],
             true,
             7,
             this.first_column_text() * 8.3,
@@ -144,14 +144,19 @@ export class A extends Invoice {
                 this.options,
             );
 
-            //##### IVA PERCENTAGE ######
+            //##### DISCOUNT ######
             this.width_position = 159;
             this.options = {
                 lineHeightFactor: 1.7,
                 maxWidth: 23,
                 align: 'right',
             };
-            //this.pdf.text(product.iva_name , this.width_position, this.height_position, this.options);
+            this.pdf.text(
+                this.CurrencyFormat(product.discount_import),
+                this.width_position,
+                this.height_position,
+                this.options,
+            );
 
             //##### IVA IMPORT ######
             this.width_position = 179;
@@ -260,6 +265,10 @@ export class A extends Invoice {
             return result;
         }, []);
 
+        const discounts: number = this.items!.reduce((acc: number, item: Item) => {
+            return acc + parseFloat(item.discount_import.toString());
+        }, 0);
+
         const percep_iibb = this.items!.reduce((acc: Array, item: Item) => {
             const index = acc.findIndex((el) => el.name === `Percep. IIBB ${item.percep_iibb_alicuota} %:`);
 
@@ -289,13 +298,13 @@ export class A extends Invoice {
             return acc;
         }, []);
 
-        this.height_position = this.margin_bottom - 40;
+        this.height_position = this.margin_bottom - 50;
 
         this.pdf.setFontSize(10);
 
         this.pdf.setFont('Helvetica', 'bold');
 
-        this.height_position = this.height_position + 5;
+        this.height_position = this.height_position + this.coefficient_line_height;
 
         this.options = {
             lineHeightFactor: 1.2,
@@ -305,56 +314,98 @@ export class A extends Invoice {
 
         ///////////////// NETOS //////////////////
         netos.forEach((neto: Neto) => {
-            this.pdf.text(neto.name, this.first_column_text() * 8.5, this.height_position, this.options);
+            this.pdf.text(
+                neto.name,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+                this.height_position,
+                this.options,
+            );
             this.pdf.text(
                 this.CurrencyFormat(neto.total),
-                this.first_column_text() * 11.5,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
                 this.height_position,
                 this.options,
             );
-            this.height_position = this.height_position + 5;
+            this.height_position = this.height_position + this.coefficient_line_height;
         });
+
+        if (discounts > 0) {
+            this.pdf.text(
+                'Descuentos:',
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+                this.height_position,
+                this.options,
+            );
+            this.pdf.text(
+                this.CurrencyFormat(discounts),
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+            this.height_position = this.height_position + this.coefficient_line_height;
+        }
+
         ///////////////// IVAS //////////////////
         ivas.forEach((iva: IVA) => {
-            this.pdf.text(iva.name, this.first_column_text() * 8.5, this.height_position, this.options);
             this.pdf.text(
-                this.CurrencyFormat(iva.total),
-                this.first_column_text() * 11.5,
+                iva.name,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
                 this.height_position,
                 this.options,
             );
-            this.height_position = this.height_position + 5;
+            this.pdf.text(
+                this.CurrencyFormat(iva.total),
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+            this.height_position = this.height_position + this.coefficient_line_height;
         });
         ///////////////// PERCEPCION IIBB //////////////////
         percep_iibb.forEach((iibb: any) => {
             if (iibb.total === 0) {
                 return;
             }
-            this.pdf.text(iibb.name, this.first_column_text() * 8.5, this.height_position, this.options);
             this.pdf.text(
-                this.CurrencyFormat(iibb.total),
-                this.first_column_text() * 11.5,
+                iibb.name,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
                 this.height_position,
                 this.options,
             );
-            this.height_position = this.height_position + 5;
+            this.pdf.text(
+                this.CurrencyFormat(iibb.total),
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+            this.height_position = this.height_position + this.coefficient_line_height;
         });
         ///////////////// PERCEPCION IVA //////////////////
         percep_iva.forEach((piva: any) => {
             if (piva.total === 0) {
                 return;
             }
-            this.pdf.text(piva.name, this.first_column_text() * 8.5, this.height_position, this.options);
             this.pdf.text(
-                this.CurrencyFormat(piva.total),
-                this.first_column_text() * 11.5,
+                piva.name,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
                 this.height_position,
                 this.options,
             );
-            this.height_position = this.height_position + 5;
+            this.pdf.text(
+                this.CurrencyFormat(piva.total),
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+            this.height_position = this.height_position + this.coefficient_line_height;
         });
         ///////////////// TOTALS //////////////////
-        this.pdf.text('TOTAL', this.first_column_text() * 8.5, this.height_position, this.options);
+        this.pdf.text(
+            'TOTAL',
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+            this.height_position,
+            this.options,
+        );
 
         const totalInvoice = this.items?.reduce((total: number, item: Item) => {
             return total + (item.total ?? 0) + item.percep_iibb_import! + item.percep_iva_import!;
@@ -362,7 +413,7 @@ export class A extends Invoice {
 
         this.pdf.text(
             this.CurrencyFormat(totalInvoice),
-            this.first_column_text() * 11.5,
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right,
             this.height_position,
             this.options,
         );

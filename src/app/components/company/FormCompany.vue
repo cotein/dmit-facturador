@@ -354,7 +354,7 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             </a-select>
                                         </a-form-item>
                                     </a-col>
-                                    <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                                    <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
                                         <a-form-item
                                             ref="billing_concept"
                                             name="billing_concept"
@@ -364,9 +364,15 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                                 v-model:value="companyForm.billing_concept"
                                                 class="radio-group"
                                             >
-                                                <a-radio-button value="1">PRODUCTOS</a-radio-button>
-                                                <a-radio-button value="2">SERVICIOS</a-radio-button>
-                                                <a-radio-button value="3">PRODUCTOS Y SERVICIOS</a-radio-button>
+                                                <a-radio-button class="mr-1r ta-center" value="1"
+                                                    >PRODUCTOS</a-radio-button
+                                                >
+                                                <a-radio-button class="mr-1r ta-center" value="2"
+                                                    >SERVICIOS</a-radio-button
+                                                >
+                                                <a-radio-button class="ta-center" value="3"
+                                                    >PRODUCTOS Y SERVICIOS</a-radio-button
+                                                >
                                             </a-radio-group>
                                         </a-form-item>
                                     </a-col>
@@ -679,6 +685,12 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
     flex-wrap: wrap;
 }
 
+.mr-1r {
+    margin-right: 1rem;
+}
+.ta-center {
+    text-align: center;
+}
 .radio-group .ant-radio-button-wrapper {
     flex: 1 1 100%;
     margin-bottom: 8px; /* Espacio entre los botones */

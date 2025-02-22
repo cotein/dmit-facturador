@@ -13,7 +13,6 @@
 import type { ProductOnInvoiceTable } from '@/app/types/Product';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
 import { onlyNumeric, selectText } from '@/app/helpers/onlyNumbers';
-import { ref } from 'vue';
 
 const { invoiceTableData } = useInvoiceComposable();
 
@@ -21,8 +20,6 @@ type Props = {
     record: ProductOnInvoiceTable;
     index: number;
 };
-
-const inputValue = ref<any>();
 
 const props = withDefaults(defineProps<Props>(), {
     record: undefined,
@@ -32,30 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
 const input = (e: Event) => {
     const target = e.target as HTMLInputElement;
     invoiceTableData.value[props.index].unit = parseFloat(target.value);
-    console.log('🚀 ~ input ~ target.value:', target.value);
 };
-
-/* const formatCurrency = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-
-    const value = parseFloat(target.value);
-
-    if (!isNaN(value)) {
-        target.value = new Intl.NumberFormat('es-AR', {
-            style: 'currency',
-            currency: 'ARS',
-        }).format(value);
-
-        inputValue.value = target.value;
-    }
-}; */
-
-/* onMounted(() => {
-    inputValue.value = new Intl.NumberFormat('es-AR', {
-        style: 'currency',
-        currency: 'ARS',
-    }).format(props.record.unit);
-}); */
 </script>
 
 <style scoped>
@@ -71,7 +45,7 @@ div {
     padding: 0 8px;
     vertical-align: middle;
     border-radius: 5px;
-    width: 100%;
+    width: 95%;
     min-height: 41px;
     background-color: #ffffff;
     border: 1px solid rgba(157, 155, 153, 0.491);
@@ -80,6 +54,7 @@ div {
     line-height: 18px;
     font-weight: normal;
     text-align: right;
+    margin-left: 5%;
 }
 
 .custom-input:focus {

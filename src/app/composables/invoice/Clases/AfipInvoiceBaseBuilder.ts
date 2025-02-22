@@ -86,8 +86,8 @@ export abstract class AfipInvoiceBaseBuilder {
         };
     }
 
-    setCondicionIVAReceptorId(CondicionIVAReceptorId: number): void {
-        this.FECAEDetRequest.CondicionIVAReceptorId = CondicionIVAReceptorId;
+    setCondicionIVAReceptorId(customer: any): void {
+        this.FECAEDetRequest.CondicionIVAReceptorId = customer.afip_inscription.id;
     }
     /**
      *

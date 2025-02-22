@@ -38,11 +38,14 @@ export type Item = {
     iva_id: number;
     unit_price: number;
     total: number;
+    subtotal: number;
     percep_iibb_import: number;
     percep_iva_import: number;
     percep_iva_alicuota: number;
     percep_iibb_alicuota: number;
     discount: number;
+    discount_import: number;
+    discount_percentage: string;
 };
 
 export type Voucher = {

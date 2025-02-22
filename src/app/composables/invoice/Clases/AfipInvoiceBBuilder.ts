@@ -30,7 +30,7 @@ export class AfipInvoiceBBuilder extends AfipInvoiceBaseBuilder {
 
     setImpNeto(invoiceTableData: ProductOnInvoiceTable[]): void {
         const impNeto = invoiceTableData.reduce((acc, item) => {
-            return acc + item.subtotal;
+            return acc + item.subtotal - item.discount;
         }, 0);
 
         this.FECAEDetRequest.ImpNeto = parseFloat(impNeto.toFixed(2));
@@ -57,12 +57,12 @@ export class AfipInvoiceBBuilder extends AfipInvoiceBaseBuilder {
             if (index < 0) {
                 ivas.push({
                     Id: item.iva.afip_code,
-                    BaseImp: item.subtotal,
+                    BaseImp: item.subtotal - item.discount,
                     Importe: parseFloat(item.iva_import.toFixed(2)),
                 });
             } else {
-                ivas[index].BaseImp += item.subtotal;
-                ivas[index].Importe += parseFloat(item.iva_import.toFixed(2));
+                (ivas[index].BaseImp += item.subtotal - item.discount),
+                (ivas[index].Importe += parseFloat(item.iva_import.toFixed(2)));
             }
         });
 

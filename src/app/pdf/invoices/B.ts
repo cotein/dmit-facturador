@@ -140,7 +140,12 @@ export class B extends Invoice {
                 align: 'right',
             };
 
-            this.pdf.text(this.CurrencyFormat(0), this.width_position, this.height_position, this.options);
+            this.pdf.text(
+                this.CurrencyFormat(product.discount_import),
+                this.width_position,
+                this.height_position,
+                this.options,
+            );
 
             this.width_position = 200;
 
@@ -192,13 +197,13 @@ export class B extends Invoice {
     }
 
     printTotals() {
-        this.height_position = this.margin_bottom - 40;
+        this.height_position = this.margin_bottom - 50;
 
-        this.pdf.setFontSize(12);
+        this.pdf.setFontSize(10);
 
         this.pdf.setFont('Helvetica', 'bold');
 
-        this.height_position = this.height_position + 5;
+        //this.height_position = this.height_position + this.coefficient_line_height;
 
         this.options = {
             lineHeightFactor: 1.2,
@@ -206,21 +211,120 @@ export class B extends Invoice {
             align: 'right',
         };
 
-        this.pdf.text('TOTAL', this.first_column_text() * 8.5, this.height_position, this.options);
+        /* const subTotal = this.items?.reduce((total: number, item: Item) => {
+            return total + (item.neto_import ?? 0);
+        }, 0);
+
+        this.pdf.text('SUBTOTAL:', this.first_column_text() * this.coeficiente_multiplicado_margin_right_other, this.height_position, this.options);
 
         this.options = {
             lineHeightFactor: 1.2,
             maxWidth: 100,
             align: 'right',
         };
+
+        this.pdf.text(
+            this.CurrencyFormat(subTotal),
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+            this.height_position,
+            this.options,
+        ); */
+
+        const ivaTypes = [
+            { iva_id: '1', name: '0%', percentage: 0 },
+            { iva_id: '2', name: '10,50%', percentage: 10.5 },
+            { iva_id: '3', name: '21%', percentage: 21 },
+        ];
+
+        const ivaMap = ivaTypes.reduce((map, iva) => {
+            map[iva.iva_id] = iva.name;
+            return map;
+        }, {} as { [key: string]: string });
+
+        const totals = this.items.reduce((acc, item: any) => {
+            const ivaName = ivaMap[item.iva_id];
+            if (!acc[ivaName]) {
+                acc[ivaName] = { iva_import: 0, neto_import: 0 };
+            }
+            acc[ivaName].iva_import += item.iva_import;
+            acc[ivaName].neto_import += item.neto_import;
+            return acc;
+        }, {} as { [key: string]: { iva_import: number; neto_import: number } });
+        console.log('🚀 ~ B ~ totals ~ totals:', totals);
+
+        for (const [ivaName, { iva_import, neto_import }] of Object.entries(totals)) {
+            this.height_position = this.height_position + this.coefficient_line_height;
+
+            this.pdf.text(
+                `Neto: ${ivaName}`,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+                this.height_position,
+                this.options,
+            );
+
+            this.pdf.text(
+                `${this.CurrencyFormat(neto_import)}`,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+
+            this.height_position = this.height_position + this.coefficient_line_height;
+
+            this.pdf.text(
+                `IVA ${ivaName}: `,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+                this.height_position,
+                this.options,
+            );
+
+            this.pdf.text(
+                `${this.CurrencyFormat(iva_import)}`,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+        }
+        /////
+        const totalDiscount: number =
+            this.items?.reduce((total: number, item: Item) => {
+                return total + (item.discount_import ?? 0);
+            }, 0) ?? 0;
+
+        if (totalDiscount > 0) {
+            this.height_position = this.height_position + this.coefficient_line_height;
+
+            this.pdf.text(
+                'DESCUENTO:',
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+                this.height_position,
+                this.options,
+            );
+
+            this.pdf.text(
+                this.CurrencyFormat(totalDiscount),
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+        }
 
         const totalInvoice = this.items?.reduce((total: number, item: Item) => {
             return total + (item.total ?? 0);
         }, 0);
 
+        this.height_position = this.height_position + this.coefficient_line_height;
+
+        this.pdf.text(
+            'TOTAL:',
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+            this.height_position,
+            this.options,
+        );
+
         this.pdf.text(
             this.CurrencyFormat(totalInvoice),
-            this.first_column_text() * 11.5,
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right,
             this.height_position,
             this.options,
         );

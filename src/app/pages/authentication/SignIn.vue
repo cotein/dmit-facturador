@@ -1,21 +1,25 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
-import { AuthWrapper } from './style';
-import { Login, GoogleLoginMethod } from '@/api/auth/login-api';
-import type { LoginDataOAuthToken } from '@/app/types/OauthToken';
-import { message, notification } from 'ant-design-vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/app/store/user/user-store';
-import { getMyData } from '@/api/user/user-api';
-import 'ant-design-vue/lib/message/style/index.css';
-import 'ant-design-vue/lib/notification/style/index.css';
-import type { LoggedUser } from '@/app/types/User';
-import { showMessage } from '@/app/helpers/mesaages';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import type { CallbackTypes } from 'vue3-google-login';
-import { decodeCredential } from 'vue3-google-login';
+import { reactive, ref } from "vue";
+import { AuthWrapper } from "./style";
+import { Login, GoogleLoginMethod } from "@/api/auth/login-api";
+import type { LoginDataOAuthToken } from "@/app/types/OauthToken";
+import { message, notification } from "ant-design-vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/app/store/user/user-store";
+import { getMyData } from "@/api/user/user-api";
+import "ant-design-vue/lib/message/style/index.css";
+import "ant-design-vue/lib/notification/style/index.css";
+import type { LoggedUser } from "@/app/types/User";
+import { showMessage } from "@/app/helpers/mesaages";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import type { CallbackTypes } from "vue3-google-login";
+import { decodeCredential } from "vue3-google-login";
+import { showNotification } from "@/app/helpers/notifications";
+import { useUserComposable } from "@/app/composables/user/useUserComposable";
 
 const { setCompanyToWork } = useCompanyComposable();
+
+const { UserGetter } = useUserComposable();
 
 const router = useRouter();
 
@@ -23,20 +27,20 @@ const loginData = reactive<LoginDataOAuthToken>({
     grant_type: import.meta.env.VITE_GRANT_TYPE!,
     client_id: import.meta.env.VITE_CLIENT_ID!,
     client_secret: import.meta.env.VITE_CLIENT_SECRET!,
-    username: '',
-    password: '',
-    scope: '',
+    username: "",
+    password: "",
+    scope: "",
 });
 
-const msg = 'Ingresar';
+const msg = "Ingresar";
 
 const textButton = ref<string>(msg);
 
 const isLoading = ref<boolean>(false);
 
 const cleanData = () => {
-    loginData.username = '';
-    loginData.password = '';
+    loginData.username = "";
+    loginData.password = "";
     isLoading.value = false;
 };
 
@@ -45,18 +49,19 @@ const { setUser, setLogin, setUserToken, setAvatar } = useUserStore();
 const login = async () => {
     isLoading.value = true;
 
-    textButton.value = 'Validando credenciales';
+    textButton.value = "Validando credenciales";
 
     const { data } = await Login(loginData).catch((e) => {
         cleanData();
+
         message.error({
             content: () =>
                 e.response.data.message +
-                ' Vuelva a intentarlo, si el error persiste comuníquese con el soporte técnico.',
+                " Vuelva a intentarlo, si el error persiste comuníquese con el soporte técnico.",
             duration: 4,
             style: {
-                color: 'red',
-                fontSize: 'large',
+                color: "red",
+                fontSize: "large",
             },
         });
     });
@@ -64,7 +69,7 @@ const login = async () => {
     if (data) {
         setUserToken(data);
 
-        textButton.value = 'Buscando datos del usuario';
+        textButton.value = "Buscando datos del usuario";
 
         const me = await getMyData()
             .catch((e) => {
@@ -72,8 +77,8 @@ const login = async () => {
                     content: () => e.response.data.message,
                     duration: 4,
                     style: {
-                        color: 'red',
-                        fontSize: 'large',
+                        color: "red",
+                        fontSize: "large",
                     },
                 });
             })
@@ -94,11 +99,11 @@ const login = async () => {
             setCompanyToWork(user.companies[0]);
 
             if (user.isActive) {
-                showMessage('success', 'Bienvenido', 2);
-                router.push({ name: 'Dashboard' });
+                showNotification("success", "Bienvenido", `${me.data.name}`, 3);
+                router.push({ name: "Dashboard" });
             } else {
-                showMessage('error', 'Usuario no activo', 2);
-                router.push({ name: 'Home' });
+                showMessage("error", "Usuario no activo", 2);
+                router.push({ name: "Home" });
             }
         }
     }
@@ -111,10 +116,10 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
 
     const { data } = await GoogleLoginMethod(userData);
 
-    console.log('userData', userData);
-    console.log('userDataooooooooooooooooooo');
     data.user.avatar = userData.picture;
-    console.log('data', data);
+
+    console.log("data", data);
+
     const user: LoggedUser = data.user;
 
     setUserToken(data.userToken);
@@ -128,11 +133,11 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
     setCompanyToWork(user.companies[0]);
 
     if (user.isActive) {
-        showMessage('success', 'Bienvenido', 2);
-        router.push({ name: 'Dashboard' });
+        showNotification("success", "Bienvenido", `${data.user.name}`, 3);
+        router.push({ name: "Dashboard" });
     } else {
-        showMessage('error', 'Usuario no activo', 2);
-        router.push({ name: 'Home' });
+        showMessage("error", "Usuario no activo", 2);
+        router.push({ name: "Home" });
     }
 };
 </script>
@@ -170,7 +175,11 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
                                 },
                             ]"
                         >
-                            <a-input type="password" v-model:value="loginData.password" placeholder="Password" />
+                            <a-input
+                                type="password"
+                                v-model:value="loginData.password"
+                                placeholder="Password"
+                            />
                         </a-form-item>
                         <!-- <div class="ninjadash-auth-extra-links">
 						<a-checkbox @change="onChange">Keep me logged in</a-checkbox>
@@ -222,7 +231,11 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
                     </a-form>
                 </div>
                 <div class="ninjadash-authentication-bottom">
-                    <p>¿No tienes una cuenta?<router-link to="/auth/register">Registrarse</router-link></p>
+                    <p>
+                        ¿No tienes una cuenta?<router-link to="/auth/register"
+                            >Registrarse</router-link
+                        >
+                    </p>
                     <br />
                     <!-- <p>Ir al inicio<router-link :to="{ name: 'Home' }">Inicio</router-link></p> -->
                 </div>

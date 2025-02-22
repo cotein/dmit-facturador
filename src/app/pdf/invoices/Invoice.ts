@@ -33,6 +33,9 @@ export abstract class Invoice extends Pdf {
     public width_position: number = 0;
     public yCoordinateInternalverticalLines: number = 0;
     public logoBase64: string = '';
+    public coeficiente_multiplicado_margin_right: number = 11.7;
+    public coeficiente_multiplicado_margin_right_other: number = 9;
+    public coefficient_line_height: number = 5;
 
     constructor(
         company: Company,
@@ -281,9 +284,9 @@ export abstract class Invoice extends Pdf {
     internal_footer() {
         this.horizontalLine(
             this.margin_left,
-            this.margin_bottom - this.one_cm() * 4,
+            this.margin_bottom - this.one_cm() * 5,
             this.margin_right,
-            this.margin_bottom - this.one_cm() * 4,
+            this.margin_bottom - this.one_cm() * 5,
         );
 
         this.horizontalLine(

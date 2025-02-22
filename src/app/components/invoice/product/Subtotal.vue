@@ -5,10 +5,9 @@
             class="product-total-price"
             >{{ $filters.formatCurrency(props.record.subtotal) }}</span
         >
-        <span v-else class="product-total-price">{{ $filters.formatCurrency(props.record.total) }}</span>
+        <span v-else class="product-total-price">{{ $filters.formatCurrency(props.record.subtotal) }}</span>
     </div>
 </template>
-// ESTO ES EL NETO//
 
 <script setup lang="ts">
 import type { ProductOnInvoiceTable } from '@/app/types/Product';

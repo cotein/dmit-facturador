@@ -130,6 +130,7 @@ export class C extends Invoice {
             };
 
             //##### DISCOUNT ######
+
             this.pdf.setFontSize(8);
 
             this.width_position = 178;
@@ -140,7 +141,12 @@ export class C extends Invoice {
                 align: 'right',
             };
 
-            this.pdf.text(this.CurrencyFormat(0), this.width_position, this.height_position, this.options);
+            this.pdf.text(
+                this.CurrencyFormat(product.discount_import),
+                this.width_position,
+                this.height_position,
+                this.options,
+            );
 
             this.width_position = 200;
 
@@ -192,13 +198,13 @@ export class C extends Invoice {
     }
 
     printTotals() {
-        this.height_position = this.margin_bottom - 40;
+        this.height_position = this.margin_bottom - 55;
 
-        this.pdf.setFontSize(12);
+        this.pdf.setFontSize(10);
 
         this.pdf.setFont('Helvetica', 'bold');
 
-        this.height_position = this.height_position + 5;
+        this.height_position = this.height_position + this.coefficient_line_height;
 
         this.options = {
             lineHeightFactor: 1.2,
@@ -206,21 +212,108 @@ export class C extends Invoice {
             align: 'right',
         };
 
-        this.pdf.text('TOTAL', this.first_column_text() * 8.5, this.height_position, this.options);
+        const ivaTypes = [
+            { iva_id: '1', name: '0%', percentage: 0 },
+            { iva_id: '2', name: '10,50%', percentage: 10.5 },
+            { iva_id: '3', name: '21%', percentage: 21 },
+        ];
+
+        const ivaMap = ivaTypes.reduce((map, iva) => {
+            map[iva.iva_id] = iva.name;
+            return map;
+        }, {} as { [key: string]: string });
+
+        const ivaTotals = this.items.reduce((acc, item: any) => {
+            const ivaName = ivaMap[item.iva_id];
+            if (!acc[ivaName]) {
+                acc[ivaName] = 0;
+            }
+            acc[ivaName] += item.iva_import;
+            return acc;
+        }, {} as { [key: string]: number });
+
+        /////
+        const subTotal = this.items?.reduce((total: number, item: Item) => {
+            return total + (item.neto_import ?? 0);
+        }, 0);
+        this.height_position = this.height_position + this.coefficient_line_height;
+        this.pdf.text(
+            'SUBTOTAL:',
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+            this.height_position,
+            this.options,
+        );
 
         this.options = {
             lineHeightFactor: 1.2,
             maxWidth: 100,
             align: 'right',
         };
+
+        this.pdf.text(
+            this.CurrencyFormat(subTotal),
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+            this.height_position,
+            this.options,
+        );
+
+        const totalDiscount: number =
+            this.items?.reduce((total: number, item: Item) => {
+                return total + (item.discount_import ?? 0);
+            }, 0) ?? 0;
+
+        if (totalDiscount > 0) {
+            this.height_position = this.height_position + this.coefficient_line_height;
+
+            this.pdf.text(
+                'DESCUENTO:',
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+                this.height_position,
+                this.options,
+            );
+
+            this.pdf.text(
+                this.CurrencyFormat(totalDiscount),
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+        }
+
+        for (const [ivaName, ivaTotal] of Object.entries(ivaTotals)) {
+            this.height_position = this.height_position + this.coefficient_line_height;
+
+            this.pdf.text(
+                `IVA ${ivaName}:`,
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+                this.height_position,
+                this.options,
+            );
+
+            this.pdf.text(
+                this.CurrencyFormat(ivaTotal),
+                this.first_column_text() * this.coeficiente_multiplicado_margin_right,
+                this.height_position,
+                this.options,
+            );
+        }
 
         const totalInvoice = this.items?.reduce((total: number, item: Item) => {
             return total + (item.total ?? 0);
         }, 0);
 
+        this.height_position = this.height_position + this.coefficient_line_height;
+
+        this.pdf.text(
+            'TOTAL:',
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right_other,
+            this.height_position,
+            this.options,
+        );
+
         this.pdf.text(
             this.CurrencyFormat(totalInvoice),
-            this.first_column_text() * 11.5,
+            this.first_column_text() * this.coeficiente_multiplicado_margin_right,
             this.height_position,
             this.options,
         );
@@ -311,7 +404,9 @@ export class C extends Invoice {
         await this.printCommentImage(this.typeC);
 
         const customer_name = `${this.customer?.name} ${this.customer?.last_name ? this.customer?.last_name : ''}`;
+
         const fileName = `${customer_name} - ${this.customer?.cuit} ${this.voucher?.name} ${this.voucher?.pto_vta}-${this.voucher?.cbte_desde}.pdf`;
+
         const file = this.pdf.output('datauristring', { filename: fileName });
 
         this.cleanTempDivsWithCommentsToConverterImages();

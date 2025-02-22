@@ -25,7 +25,7 @@ export class AfipInvoiceCBuilder extends AfipInvoiceBaseBuilder {
 
     setImpNeto(invoiceTableData: ProductOnInvoiceTable[]): void {
         const impNeto = invoiceTableData.reduce((acc, item) => {
-            return acc + item.subtotal;
+            return acc + item.total;
         }, 0);
 
         this.FECAEDetRequest.ImpNeto = parseFloat(impNeto.toFixed(2));

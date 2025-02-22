@@ -43,9 +43,9 @@ export const useReceiptListComposable = () => {
             receiptList.value = [];
         }
 
-        if (receipts!.data) {
-            const { data: list, pagination } = receipts!.data;
-            console.log('🚀 ~ watch ~ list:', list);
+        if (receipts && receipts.data) {
+            const { data: list, pagination } = receipts.data;
+            console.log('🚀 ~ watch ~ receipts.data:', receipts.data);
 
             if (list) {
                 receiptList.value = list;

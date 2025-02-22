@@ -71,7 +71,7 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-    invoice.value.CondicionIVAReceptorId = CompanyGetter.value?.inscription_id;
+    //invoice.value.CondicionIVAReceptorId = CompanyGetter.value?.inscription_id;
 });
 
 onUnmounted(() => {

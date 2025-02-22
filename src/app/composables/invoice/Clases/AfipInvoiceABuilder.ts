@@ -29,7 +29,7 @@ export class AfipInvoiceABuilder extends AfipInvoiceBaseBuilder {
 
     setImpNeto(invoiceTableData: ProductOnInvoiceTable[]): void {
         const impNeto = invoiceTableData.reduce((acc, item) => {
-            return acc + item.subtotal;
+            return acc + item.subtotal - item.discount;
         }, 0);
 
         this.FECAEDetRequest.ImpNeto = parseFloat(impNeto.toFixed(2));
@@ -55,12 +55,11 @@ export class AfipInvoiceABuilder extends AfipInvoiceBaseBuilder {
             if (index < 0) {
                 ivas.push({
                     Id: item.iva.afip_code,
-                    BaseImp: item.subtotal,
+                    BaseImp: item.subtotal - item.discount,
                     Importe: item.iva_import,
                 });
             } else {
-                ivas[index].BaseImp += item.subtotal;
-                ivas[index].Importe += item.iva_import;
+                (ivas[index].BaseImp += item.subtotal - item.discount), (ivas[index].Importe += item.iva_import);
             }
         });
 
@@ -87,17 +86,17 @@ export class AfipInvoiceABuilder extends AfipInvoiceBaseBuilder {
                 (acc, product) => {
                     if (product.percep_iva_alicuota === 1.5 && product.percep_iva_import) {
                         acc.sumaPercepIVA15 += product.percep_iva_import;
-                        acc.baseImpPercepIVA15 += product.subtotal;
+                        acc.baseImpPercepIVA15 += product.subtotal - product.discount;
                     }
 
                     if (product.percep_iva_alicuota === 3 && product.percep_iva_import) {
                         acc.sumaPercepIVA3 += product.percep_iva_import;
-                        acc.baseImpPercepIVA3 += product.subtotal;
+                        acc.baseImpPercepIVA3 += product.subtotal - product.discount;
                     }
 
                     if (product.percep_iibb_alicuota && product.percep_iibb_import) {
                         acc.sumaPercepIIBB += product.percep_iibb_import;
-                        acc.baseImpPercepIIBB += product.subtotal;
+                        acc.baseImpPercepIIBB += product.subtotal - product.discount;
                         acc.alicIIBB = product.percep_iibb_alicuota;
                     }
 
