@@ -18,11 +18,14 @@ export const useCustomerListComposable = () => {
         ['customers-list', companyId, customerName, status, currentPage, itemsPerPage],
         async () =>
             await getCustomers(companyId, customerName.value, status.value, currentPage.value, itemsPerPage.value),
+        {
+            refetchOnMount: true,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+        },
     );
 
     watch(data, (customers) => {
-        console.log('🚀 ~ watch ~ data:', data);
-        console.log('🚀 ~ watch ~ customers:', customers);
         if (customers) {
             const { data: list, pagination } = customers;
 

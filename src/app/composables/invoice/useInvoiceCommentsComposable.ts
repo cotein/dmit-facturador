@@ -24,7 +24,8 @@ export const useInvoiceCommentsComposable = () => {
             );
         },
         {
-            cacheTime: Infinity,
+            refetchOnWindowFocus: false, // No se ejecuta al enfocar la ventana
+            refetchOnReconnect: false, // No se ejecuta al reconectar
         },
     );
 

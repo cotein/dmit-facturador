@@ -30,7 +30,9 @@ export const useInvoiceListComposable = () => {
             );
         },
         {
-            cacheTime: Infinity,
+            refetchOnMount: true, // Solo se ejecuta al montar el componente
+            refetchOnWindowFocus: false, // No se ejecuta al enfocar la ventana
+            refetchOnReconnect: false, // No se ejecuta al reconectar
         },
     );
 
