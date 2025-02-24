@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { FormValidationWrap, VerticalFormStyleWrap } from '@/views/forms/overview/Style';
-import { Main, DatePickerWrapper } from '@/views/styled';
-import { ref, watch, defineEmits, onMounted } from 'vue';
-import locale from 'ant-design-vue/es/date-picker/locale/es_ES';
-import AddressForm from '../address/AddressForm.vue';
-import { TypeCompany } from '@/app/types/Constantes';
-import 'ant-design-vue/lib/message/style/index.css';
-import 'ant-design-vue/lib/notification/style/index.css';
-import GetInfoByCuit from '../afip/GetInfoByCuit.vue';
-import { usePadronAfipStore } from '@/app/store/afip/usePadronAfipStore';
-import { useUserComposable } from '@/app/composables/user/useUserComposable';
-import { useAddressComposable } from '@/app/composables/address/useAddressComposable';
-import { useInscriptionsComposable } from '@/app/composables/afip/useInscriptionsComposable';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import type { PersonaReturn } from '@/app/types/Afip';
-import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
-import { useAddressStore } from '@/app/store/address/address-store';
-import { storeToRefs } from 'pinia';
-import { showMessage } from '@/app/helpers/mesaages';
-import ASelectedBank from '@/app/components/banks/ASelectedBank.vue';
-import { onlyNumeric } from '@/app/helpers/onlyNumbers';
-import { FormInstance } from 'ant-design-vue/lib/form';
-import { z } from 'zod';
-import type { CBU } from '@/app/types/Company';
+import { FormValidationWrap, VerticalFormStyleWrap } from "@/views/forms/overview/Style";
+import { Main, DatePickerWrapper } from "@/views/styled";
+import { ref, watch, defineEmits, onMounted } from "vue";
+import locale from "ant-design-vue/es/date-picker/locale/es_ES";
+import AddressForm from "../address/AddressForm.vue";
+import { TypeCompany } from "@/app/types/Constantes";
+import "ant-design-vue/lib/message/style/index.css";
+import "ant-design-vue/lib/notification/style/index.css";
+import GetInfoByCuit from "../afip/GetInfoByCuit.vue";
+import { usePadronAfipStore } from "@/app/store/afip/usePadronAfipStore";
+import { useUserComposable } from "@/app/composables/user/useUserComposable";
+import { useAddressComposable } from "@/app/composables/address/useAddressComposable";
+import { useInscriptionsComposable } from "@/app/composables/afip/useInscriptionsComposable";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import type { PersonaReturn } from "@/app/types/Afip";
+import { AFIP_INSCRIPTION } from "@/app/types/Constantes";
+import { useAddressStore } from "@/app/store/address/address-store";
+import { storeToRefs } from "pinia";
+import { showMessage } from "@/app/helpers/mesaages";
+import ASelectedBank from "@/app/components/banks/ASelectedBank.vue";
+import { onlyNumeric } from "@/app/helpers/onlyNumbers";
+import { FormInstance } from "ant-design-vue/lib/form";
+import { z } from "zod";
+import type { CBU } from "@/app/types/Company";
 
 const { sujeto } = storeToRefs(usePadronAfipStore());
 const { lastNameIsRequired, rules, companyForm, CompanyGetter } = useCompanyComposable();
@@ -47,7 +47,7 @@ const formIsValid = ref<boolean>(true);
 
 const companyFormRef = ref<FormInstance>();
 
-const emit = defineEmits(['submitCompanyForm']);
+const emit = defineEmits(["submitCompanyForm"]);
 
 const loading = ref(false);
 /**METHODS */
@@ -58,7 +58,7 @@ const onSubmit = async () => {
 
     if (uniqueCbu) {
         formIsValid.value = false;
-        showMessage('error', 'Los CBU deben ser únicos', 3);
+        showMessage("error", "Los CBU deben ser únicos", 3);
         return;
     }
 
@@ -71,14 +71,14 @@ const onSubmit = async () => {
             formIsValid.value = false;
 
             result.error.errors.forEach((err) => {
-                console.log('🚀 ~ result.error.errors.forEach ~ err:', err);
-                if (err.path[0] == 'ctaCte') {
+                console.log("🚀 ~ result.error.errors.forEach ~ err:", err);
+                if (err.path[0] == "ctaCte") {
                     cbuErrors.value[index][4] = err.message;
                 }
-                if (err.path[0] == 'bank_id') {
+                if (err.path[0] == "bank_id") {
                     cbuErrors.value[index][2] = err.message;
                 }
-                if (err.path[0] == 'cbu') {
+                if (err.path[0] == "cbu") {
                     cbuErrors.value[index][0] = err.message;
                 }
             });
@@ -86,7 +86,8 @@ const onSubmit = async () => {
     });
 
     if (!formIsValid.value) {
-        showMessage('error', 'Error al validar el formulario', 3);
+        console.log("🚀 ~ onSubmit ~ formIsValid.value:", formIsValid.value);
+        showMessage("error", "Error al validar el formulario", 3);
         return;
     }
 
@@ -97,7 +98,7 @@ const onSubmit = async () => {
             delete rules.lastName;
         }
         const validate = await companyFormRef.value!.validate().catch((error: any) => {
-            showMessage('error', 'Error al validar el formulario', 3);
+            showMessage("error", "Error al validar el formulario", 3);
         });
 
         if (validate) {
@@ -117,9 +118,9 @@ const onSubmit = async () => {
                     inscription: inscription,
                     cuit: CompanyGetter.value?.cuit,
                 });
-                emit('submitCompanyForm', data);
+                emit("submitCompanyForm", data);
             } else {
-                emit('submitCompanyForm', companyForm.value);
+                emit("submitCompanyForm", companyForm.value);
             }
         }
     } finally {
@@ -157,7 +158,11 @@ watch(
             lastNameIsRequired.value = true;
         }
 
-        if (afipData && afipData.datosGenerales && getTipoPersona(afipData) === 'FISICA') {
+        if (
+            afipData &&
+            afipData.datosGenerales &&
+            getTipoPersona(afipData) === "FISICA"
+        ) {
             companyForm.value.type_company = TypeCompany.FISICA;
         } else {
             companyForm.value.type_company = TypeCompany.JURIDICA;
@@ -166,16 +171,33 @@ watch(
         if (afipData && afipData.datosMonotributo) {
             companyForm.value.inscription = AFIP_INSCRIPTION.RESPONSABLE_MONOTRIBUTO;
         }
+        if (afipData && afipData.datosRegimenGeneral) {
+            afipData.datosRegimenGeneral.impuesto.forEach((imp) => {
+                if (imp.descripcionImpuesto === "IVA") {
+                    companyForm.value.inscription =
+                        AFIP_INSCRIPTION.IVA_RESPONSABLE_INSCRIPTO;
+                    return;
+                }
+                if (imp.descripcionImpuesto === "IVA EXENTO") {
+                    companyForm.value.inscription = AFIP_INSCRIPTION.IVA_SUJETO_EXENTO;
+                    return;
+                }
+            });
+        }
         if (newValue.inscription === CONSUMIDOR_FINAL) {
             resetForm();
-            showMessage('warning', 'La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa', 5);
+            showMessage(
+                "warning",
+                "La CUIT que ingresaste se encuentra inactiva, ingresá tu CUIT activa",
+                5
+            );
         }
     },
-    { deep: true },
+    { deep: true }
 );
 const isMobile = ref<boolean>(false);
 
-const sizeButton = isMobile.value === true ? 'small' : 'default';
+const sizeButton = isMobile.value === true ? "small" : "default";
 
 onMounted(async () => {
     if (window.innerWidth <= 768) {
@@ -192,11 +214,11 @@ const removeCBU = (index: number) => {
 const addAccount = () => {
     if (companyForm.value.cbus.length < 3) {
         companyForm.value.cbus.push({
-            alias: '',
+            alias: "",
             bank_id: undefined,
-            bank: '',
-            cbu: '',
-            ctaCte: '',
+            bank: "",
+            cbu: "",
+            ctaCte: "",
         });
     }
 };
@@ -206,17 +228,23 @@ const cbuSchema = z.object({
     bank_id: z
         .number()
         .optional()
-        .refine((val) => val !== undefined, {
-            message: 'El Banco es requerido',
-        }),
-    bank: z.string().optional(),
+        .refine(
+            (val) => {
+                //console.log(val); // Imprime el valor de val
+                return val !== undefined;
+            },
+            {
+                message: "El Banco es requerido",
+            }
+        ),
+    // bank: z.string().optional(),
     cbu: z
         .string()
-        .nonempty('El CBU es requerido')
+        .nonempty("El CBU es requerido")
         .refine((val) => val.length === 22, {
-            message: 'El CBU debe tener 22 caracteres de longitud',
+            message: "El CBU debe tener 22 caracteres de longitud",
         }),
-    ctaCte: z.string().nonempty('El número de cuenta es requerido'),
+    ctaCte: z.string().nonempty("El número de cuenta es requerido"),
 });
 
 const hasDuplicateCBU = (arr: Array<CBU>) => {
@@ -266,19 +294,44 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                         <a-form-item
                                             ref="name"
-                                            :label="lastNameIsRequired ? 'Nombre' : 'Razón Social'"
+                                            :label="
+                                                lastNameIsRequired
+                                                    ? 'Nombre'
+                                                    : 'Razón Social'
+                                            "
                                             name="name"
                                         >
-                                            <a-input v-model:value="companyForm.name" placeholder="Nombre" />
+                                            <a-input
+                                                v-model:value="companyForm.name"
+                                                placeholder="Nombre"
+                                            />
                                         </a-form-item>
                                     </a-col>
-                                    <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" v-if="lastNameIsRequired">
-                                        <a-form-item ref="lastName" name="lastName" label="Apellido">
-                                            <a-input v-model:value="companyForm.lastName" placeholder="Apellido" />
+                                    <a-col
+                                        :xs="24"
+                                        :sm="24"
+                                        :md="12"
+                                        :lg="12"
+                                        :xl="12"
+                                        v-if="lastNameIsRequired"
+                                    >
+                                        <a-form-item
+                                            ref="lastName"
+                                            name="lastName"
+                                            label="Apellido"
+                                        >
+                                            <a-input
+                                                v-model:value="companyForm.lastName"
+                                                placeholder="Apellido"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-form-item ref="fantasy_name" name="fantasy_name" label="Nombre de Fantasía">
+                                        <a-form-item
+                                            ref="fantasy_name"
+                                            name="fantasy_name"
+                                            label="Nombre de Fantasía"
+                                        >
                                             <a-input
                                                 v-model:value="companyForm.fantasy_name"
                                                 placeholder="Nombre de Fantasía"
@@ -286,7 +339,11 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-form-item ref="inscription" name="inscription" label="Inscripción en AFIP">
+                                        <a-form-item
+                                            ref="inscription"
+                                            name="inscription"
+                                            label="Inscripción en AFIP"
+                                        >
                                             <a-select
                                                 v-model:value="companyForm.inscription"
                                                 size="large"
@@ -317,7 +374,9 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         >
                                             <DatePickerWrapper>
                                                 <a-date-picker
-                                                    v-model:value="companyForm.activity_init"
+                                                    v-model:value="
+                                                        companyForm.activity_init
+                                                    "
                                                     size="large"
                                                     placeholder="Seleccionar Fecha"
                                                     :format="'DD-MM-YYYY'"
@@ -327,7 +386,11 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-form-item ref="iibb" name="iibb" label="N° de Ingresos Brutos">
+                                        <a-form-item
+                                            ref="iibb"
+                                            name="iibb"
+                                            label="N° de Ingresos Brutos"
+                                        >
                                             <a-input
                                                 v-model:value="companyForm.iibb"
                                                 placeholder="IIBB"
@@ -336,7 +399,11 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-form-item ref="type_company" name="type_company" label="Tipo de Empresa">
+                                        <a-form-item
+                                            ref="type_company"
+                                            name="type_company"
+                                            label="Tipo de Empresa"
+                                        >
                                             <a-select
                                                 v-model:value="companyForm.type_company"
                                                 size="large"
@@ -347,10 +414,14 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                                 allowClear
                                                 :not-found-content="null"
                                             >
-                                                <a-select-option :value="TypeCompany.JURIDICA"
+                                                <a-select-option
+                                                    :value="TypeCompany.JURIDICA"
                                                     >JURÍDICA</a-select-option
                                                 >
-                                                <a-select-option :value="TypeCompany.FISICA">FÍSICA</a-select-option>
+                                                <a-select-option
+                                                    :value="TypeCompany.FISICA"
+                                                    >FÍSICA</a-select-option
+                                                >
                                             </a-select>
                                         </a-form-item>
                                     </a-col>
@@ -361,16 +432,24 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             label="Concepto de facturación"
                                         >
                                             <a-radio-group
-                                                v-model:value="companyForm.billing_concept"
+                                                v-model:value="
+                                                    companyForm.billing_concept
+                                                "
                                                 class="radio-group"
                                             >
-                                                <a-radio-button class="mr-1r ta-center" value="1"
+                                                <a-radio-button
+                                                    class="mr-1r ta-center"
+                                                    value="1"
                                                     >PRODUCTOS</a-radio-button
                                                 >
-                                                <a-radio-button class="mr-1r ta-center" value="2"
+                                                <a-radio-button
+                                                    class="mr-1r ta-center"
+                                                    value="2"
                                                     >SERVICIOS</a-radio-button
                                                 >
-                                                <a-radio-button class="ta-center" value="3"
+                                                <a-radio-button
+                                                    class="ta-center"
+                                                    value="3"
                                                     >PRODUCTOS Y SERVICIOS</a-radio-button
                                                 >
                                             </a-radio-group>
@@ -385,7 +464,9 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             name="bank"
                                             label="Banco"
                                             :help="cbuErrors[0][2]"
-                                            :validateStatus="cbuErrors[0][2] ? 'error' : 'success'"
+                                            :validateStatus="
+                                                cbuErrors[0][2] ? 'error' : 'success'
+                                            "
                                         >
                                             <a-selected-bank :index="0" />
                                         </a-form-item>
@@ -396,7 +477,9 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             name="cbu"
                                             label="CBU - Necesario para Facturas MiPyme"
                                             :help="cbuErrors[0][0]"
-                                            :validateStatus="cbuErrors[0][0] ? 'error' : 'success'"
+                                            :validateStatus="
+                                                cbuErrors[0][0] ? 'error' : 'success'
+                                            "
                                         >
                                             <a-input
                                                 v-model:value="companyForm.cbus[0].cbu"
@@ -411,7 +494,9 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             name="ctacte"
                                             label="Cuenta corriente"
                                             :help="cbuErrors[0][4]"
-                                            :validateStatus="cbuErrors[0][4] ? 'error' : 'success'"
+                                            :validateStatus="
+                                                cbuErrors[0][4] ? 'error' : 'success'
+                                            "
                                         >
                                             <a-input
                                                 v-model:value="companyForm.cbus[0].ctaCte"
@@ -425,16 +510,27 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             name="alias"
                                             label="Alias"
                                             :help="cbuErrors[0][1]"
-                                            :validateStatus="cbuErrors[0][1] ? 'error' : 'success'"
+                                            :validateStatus="
+                                                cbuErrors[0][1] ? 'error' : 'success'
+                                            "
                                         >
-                                            <a-input v-model:value="companyForm.cbus[0].alias" placeholder="Alias" />
+                                            <a-input
+                                                v-model:value="companyForm.cbus[0].alias"
+                                                placeholder="Alias"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                         <a-tooltip title="Eliminar cuenta">
-                                            <a-button type="default" @click="removeCBU(0)">
+                                            <a-button
+                                                type="default"
+                                                @click="removeCBU(0)"
+                                            >
                                                 <template #icon>
-                                                    <unicon name="trash-alt" width="14"></unicon>
+                                                    <unicon
+                                                        name="trash-alt"
+                                                        width="14"
+                                                    ></unicon>
                                                 </template>
                                             </a-button>
                                         </a-tooltip>
@@ -453,7 +549,11 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             :name="'bank_' + index"
                                             label="Banco"
                                             :help="cbuErrors[index + 1][2]"
-                                            :validateStatus="cbuErrors[index + 1][2] ? 'error' : 'success'"
+                                            :validateStatus="
+                                                cbuErrors[index + 1][2]
+                                                    ? 'error'
+                                                    : 'success'
+                                            "
                                         >
                                             <a-selected-bank :index="index + 1" />
                                         </a-form-item>
@@ -464,9 +564,17 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             :name="'cbu_' + index"
                                             label="CBU - Necesario para Facturas MiPyme"
                                             :help="cbuErrors[index + 1][0]"
-                                            :validateStatus="cbuErrors[index + 1][0] ? 'error' : 'success'"
+                                            :validateStatus="
+                                                cbuErrors[index + 1][0]
+                                                    ? 'error'
+                                                    : 'success'
+                                            "
                                         >
-                                            <a-input v-model:value="cbu.cbu" placeholder="CBU" inputmode="numeric" />
+                                            <a-input
+                                                v-model:value="cbu.cbu"
+                                                placeholder="CBU"
+                                                inputmode="numeric"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -475,9 +583,16 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             :name="'ctaCte_' + index"
                                             label="Cuenta corriente"
                                             :help="cbuErrors[index + 1][4]"
-                                            :validateStatus="cbuErrors[index + 1][4] ? 'error' : 'success'"
+                                            :validateStatus="
+                                                cbuErrors[index + 1][4]
+                                                    ? 'error'
+                                                    : 'success'
+                                            "
                                         >
-                                            <a-input v-model:value="cbu.ctaCte" placeholder="Cta. cte" />
+                                            <a-input
+                                                v-model:value="cbu.ctaCte"
+                                                placeholder="Cta. cte"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
@@ -486,16 +601,29 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                             :name="'alias_' + index"
                                             label="Alias"
                                             :help="cbuErrors[index + 1][1]"
-                                            :validateStatus="cbuErrors[index + 1][1] ? 'error' : 'success'"
+                                            :validateStatus="
+                                                cbuErrors[index + 1][1]
+                                                    ? 'error'
+                                                    : 'success'
+                                            "
                                         >
-                                            <a-input v-model:value="cbu.alias" placeholder="Alias" />
+                                            <a-input
+                                                v-model:value="cbu.alias"
+                                                placeholder="Alias"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                                         <a-tooltip title="Eliminar cuenta"></a-tooltip>
-                                        <a-button type="default" @click="removeCBU(index + 1)">
+                                        <a-button
+                                            type="default"
+                                            @click="removeCBU(index + 1)"
+                                        >
                                             <template #icon>
-                                                <unicon name="trash-alt" width="14"></unicon>
+                                                <unicon
+                                                    name="trash-alt"
+                                                    width="14"
+                                                ></unicon>
                                             </template>
                                         </a-button>
                                     </a-col>
@@ -507,7 +635,11 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         :md="24"
                                         :lg="24"
                                         :xl="24"
-                                        style="display: flex; justify-content: center; align-items: center"
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                        "
                                     >
                                         <a-button
                                             @click="addAccount"
@@ -519,7 +651,12 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                 </a-row>
                                 <a-row :gutter="25" justify="center">
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-form-item ref="phone1" name="phone1" label="Teléfono 1" extra="Sólo números">
+                                        <a-form-item
+                                            ref="phone1"
+                                            name="phone1"
+                                            label="Teléfono 1"
+                                            extra="Sólo números"
+                                        >
                                             <a-input
                                                 v-model:value="companyForm.phone1"
                                                 placeholder="Teléfono 1"
@@ -530,7 +667,12 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                     </a-col>
 
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-form-item ref="phone2" name="phone2" label="Teléfono 2" extra="Sólo números">
+                                        <a-form-item
+                                            ref="phone2"
+                                            name="phone2"
+                                            label="Teléfono 2"
+                                            extra="Sólo números"
+                                        >
                                             <a-input
                                                 v-model:value="companyForm.phone2"
                                                 placeholder="Teléfono 2"
@@ -541,7 +683,11 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                     </a-col>
 
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-form-item ref="email" name="email" label="Correo Electrónico">
+                                        <a-form-item
+                                            ref="email"
+                                            name="email"
+                                            label="Correo Electrónico"
+                                        >
                                             <a-input
                                                 v-model:value="companyForm.email"
                                                 placeholder="Correo Electrónico"
@@ -549,38 +695,59 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         </a-form-item>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-form-item ref="webSite" name="webSite" label="Sitio Web">
-                                            <a-input v-model:value="companyForm.webSite" placeholder="Sitio Web" />
+                                        <a-form-item
+                                            ref="webSite"
+                                            name="webSite"
+                                            label="Sitio Web"
+                                        >
+                                            <a-input
+                                                v-model:value="companyForm.webSite"
+                                                placeholder="Sitio Web"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                 </a-row>
 
                                 <a-row :gutter="[20, 50]" align="middle">
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-typography-title :level="4">Entorno de Facturación</a-typography-title>
+                                        <a-typography-title :level="4"
+                                            >Entorno de Facturación</a-typography-title
+                                        >
                                         <a-radio-group
                                             v-model:value="companyForm.afip_environment"
                                             button-style="solid"
                                         >
-                                            <a-radio-button value="production">Producción</a-radio-button>
-                                            <a-radio-button value="testing" v-if="UserGetter.userLevel === 1000"
+                                            <a-radio-button value="production"
+                                                >Producción</a-radio-button
+                                            >
+                                            <a-radio-button
+                                                value="testing"
+                                                v-if="UserGetter.userLevel === 1000"
                                                 >Testing</a-radio-button
                                             >
                                         </a-radio-group>
                                     </a-col>
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <a-typography-title :level="4">Domicilio</a-typography-title>
+                                        <a-typography-title :level="4"
+                                            >Domicilio</a-typography-title
+                                        >
                                         <a-form-item
                                             ref="address"
                                             name="address"
                                             label="Domicilio"
                                             :extra="
-                                                !isValid ? 'Es necesario definir un domicilio' : 'Cambiar domicilio'
+                                                !isValid
+                                                    ? 'Es necesario definir un domicilio'
+                                                    : 'Cambiar domicilio'
                                             "
                                         >
                                             <a-badge :dot="!isValid ? true : false">
                                                 <AddressForm
-                                                    :title="isValid ? 'Actualizar domicilio' : 'Agregar domicilio'"
+                                                    :title="
+                                                        isValid
+                                                            ? 'Actualizar domicilio'
+                                                            : 'Agregar domicilio'
+                                                    "
                                                 />
                                             </a-badge>
                                         </a-form-item>
@@ -588,13 +755,21 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                 </a-row>
 
                                 <a-divider class="divider" />
-                                <a-typography-title :level="4">Percepciones</a-typography-title>
+                                <a-typography-title :level="4"
+                                    >Percepciones</a-typography-title
+                                >
 
                                 <a-row :gutter="25" justify="center">
                                     <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                                        <span id="iibb" v-if="isMobile">Percepción de IIBB</span>
-                                        <span id="iibb" v-else>Realiza percepción de Ingresos Brutos</span>
-                                        <a-switch v-model:checked="companyForm.perception_iibb" />
+                                        <span id="iibb" v-if="isMobile"
+                                            >Percepción de IIBB</span
+                                        >
+                                        <span id="iibb" v-else
+                                            >Realiza percepción de Ingresos Brutos</span
+                                        >
+                                        <a-switch
+                                            v-model:checked="companyForm.perception_iibb"
+                                        />
                                     </a-col>
                                     <a-col
                                         :xs="24"
@@ -604,9 +779,15 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         :xl="12"
                                         :class="{ 'mobile-space': isMobile }"
                                     >
-                                        <span id="iva" v-if="isMobile">Percepción de Iva</span>
-                                        <span id="iva" v-else>Realiza percepción de Iva</span>
-                                        <a-switch v-model:checked="companyForm.perception_iva" />
+                                        <span id="iva" v-if="isMobile"
+                                            >Percepción de Iva</span
+                                        >
+                                        <span id="iva" v-else
+                                            >Realiza percepción de Iva</span
+                                        >
+                                        <a-switch
+                                            v-model:checked="companyForm.perception_iva"
+                                        />
                                     </a-col>
                                 </a-row>
 
@@ -617,7 +798,11 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         :loading="loading"
                                         @click.prevent="onSubmit"
                                     >
-                                        <span>{{ props.isSaveButton ? 'Guardar datos' : 'Actualizar datos' }}</span>
+                                        <span>{{
+                                            props.isSaveButton
+                                                ? "Guardar datos"
+                                                : "Actualizar datos"
+                                        }}</span>
                                     </a-button>
                                     <!-- <a-button
                                         @click="resetForm"

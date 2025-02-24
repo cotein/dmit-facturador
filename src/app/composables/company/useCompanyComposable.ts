@@ -146,7 +146,11 @@ export const useCompanyComposable = () => {
                 closeAddNewCompanyPanel();
             }, 2000);
 
-            showMessage('success', 'Compañía creada correctamente', 2);
+            showMessage('success', 'Compañía creada correctamente', 3);
+        },
+        onError(error, variables, context) {
+            console.log('🚀 ~ onError ~ error, variables, context:', error, variables, context);
+            showMessage('error', `Error al crear la compañía: ${error.response.data.message}`, 4);
         },
     });
 
