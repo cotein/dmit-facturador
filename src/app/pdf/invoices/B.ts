@@ -347,15 +347,15 @@ export class B extends Invoice {
 
         this.printAfipQr(
             1,
-            dayjs(this.voucher!.cbte_fch).format('YYYY-MM-DD'),
+            this.dateFormatted(this.voucher!.cbte_fch, 'YYYY-MM-DD'),
             parseInt(this.company!.cuit, 10),
             parseInt(this.voucher!.pto_vta, 10),
-            this.voucher!.voucher_type,
+            parseInt(this.voucher!.voucher_type_afip_code, 10),
             parseInt(this.voucher!.cbte_desde, 10),
             this.voucher!.total,
             'PES',
             1,
-            this.customer!.afipDocTipo,
+            parseInt(String(this.customer!.afipDocTipo), 10),
             parseInt(this.customer!.cuit, 10),
             'E',
             parseInt(this.voucher!.cae, 10),

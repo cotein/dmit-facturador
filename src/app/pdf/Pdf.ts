@@ -1,6 +1,9 @@
 import { jsPDF } from 'jspdf';
 import NumbersToWords from './NumbersToWords';
-import html2canvas from 'html2canvas';
+import Dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+Dayjs.extend(customParseFormat);
 
 export type TextOptions = {
     maxWidth?: number;
@@ -105,5 +108,17 @@ export class Pdf {
         });
 
         return text;
+    }
+
+    /**
+     * Formats a given date string into the specified format.
+     *
+     * @param date - The date string to be formatted.
+     * @param formtatDate - The desired format for the date string. Defaults to 'DD-MM-YYYY'.
+     * @returns The formatted date string.
+     */
+    dateFormatted(date: string, formtatDate: string = 'DD-MM-YYYY'): string {
+        const dateFormats = ['DD-MM-YYYY', 'YYYY-MM-DD'];
+        return Dayjs(date, dateFormats).format(formtatDate.toUpperCase());
     }
 }

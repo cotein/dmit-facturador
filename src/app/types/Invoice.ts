@@ -61,6 +61,7 @@ export type Voucher = {
     typeNotaCredito: number;
     typeNotaDebito: number;
     voucher_type: number;
+    voucher_type_afip_code: any;
     voucher_id: number;
     payment_type?: string;
 };
