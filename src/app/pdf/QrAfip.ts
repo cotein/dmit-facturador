@@ -1,15 +1,14 @@
 import QRious from 'qrious';
-import moment from 'moment';
 
 class QrAfip {
     public ver: number;
-    public date: string;
+    public fecha: string;
     public cuit: number;
     public ptoVta: number;
-    public CbteTipo: number;
-    public nroCbte: number;
+    public tipoCmp: number;
+    public nroCmp: number;
     public importe: number;
-    public money: string;
+    public moneda: string;
     public ctz: number;
     public tipoDocRec: number;
     public nroDocRec: number;
@@ -19,13 +18,13 @@ class QrAfip {
     /**
      *
      * @param {*} ver
-     * @param {*} date
+     * @param {*} fecha
      * @param {*} cuit
      * @param {*} ptoVta
-     * @param {*} CbteTipo
-     * @param {*} nroCbte
+     * @param {*} tipoCmp
+     * @param {*} nroCmp
      * @param {*} importe
-     * @param {*} money
+     * @param {*} moneda
      * @param {*} ctz
      * @param {*} tipoDocRec
      * @param {*} nroDocRec
@@ -43,7 +42,7 @@ class QrAfip {
         La especificación del JSON con los datos del comprobante es la siguiente (versión 1):
         Campo	Tipo	Descripción	Valor ejemplo
         ver	Numérico 1 digito	OBLIGATORIO – versión del formato de los datos del comprobante	1
-        fecha	full-date (RFC3339)	OBLIGATORIO – Fecha de emisión del comprobante	"2020-10-13"
+        fecha	full-fecha (RFC3339)	OBLIGATORIO – Fecha de emisión del comprobante	"2020-10-13"
         cuit	Numérico 11 dígitos	OBLIGATORIO – Cuit del Emisor del comprobante	30000000007
         ptoVta	Numérico hasta 5 digitos	OBLIGATORIO – Punto de venta utilizado para emitir el comprobante	10
         tipoCmp	Numérico hasta 3 dígitos	OBLIGATORIO – tipo de comprobante (según Tablas del sistema )	1
@@ -58,13 +57,13 @@ class QrAfip {
      */
     constructor(
         ver: number,
-        date: string,
+        fecha: string,
         cuit: number,
         ptoVta: number,
-        CbteTipo: number,
-        nroCbte: number,
+        tipoCmp: number,
+        nroCmp: number,
         importe: number,
-        money: string,
+        moneda: string,
         ctz: number,
         tipoDocRec: number,
         nroDocRec: number,
@@ -72,13 +71,13 @@ class QrAfip {
         codAut: number,
     ) {
         this.ver = ver;
-        this.date = date;
+        this.fecha = fecha;
         this.cuit = cuit;
         this.ptoVta = ptoVta;
-        this.CbteTipo = CbteTipo;
-        this.nroCbte = nroCbte;
+        this.tipoCmp = tipoCmp;
+        this.nroCmp = nroCmp;
         this.importe = importe;
-        this.money = money;
+        this.moneda = moneda;
         this.ctz = ctz;
         this.tipoDocRec = tipoDocRec;
         this.nroDocRec = nroDocRec;
@@ -89,13 +88,13 @@ class QrAfip {
     generate_base_64() {
         const objJsonStr = JSON.stringify({
             ver: this.ver,
-            date: this.date,
+            fecha: this.fecha,
             cuit: this.cuit,
             ptoVta: this.ptoVta,
-            CbteTipo: this.CbteTipo,
-            nroCbte: this.nroCbte,
+            tipoCmp: this.tipoCmp,
+            nroCmp: this.nroCmp,
             importe: this.importe,
-            money: this.money,
+            moneda: this.moneda,
             ctz: this.ctz,
             tipoDocRec: this.tipoDocRec,
             nroDocRec: this.nroDocRec,

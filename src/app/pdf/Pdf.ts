@@ -120,5 +120,6 @@ export class Pdf {
     dateFormatted(date: string, formtatDate: string = 'DD-MM-YYYY'): string {
         const dateFormats = ['DD-MM-YYYY', 'YYYY-MM-DD'];
         return Dayjs(date, dateFormats).format(formtatDate.toUpperCase());
+        //return Dayjs(date, dateFormats).toISOString();
     }
 }
