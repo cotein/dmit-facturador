@@ -37,6 +37,8 @@ export const useUserStore = defineStore('user', () => {
     const setUserCompanies = (companies: Company[]) => {
         user.value.companies = companies;
     };
+
+    const resetEmailToken: string = ref('');
     //Computed
 
     return {
@@ -68,5 +70,6 @@ export const useUserStore = defineStore('user', () => {
             if (user.value && user.value.companies && user.value.companies === false) return true;
             return false;
         }),
+        resetEmailToken,
     };
 });

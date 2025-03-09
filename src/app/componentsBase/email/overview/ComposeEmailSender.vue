@@ -33,14 +33,16 @@ const onSubmit = async () => {
         .then(async () => {
             // Lógica para enviar el correo
             try {
-                const url = '/api/email-sender';
+                const url = '/api/email-sender/invoice';
 
                 const resp = await sendEmail(
                     url,
                     formSenderEmailData.value.attachments![0].filename,
                     formSenderEmailData.value,
                 );
+
                 loading.value = false;
+
                 if (resp) {
                     console.log('🚀 ~ .then ~ resp:', resp);
                     showNotification('success', 'Envío de factura', 'Email enviado correctamente', 3, 'topLeft');

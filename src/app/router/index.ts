@@ -28,15 +28,21 @@ const routes: Array<RouteRecordRaw> = [
         meta: { auth: false },
     },
     {
-        name: 'email-verify',
-        path: '/email/verify/:id/:hash',
+        name: 'email-verifycation',
+        path: '/verify-email',
         component: () => import('@/app/pages/EmailVerification.vue'),
-        //props: (route) => ({ id: route.params.id, query: route.query }),
+        props: (route) => ({ token: route.query.token }),
     },
     {
         name: 'delegate-afip-service',
         path: '/delegar-servicio-en-afip',
         component: () => import('@/app/pages/AfipDelegateService.vue'),
+    },
+    {
+        name: 'renew-password',
+        path: '/restablecer-contrasena',
+        component: () => import('@/app/pages/UserForgotPassword.vue'),
+        props: (route) => ({ token: route.query.token }),
     },
     {
         name: 'Auth',

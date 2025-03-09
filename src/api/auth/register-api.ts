@@ -8,7 +8,7 @@ export const apiRegisterUser = async (user: RegisterUser): Promise<AxiosResponse
 
         return response;
     } catch (error) {
-        console.log('🚀 ~ file: register-api.ts:11 ~ apiRegisterUser ~ error:', 'error');
+        console.log('🚀 ~ file: register-api.ts:11 ~ apiRegisterUser ~ error:', error);
         throw error;
     }
 };

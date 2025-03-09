@@ -1,21 +1,25 @@
 <script setup lang="ts">
-import { InfoWraper, UserDropDown } from './auth-info-style';
-import { LogoutOutlined } from '@ant-design/icons-vue';
-import { useAddNewCompanyPanelComposable } from '@/app/composables/panels/useAddNewCompanyPanelComposable';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useRouter } from 'vue-router';
-import { useUserComposable } from '@/app/composables/user/useUserComposable';
-import { usePadronComposable } from '@/app/composables/afip/usePadronComposable';
-import EditCompanyForm from '@/app/components/company/EditCompanyForm.vue';
-import { ref } from 'vue';
-import uploadLogo from '../uploadFiles/uploadLogo.vue';
-import { URL_UPLOAD_COMPANY_LOGO } from '@/app/types/Constantes';
-import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMediaQueryComposable';
+import { InfoWraper, UserDropDown } from "./auth-info-style";
+import { LogoutOutlined } from "@ant-design/icons-vue";
+import { useAddNewCompanyPanelComposable } from "@/app/composables/panels/useAddNewCompanyPanelComposable";
+import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
+import { useRouter } from "vue-router";
+import { useUserComposable } from "@/app/composables/user/useUserComposable";
+import { usePadronComposable } from "@/app/composables/afip/usePadronComposable";
+import EditCompanyForm from "@/app/components/company/EditCompanyForm.vue";
+import { ref } from "vue";
+import uploadLogo from "../uploadFiles/uploadLogo.vue";
+import { URL_UPLOAD_COMPANY_LOGO } from "@/app/types/Constantes";
+import { useMediaQueryComposable } from "@/app/composables/mediaQuery.ts/useMediaQueryComposable";
 
 const { drawerWidth } = useMediaQueryComposable();
 const { sujetoIsEditable } = usePadronComposable();
 const { CompanyGetter, updateCompanyMutation, setCompany } = useCompanyComposable();
-const { openEditCompanyPanel, closeEditCompanyPanel, EditCompanyPanel } = useAddNewCompanyPanelComposable();
+const {
+    openEditCompanyPanel,
+    closeEditCompanyPanel,
+    EditCompanyPanel,
+} = useAddNewCompanyPanelComposable();
 const { push } = useRouter();
 const { UserGetter, Avatar } = useUserComposable();
 
@@ -23,7 +27,7 @@ const infoUserVisible = ref(false);
 
 const SignOut = (e: any) => {
     e.preventDefault();
-    push('/auth/login');
+    push("/auth/login");
 };
 
 const closeEditPanel = () => {
@@ -86,11 +90,15 @@ const openEditPanel = async () => {
             <a-col :sm="24" :md="12" :lg="12">
                 <a-card hoverable style="width: 440px" v-if="CompanyGetter?.logo_base64">
                     <template #cover>
-                        <img :alt="CompanyGetter.name" :src="CompanyGetter?.logo_base64" />
+                        <img
+                            :alt="CompanyGetter.name"
+                            :src="CompanyGetter?.logo_base64"
+                        />
                     </template>
                     <a-card-meta title="Imagen para el logo de la compañia">
                         <template #description
-                            >Éste logo se verá aplicado en los documentos de facturación de la compañía.</template
+                            >Éste logo se verá aplicado en los documentos de facturación
+                            de la compañía.</template
                         >
                     </a-card-meta>
                 </a-card>
@@ -109,14 +117,20 @@ const openEditPanel = async () => {
         <!-- <Settings /> -->
         <!-- <Support /> -->
         <div class="ninjadash-nav-actions__item ninjadash-nav-actions__author">
-            <a-popover placement="bottomRight" :visible="infoUserVisible" @click="infoUserVisible = !infoUserVisible">
+            <a-popover
+                placement="bottomRight"
+                :visible="infoUserVisible"
+                @click="infoUserVisible = !infoUserVisible"
+            >
                 <template v-slot:content>
                     <UserDropDown>
                         <div class="user-dropdown">
                             <figure class="user-dropdown__info">
                                 <a-avatar :src="Avatar" />
                                 <figcaption>
-                                    <sdHeading as="h5">{{ UserGetter.value.name }}</sdHeading>
+                                    <sdHeading as="h5">{{
+                                        UserGetter.value.name
+                                    }}</sdHeading>
                                     <p v-if="CompanyGetter">
                                         {{ CompanyGetter.name }}
                                         {{ CompanyGetter.lastName }}
@@ -132,10 +146,15 @@ const openEditPanel = async () => {
                                 <li>
                                     <a to="#" @click.prevent="openLogoModal">
                                         <unicon name="focus-target"></unicon> Agregar Logo
+                                        de empresa
                                     </a>
                                 </li>
                             </ul>
-                            <a @click="SignOut" class="user-dropdown__bottomAction" href="#">
+                            <a
+                                @click="SignOut"
+                                class="user-dropdown__bottomAction"
+                                href="#"
+                            >
                                 <LogoutOutlined /> Cerrar sesión
                             </a>
                         </div>
@@ -143,7 +162,9 @@ const openEditPanel = async () => {
                 </template>
                 <a to="#" class="ninjadash-nav-action-link">
                     <a-avatar :src="Avatar" />
-                    <span class="ninjadash-nav-actions__author--name">{{ UserGetter.value.name }}</span>
+                    <span class="ninjadash-nav-actions__author--name">{{
+                        UserGetter.value.name
+                    }}</span>
                     <unicon name="angle-down"></unicon>
                 </a>
             </a-popover>

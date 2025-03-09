@@ -10,8 +10,9 @@ axios.interceptors.request.use(
     function (config) {
         if (config.url?.includes('api')) {
             const user: UserToken | any = userStore.UserTokenGetter;
+
             config.headers['Accept'] = 'application/json';
-            //config.headers['Content-Type'] = 'application/json';
+
             config.headers['Authorization'] = `${user.token_type} ${user.access_token}`;
 
             if (config.url.includes('upload')) {

@@ -1,7 +1,15 @@
 import { useUserStore } from '@/app/store/user/user-store';
 import { storeToRefs } from 'pinia';
-const { UserGetter, UserTokenGetter, Avatar, IHaveMoreThanOneCompany, AuthUser, IHaveOneCompany, IHaventGotCompanies } =
-    storeToRefs(useUserStore());
+const {
+    UserGetter,
+    UserTokenGetter,
+    Avatar,
+    IHaveMoreThanOneCompany,
+    AuthUser,
+    IHaveOneCompany,
+    IHaventGotCompanies,
+    resetEmailToken,
+} = storeToRefs(useUserStore());
 
 const { setAvatar, setUserCompanies, setAddNewCompany } = useUserStore();
 
@@ -17,5 +25,6 @@ export const useUserComposable = () => {
         IHaveOneCompany,
         setAddNewCompany,
         IHaventGotCompanies,
+        resetEmailToken,
     };
 };

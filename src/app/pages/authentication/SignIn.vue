@@ -181,10 +181,15 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
                                 placeholder="Password"
                             />
                         </a-form-item>
-                        <!-- <div class="ninjadash-auth-extra-links">
-						<a-checkbox @change="onChange">Keep me logged in</a-checkbox>
-						<router-link class="forgot-pass-link" to="/auth/forgotPassword"> Forgot password? </router-link>
-					</div> -->
+                        <div class="ninjadash-auth-extra-links">
+                            <!-- <a-checkbox @change="onChange">Keep me logged in</a-checkbox> -->
+                            <router-link
+                                class="forgot-pass-link"
+                                to="/auth/forgotPassword"
+                            >
+                                ¿Olvidaste tu contraseña?
+                            </router-link>
+                        </div>
                         <a-form-item>
                             <a-button
                                 type="primary"
@@ -251,5 +256,8 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
         transform: scale(0.95);
         transform-origin: top left;
     }
+}
+div.ninjadash-auth-extra-links {
+    margin-bottom: 1rem;
 }
 </style>
