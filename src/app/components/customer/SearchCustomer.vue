@@ -75,9 +75,11 @@ const handleSearch = async (name: string) => {
             const resp = await getCustomers(CompanyGetter.value.id, name);
             const { data } = resp;
             options.value = data.map((customer: any) => {
+                const label = customer.last_name ? `${customer.name} ${customer.last_name}` : customer.name;
+
                 return {
                     value: customer.id,
-                    label: `${customer.name} ${customer.last_name}`,
+                    label: label,
                     cuit: parseInt(customer.afip_number),
                     afip_inscription: customer.afip_inscription,
                     afip_document: customer.afip_document,
