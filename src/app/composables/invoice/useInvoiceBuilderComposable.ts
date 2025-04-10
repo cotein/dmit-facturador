@@ -23,11 +23,11 @@ export const useInvoiceBuilderComposable = () => {
     };
 
     const createInvoiceBuilder = (
-        builder: AfipInvoiceBaseBuilder,
+        builder: any,
         invoice: AfipInvoice,
         invoiceTableData: ProductOnInvoiceTable[] | ProductForNotaCredito[],
     ) => {
-        const concreteInvoiceBuilder = new builder() as AfipInvoiceBaseBuilder;
+        const concreteInvoiceBuilder = new builder();
         concreteInvoiceBuilder.setCantReg(invoice.CantReg);
         concreteInvoiceBuilder.setCondicionIVAReceptorId(invoice.customer);
         concreteInvoiceBuilder.setPtoVta(invoice.PtoVta);

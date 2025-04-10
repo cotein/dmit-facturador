@@ -103,6 +103,7 @@
             >
         </template>
         <ProductsWillBeBillTable />
+        <ModalMiPyme />
     </a-drawer>
 </template>
 <script setup lang="ts">
@@ -117,9 +118,10 @@ import dayjs, { Dayjs } from 'dayjs';
 import InvoiceHasNotaCredito from '@/app/components/invoice/notaCredito/InvoiceHasNotaCredito.vue';
 import ProductsWillBeBillTable from '@/app/components/invoice/notaCredito/ProductsWillBeBillTable.vue';
 import type { ProductForNotaCredito } from '@/app/types/Product';
+import ModalMiPyme from './../ModalMiPyme.vue';
 
 const { CompanyGetter } = useCompanyComposable();
-const { invoice, createInvoiceMutation } = useInvoiceComposable();
+const { invoice, createInvoiceMutation, openModalMiPyme, FECAESolicitarObject } = useInvoiceComposable();
 const { openDrawerNotaCredito, invoiceForNotaCredito, titleNotaCredito, productsForNotaCredito, totalNotaCredito } =
     useInvoiceNotaCreditoComposable();
 
@@ -262,6 +264,13 @@ const generate = async () => {
         ? (invoiceType = invoiceForNotaCredito.value!.voucher.typeNotaCredito)
         : (invoiceType = invoiceForNotaCredito.value!.voucher.typeNotaDebito);
 
+    /*  console.log(
+        '🚀 ~ generate ~ invoiceForNotaCredito.value!.customer.afipInscription_id:',
+        invoiceForNotaCredito.value!.customer.afipInscription_id,
+    );
+    console.log('🚀 ~ generate ~ CompanyGetter.value!.inscription_id:', CompanyGetter.value!.inscription_id);
+    console.log('🚀 ~ generate ~ SELECT_INVOICE_TYPE[invoiceType]:', SELECT_INVOICE_TYPE[invoiceType]); */
+
     const builder = createConcreteInvoiceBuilder(
         SELECT_INVOICE_TYPE[invoiceType],
         CompanyGetter.value!.inscription_id,
@@ -278,6 +287,7 @@ const generate = async () => {
     );
 
     if (ultimoAutorizado) {
+        console.log('🚀 ~ generate ~ ultimoAutorizado:', ultimoAutorizado);
         invoice.value.CbteNro = ultimoAutorizado.data.FECompUltimoAutorizadoResult.CbteNro + 1;
         invoice.value.CbteTipo = invoiceType;
         invoice.value.PtoVta = CompanyGetter.value?.pto_vta_fe;
@@ -291,11 +301,11 @@ const generate = async () => {
             invoice.value.FchVtoPago = dayjs().add(10, 'day').format('YYYYMMDD');
         }
 
-        const FECAESolicitarObjetc = createInvoiceBuilder(builder, invoice.value, productsForNotaCredito.value);
+        FECAESolicitarObject.value = createInvoiceBuilder(builder, invoice.value, productsForNotaCredito.value);
 
         const params = {
-            FeCabReq: FECAESolicitarObjetc.FeCabReq,
-            FECAEDetRequest: FECAESolicitarObjetc.FECAEDetRequest,
+            FeCabReq: FECAESolicitarObject.value.FeCabReq,
+            FECAEDetRequest: FECAESolicitarObject.value.FECAEDetRequest,
             environment: CompanyGetter.value!.afip_environment,
             company_cuit: CompanyGetter.value!.cuit,
             company_id: CompanyGetter.value?.id,
@@ -307,6 +317,7 @@ const generate = async () => {
             comments: invoiceForNotaCredito.value?.voucher.nota_credito_o_debito_text,
             parent: invoiceForNotaCredito.value?.id,
         };
+
         console.log('🚀 ~ generate ~ params:', params);
 
         const nota = await createInvoiceMutation.mutateAsync(params).finally(() => {
@@ -314,6 +325,62 @@ const generate = async () => {
         });
 
         if (nota) {
+            console.log('🚀 ~ generate ~ nota:', nota);
+            /* if (result.data.isMipyme) {
+            openModalMiPyme.value = true;
+            invoice.value.isMiPyme = true;
+            FECAESolicitarObject.value.value.FeCabReq.CbteTipo = result.data.CbteTipo;
+            FECAESolicitarObject.value.value.FECAEDetRequest.CbteDesde = result.data.CbteDesde;
+            FECAESolicitarObject.value.value.FECAEDetRequest.CbteHasta = result.data.CbteHasta;
+
+            return;
+        } */
+            if (nota.data.isMipyme) {
+                const optionalNotaCredito = ref<[any]>([
+                    {
+                        Id: '22',
+                        Valor: 'S',
+                    },
+                ]);
+
+                /* const optional1 = ref<[any]>([
+                    {
+                        Id: '2101',
+                        Valor: 0,
+                    },
+                ]); */
+                FECAESolicitarObject.value.FeCabReq.CbteTipo = nota.data.CbteTipo;
+                FECAESolicitarObject.value.FECAEDetRequest.CbteDesde = nota.data.CbteDesde;
+                FECAESolicitarObject.value.FECAEDetRequest.CbteHasta = nota.data.CbteHasta;
+                FECAESolicitarObject.value!.FECAEDetRequest.Opcionales = [...optionalNotaCredito.value];
+
+                const paramsMiPyme = {
+                    FeCabReq: FECAESolicitarObject.value.FeCabReq,
+                    FECAEDetRequest: FECAESolicitarObject.value.FECAEDetRequest,
+                    environment: CompanyGetter.value!.afip_environment,
+                    company_cuit: CompanyGetter.value!.cuit,
+                    company_id: CompanyGetter.value?.id,
+                    user_id: CompanyGetter.value?.user_id,
+                    products: productsForNotaCredito.value,
+                    saleCondition: 5, //{ days: 300000, id: 5 },
+                    paymentType: 1, //1 = Contado,
+                    customer: invoice.value?.customer,
+                    comments: invoiceForNotaCredito.value?.voucher.nota_credito_o_debito_text,
+                    parent: invoiceForNotaCredito.value?.id,
+                    isMiPyme: true,
+                };
+
+                if (paramsMiPyme.FECAEDetRequest && paramsMiPyme.FECAEDetRequest.FchVtoPago) {
+                    delete paramsMiPyme.FECAEDetRequest.FchVtoPago;
+                }
+
+                console.log('🚀 ~ ppppppppppppppppppppppppp ~ paramsMiPyme:', paramsMiPyme);
+
+                const miPyme = await createInvoiceMutation.mutateAsync(paramsMiPyme).finally(() => {
+                    spinner.value = false;
+                });
+                console.log('🚀 ~ miPyme ~ miPyme:', miPyme);
+            }
             openDrawerNotaCredito.value = false;
         }
     }
