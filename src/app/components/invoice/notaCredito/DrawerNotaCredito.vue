@@ -339,7 +339,7 @@ const generate = async () => {
                 const optionalNotaCredito = ref<[any]>([
                     {
                         Id: '22',
-                        Valor: 'S',
+                        Valor: 'N',
                     },
                 ]);
 
