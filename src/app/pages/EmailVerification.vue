@@ -61,8 +61,8 @@ const { sleep } = useSleepComposable();
 const buttonClicked = ref<boolean>(false);
 
 const goToLogin = () => {
-    window.location.replace('http://localhost:5173/auth/login');
-    //window.location.replace(`${import.meta.env.VITE_URL}/auth/login`);
+    //window.location.replace('http://localhost:5173/auth/login');
+    window.location.replace(`${import.meta.env.VITE_URL}/auth/login`);
 };
 const resend = async () => {
     sendVerificationSpinner.value = true;
