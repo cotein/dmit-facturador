@@ -150,6 +150,7 @@ onMounted(async () => {
             goToLogin();
         }
     } catch (err) {
+        console.log('🚀 ~ EmailVerification ~ err:', err);
         notification['error']({
             message: 'Verificación de cuenta',
             description: 'Ocurrió un error al conectar con el servidor.',
