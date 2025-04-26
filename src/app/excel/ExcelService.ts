@@ -7,7 +7,7 @@ export class ExcelService {
 
     download(dataExcel: any, nombreArchivo: string = 'pp') {
         const workbook = new Workbook();
-        workbook.creator = 'Diego';
+        workbook.creator = 'DMIT Facturador online';
 
         const sheet = workbook.addWorksheet('Ventas');
 
@@ -98,7 +98,7 @@ export class ExcelService {
             { id: 'B', width: 5 },
             { id: 'C', width: 75 },
             { id: 'D', width: 25 },
-            { id: 'E', width: 75 },
+            { id: 'E', width: 35 },
             { id: 'F', width: 25 },
             { id: 'G', width: 17 },
             { id: 'H', width: 20 },
