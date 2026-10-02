@@ -386,17 +386,41 @@ export abstract class Invoice extends Pdf {
         }
     }
 
+    /**
+     * Importe en letras ("Son Pesos: ...").
+     *
+     * El texto puede ser muy largo: un total como $4.391.997,98 son 120 caracteres y a 8pt miden
+     * 201,5 mm, más que los 188 mm que hay hasta el borde derecho, así que se pasaba del margen.
+     * La franja donde va tiene el alto de una sola línea (8 mm: de margin_bottom - 0,8 cm hasta
+     * margin_bottom), por eso acá se achica la letra hasta que el importe entre en una línea y
+     * el bloque queda en la misma posición de siempre.
+     */
     totalToWords(value: number): void {
-        const txt = this.numbersToWords(value);
+        const texto = 'Son Pesos: ' + this.numbersToWords(value);
 
-        this.write_text(
-            ['Son Pesos: ' + txt],
-            true,
-            8,
-            this.first_column_text() - this.one_cm() / 2,
-            this.margin_bottom - 2.5,
-            this.interline(),
-        );
+        const x = this.first_column_text() - this.one_cm() / 2;
+        const y = this.margin_bottom - 2.5;
+        const ancho_util = this.margin_right - x - 2; // 2 mm de aire hasta el borde derecho
+        const interlinea = 3.5;
+
+        let size = 5;
+        let lineas: string[] = [];
+
+        for (let candidato = 8; candidato >= 5; candidato--) {
+            this.pdf.setFontSize(candidato);
+            this.pdf.setFont('Helvetica', 'bold');
+
+            size = candidato;
+            lineas = this.pdf.splitTextToSize(texto, ancho_util);
+
+            if (lineas.length === 1) {
+                break;
+            }
+        }
+
+        // Si ni a 5pt entra en una línea (importes larguísimos), se imprimen las que halle,
+        // alineadas abajo para que no se salgan de la franja.
+        this.write_text(lineas, true, size, x, y - (lineas.length - 1) * interlinea, interlinea);
     }
 
     productNameWidth(product_name: string, result: string[]): string[] {
