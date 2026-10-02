@@ -235,7 +235,8 @@ const cbuSchema = z.object({
         .refine((val) => val.length === 22, {
             message: 'El CBU debe tener 22 caracteres de longitud',
         }),
-    ctaCte: z.string().nonempty('El número de cuenta es requerido'),
+    // La cuenta corriente ya no es obligatoria: la compañía se puede dar de alta sin este dato.
+    ctaCte: z.string().nullish(),
 });
 
 const hasDuplicateCBU = (arr: Array<CBU>) => {
