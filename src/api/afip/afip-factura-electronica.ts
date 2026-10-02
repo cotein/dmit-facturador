@@ -9,6 +9,7 @@ import type {
     FEUltimoAutorizado,
     FeCabReq,
 } from '@/app/types/Afip';
+import { showArcaNotification } from '@/app/helpers/notifications';
 import type { ProductForNotaCredito, ProductOnInvoiceTable } from '@/app/types/Product';
 
 const URL = '/api/afip';
@@ -45,14 +46,14 @@ export const FECAESolicitar = async (
             isMiPyme,
         });
 
+        // Si ARCA aprobó con observaciones (o mandó eventos), también se muestran.
+        showArcaNotification(response.data?.arca);
+
         return response;
     } catch (error: any) {
-        if (error.response) {
-            message.error({
-                content: error.response.data.message,
-                duration: 8,
-            });
-        }
+        // El usuario tiene que ver, siempre, qué contestó ARCA: el motivo del rechazo (o las
+        // observaciones de una aprobación) viene en data.arca y se muestra tal cual.
+        showArcaNotification(error.response?.data?.arca, error.response?.data?.message ?? error.message);
     }
 };
 

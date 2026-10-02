@@ -86,12 +86,20 @@ export abstract class AfipInvoiceBaseBuilder {
         };
     }
 
+    /**
+     * Condición frente al IVA del receptor: obligatoria por la RG 5616. El código que espera
+     * ARCA es el id de afip_inscriptions (1 a 15), que la API informa como afip_inscription.id
+     * en el cliente del listado y como afipInscription_id en el creado al vuelo.
+     *
+     * @param customer
+     */
     setCondicionIVAReceptorId(customer: any): void {
-        console.log('🚀 ~ AfipInvoiceBaseBuilder ~ setCondicionIVAReceptorId ~ customer:', customer);
-        if ('afip_inscription' in customer) {
-            this.FECAEDetRequest.CondicionIVAReceptorId = customer.afip_inscription.id;
-        } else {
-            this.FECAEDetRequest.CondicionIVAReceptorId = customer.afipInscription_id;
+        const codigo = Number(customer?.afip_inscription?.id ?? customer?.afipInscription_id);
+
+        // Si el cliente no trae la condición cargada se deja el valor por defecto en lugar de
+        // mandar un código inválido (o romper al leer afip_inscription null).
+        if (Number.isInteger(codigo) && codigo > 0) {
+            this.FECAEDetRequest.CondicionIVAReceptorId = codigo;
         }
     }
     /**

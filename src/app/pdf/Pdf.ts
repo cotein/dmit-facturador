@@ -52,6 +52,11 @@ export class Pdf {
             unit: 'mm',
             format: 'a4',
             hotfixes: ['px_scaling'],
+            // Sin esta opción jsPDF guarda las imágenes SIN comprimir (los PNG que salen de
+            // canvas.toDataURL llevan canal alfa y jsPDF los escribe como píxeles crudos):
+            // una sola captura de los comentarios pasaba de 1,2 MB. Con compress en true
+            // jsPDF las deflate (FlateDecode + predictor PNG), sin pérdida de calidad.
+            compress: true,
         });
     }
 

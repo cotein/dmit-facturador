@@ -336,6 +336,30 @@ export type FECAESolicitarResult = {
     Errors?: Errors;
 };
 
+/** Código y mensaje, tal como los devuelve ARCA (errores, observaciones y eventos). */
+export type ArcaCodigo = {
+    code: number | string | null;
+    msg: string;
+};
+
+/**
+ * Respuesta de ARCA ya normalizada por la API: es lo que contesta ARCA al solicitar el
+ * comprobante, tanto si lo aprueba como si lo rechaza. Se muestra siempre al usuario.
+ */
+export type ArcaResponse = {
+    resultado: string;
+    aprobado: boolean;
+    cae: string | null;
+    cae_fch_vto: string | null;
+    cbte_desde: number | null;
+    cbte_hasta: number | null;
+    observaciones: ArcaCodigo[];
+    errores: ArcaCodigo[];
+    eventos: ArcaCodigo[];
+    mensajes: string[];
+    raw: FECAESolicitarResult;
+};
+
 export enum INVOICE_CONCEPTS {
     PRODUCTOS = 1,
     SERVICIOS = 2,

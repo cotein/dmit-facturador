@@ -1,5 +1,8 @@
 import { Pdf } from '../Pdf';
-import type { Company, Customer, Item, Voucher } from '@/app/types/Invoice';
+import type { Company, Customer, Voucher } from '@/app/types/Invoice';
+// Los impresores usan los campos del item tal como los devuelve la API (iva_afip_code, iva_id,
+// subtotal...), que son los que declara types/Pdf. El DTO de types/Invoice esta incompleto.
+import type { Item } from '@/app/types/Pdf';
 import dayjs from 'dayjs';
 import { HTML2CANVAS_SCALE } from '@/app/types/Constantes';
 import html2canvas from 'html2canvas';
@@ -99,7 +102,60 @@ export abstract class Invoice extends Pdf {
 
         if (this.logoBase64) {
             this.pdf.addImage(this.logoBase64, 'PNG', 10, 6, 77, 29);
+        } else {
+            this.printCompanyNameWhereLogoGoes();
         }
+    }
+
+    /**
+     * Si la compañía no tiene logo cargado, el recuadro superior izquierdo del encabezado
+     * (el mismo lugar que ocupa el logo: x 10, y 6, 77x29 mm) queda vacío. En su lugar se
+     * imprime el nombre y apellido / razón social del emisor.
+     */
+    printCompanyNameWhereLogoGoes() {
+        const razonSocial = `${this.company?.name ?? ''} ${this.company?.last_name ?? ''}`.trim();
+
+        if (razonSocial === '') {
+            return;
+        }
+
+        const box_x = 10;
+        const box_y = 6;
+        const box_width = 77;
+        const box_height = 29;
+        const box_padding = 3;
+        const mm_por_punto = 0.3528;
+        const usable_width = box_width - box_padding * 2;
+        const max_block_height = box_height - box_padding * 2;
+
+        this.pdf.setFont('Helvetica', 'bold');
+
+        // Se busca el tamaño de letra más grande que siga entrando en el recuadro.
+        let font_size = 8;
+        let lines: string[] = [];
+        let line_height = 0;
+
+        for (let candidate = 12; candidate >= 8; candidate--) {
+            this.pdf.setFontSize(candidate);
+
+            lines = this.pdf.splitTextToSize(razonSocial, usable_width);
+            line_height = candidate * 1.15 * mm_por_punto;
+            font_size = candidate;
+
+            if (lines.length * line_height <= max_block_height) {
+                break;
+            }
+        }
+
+        this.pdf.setFontSize(font_size);
+
+        // En text() la "y" es la línea base de la primera línea: se centra el bloque en el recuadro.
+        const text_y = box_y + box_height / 2 - ((lines.length - 1) * line_height) / 2 + (font_size * mm_por_punto) / 4;
+
+        this.pdf.text(lines, box_x + box_width / 2, text_y, { align: 'center' });
+
+        this.pdf.setFont('Helvetica', 'normal');
+        this.pdf.setFontSize(8);
     }
     rightHeaderCompanyData() {
         this.write_text(
