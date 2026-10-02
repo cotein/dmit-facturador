@@ -97,13 +97,31 @@ const onSubmit = async () => {
         if (!lastNameIsRequired.value) {
             delete rules.lastName;
         }
+
+        // El CUIT vive en el store del padrón (sujeto) y la regla de validación lo busca en
+        // companyForm: sin esta copia, la regla 'required' del CUIT falla siempre al dar de alta
+        // una compañía. Solo pisamos el valor cuando el padrón tiene un CUIT cargado, para no
+        // romper la edición de una compañía existente.
+        const cuitDelPadron = (sujeto.value.cuit ?? '').toString().trim();
+        if (cuitDelPadron !== '') {
+            companyForm.value.cuit = cuitDelPadron;
+        }
+
         const validate = await companyFormRef.value!.validate().catch((error: any) => {
+            // Sin esto, cuando falla una regla de un campo que no está en este formulario
+            // (por ejemplo el CUIT, que se valida en el formulario del padrón) la única pista
+            // era el mensaje genérico de abajo.
+            console.log('🚀 ~ onSubmit ~ campos que fallaron:', error?.errorFields);
+            const fallado = error?.errorFields?.[0];
+            const campo = Array.isArray(fallado?.name) ? fallado.name.join('.') : '';
+            const motivo = fallado?.errors?.[0] ?? '';
             showMessage('error', 'Error al validar el formulario', 3);
+            if (campo) {
+                showMessage('warning', `Revisá el campo ${campo}: ${motivo}`, 5);
+            }
         });
 
         if (validate) {
-            companyForm.value.cuit = sujeto.value.cuit;
-
             companyForm.value.address = addressInStore.value;
 
             let inscription: any = companyForm.value.inscription;
@@ -215,25 +233,31 @@ const addAccount = () => {
 };
 
 const cbuSchema = z.object({
-    alias: z.string().optional(),
+    // El alias es opcional y admite null: el store inicializa cada cuenta con null y antes eso
+    // rechazaba la validación sin mostrar ningún mensaje en pantalla.
+    alias: z.string().nullish(),
+    // El banco sigue siendo obligatorio, pero aceptamos null para poder mostrar el mensaje en
+    // castellano (antes, con null, el error era el genérico en inglés de la librería).
     bank_id: z
         .number()
-        .optional()
-        .refine(
-            (val) => {
-                //console.log(val); // Imprime el valor de val
-                return val !== undefined;
-            },
-            {
-                message: 'El Banco es requerido',
-            },
-        ),
-    // bank: z.string().optional(),
+        .nullish()
+        .refine((val) => val !== undefined && val !== null, {
+            message: 'El Banco es requerido',
+        }),
     cbu: z
         .string()
-        .nonempty('El CBU es requerido')
-        .refine((val) => val.length === 22, {
-            message: 'El CBU debe tener 22 caracteres de longitud',
+        .nullish()
+        .superRefine((val, ctx) => {
+            if (val === undefined || val === null || val === '') {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El CBU es requerido' });
+                return;
+            }
+            if (val.length !== 22) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: 'El CBU debe tener 22 caracteres de longitud',
+                });
+            }
         }),
     // La cuenta corriente ya no es obligatoria: la compañía se puede dar de alta sin este dato.
     ctaCte: z.string().nullish(),
