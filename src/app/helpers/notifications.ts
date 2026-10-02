@@ -42,8 +42,11 @@ export const showNotification = (
  * Muestra lo que contestó ARCA, siempre y tal cual.
  *
  * - Si rechazó el comprobante: lista TODOS los errores y observaciones con su código (por
- *   ejemplo el 10245 de la RG 5616) y la notificación queda abierta hasta que la cierren.
- * - Si aprobó pero con observaciones: avisa igual, con el CAE otorgado.
+ *   ejemplo el 10049 o el 10245 de la RG 5616) y la notificación queda abierta hasta que la cierren.
+ * - Si aprobó con observaciones: avisa igual, con el CAE otorgado.
+ * - Si aprobó limpio y ARCA sólo mandó eventos informativos (por ejemplo el 39, que recuerda que
+ *   la condición frente al IVA del receptor es obligatoria desde el 15/04/2025 y no excluyente
+ *   hasta el 30/11/2026), se muestran como aviso informativo y no como observación del comprobante.
  * - Si no vino la respuesta de ARCA (falló antes de llegar): muestra el mensaje de la API,
  *   para no dejar al usuario sin motivo.
  *
@@ -62,9 +65,18 @@ export const showArcaNotification = (arca?: ArcaResponse | null, fallbackMessage
     }
 
     const aprobado = arca?.aprobado === true;
+    const conObservaciones = (arca?.observaciones?.length ?? 0) + (arca?.errores?.length ?? 0) > 0;
 
-    notification[aprobado ? 'warning' : 'error']({
-        message: aprobado ? 'ARCA AUTORIZÓ CON OBSERVACIONES' : 'ARCA RECHAZÓ EL COMPROBANTE',
+    const tipo = aprobado ? (conObservaciones ? 'warning' : 'info') : 'error';
+
+    const titulo = aprobado
+        ? conObservaciones
+            ? 'ARCA AUTORIZÓ CON OBSERVACIONES'
+            : 'ARCA AUTORIZÓ EL COMPROBANTE'
+        : 'ARCA RECHAZÓ EL COMPROBANTE';
+
+    notification[tipo]({
+        message: titulo,
         description: h('div', [
             h(
                 'ul',
