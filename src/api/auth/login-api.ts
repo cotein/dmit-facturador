@@ -1,6 +1,6 @@
 import { ApiHttp } from '../base-api';
 import type { LoginDataOAuthToken, OAuthToken } from '@/app/types/OauthToken';
-import type { GoogleUserInfo } from '@/app/types/GoogleLogin';
+import type { GoogleCredential } from '@/app/types/GoogleLogin';
 
 export const Login = async (loginData: LoginDataOAuthToken): Promise<any> => {
     try {
@@ -13,7 +13,7 @@ export const Login = async (loginData: LoginDataOAuthToken): Promise<any> => {
     }
 };
 
-export const GoogleLoginMethod = async (userData: GoogleUserInfo): Promise<any> => {
+export const GoogleLoginMethod = async (userData: GoogleCredential): Promise<any> => {
     try {
         const response = await ApiHttp.post<any>('/auth/google', userData);
 

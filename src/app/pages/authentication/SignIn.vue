@@ -112,9 +112,12 @@ const login = async () => {
 const callback: CallbackTypes.CredentialCallback = async (response) => {
     // This callback will be triggered when the user selects or login to
     // his Google account from the popup
+    // Se decodifica SOLO para usar la foto en la UI del usuario.
+    // A la API se le manda el credential sin tocar: ella lo verifica contra Google
+    // y saca de ahi el email y el sub, nunca confia en datos del cliente.
     const userData = decodeCredential(response.credential);
 
-    const { data } = await GoogleLoginMethod(userData);
+    const { data } = await GoogleLoginMethod({ credential: response.credential });
 
     data.user.avatar = userData.picture;
 
