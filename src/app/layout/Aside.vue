@@ -138,6 +138,17 @@ onMounted(() => {
             </a-menu-item>
         </a-sub-menu>
 
+        <!-- Submenú ARBA: Código de Operación de Traslado -->
+        <a-sub-menu key="arba">
+            <template #icon>
+                <unicon name="layer-group"></unicon>
+            </template>
+            <template #title>ARBA</template>
+            <a-menu-item @click="toggleCollapsed" key="arba-cot-new">
+                <router-link :to="{ name: 'NewCot' }"> Nuevo COT </router-link>
+            </a-menu-item>
+        </a-sub-menu>
+
         <!-- Nuevo submenú Recibos -->
         <a-sub-menu key="receipts">
             <template #icon>
