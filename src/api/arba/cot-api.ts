@@ -40,7 +40,17 @@ export type CotBorrador = {
 export type CotCatalogos = {
     provincias: Array<{ codigo: string; nombre: string }>;
     puntosTraslado: Array<{ id: number; nombre: string }>;
-    nomenclador: Array<{ codigo: string; descripcion: string; unidadMedida: string }>;
+    /**
+     * Variedades del nomenclador de ARBA (6 dígitos) con el RUBRO al que
+     * pertenecen: el código solo no dice a qué rubro corresponde el producto.
+     */
+    nomenclador: Array<{
+        codigo: string;
+        descripcion: string;
+        unidadMedida: string;
+        rubroCodigo: string | null;
+        rubroDescripcion: string | null;
+    }>;
 };
 
 export type CotEstado = 'borrador' | 'encolado' | 'emitido' | 'rechazado' | 'anulado';
@@ -60,54 +70,56 @@ export type CotListado = {
 };
 
 /** Catálogos que necesita la pantalla para llenar los selects. */
-export const getCotCatalogos = async (): Promise<CotCatalogos> => {
-    const { data } = await ApiHttp.get<CotCatalogos>('/arba/cot/catalogos');
+export const getCotCatalogos = async (search = ''): Promise<CotCatalogos> => {
+    const { data } = await ApiHttp.get<CotCatalogos>('/api/arba/cot/catalogos', {
+        params: search ? { search, limit: 300 } : {},
+    });
 
     return data;
 };
 
 /** Crea el COT en borrador. Todavía no se contacta a ARBA. */
 export const crearCot = async (borrador: CotBorrador): Promise<Cot> => {
-    const { data } = await ApiHttp.post<Cot>('/arba/cot', borrador);
+    const { data } = await ApiHttp.post<Cot>('/api/arba/cot', borrador);
 
     return data;
 };
 
 export const listarCots = async (params: Record<string, string | number> = {}): Promise<CotListado> => {
-    const { data } = await ApiHttp.get<CotListado>('/arba/cot', { params });
+    const { data } = await ApiHttp.get<CotListado>('/api/arba/cot', { params });
 
     return data;
 };
 
 export const obtenerCot = async (id: number): Promise<Cot> => {
-    const { data } = await ApiHttp.get<Cot>(`/arba/cot/${id}`);
+    const { data } = await ApiHttp.get<Cot>(`/api/arba/cot/${id}`);
 
     return data;
 };
 
 /** Sólo se puede editar mientras el COT siga en borrador. */
 export const actualizarCot = async (id: number, borrador: CotBorrador): Promise<Cot> => {
-    const { data } = await ApiHttp.put<Cot>(`/arba/cot/${id}`, borrador);
+    const { data } = await ApiHttp.put<Cot>(`/api/arba/cot/${id}`, borrador);
 
     return data;
 };
 
 /** Encola la emisión: arma el TXT, lo manda a ARBA y guarda el resultado. */
 export const emitirCot = async (id: number): Promise<Cot> => {
-    const { data } = await ApiHttp.post<Cot>(`/arba/cot/${id}/emitir`);
+    const { data } = await ApiHttp.post<Cot>(`/api/arba/cot/${id}/emitir`);
 
     return data;
 };
 
 export const anularCot = async (id: number): Promise<Cot> => {
-    const { data } = await ApiHttp.post<Cot>(`/arba/cot/${id}/anular`);
+    const { data } = await ApiHttp.post<Cot>(`/api/arba/cot/${id}/anular`);
 
     return data;
 };
 
 /** Descarga el TXT tal como se envió a ARBA. */
 export const descargarCot = async (id: number): Promise<Blob> => {
-    const { data } = await ApiHttp.get(`/arba/cot/${id}/archivo`, { responseType: 'blob' });
+    const { data } = await ApiHttp.get(`/api/arba/cot/${id}/archivo`, { responseType: 'blob' });
 
     return data as Blob;
 };

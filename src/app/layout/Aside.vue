@@ -139,6 +139,9 @@ onMounted(() => {
                 <unicon name="layer-group"></unicon>
             </template>
             <template #title>ARBA</template>
+            <a-menu-item @click="toggleCollapsed" key="arba-cot-listado">
+                <router-link :to="{ name: 'CotListado' }"> Remitos </router-link>
+            </a-menu-item>
             <a-menu-item @click="toggleCollapsed" key="arba-cot-new">
                 <router-link :to="{ name: 'NewCot' }"> Nuevo COT </router-link>
             </a-menu-item>

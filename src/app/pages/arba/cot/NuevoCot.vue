@@ -7,8 +7,8 @@
                 <div class="cot-head">
                     <span class="cot-head__title">Código de Operación de Traslado</span>
                     <span class="cot-head__sub">
-                        Comprobante de traslado de bienes para ARBA, Buenos Aires. Se emite antes de mover la
-                        mercadería y viaja como archivo TXT firmado por el servicio.
+                        Comprobante de traslado de bienes para ARBA, Buenos Aires. Se emite antes de mover la mercadería
+                        y viaja como archivo TXT firmado por el servicio.
                     </span>
                 </div>
             </template>
@@ -43,7 +43,11 @@
                     <a-col :xs="24" :md="6">
                         <a-form-item label="Punto de traslado" required>
                             <a-select v-model:value="formState.puntoTrasladoId" placeholder="Elegí el punto">
-                                <a-select-option v-for="punto in catalogos.puntosTraslado" :key="punto.id" :value="punto.id">
+                                <a-select-option
+                                    v-for="punto in catalogos.puntosTraslado"
+                                    :key="punto.id"
+                                    :value="punto.id"
+                                >
                                     {{ punto.nombre }}
                                 </a-select-option>
                             </a-select>
@@ -82,8 +86,16 @@
                         <a-row :gutter="16">
                             <a-col :xs="24" :md="12">
                                 <a-form-item label="Provincia" required>
-                                    <a-select v-model:value="formState.origen.provincia" show-search placeholder="Elegí la provincia">
-                                        <a-select-option v-for="prov in catalogos.provincias" :key="prov.codigo" :value="prov.codigo">
+                                    <a-select
+                                        v-model:value="formState.origen.provincia"
+                                        show-search
+                                        placeholder="Elegí la provincia"
+                                    >
+                                        <a-select-option
+                                            v-for="prov in catalogos.provincias"
+                                            :key="prov.codigo"
+                                            :value="prov.codigo"
+                                        >
                                             {{ prov.nombre }}
                                         </a-select-option>
                                     </a-select>
@@ -96,12 +108,19 @@
                             </a-col>
                             <a-col :xs="24" :md="16">
                                 <a-form-item label="Domicilio" required>
-                                    <a-input v-model:value="formState.origen.domicilio" placeholder="Calle, número y piso" />
+                                    <a-input
+                                        v-model:value="formState.origen.domicilio"
+                                        placeholder="Calle, número y piso"
+                                    />
                                 </a-form-item>
                             </a-col>
                             <a-col :xs="24" :md="8">
                                 <a-form-item label="Código postal">
-                                    <a-input v-model:value="formState.origen.codigoPostal" placeholder="6000" :maxlength="8" />
+                                    <a-input
+                                        v-model:value="formState.origen.codigoPostal"
+                                        placeholder="6000"
+                                        :maxlength="8"
+                                    />
                                 </a-form-item>
                             </a-col>
                         </a-row>
@@ -117,13 +136,24 @@
                             </a-col>
                             <a-col :xs="24" :md="12">
                                 <a-form-item label="Razón social" required>
-                                    <a-input v-model:value="formState.destino.razonSocial" placeholder="Nombre o razón social" />
+                                    <a-input
+                                        v-model:value="formState.destino.razonSocial"
+                                        placeholder="Nombre o razón social"
+                                    />
                                 </a-form-item>
                             </a-col>
                             <a-col :xs="24" :md="12">
                                 <a-form-item label="Provincia" required>
-                                    <a-select v-model:value="formState.destino.provincia" show-search placeholder="Elegí la provincia">
-                                        <a-select-option v-for="prov in catalogos.provincias" :key="prov.codigo" :value="prov.codigo">
+                                    <a-select
+                                        v-model:value="formState.destino.provincia"
+                                        show-search
+                                        placeholder="Elegí la provincia"
+                                    >
+                                        <a-select-option
+                                            v-for="prov in catalogos.provincias"
+                                            :key="prov.codigo"
+                                            :value="prov.codigo"
+                                        >
                                             {{ prov.nombre }}
                                         </a-select-option>
                                     </a-select>
@@ -136,12 +166,19 @@
                             </a-col>
                             <a-col :xs="24" :md="16">
                                 <a-form-item label="Domicilio" required>
-                                    <a-input v-model:value="formState.destino.domicilio" placeholder="Calle, número y piso" />
+                                    <a-input
+                                        v-model:value="formState.destino.domicilio"
+                                        placeholder="Calle, número y piso"
+                                    />
                                 </a-form-item>
                             </a-col>
                             <a-col :xs="24" :md="8">
                                 <a-form-item label="Código postal">
-                                    <a-input v-model:value="formState.destino.codigoPostal" placeholder="2700" :maxlength="8" />
+                                    <a-input
+                                        v-model:value="formState.destino.codigoPostal"
+                                        placeholder="2700"
+                                        :maxlength="8"
+                                    />
                                 </a-form-item>
                             </a-col>
                         </a-row>
@@ -163,13 +200,21 @@
                     size="middle"
                 >
                     <template #bodyCell="{ column, record, index }">
+                        <template v-if="column.key === 'rubro'">
+                            <span v-if="rubroDe(record.codigo)">
+                                {{ rubroDe(record.codigo)?.rubroCodigo }}
+                                <span class="cot-rubro__desc">{{ rubroDe(record.codigo)?.rubroDescripcion }}</span>
+                            </span>
+                            <span v-else>—</span>
+                        </template>
                         <template v-if="column.key === 'codigo'">
                             <a-select
                                 v-model:value="record.codigo"
                                 show-search
-                                placeholder="Buscar producto"
+                                placeholder="Buscar por producto o rubro"
                                 :filter-option="filtrarProducto"
                                 style="width: 100%"
+                                @search="buscarProductos"
                                 @change="(valor: string) => aplicarProducto(record, valor)"
                             >
                                 <a-select-option
@@ -177,7 +222,12 @@
                                     :key="prod.codigo"
                                     :value="prod.codigo"
                                 >
-                                    {{ prod.codigo }} · {{ prod.descripcion }}
+                                    <span class="cot-opcion">
+                                        <span>{{ prod.codigo }} · {{ prod.descripcion }}</span>
+                                        <span v-if="prod.rubroCodigo" class="cot-opcion__rubro">
+                                            Rubro {{ prod.rubroCodigo }} · {{ prod.rubroDescripcion }}
+                                        </span>
+                                    </span>
                                 </a-select-option>
                             </a-select>
                         </template>
@@ -304,6 +354,7 @@ const formState = reactive({
 let siguienteClave = 1;
 
 const columnas = [
+    { title: 'Rubro de ARBA', key: 'rubro', width: 220 },
     { title: 'Código de producto', key: 'codigo', width: 280 },
     { title: 'Descripción', key: 'descripcion' },
     { title: 'Unidad', key: 'unidad', width: 100 },
@@ -320,14 +371,52 @@ const descripcionDe = (codigo: string): string =>
 
 const unidadDe = (codigo: string): string => catalogos.nomenclador.find((p) => p.codigo === codigo)?.unidadMedida ?? '';
 
-const productosSinUnidad = computed(() =>
-    formState.productos.filter((p) => p.codigo && unidadDe(p.codigo) === ''),
-);
+/**
+ * Rubro de ARBA al que pertenece la variedad elegida. El TXT lleva el código de
+ * 6 dígitos, pero en pantalla hace falta ver bajo qué rubro cae.
+ */
+const rubroDe = (codigo: string) => catalogos.nomenclador.find((p) => p.codigo === codigo) ?? null;
 
-const filtrarProducto = (input: string, opcion: { value: string; children?: unknown }): boolean => {
-    const texto = String(opcion?.children ?? '').toLowerCase();
+const productosSinUnidad = computed(() => formState.productos.filter((p) => p.codigo && unidadDe(p.codigo) === ''));
 
-    return texto.includes(input.toLowerCase());
+const filtrarProducto = (input: string, opcion: { value: string }): boolean => {
+    const texto = input.trim().toLowerCase();
+
+    if (!texto) {
+        return true;
+    }
+
+    const producto = catalogos.nomenclador.find((p) => p.codigo === opcion.value);
+
+    if (!producto) {
+        return false;
+    }
+
+    // Se busca por código, descripción y RUBRO: el código de 6 dígitos solo no
+    // alcanza para encontrar un producto de un rubro determinado.
+    return [producto.codigo, producto.descripcion, producto.rubroCodigo ?? '', producto.rubroDescripcion ?? '']
+        .join(' ')
+        .toLowerCase()
+        .includes(texto);
+};
+
+/**
+ * El nomenclador son más de cinco mil variedades: el catálogo inicial viene
+ * acotado y la búsqueda se resuelve contra el API. Lo que se suma se acumula
+ * para no perder la descripción y la unidad de los productos ya elegidos.
+ */
+const buscarProductos = async (termino: string) => {
+    try {
+        const data = await getCotCatalogos(termino.trim());
+
+        const porCodigo = new Map(catalogos.nomenclador.map((p) => [p.codigo, p]));
+
+        data.nomenclador.forEach((producto) => porCodigo.set(producto.codigo, producto));
+
+        catalogos.nomenclador = Array.from(porCodigo.values());
+    } catch (error) {
+        console.log('🚀 ~ buscarProductos ~ error:', error);
+    }
 };
 
 const aNumero = (valor: string | number): number => {
@@ -526,5 +615,25 @@ onMounted(async () => {
     display: flex;
     gap: 12px;
     margin-top: 24px;
+}
+
+/* El rubro, tanto en la lista de productos como en cada opción del selector. */
+.cot-opcion {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    padding: 2px 0;
+}
+
+.cot-opcion__rubro {
+    font-size: 12px;
+    opacity: 0.65;
+}
+
+.cot-rubro__desc {
+    display: block;
+    font-size: 12px;
+    opacity: 0.55;
+    white-space: normal;
 }
 </style>
