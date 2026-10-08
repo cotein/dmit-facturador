@@ -59,6 +59,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'listado/recibos',
         component: () => import('@/app/pages/receipts/ReceiptsList.vue'),
     },
+    {
+        // Pagos recibidos: una fila por pago (receipt_payments), no por recibo.
+        name: 'PaymentsReceivedList',
+        path: 'pagos/recibidos',
+        component: () => import('@/app/pages/receipts/PaymentsReceivedList.vue'),
+    },
     /* {
         name: 'AddService',
         path: 'ingresar-servicio',
