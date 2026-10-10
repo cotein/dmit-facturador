@@ -41,18 +41,21 @@
                     />
                 </a-col>
                 <a-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                    <!-- `CBU` no tiene `name`: la etiqueta útil es el alias y, si no hay, el banco.
+                         Antes se leía `.name`, que no existe en el tipo ni en los datos: el modal
+                         mostraba "undefined - <cbu>". -->
                     <div v-if="CompanyGetter.cbus.length > 1" class="select-container">
                         <label for="cbu-select">Seleccione un CBU:</label>
                         <select id="cbu-select" v-model="selectedCbu" class="custom-select">
                             <option v-for="(cbu, index) in CompanyGetter.cbus" :key="index" :value="cbu.cbu">
-                                {{ cbu.name }} - {{ cbu.cbu }}
+                                {{ cbu.alias || cbu.bank }} - {{ cbu.cbu }}
                             </option>
                         </select>
                     </div>
                     <div v-else>
                         <label for="" class="label-cbu">CBU informado: </label>
                         <p>
-                            {{ CompanyGetter.cbus[0].name }} -
+                            {{ CompanyGetter.cbus[0].alias || CompanyGetter.cbus[0].bank }} -
                             {{ CompanyGetter.cbus[0].cbu }}
                         </p>
                     </div>
@@ -118,14 +121,28 @@ watch(selectedCbu, (newVal, oldVal) => {
 });
 
 const handleOk = () => {
-    if (CompanyGetter) {
-        if (CompanyGetter && CompanyGetter.value && CompanyGetter.value.cbus.length === 0) {
-            closeModal();
-            invoice.value.isMiPyme = false;
-        } else {
-            generateMiPymeInvoice();
-        }
+    /**
+     * La factura MiPyme se confirma sobre la solicitud que ya viajó a ARCA: sin ella
+     * no hay nada que confirmar. El modal también se puede abrir a mano —desde las
+     * acciones del comprobante, en el modo normal— y ahí no puede terminar en un
+     * `TypeError` de `FECAESolicitarObject.value!`.
+     */
+    if (!FECAESolicitarObject.value) {
+        closeModal();
+
+        showMessage('warning', 'Primero facturá: la confirmación de MiPyme se hace sobre la venta emitida.', 5);
+
+        return;
     }
+
+    if ((CompanyGetter.value?.cbus?.length ?? 0) === 0) {
+        closeModal();
+        invoice.value.isMiPyme = false;
+
+        return;
+    }
+
+    generateMiPymeInvoice();
 };
 
 const closeModal = () => {
@@ -193,8 +210,9 @@ const generateMiPymeInvoice = async () => {
 };
 
 onMounted(() => {
-    selectedCbu.value = CompanyGetter.value.cbus[0].cbu;
-    console.log('🚀 ~ onMounted ~ selectedCbu.value :', selectedCbu.value);
+    // `cbus` puede venir vacío (la empresa todavía no cargó ninguno): leer `cbus[0].cbu`
+    // sin guarda tiraba un TypeError en cada montaje del modal.
+    selectedCbu.value = CompanyGetter.value?.cbus?.[0]?.cbu ?? '';
 });
 </script>
 <style scoped>

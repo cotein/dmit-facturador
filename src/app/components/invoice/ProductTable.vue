@@ -26,7 +26,7 @@
                                     <template #headerCell="{ title }">
                                         <div style="text-align: left">{{ title }}</div>
                                     </template>
-                                    <template #bodyCell="{ column, record, index }">
+                                    <template #bodyCell="{ record, index }">
                                         <div class="scale-down">
                                             <a-row align="middle" justify="left" :gutter="31">
                                                 <a-col :span="1">{{ index + 1 }}</a-col>
@@ -84,20 +84,13 @@
             <a-row justify="end">
                 <a-col :lg="12" :md="18" :sm="24" :offset="0">
                     <InvoiceAction>
-                        <!-- <sdButton size="sm" shape="round" type="default">
-						<unicon name="print" width="14"></unicon>
-						<span>Print</span>
-					</sdButton>
-					<sdButton size="sm" shape="round" type="default">
-						<unicon name="message" width="14"></unicon>
-						<span>Send Invoice</span>
-					</sdButton> -->
                         <a-button
                             type="primary"
                             shape="round"
+                            data-action="checkout"
                             @click="generateInvoice"
                             :loading="loading"
-                            :disabled="loading || invoiceTableData.length == 0 || !invoiceConfigIsValidated"
+                            :disabled="loading || !invoiceValidation.valid"
                         >
                             <template #icon v-if="invoiceTableData.length">
                                 <CloudUploadOutlined />
@@ -105,6 +98,23 @@
                             Facturar
                         </a-button>
                     </InvoiceAction>
+
+                    <!-- Lo que falta para poder facturar, dicho en pantalla y no sólo en un mensaje -->
+                    <div v-if="!invoiceValidation.valid" class="checkout-blockers" data-testid="checkout-blockers">
+                        <strong>Para facturar falta:</strong>
+                        <ul>
+                            <li v-for="blocker in invoiceValidation.blockers" :key="blocker">{{ blocker }}</li>
+                        </ul>
+                    </div>
+
+                    <div
+                        v-if="checkoutError"
+                        class="checkout-blockers checkout-blockers--error"
+                        data-testid="checkout-error"
+                    >
+                        <strong>No se pudo facturar</strong>
+                        <p>{{ checkoutError }}</p>
+                    </div>
                 </a-col>
             </a-row>
         </Cards>
@@ -116,14 +126,10 @@
 <script setup lang="tsx">
 import { CloudUploadOutlined } from '@ant-design/icons-vue';
 import { InvoiceAction, ProductTable } from './Style';
-import { Main, TableWrapper } from '../../styled';
-import { message, notification } from 'ant-design-vue';
+import { TableWrapper } from '../../styled';
 import { ref, onUnmounted, watch } from 'vue';
-import { SELECT_INVOICE_TYPE } from '@/app/types/Constantes';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
-import { usePrinterPdfComposable } from '@/app/composables/printerPdf/usePrinterPdfComposable';
+import { useInvoiceCheckoutComposable } from '@/app/composables/invoice/useInvoiceCheckoutComposable';
 import Cards from '@/app/components/cards/frame/CardsFrame.vue';
 import Html2CanvasPdf from '@/app/pdf/Html2CanvasPdf.vue';
 import Actions from './product/Actions.vue';
@@ -138,34 +144,14 @@ import Unit from './product/Unit.vue';
 import FreeText from './FreeText.vue';
 import ModalMiPyme from './ModalMiPyme.vue';
 import DrawerInvoiceComments from './DrawerInvoiceComments.vue';
-import { showNotification } from '@/app/helpers/notifications';
-import type { Voucher } from '@/app/types/Invoice';
-import type ExportEmailModal from './ExportEmailModal.vue';
 
-const { printPdf } = usePrinterPdfComposable();
+const { invoiceTableData, invoiceInitialStatus, invoice, invoiceValidation } = useInvoiceComposable();
 
-const exportEmailModalVisible = ref<boolean>(false);
-
-const {
-    invoiceTableData,
-    createInvoiceMutation,
-    invoiceInitialStatus,
-    InvoiceGetter,
-    invoice,
-    invoiceConfigIsValidated,
-    openModalMiPyme,
-    FECAESolicitarObject,
-} = useInvoiceComposable();
-
-const { createConcreteInvoiceBuilder, createInvoiceBuilder, invoiceType } = useInvoiceBuilderComposable();
-
-const invoiceToSend = ref<any>({});
-
-const { CompanyGetter } = useCompanyComposable();
-
-const loading = ref<boolean>(false);
-
-const titulo = ref<string>('Productos a facturar www');
+/**
+ * La emisión vive en `useInvoiceCheckoutComposable` porque el modo mostrador tiene
+ * su propia disposición y necesita exactamente el mismo camino contra la API.
+ */
+const { generateInvoice, loading, checkoutError } = useInvoiceCheckoutComposable();
 
 const columns = ref<any>([
     {
@@ -175,99 +161,6 @@ const columns = ref<any>([
         width: '100%',
     },
 ]);
-
-const generateInvoice = async () => {
-    loading.value = true;
-
-    invoice.value.PtoVta = parseInt(CompanyGetter.value!.pto_vta_fe);
-
-    invoice.value.CbteTipo = invoice.value.voucher;
-
-    const builder = createConcreteInvoiceBuilder(
-        SELECT_INVOICE_TYPE[invoiceType.value],
-        CompanyGetter.value?.inscription_id,
-        invoice.value.customer.afip_inscription.id,
-    );
-
-    FECAESolicitarObject.value = createInvoiceBuilder(builder, invoice.value, invoiceTableData.value);
-
-    if (
-        FECAESolicitarObject.value.FECAEDetRequest.Concepto === 2 ||
-        FECAESolicitarObject.value.FECAEDetRequest.Concepto === 3
-    ) {
-        if (
-            FECAESolicitarObject.value.FECAEDetRequest.FchServDesde === '' ||
-            FECAESolicitarObject.value.FECAEDetRequest.FchServDesde === null ||
-            FECAESolicitarObject.value.FECAEDetRequest.FchServHasta === '' ||
-            FECAESolicitarObject.value.FECAEDetRequest.FchServHasta === null
-        ) {
-            message.error({
-                content: 'Si factura servicios debe ingresar las fechas en que se desarrolló el mismo.',
-            });
-            loading.value = false;
-            return false;
-        }
-    }
-
-    if (FECAESolicitarObject.value.FECAEDetRequest.ImpTotal === 0) {
-        message.error({ content: 'No se permite emitir un comprobante en cero pesos.' });
-        loading.value = false;
-        return false;
-    }
-
-    const params = {
-        FeCabReq: FECAESolicitarObject.value.FeCabReq,
-        FECAEDetRequest: FECAESolicitarObject.value.FECAEDetRequest,
-        environment: CompanyGetter.value?.afip_environment,
-        company_cuit: CompanyGetter.value?.cuit,
-        company_id: CompanyGetter.value?.id,
-        user_id: CompanyGetter.value?.user_id,
-        products: invoiceTableData.value,
-        saleCondition: InvoiceGetter.value.SaleCondition,
-        customer: InvoiceGetter.value?.customer,
-        comments: InvoiceGetter.value?.comments,
-        paymentType: InvoiceGetter.value?.paymentType,
-        isMiPyme: InvoiceGetter.value?.isMiPyme,
-    };
-
-    const result = await createInvoiceMutation
-        .mutateAsync(params)
-        .catch((err) => {
-            console.log(`🚀 ~ file: ProductTable.vue:160 ~ generateInvoice ~ err:`, err);
-        })
-        .finally(() => (loading.value = false));
-
-    if (result) {
-        console.log('🚀 ~ generateInvoice ~ result:', result);
-        if (result.data.isMipyme) {
-            openModalMiPyme.value = true;
-            invoice.value.isMiPyme = true;
-            FECAESolicitarObject.value.FeCabReq.CbteTipo = result.data.CbteTipo;
-            FECAESolicitarObject.value.FECAEDetRequest.CbteDesde = result.data.CbteDesde;
-            FECAESolicitarObject.value.FECAEDetRequest.CbteHasta = result.data.CbteHasta;
-
-            return;
-        }
-
-        const voucher: any = result!.data!.invoice[0]!.voucher;
-
-        // El CAE es la respuesta de ARCA: se muestra siempre junto al comprobante.
-        const arca = result.data.arca;
-        const cae = arca?.cae ?? voucher.cae;
-        const caeVto = arca?.cae_fch_vto ?? voucher.cae_fch_vto;
-        const comprobante = `Comprobante N° ${voucher.pto_vta}-${voucher.cbte_desde}`;
-        const caeTexto = cae ? ` — CAE ${cae} (vto ${caeVto ?? '-'})` : '';
-
-        showNotification('success', 'Factura generada correctamente', comprobante + caeTexto, 5, 'topLeft');
-
-        invoiceTableData.value = []; //limpia los productos de la tabla
-        invoice.value.comments = ''; //limpia comentarios
-
-        if (result.data.invoice[0]) {
-            printPdf(result.data.invoice[0]);
-        }
-    }
-};
 
 const columnTitle = ref<string>('Producto');
 
@@ -307,5 +200,21 @@ onUnmounted(() => {
 }
 .mt5 {
     margin-top: 5px;
+}
+.checkout-blockers {
+    margin-top: 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #404040;
+    background: #f8f9fb;
+    border: 1px solid #e3e6ef;
+    border-radius: 4px;
+}
+.checkout-blockers--error {
+    border-color: #ff0f0f;
+}
+.checkout-blockers ul {
+    margin: 4px 0 0;
+    padding-left: 18px;
 }
 </style>

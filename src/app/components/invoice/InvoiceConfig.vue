@@ -1,178 +1,86 @@
 <template>
-    <a-row :gutter="30" class="scale-down">
-        <a-col :sm="24" :lg="6" :xs="24" :xl="12" class="center-buttons">
-            <a-button type="primary" @click="showDrawer">
-                <template #icon><PlusOutlined /></template>
-                Buscar cliente ya ingresado
-            </a-button>
-        </a-col>
-        <a-drawer
-            title="Datos del Cliente"
-            :width="drawerWidth()"
-            :visible="openDrawerDatosCliente"
-            :body-style="{ paddingBottom: '80px' }"
-            :footer-style="{ textAlign: 'right' }"
-            :maskClosable="false"
-            @close="onClose"
-            @afterVisibleChange="afterVisibleChange"
-        >
-            <a-form :model="invoice" layout="vertical" ref="invoiceConfigForm" @submit="onClose">
-                <a-row :gutter="16">
-                    <a-col :sm="24" :lg="24" :xs="24">
-                        <a-form-item
-                            label="Buscar cliente"
-                            name="customer"
-                            :validate-status="errors.customer ? 'error' : ''"
-                            :help="errors.customer"
-                        >
-                            <SearchCustomer :context="'invoice'" :multiple="false" ref="searchCustomerRef" />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :sm="24" :lg="24" :xs="24">
-                        <a-form-item
-                            label="Seleccionar tipo de comprobante a realizar"
-                            name="voucher"
-                            :validate-status="errors.voucher ? 'error' : ''"
-                            :help="errors.voucher"
-                        >
-                            <VoucherSelect />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :sm="24" :lg="24" :xs="24">
-                        <a-form-item
-                            label="Concepto de facturación"
-                            name="Concepto"
-                            :validate-status="errors.Concepto ? 'error' : ''"
-                            :help="errors.Concepto"
-                        >
-                            <a-radio-group v-model:value="invoice.Concepto" name="radioGroup">
-                                <a-radio v-for="(item, index) in BillingConcepts" :key="index" :value="item.value">{{
-                                    item.key
-                                }}</a-radio>
-                            </a-radio-group>
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-                <a-row :gutter="16">
-                    <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item
-                            label="Fecha Factura"
-                            name="date"
-                            :validate-status="errors.date ? 'error' : ''"
-                            :help="errors.date"
-                        >
-                            <a-date-picker
-                                v-model:value="invoice.date"
-                                style="width: 100%"
-                                format="DD-MM-YYYY"
-                                placeholder="Fecha de factura"
-                                @change="setInvoiceDate"
-                                :disabled-date="disabledDate"
-                            />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item
-                            label="Condición de venta"
-                            name="SaleCondition"
-                            :validate-status="errors.SaleCondition ? 'error' : ''"
-                            :help="errors.SaleCondition"
-                        >
-                            <SaleCondition />
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-                <a-row :gutter="16">
-                    <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item
-                            label="Modo de pago"
-                            name="paymentType"
-                            :validate-status="errors.paymentType ? 'error' : ''"
-                            :help="errors.paymentType"
-                        >
-                            <a-select
-                                v-model="defaultPaymentType"
-                                placeholder="Modo de pago"
-                                style="width: 100%"
-                                :default-active-first-option="true"
-                                :field-names="{ label: 'name', value: 'id' }"
-                                :options="PaymentTypesGetter"
-                                @change="handleChangePaymentType"
-                            ></a-select>
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-                <a-row :gutter="16" v-if="invoice.Concepto != '1'">
-                    <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item
-                            label="Fecha Servicios"
-                            name="servicesDate"
-                            :validate-status="errors.FchServDesde ? 'error' : ''"
-                            :help="errors.FchServDesde"
-                        >
-                            <a-range-picker
-                                style="width: 100%"
-                                :format="dateFormat"
-                                v-model:value="serviceDate"
-                                :placeholder="['Fecha inicial', 'Fecha final']"
-                                @change="servDatesMethod"
-                            />
-                        </a-form-item>
-                    </a-col>
-                    <a-col :lg="12" :sm="24" :xs="24">
-                        <a-form-item
-                            label="Fecha vencimiento de pago"
-                            name="FchVtoPago"
-                            :validate-status="errors.dateVtoPago ? 'error' : ''"
-                            :help="errors.dateVtoPago"
-                        >
-                            <a-date-picker
-                                v-model:value="invoice.dateVtoPago"
-                                style="width: 100%"
-                                showToday
-                                :format="dateFormat"
-                                placeholder="Vencimiento de pago"
-                                @change="servicesDateFchVtoPago"
-                            />
-                        </a-form-item>
-                    </a-col>
-                </a-row>
-                <a-space>
-                    <a-button @click="onCloseCancel">Cancelar</a-button>
-                    <a-button type="primary" @click="onClose">Aceptar</a-button>
-                </a-space>
-            </a-form>
-            <template #extra> </template>
-        </a-drawer>
-        <a-col :sm="24" :lg="6" :xs="24" class="center-buttons">
-            <DrawerAddCustomer />
-        </a-col>
-    </a-row>
+    <a-drawer
+        title="Datos del Cliente"
+        :width="drawerWidth()"
+        :visible="openDrawerDatosCliente"
+        :body-style="{ paddingBottom: '80px' }"
+        :footer-style="{ textAlign: 'right' }"
+        :maskClosable="false"
+        @close="onClose"
+        @afterVisibleChange="afterVisibleChange"
+    >
+        <a-form :model="invoice" layout="vertical" ref="invoiceConfigForm" @submit.prevent="onClose">
+            <!-- El cliente de la venta, aparte y en lectura: el buscador de abajo abre
+                 vacío y no edita a este cliente; si elegís otro, esta línea cambia. -->
+            <p class="invoice-current-customer" data-testid="pos-current-customer">
+                <span>Cliente de la venta:</span>
+                <b data-testid="pos-current-customer-label">{{ currentCustomerLabel }}</b>
+                <span v-if="isDefaultCustomer" class="invoice-current-customer__note">(por defecto)</span>
+            </p>
+
+            <a-row :gutter="16">
+                <a-col :sm="24" :lg="24" :xs="24">
+                    <a-form-item
+                        label="Buscar cliente"
+                        name="customer"
+                        :validate-status="errors.customer ? 'error' : ''"
+                        :help="errors.customer"
+                    >
+                        <SearchCustomer
+                            :context="'invoice'"
+                            :multiple="false"
+                            :start-empty="true"
+                            ref="searchCustomerRef"
+                        />
+                    </a-form-item>
+                    <p class="invoice-customer-hint">
+                        Buscá por nombre y elegí el cliente de esta venta. El campo arranca vacío: no estás editando al
+                        cliente actual.
+                    </p>
+                </a-col>
+                <a-col :sm="24" :lg="24" :xs="24">
+                    <a-form-item
+                        label="Seleccionar tipo de comprobante a realizar"
+                        name="voucher"
+                        :validate-status="errors.voucher ? 'error' : ''"
+                        :help="errors.voucher"
+                    >
+                        <VoucherSelect />
+                    </a-form-item>
+                </a-col>
+            </a-row>
+
+            <InvoiceFieldsForm :columns="2" :errors="errors" />
+
+            <a-space>
+                <a-button @click="onCloseCancel">Cancelar</a-button>
+                <a-button type="primary" @click="onClose">Aceptar</a-button>
+            </a-space>
+        </a-form>
+        <template #extra> </template>
+    </a-drawer>
 </template>
 <script setup lang="ts">
-import { BillingConcepts } from '@/app/types/Afip';
-import { onMounted, ref, watch, computed, nextTick } from 'vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
-import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
+import dayjs from 'dayjs';
 import { useCustomerComposable } from '@/app/composables/customer/useCustomerComposable';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
-import dayjs from 'dayjs';
-import type { Dayjs } from 'dayjs';
-import DrawerAddCustomer from '../customer/DrawerAddCustomer.vue';
-import SaleCondition from './SaleCondition.vue';
 import SearchCustomer from '../customer/SearchCustomer.vue';
 import VoucherSelect from './VoucherSelect.vue';
+import InvoiceFieldsForm from './InvoiceFieldsForm.vue';
 import { useVisibleComposable } from '@/app/composables/visible/useVisibleComposable';
 import { z } from 'zod';
-import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
 import { useMediaQueryComposable } from '@/app/composables/mediaQuery.ts/useMediaQueryComposable';
-import { useSaleConditionComposable } from '@/app/composables/sale-condition/useSaleConditionComposable';
+import { AFIP_INSCRIPTION } from '@/app/types/Constantes';
 
-const { saleConditions } = useSaleConditionComposable();
-
+/**
+ * Datos del cliente y configuración del comprobante, en un drawer.
+ *
+ * Trae el buscador de clientes y los campos del comprobante; los botones que lo abren
+ * viven arriba de la pantalla de facturación (`PosCustomerActions`), no acá adentro:
+ * estaban perdidos entre los campos y había que bajar hasta ellos para encontrarlos.
+ */
 const { drawerWidth } = useMediaQueryComposable();
-
-const { PaymentTypesGetter } = usePaymentTypeComposable();
 
 const errors = ref<Record<string, string | undefined>>({});
 
@@ -182,201 +90,176 @@ const { openDrawerDatosCliente } = useVisibleComposable();
 
 const { selectedCustomer } = useCustomerComposable();
 
-const { invoice, invoiceConfigIsValidated, invoiceInitialStatus } = useInvoiceComposable();
-
-const { CompanyGetter } = useCompanyComposable();
+const { invoice, invoiceInitialStatus } = useInvoiceComposable();
 
 const invoiceConfigForm = ref();
 
-const dateFormat = 'DD-MM-YYYY';
+/** Id del cliente que viene puesto por defecto en toda venta nueva (Consumidor Final). */
+const DEFAULT_CUSTOMER_ID = 1;
 
-const serviceDate = ref<[Dayjs, Dayjs]>([dayjs('2015/01/01', dateFormat), dayjs('2015/01/01', dateFormat)]);
+/**
+ * `invoice.customer` guarda el objeto que devuelve el buscador (`{ value, label, … }`),
+ * pero el tipo del store declara el `Customer` de la API. Se lee la forma real del
+ * select —sólo lo que se muestra— con un tipo propio, sin tocar el store.
+ */
+type CurrentCustomerView = {
+    value?: number;
+    label?: string;
+    afip_inscription?: { id?: number };
+};
+
+const currentCustomer = computed(() => invoice.value.customer as unknown as CurrentCustomerView | null);
+
+const currentCustomerLabel = computed(() => currentCustomer.value?.label || 'Sin cliente seleccionado');
+
+/** Consumidor Final: el cliente con el que arranca la venta, no uno elegido a mano. */
+const isDefaultCustomer = computed(() => {
+    const customer = currentCustomer.value;
+
+    if (!customer) {
+        return false;
+    }
+
+    return (
+        Number(customer.value) === DEFAULT_CUSTOMER_ID ||
+        Number(customer.afip_inscription?.id) === AFIP_INSCRIPTION.CONSUMIDOR_FINAL
+    );
+});
 
 const onCloseCancel = () => {
     errors.value = {};
     openDrawerDatosCliente.value = false;
+
+    // El punto de venta no es parte de lo que se cancela: sale de la empresa y
+    // `invoiceInitialStatus()` lo deja en null. Sin restaurarlo, cancelar el drawer
+    // dejaba el comprobante sin punto de venta hasta recargar la página.
+    const ptoVta = invoice.value.PtoVta;
+
     invoiceInitialStatus();
+
+    invoice.value.PtoVta = ptoVta;
+
+    returnFocusAfterClose();
 };
 
-const onClose = (e: Event) => {
-    errors.value = {};
-
-    const isValid = validateForm();
-
-    if (isValid) {
-        invoiceConfigIsValidated.value = true;
-        openDrawerDatosCliente.value = false;
-    } else {
-        invoiceConfigIsValidated.value = false;
+/**
+ * `Esc` cierra el drawer.
+ *
+ * Ant lo cierra solo, pero el `Esc` se pierde cuando el foco está adentro de un
+ * desplegable (el select de comprobante/condición lo consume): con el teclado no había
+ * forma de salir del drawer sin tabular hasta "Cancelar". El listener vive en la ventana
+ * mientras el drawer está abierto, así que funciona sin importar dónde esté el foco.
+ *
+ * Va en fase de CAPTURA a propósito: con el foco adentro de un control de Ant (el select
+ * de comprobante, un date picker), ese control corta la propagación del `Esc` y el evento
+ * nunca llega a un listener de burbuja en la ventana.
+ */
+const onWindowKeydown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && openDrawerDatosCliente.value) {
+        event.preventDefault();
+        onCloseCancel();
     }
 };
 
-const showDrawer = () => {
-    openDrawerDatosCliente.value = true;
+watch(openDrawerDatosCliente, (open) => {
+    if (open) {
+        window.addEventListener('keydown', onWindowKeydown, true);
+
+        // Además del `afterVisibleChange` (que llega al terminar la transición): con
+        // esto el campo queda vacío desde el primer frame, aunque la animación no corra.
+        prepareCustomerSearch();
+    } else {
+        window.removeEventListener('keydown', onWindowKeydown, true);
+    }
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', onWindowKeydown, true);
+});
+
+/**
+ * Al cerrar, el foco no puede quedarse adentro del drawer.
+ *
+ * Ant mantiene el contenido montado, así que el foco seguía en un campo invisible: lo
+ * que se tipeaba después caía ahí y el siguiente `Tab` recorría contenido oculto. Vuelve
+ * al disparador (el botón de cliente) o, en el mostrador, al buscador.
+ */
+const returnFocusAfterClose = () => {
+    nextTick(() => {
+        const active = document.activeElement as HTMLElement | null;
+
+        if (!active || !active.closest('.ant-drawer')) {
+            return;
+        }
+
+        const target =
+            (document.querySelector('[data-action="change-customer"]') as HTMLElement | null) ??
+            (document.querySelector('[data-action="open-customer-drawer"]') as HTMLElement | null) ??
+            (document.querySelector('#pos-search-input') as HTMLElement | null);
+
+        if (target) {
+            target.focus();
+        } else {
+            active.blur();
+        }
+    });
+};
+
+/**
+ * Aceptar valida y cierra.
+ *
+ * Antes esto era además el único lugar donde se habilitaba el botón "Facturar"
+ * (`invoiceConfigIsValidated = true`): sin abrir y cerrar el drawer, el botón
+ * quedaba deshabilitado para siempre y sin explicar por qué. La habilitación ahora
+ * se deriva del estado de la venta (`invoiceValidation`).
+ */
+const onClose = (e?: Event) => {
+    e?.preventDefault?.();
+
+    errors.value = {};
+
+    if (validateForm()) {
+        openDrawerDatosCliente.value = false;
+
+        returnFocusAfterClose();
+    }
+};
+
+/**
+ * Deja el buscador listo para buscar y vacío.
+ *
+ * El drawer se abre con un cliente ya elegido en la venta (Consumidor Final), y mostrarlo
+ * dentro del campo de búsqueda daba a entender que se estaba editando ese cliente. Ahora
+ * el campo arranca vacío y con el foco, y el cliente de la venta se lee aparte, arriba.
+ */
+const prepareCustomerSearch = () => {
+    searchCustomerRef.value?.reset?.();
+
+    nextTick(() => {
+        const input = searchCustomerRef.value?.$el?.querySelector('input') as HTMLInputElement | undefined;
+
+        input?.focus();
+    });
 };
 
 const afterVisibleChange = (visible: boolean) => {
     if (visible) {
         const date = dayjs(new Date());
 
-        //invoice.value.date = date;
-
         invoice.value.CbteFch = date.format('YYYYMMDD').toString();
 
-        // Focus the SearchCustomer component
-        nextTick(() => {
-            const searchCustomerInput = searchCustomerRef.value?.$el.querySelector('input');
-            if (searchCustomerInput) {
-                searchCustomerInput.focus();
-            }
-        });
+        prepareCustomerSearch();
     }
-};
-
-const formatDate = (dateObj: any) => {
-    const day = dateObj.$D < 10 ? `0${dateObj.$D}` : `${dateObj.$D}`;
-    const month = dateObj.$M + 1 < 10 ? `0${dateObj.$M + 1}` : `${dateObj.$M + 1}`;
-    const year = dateObj.$y;
-    return `${year}${month}${day}`;
-};
-
-const servDatesMethod = (date: any) => {
-    if (date && date.length >= 2) {
-        // Asumiendo que date[0] es la fecha de inicio y date[1] es la fecha de fin
-        invoice.value.FchServDesde = formatDate(date[0]);
-        invoice.value.FchServHasta = formatDate(date[1]);
-    } else {
-        invoice.value.FchServDesde = '';
-        invoice.value.FchServHasta = '';
-    }
-};
-
-const disabledDate = (current: any) => {
-    // Asumiendo que invoice es accesible en este contexto
-    const concepto = invoice.value.Concepto;
-    let daysRange;
-
-    // Determinar el rango de días basado en el valor de Concepto
-    if (concepto === '1') {
-        daysRange = 5;
-    } else if (concepto === '2' || concepto === '3') {
-        daysRange = 10;
-    } else {
-        // Si Concepto no es '1', '2', o '3', usar un rango por defecto (opcional)
-        daysRange = 0;
-    }
-
-    // Verificar si invoice.value.date es undefined y establecer una fecha base
-    const invoiceDate = invoice.value.date ? new Date(invoice.value.date.$d) : new Date();
-    const baseDate = concepto === '1' ? new Date() : invoiceDate;
-
-    // Calcular las fechas límite
-    const beforeDate = new Date(baseDate);
-    beforeDate.setDate(beforeDate.getDate() - daysRange - 1);
-    let afterDate = new Date(baseDate);
-    afterDate.setDate(afterDate.getDate() + daysRange);
-
-    // Asegurar que la fecha seleccionada no pase al mes siguiente
-    // Obtener el último día del mes actual
-    const lastDayOfCurrentMonth = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0);
-
-    // Si concepto es '1', '2', o '3', ajustar afterDate para que no exceda el mes actual
-    if (['1', '2', '3'].includes(concepto) && afterDate > lastDayOfCurrentMonth) {
-        afterDate = lastDayOfCurrentMonth;
-    }
-
-    // Deshabilitar fechas fuera del rango calculado
-    return current < beforeDate || current > afterDate;
-};
-
-const setLastDayOfMonth = () => {
-    const lastDay = dayjs().endOf('month').format('YYYYMMDD');
-    invoice.value.FchVtoPago = lastDay;
-};
-const servicesDateFchVtoPago = () => {
-    setLastDayOfMonth();
-};
-
-const setInvoiceDate = (date: Dayjs) => {
-    const formattedDate = dayjs(date).format('YYYYMMDD');
-    invoice.value.CbteFch = formattedDate;
 };
 
 watch(
     () => selectedCustomer,
     (newValue) => {
-        invoice.value.customer = newValue.value;
+        invoice.value.customer = (newValue?.value ?? null) as never;
     },
     { deep: true },
 );
 
-watch(
-    () => invoice.value.Concepto,
-    (newValue) => {
-        const d = dayjs();
-
-        if (newValue === '2' || newValue === '3') {
-            const lastMonthStart = d.subtract(1, 'month').startOf('month');
-            const lastMonthEnd = d.subtract(1, 'month').endOf('month');
-            const paymentDueDate = d.add(invoice.value.SaleCondition.days, 'day');
-
-            serviceDate.value[0] = lastMonthStart;
-            serviceDate.value[1] = lastMonthEnd;
-
-            invoice.value.FchServDesde = lastMonthStart.format('YYYYMMDD');
-            invoice.value.FchServHasta = lastMonthEnd.format('YYYYMMDD');
-            invoice.value.FchVtoPago = paymentDueDate.format('YYYYMMDD');
-        } else {
-            invoice.value.FchServDesde = '';
-            invoice.value.FchServHasta = '';
-            invoice.value.FchVtoPago = '';
-        }
-    },
-    { deep: true, immediate: true },
-);
-
-watch(
-    () => invoice.value.SaleCondition,
-    (newValue) => {
-        const sc = saleConditions.value.find((sc) => sc.id === newValue);
-
-        console.log('🚀 ~ newValue:', newValue);
-        if (sc) {
-            const date = dayjs(new Date());
-            invoice.value.FchVtoPago = date.add(sc.days, 'day').format('YYYYMMDD');
-            invoice.value.dateVtoPago = date.add(sc.days, 'day');
-        }
-    },
-    { immediate: true },
-);
-
-onMounted(() => {
-    const date = dayjs();
-
-    if (CompanyGetter.value) {
-        if (invoice && invoice.value) {
-            invoice.value.Concepto = String(CompanyGetter!.value.billing_concept);
-            invoice.value.company_id = CompanyGetter!.value.id;
-            invoice.value.PtoVta = Number(CompanyGetter!.value.pto_vta_fe);
-
-            invoice.value.CbteFch = date.format('YYYYMMDD');
-        }
-    }
-});
-
-const handleChangePaymentType = (value: any) => {
-    console.log('🚀 ~ handleChangePaymentType ~ value:', value);
-    invoice.value.paymentType = value;
-};
-
-const defaultPaymentType = computed({
-    get() {
-        return invoice.value.paymentType;
-    },
-    set(val) {
-        invoice.value.paymentType = val;
-    },
-});
 const createSchema = (invoice: any) => {
     let schema = z.object({
         customer: z.preprocess(
@@ -470,48 +353,46 @@ const validateForm = () => {
             acc[err.path[0]] = err.message;
             return acc;
         }, {} as Record<string, string>);
+
         return false;
     }
+
     errors.value = {};
+
     return true;
 };
-
-/* const isMobile = () => {
-    return window.matchMedia('(max-width: 768px)').matches;
-}; */
 </script>
 <style scoped>
-@media (max-width: 1280px) and (max-height: 768px) {
-    .scale-down {
-        transform: scale(0.95);
-        transform-origin: top left;
-        font-size: small;
-    }
-    .center-buttons {
-        display: flex;
-        justify-content: center;
-        margin: 1rem;
-    }
+/* El drawer se teleporta fuera de la página del mostrador, así que acá no llegan las
+   variables del tema: los valores van escritos, con los mismos tokens. */
+.invoice-current-customer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    align-items: baseline;
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #585858;
+    background: #f8f9fb;
+    border: 1px solid #f1f2f6;
+    border-radius: 4px;
 }
 
-@media (max-width: 1280px) {
-    .scale-down {
-        transform: scale(0.95);
-        transform-origin: top left;
-        font-size: small;
-    }
-    .center-buttons {
-        display: flex;
-        justify-content: center;
-        margin: 1rem;
-    }
+.invoice-current-customer b {
+    font-weight: 600;
+    color: #404040;
+    overflow-wrap: anywhere;
 }
 
-@media (min-width: 769px) and (max-width: 1024px) {
-    .center-buttons {
-        flex: 1 1 50%;
-        font-size: 0.8rem;
-        margin-bottom: 2rem;
-    }
+.invoice-current-customer__note {
+    color: #585858;
+}
+
+.invoice-customer-hint {
+    margin: -12px 0 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #585858;
 }
 </style>

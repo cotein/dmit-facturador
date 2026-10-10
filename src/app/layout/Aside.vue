@@ -162,6 +162,9 @@ onMounted(() => {
             <a-menu-item @click="toggleCollapsed" key="receipts-payments">
                 <router-link :to="{ name: 'PaymentsReceivedList' }"> Pagos recibidos </router-link>
             </a-menu-item>
+            <a-menu-item @click="toggleCollapsed" key="receipts-online">
+                <router-link :to="{ name: 'OnlineChargesList' }"> Cobros online </router-link>
+            </a-menu-item>
             <!--  <a-menu-item @click="toggleCollapsed" key="receipts-list">
                 <router-link :to="{ name: 'ReceiptListPage' }"> Listado </router-link>
             </a-menu-item> -->

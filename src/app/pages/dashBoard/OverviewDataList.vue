@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import OverviewCard from '@/components/cards/OverviewCard.vue';
+import OverviewCard from '@/app/components/cards/OverviewCard.vue';
 //import { OverviewDataStyleWrap } from "../../style";
 //import OverviewData from '@/demoData/overviewCard.json';
 import { useDashBoardComposable } from '@/app/composables/dashboard/useDashBoardComposable';

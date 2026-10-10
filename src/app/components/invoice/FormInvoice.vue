@@ -1,54 +1,106 @@
 <script setup lang="ts">
-import { BillingConcepts } from '@/app/types/Afip';
-import { computed, onUnmounted, watch, onBeforeMount, onMounted } from 'vue';
-import { InvoiceHeader, InvoiceLetterBox } from './Style';
+import { onUnmounted, watch, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
+import dayjs from 'dayjs';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
 import { useDrawerPtoVtaStore } from '@/app/store/panels/useDrawerPtoVtaStore';
 import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
 import { useInvoiceComposable } from '@/app/composables/invoice/useInvoiceComposable';
+import { useMostradorModeComposable } from '@/app/composables/invoice/useMostradorModeComposable';
 import { useSaleConditionComposable } from '@/app/composables/sale-condition/useSaleConditionComposable';
-import { useVoucherComposable } from '@/app/composables/voucher/useVoucherComposable';
 import { usePaymentTypeComposable } from '@/app/composables/payment-type/usePaymentTypeComposable';
+import { resetInlineOptions } from '@/app/composables/invoice/usePosInlineOptions';
+import { usePosSaleComposable } from '@/app/composables/invoice/usePosSaleComposable';
+import { useInvoiceBuilderComposable } from '@/app/composables/invoice/useInvoiceBuilderComposable';
 import DrawerPtoVta from './DrawerPtoVta.vue';
-import AditionalPayment from './AditionalPayment.vue';
 import InvoiceConfig from './InvoiceConfig.vue';
-import moment from 'moment';
-import ProductTable from './ProductTable.vue';
-import Cards from '@/components/cards/frame/CardsFrame.vue';
-import { isMobile } from '@/app/helpers/isMobile';
+import PosLayout from './pos/PosLayout.vue';
+import PosModeSwitch from './PosModeSwitch.vue';
+import PosInvoicePreview from './pos/PosInvoicePreview.vue';
+import PosInvoiceSettings from './pos/PosInvoiceSettings.vue';
+import PosInvoiceActions from './pos/PosInvoiceActions.vue';
+import { PosPage } from '@/app/styles/posStyle';
 
+/**
+ * Pantalla de generación del comprobante de venta.
+ *
+ * Los dos modos comparten la mecánica —buscador inline, ticket con cantidades,
+ * panel de venta con el total siempre visible y el mismo mapa de teclado— y viven
+ * en el mismo layout (`PosLayout`). El modo es una diferencia de densidad:
+ *
+ * - mostrador: la pantalla del salón, la configuración plegada en "Más opciones".
+ * - normal: lo mismo más la vista previa del comprobante, la configuración completa
+ *   a la vista y las acciones sobre el papel (PDF, email, comentarios, MiPyme).
+ *
+ * Antes esto eran dos pantallas distintas: el modo normal tenía modal de búsqueda y
+ * una tabla de ítems con su propia lógica de cantidades, precios y totales. Ahora
+ * hay una sola y no hay dos caminos para la misma venta.
+ */
 const { CompanyGetter } = useCompanyComposable();
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
 const { fetchSaleConditions } = useSaleConditionComposable();
-const { Vouchers } = useVoucherComposable();
-const { invoice, isSale, openSearchProduct } = useInvoiceComposable();
-const { InvoiceGetter } = useInvoiceComposable();
+const { invoice, invoiceValidation, invoiceConfigIsValidated, invoiceInitialStatus, invoiceTableData } =
+    useInvoiceComposable();
+const { invoiceType } = useInvoiceBuilderComposable();
 const { openDrawerPtoVta } = useDrawerPtoVtaStore();
 const { fetchPaymentTypes } = usePaymentTypeComposable();
+const { loadDefaultCustomer, loadVouchers, pickDefaultVoucher } = usePosSaleComposable();
 
-const VoucherDate = computed(() => {
-    if (InvoiceGetter.value.CbteFch != '') {
-        const date = InvoiceGetter.value.CbteFch;
-        const day = String(date).substring(6, 8);
-        const month = String(date).substring(4, 6);
-        const year = String(date).substring(0, 4);
+/**
+ * El modo vive en un composable compartido para que la tecla F12 (`NewInvoice`) y
+ * este layout sepan lo mismo sin leer `localStorage` cada uno por su cuenta.
+ */
+const { mostradorMode } = useMostradorModeComposable();
 
-        return `${day}-${month}-${year}`;
+/**
+ * El botón "Facturar" se habilita con la venta, no con haber abierto y cerrado el
+ * drawer "Datos del cliente". `invoiceConfigIsValidated` se mantiene en espejo
+ * porque otros componentes (`DrawerInvoiceComments`) lo consultan.
+ */
+watch(
+    invoiceValidation,
+    (validation) => {
+        invoiceConfigIsValidated.value = validation.valid;
+    },
+    { immediate: true },
+);
+
+/**
+ * Estado inicial de la venta, en los dos modos: punto de venta, concepto y fecha
+ * del comprobante, la lista de comprobantes que la empresa puede emitir, un tipo de
+ * comprobante elegido —nunca vacío— y Consumidor Final como cliente.
+ *
+ * Con esto una venta se cierra sin abrir y cerrar el drawer de datos del cliente,
+ * que era el paso escondido que trababa el botón "Facturar".
+ */
+const applyCompanyDefaults = async () => {
+    const company = CompanyGetter.value;
+
+    if (!company || invoice.value.PtoVta !== null) {
+        return;
     }
 
-    return '';
-});
+    invoice.value.Concepto = String(company.billing_concept);
+    invoice.value.company_id = company.id;
+    invoice.value.PtoVta = Number(company.pto_vta_fe);
+    invoice.value.CbteFch = dayjs().format('YYYYMMDD');
 
-const VoucherName = computed(() => {
-    if (InvoiceGetter.value.voucher) {
-        const index = Vouchers.value.findIndex((v) => v.id === InvoiceGetter.value.voucher);
+    const vouchers = await loadVouchers(company);
+    const fallback = pickDefaultVoucher(vouchers, Number(company.inscription_id));
 
-        return Vouchers.value[index].name;
+    if (fallback) {
+        invoice.value.voucher = fallback.id;
+        invoiceType.value = fallback.id;
     }
 
-    return '';
-});
+    if (!invoice.value.customer) {
+        const consumer = await loadDefaultCustomer(company.id);
+
+        if (consumer) {
+            invoice.value.customer = consumer as never;
+        }
+    }
+};
 
 watch(
     () => CompanyGetter.value,
@@ -60,166 +112,60 @@ watch(
         ) {
             openDrawerPtoVta();
         }
+
+        applyCompanyDefaults();
     },
     { deep: true, immediate: true },
 );
 
 onBeforeMount(() => {
-    //fetchVouchers(CompanyGetter.value.id);
     fetchPaymentTypes();
     fetchSaleConditions();
 });
 
-onMounted(() => {
-    //invoice.value.CondicionIVAReceptorId = CompanyGetter.value?.inscription_id;
-});
-
 onUnmounted(() => {
+    // El comprobante y el ticket son de esta pantalla: al salir se vacían, para que
+    // la próxima venta no arranque con los ítems de la anterior. Antes lo hacía la
+    // tabla del modo normal en su `onUnmounted`; ahora los dos modos se comportan
+    // igual.
+    invoiceInitialStatus();
+    invoiceTableData.value = [];
+
+    // La condición de venta y el modo de pago escritos a mano eran de esta venta: al
+    // salir no quedan en la lista (el backend todavía no los guarda).
+    resetInlineOptions();
+
     invoice.value.customer = null;
-    customer.value = { value: null, label: '', cuit: '' };
+    customer.value = { value: null, label: '', cuit: null };
 });
 </script>
 
 <template>
-    <div class="scale-down">
+    <div class="scale-down" :class="{ 'mostrador-mode': mostradorMode }">
         <DrawerPtoVta />
-        <a-row :gutter="30" v-if="!isMobile">
-            <a-col :xs="24" :sm="24" :md="8" :lg="8">
-                <div :style="{ margin: '10px 0px' }">CTRL + F11 para abrir datos del cliente</div>
-            </a-col>
-            <a-col :xs="24" :sm="24" :md="8" :lg="8">
-                <div :style="{ margin: '10px 0px' }">CTRL + F10 para ingresar cliente nuevo</div>
-            </a-col>
-            <a-col :xs="24" :sm="24" :md="8" :lg="8">
-                <div :style="{ margin: '10px 0px' }">F12 para buscar productos ó servicios</div>
-            </a-col>
-        </a-row>
-        <Cards>
-            <template #title>
-                <div class="ninjadash-card-title-wrap">
-                    <span class="ninjadash-card-title-text"> Genera comprobante de venta </span>
-                </div>
-            </template>
-            <a-row :gutter="15">
-                <a-col :xs="24" :sm="24">
-                    <sdCards headless>
-                        <InvoiceHeader>
-                            <a-row>
-                                <a-col :xs="24" :sm="24">
-                                    <InvoiceConfig />
-                                </a-col>
-                                <a-col :xs="24" :sm="24">
-                                    <div>
-                                        <address class="invoice-info" v-if="CompanyGetter">
-                                            {{ CompanyGetter.name }}
-                                            {{ CompanyGetter.lastName ? CompanyGetter.lastName : '' }}<br />
-                                            <!-- 795 Folsom Ave, Suite 600 <br />
-										San Francisco, CA 94107, USA <br />
-										Reg. number : 245000003513 -->
-                                        </address>
-                                    </div>
-                                </a-col>
-                            </a-row>
-                        </InvoiceHeader>
-                        <InvoiceLetterBox>
-                            <div class="invoice-letter-inner">
-                                <a-row align="middle">
-                                    <a-col :xs="24" :sm="24">
-                                        <article class="invoice-author">
-                                            <sdHeading class="invoice-customer__title" as="h5">
-                                                {{
-                                                    InvoiceGetter && InvoiceGetter.voucher ? VoucherName : ''
-                                                }}</sdHeading
-                                            >
-                                            <!--  <p>
-                                                {{
-                                                    InvoiceGetter && InvoiceGetter.PtoVta && InvoiceGetter.CbteNro
-                                                        ? String(InvoiceGetter.PtoVta).padStart(4, '0') + '-'
-                                                        : ''
-                                                }}
-                                                {{
-                                                    InvoiceGetter && InvoiceGetter.CbteNro
-                                                        ? String(InvoiceGetter.CbteNro).padStart(8, '0')
-                                                        : ''
-                                                }}
-                                            </p> -->
-                                            <p>
-                                                Fecha factura:
-                                                {{ InvoiceGetter && InvoiceGetter.CbteFch != '' ? VoucherDate : '' }}
-                                            </p>
-                                            <p>
-                                                {{
-                                                    InvoiceGetter && InvoiceGetter.CbteNro && InvoiceGetter.Concepto
-                                                        ? `${String(
-                                                              BillingConcepts[Number(InvoiceGetter.Concepto) - 1].key,
-                                                          )}`
-                                                        : ''
-                                                }}
-                                                {{
-                                                    InvoiceGetter && InvoiceGetter.Concepto != '1'
-                                                        ? ` - Desde: ${moment(
-                                                              InvoiceGetter.FchServDesde,
-                                                              'YYYYMMDD',
-                                                          ).format('DD/MM/YYYY')} Hasta: ${moment(
-                                                              InvoiceGetter.FchServHasta,
-                                                              'YYYYMMDD',
-                                                          ).format('DD/MM/YYYY')}`
-                                                        : ''
-                                                }}
-                                            </p>
-                                        </article>
-                                    </a-col>
-                                    <!-- <a-col :lg="8" :xs="24">
-									<div class="invoice-barcode">
-										<sdCards class="invoice-card" headless>
-											<img
-												style="width: 100%"
-												:src="$environment.VITE_SRC_ASSETS + '/img/barcode.png'"
-												alt="barcode"
-											/>
-											<p>8364297359912267</p>
-										</sdCards>
-									</div>
-								</a-col> -->
-                                    <a-col :xs="24" :sm="24">
-                                        <address class="invoice-customer">
-                                            <sdHeading class="invoice-customer__title" as="h5"> Facturar a: </sdHeading>
-                                            <p v-if="InvoiceGetter && InvoiceGetter.customer">
-                                                {{ InvoiceGetter.customer!.label }} <br />
-                                                <!-- 795 Folsom Ave, Suite 600 <br />
-											San Francisco, CA 94107, USA -->
-                                            </p>
-                                        </address>
-                                    </a-col>
-                                </a-row>
-                            </div>
-                        </InvoiceLetterBox>
 
-                        <br />
-                        <AditionalPayment v-if="InvoiceGetter" />
-                        <br />
-                        <!-- Facturo por productos -->
-                        <a-col :xs="24" :sm="24" v-if="isMobile">
-                            <div :style="{ margin: '10px 0px', textAlign: 'center' }">
-                                <a-button class="orange-button" @click="openSearchProduct = true">
-                                    Buscar producto
-                                    <template #icon>
-                                        <a-icon type="search" />
-                                    </template>
-                                </a-button>
-                            </div>
-                        </a-col>
-                        <ProductTable v-if="isSale" />
-                    </sdCards>
-                </a-col>
-            </a-row>
-        </Cards>
+        <!-- Cambiar de modo está disponible siempre, también desde el celular -->
+        <PosPage class="pos-modebar-host">
+            <PosModeSwitch />
+        </PosPage>
+
+        <!--
+            La disposición es la misma en los dos modos. El mostrador no pide el slot
+            `document`, así que la vista previa, la configuración desplegada y las
+            acciones del comprobante no se montan ahí.
+        -->
+        <PosLayout :variant="mostradorMode ? 'mostrador' : 'normal'">
+            <template #document>
+                <PosInvoicePreview />
+                <PosInvoiceSettings />
+                <PosInvoiceActions />
+            </template>
+        </PosLayout>
+
+        <!-- El drawer de datos del cliente (y la configuración del comprobante) vive en
+             `InvoiceConfig`. En mostrador se monta acá —abajo de la venta, como estaba—
+             y en modo normal lo monta `PosInvoiceSettings`, junto a los campos que
+             explica: nunca hay dos drawers montados a la vez. -->
+        <InvoiceConfig v-if="mostradorMode" />
     </div>
 </template>
-<style scoped>
-.orange-button {
-    background-color: orange;
-    border-color: orange;
-    color: white;
-}
-</style>

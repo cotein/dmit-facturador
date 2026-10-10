@@ -41,7 +41,7 @@
 </template>
 <script setup lang="ts">
 import { onBeforeMount, onMounted, ref, watch } from 'vue';
-import Cards from '../../../components/cards/frame/CardsFrame.vue';
+import Cards from '@/app/components/cards/frame/CardsFrame.vue';
 import dayjs, { Dayjs } from 'dayjs';
 import { getInvoiceList } from '@/api/invoice/invoice-api';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';

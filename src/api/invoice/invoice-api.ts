@@ -72,7 +72,7 @@ export const getInvoiceList = async (
         return response;
     } catch (error) {
         console.log('🚀 ~ error:', error);
-        throw new Error();
+        throw error;
     }
 };
 
@@ -109,14 +109,14 @@ export const getInvoiceComments = async (
         return response;
     } catch (error) {
         console.log('🚀 ~ error:', error);
-        throw new Error();
+        throw error;
     }
 };
 
 export const getLastMonthInvoiced = async (
     company_id: number,
     getLastMonthInvoiced: string = 'getLastMonthInvoiced',
-): Promise<Invoiced> => {
+): Promise<AxiosResponse<Invoiced>> => {
     try {
         const params: URLSearchParams = new URLSearchParams();
 
@@ -136,17 +136,17 @@ export const getLastMonthInvoiced = async (
 
         const response = await ApiHttp.get<Invoiced>(URL, { params });
 
-        return response.data;
+        return response;
     } catch (error) {
         console.log('🚀 ~ error:', error);
-        throw new Error();
+        throw error;
     }
 };
 
 export const getDailySalesReport = async (
     company_id: number,
     getDailySalesReport: string = 'getDailySalesReport',
-): Promise<SalesReportType> => {
+): Promise<AxiosResponse<SalesReportType>> => {
     try {
         const params: URLSearchParams = new URLSearchParams();
 
@@ -156,9 +156,9 @@ export const getDailySalesReport = async (
 
         const response = await ApiHttp.get<SalesReportType>(URL, { params });
 
-        return response.data;
+        return response;
     } catch (error) {
         console.log('🚀 ~ error:', error);
-        throw new Error();
+        throw error;
     }
 };

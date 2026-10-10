@@ -1,10 +1,7 @@
 <template>
-    <div>
-        <sdPageHeader title="Ingresar Categoría" class="ninjadash-page-header-main"> </sdPageHeader>
-        <Main>
-            <AddFatherCategory />
-        </Main>
-    </div>
+    <Main>
+        <AddFatherCategory />
+    </Main>
 </template>
 
 <script setup lang="ts">

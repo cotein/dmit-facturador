@@ -13,11 +13,11 @@ export const useInvoiceChartComposable = () => {
     const to: Dayjs = dayjs();
     const from: string = to.subtract(1, 'year').format('YYYY-MM-DD');
 
-    const { isLoading, isError, error, data } = useQuery(
-        ['sale-invoice-chart-cache'],
-        async () =>
-            await getInvoiceList(CompanyGetter.value!.id, null, null, from, to.format('YYYY-MM-DD'), null, null, null),
-    );
+    const { isLoading, isError, error, data } = useQuery(['sale-invoice-chart-cache'], async () => {
+        const companyId = CompanyGetter.value?.id;
+        if (!companyId) return;
+        return await getInvoiceList(companyId, null, null, from, to.format('YYYY-MM-DD'), null, null, null);
+    });
 
     watch(data, (obtainedInvoices) => {
         if (obtainedInvoices) {

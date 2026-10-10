@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
-import DashboardChart from '@/components/utilities/Chartjs.vue';
-import { customTooltips } from '@/components/utilities/utilities';
+import DashboardChart from '@/app/components/charts/Chartjs.vue';
+import { customTooltips } from '@/app/components/charts/utilities';
 import { BorderLessHeading } from '../../styled';
 import { CardBarChart, ChartContainer, UserOverviewStyle } from './style';
 

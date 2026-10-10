@@ -4,7 +4,7 @@
         :value="invoiceTableData[props.index].unit"
         class="custom-input"
         @keypress="onlyNumeric"
-        inputmode="numeric"
+        inputmode="decimal"
         @focus="selectText"
     />
 </template>
@@ -28,7 +28,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 const input = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    invoiceTableData.value[props.index].unit = parseFloat(target.value);
+    const value = Number(target.value.replace(',', '.'));
+    const line = invoiceTableData.value[props.index];
+
+    // Campo vacío o inválido → `parseFloat` devolvía NaN y el total del comprobante
+    // quedaba roto. Se restaura el último precio válido en el input.
+    if (!Number.isFinite(value) || value < 0) {
+        target.value = String(line.unit);
+
+        return;
+    }
+
+    line.unit = value;
 };
 </script>
 
@@ -58,8 +69,10 @@ div {
 }
 
 .custom-input:focus {
-    outline: none;
-    border: 1px solid #a2d2df;
-    box-shadow: inset 0 0 0 1px #007c89;
+    /* Foco visible con el primario del sistema. Antes era `outline: none` con un
+       borde y un inset teal ajenos al tema. */
+    outline: 2px solid #8231d3;
+    outline-offset: 1px;
+    border: 1px solid #8231d3;
 }
 </style>

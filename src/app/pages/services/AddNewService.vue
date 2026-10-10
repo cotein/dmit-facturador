@@ -17,6 +17,6 @@
 
 <script setup lang="ts">
 import { Main } from '@/app/styled';
-import { FormComponentsWrap } from '@/views/forms/overview/Style';
+import { FormComponentsWrap } from '@/app/styles/formsStyle';
 import AddService from '@/app/components/service/AddService.vue';
 </script>

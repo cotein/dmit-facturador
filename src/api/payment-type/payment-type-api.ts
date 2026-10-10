@@ -14,6 +14,7 @@ export const getPaymentTypes = async (company_id: number): Promise<AxiosResponse
 
         return data;
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };

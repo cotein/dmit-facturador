@@ -50,6 +50,12 @@ const routes: Array<RouteRecordRaw> = [
         ],
     },
     {
+        // Edición del producto: misma pantalla que el alta, precargada.
+        name: 'EditProduct',
+        path: 'productos/editar/:id',
+        component: () => import('@/app/pages/products/AddNewProduct.vue'),
+    },
+    {
         name: 'NewReceiptPage',
         path: 'cancelar/facturas',
         component: () => import('@/app/pages/receipts/NewReceiptPage.vue'),
@@ -64,6 +70,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'PaymentsReceivedList',
         path: 'pagos/recibidos',
         component: () => import('@/app/pages/receipts/PaymentsReceivedList.vue'),
+    },
+    {
+        // Cobros online con Mercado Pago: link compartible para que pague el cliente.
+        name: 'OnlineChargesList',
+        path: 'cobros/online',
+        component: () => import('@/app/pages/mercadoPago/OnlineChargesList.vue'),
     },
     /* {
         name: 'AddService',

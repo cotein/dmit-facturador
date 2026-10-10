@@ -16,7 +16,7 @@ import { useCompanyComposable } from '@/app/composables/company/useCompanyCompos
 
 const { setCompanyToWork } = useCompanyComposable();
 
-const { setUser, setLogin, setUserToken, setAvatar } = useUserStore();
+const { setUser, setLogin, setUserToken, setAvatar, clearSession } = useUserStore();
 
 const router = useRouter();
 /** Properties */
@@ -108,6 +108,8 @@ const callback: CallbackTypes.CredentialCallback = async (response) => {
         showMessage('success', 'Bienvenido', 2);
         router.push({ name: 'Dashboard' });
     } else {
+        // Sin esto queda guardada la sesión de un usuario que no puede operar.
+        clearSession();
         showMessage('error', 'Usuario no activo', 2);
         router.push({ name: 'Home' });
     }

@@ -69,7 +69,7 @@ export class AfipNotaCreditoCBuiler extends AfipInvoiceBaseBuilder {
         delete this.FECAEDetRequest.Actividades;
     }
 
-    setImpTrib(invoiceTableData: ProductOnInvoiceTable[] | ProductForNotaCredito[]): void {
+    setImpTrib(impTrib: number): void {
         this.FECAEDetRequest.ImpTrib = 0;
     }
     /* setFchVtoPago(CbteFch: number, days: number): void {

@@ -19,10 +19,12 @@ export const useInvoiceListComposable = () => {
     const { isLoading, data } = useQuery(
         ['invoice-list', currentPage, itemsPerPage, customer, status_id, from, to],
         async () => {
+            const companyId = CompanyGetter.value?.id;
+            if (!companyId) return;
             return await getInvoiceList(
-                CompanyGetter.value!.id!,
-                customer.value?.value!,
-                status_id.value!,
+                companyId,
+                customer.value?.value ?? null,
+                status_id.value ?? null,
                 from.value,
                 to.value,
                 currentPage.value,

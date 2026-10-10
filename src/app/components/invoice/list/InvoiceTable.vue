@@ -10,11 +10,7 @@
                     </div>
                 </template>
                 <TopToolBox>
-                    <a-row
-                        :gutter="15"
-                        class="justify-content-center responsive-row"
-                        v-if="props.viewSearch"
-                    >
+                    <a-row :gutter="15" class="justify-content-center responsive-row" v-if="props.viewSearch">
                         <a-col :xxl="6" :lg="6" :xs="24" v-if="props.isSale">
                             <span>Buscar cliente:</span>
                             <SearchCustomer :multiple="false" :context="'invoice'" />
@@ -27,9 +23,7 @@
                                     v-model:value="sortDefault"
                                     class="small-text"
                                 >
-                                    <a-radio-button
-                                        :class="stateValue === '' && 'active'"
-                                        value="all"
+                                    <a-radio-button :class="stateValue === '' && 'active'" value="all"
                                         >Todas</a-radio-button
                                     >
                                     <a-radio-button
@@ -64,9 +58,7 @@
                 </TopToolBox>
                 <TableDefaultStyle class="ninjadash-having-header-bg">
                     <TopSellerWrap>
-                        <div
-                            class="table-bordered top-seller-table table-responsive responsive-table"
-                        >
+                        <div class="table-bordered top-seller-table table-responsive responsive-table">
                             <a-table
                                 :columns="invoiceTableColumns"
                                 :dataSource="props.list"
@@ -76,11 +68,7 @@
                                 :showSorterTooltip="{ title: 'Clic para ordenar' }"
                             >
                                 <template #headerCell="{ title }">
-                                    <div
-                                        :class="
-                                            isMobile ? 'normal-screen' : 'mobile-screen'
-                                        "
-                                    >
+                                    <div :class="isMobile ? 'normal-screen' : 'mobile-screen'">
                                         {{ title }}
                                     </div>
                                 </template>
@@ -90,20 +78,13 @@
                                         <RowNumber :index="index" />
                                     </template>
                                     <template v-if="column.key === 'customer'">
-                                        <InvoiceCustomer
-                                            :record="record"
-                                            :index="index"
-                                        />
+                                        <InvoiceCustomer :record="record" :index="index" />
                                     </template>
                                     <template v-if="column.key === 'number'">
                                         <InvoiceNumber :record="record" :index="index" />
                                     </template>
                                     <template v-if="column.key === 'date'">
-                                        <InvoiceDate
-                                            :record="record"
-                                            :index="index"
-                                            :date="record.voucher.cbte_fch"
-                                        />
+                                        <InvoiceDate :record="record" :index="index" :date="record.voucher.cbte_fch" />
                                     </template>
                                     <template v-if="column.key === 'sale_condition'">
                                         <ShowSomeStringData
@@ -124,12 +105,7 @@
                                     <template v-if="column.key === 'status'">
                                         <InvoiceStatus :record="record" :index="index" />
                                     </template>
-                                    <template
-                                        v-if="
-                                            column.key === 'actions' &&
-                                            props.viewButtonsColumn
-                                        "
-                                    >
+                                    <template v-if="column.key === 'actions' && props.viewButtonsColumn">
                                         <InvoiceActions :record="record" :index="index" />
                                     </template>
                                 </template>
@@ -165,45 +141,43 @@
 </template>
 
 <script setup lang="ts">
-import { BorderLessHeading, TableDefaultStyle } from "../../../styled";
-import { ExcelService } from "@/app/excel/ExcelService";
-import { getInvoiceList } from "@/api/invoice/invoice-api";
-import { ref } from "vue";
-import { storeToRefs } from "pinia";
-import { TopSellerWrap } from "../../../../views/dashboard/style";
-import { TopToolBox } from "../Style";
-import { useCompanyComposable } from "@/app/composables/company/useCompanyComposable";
-import { useFilterSearchByBetweenDaysStore } from "@/app/store/filter-search/useFilterSearchByBetweenDaysStore";
-import { useFilterSearchByCustomerStore } from "@/app/store/filter-search/useFilterSearchByCustomerStore";
-import { useInvoiceListStore } from "@/app/store/invoice/useInvoiceListStore";
-import { useInvoiceNotaCreditoComposable } from "@/app/composables/invoice/useInvoiceNotaCreditoComposable";
-import BetweenDaysRangePicker from "../../shared/BetweenDaysRangePicker.vue";
-import Cards from "../../../components/cards/frame/CardsFrame.vue";
-import dayjs from "dayjs";
-import DrawerNotaCredito from "@/app/components/invoice/notaCredito/DrawerNotaCredito.vue";
-import Html2CanvasPdf from "@/app/pdf/Html2CanvasPdf.vue";
-import InvoiceActions from "./Row/InvoiceActions.vue";
-import InvoiceCustomer from "./Row/InvoiceCustomer.vue";
-import InvoiceDate from "./Row/InvoiceDate.vue";
-import InvoiceImport from "./Row/InvoiceImport.vue";
-import InvoiceNumber from "./Row/InvoiceNumber.vue";
-import InvoiceStatus from "./Row/InvoiceStatus.vue";
-import RowNumber from "../../shared/RowNumber.vue";
-import SearchCustomer from "../../customer/SearchCustomer.vue";
-import ShowSomeStringData from "../../shared/ShowSomeStringData.vue";
-import type { InvoiceList } from "@/app/types/Invoice";
-import { ColumnProps } from "ant-design-vue/lib/table";
-import DrawerSendEmail from "@/app/componentsBase/email/DrawerSendEmail.vue";
-import { isMobile } from "@/app/helpers/isMobile";
-import { showMessage } from "@/app/helpers/mesaages";
+import { BorderLessHeading, TableDefaultStyle } from '../../../styled';
+import { ExcelService } from '@/app/excel/ExcelService';
+import { getInvoiceList } from '@/api/invoice/invoice-api';
+import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { TopSellerWrap } from '@/app/pages/dashBoard/style';
+import { TopToolBox } from '../Style';
+import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
+import { useFilterSearchByBetweenDaysStore } from '@/app/store/filter-search/useFilterSearchByBetweenDaysStore';
+import { useFilterSearchByCustomerStore } from '@/app/store/filter-search/useFilterSearchByCustomerStore';
+import { useInvoiceListStore } from '@/app/store/invoice/useInvoiceListStore';
+import { useInvoiceNotaCreditoComposable } from '@/app/composables/invoice/useInvoiceNotaCreditoComposable';
+import BetweenDaysRangePicker from '../../shared/BetweenDaysRangePicker.vue';
+import Cards from '@/app/components/cards/frame/CardsFrame.vue';
+import dayjs from 'dayjs';
+import DrawerNotaCredito from '@/app/components/invoice/notaCredito/DrawerNotaCredito.vue';
+import Html2CanvasPdf from '@/app/pdf/Html2CanvasPdf.vue';
+import InvoiceActions from './Row/InvoiceActions.vue';
+import InvoiceCustomer from './Row/InvoiceCustomer.vue';
+import InvoiceDate from './Row/InvoiceDate.vue';
+import InvoiceImport from './Row/InvoiceImport.vue';
+import InvoiceNumber from './Row/InvoiceNumber.vue';
+import InvoiceStatus from './Row/InvoiceStatus.vue';
+import RowNumber from '../../shared/RowNumber.vue';
+import SearchCustomer from '../../customer/SearchCustomer.vue';
+import ShowSomeStringData from '../../shared/ShowSomeStringData.vue';
+import type { InvoiceList } from '@/app/types/Invoice';
+import { ColumnProps } from 'ant-design-vue/lib/table';
+import DrawerSendEmail from '@/app/componentsBase/email/DrawerSendEmail.vue';
+import { isMobile } from '@/app/helpers/isMobile';
+import { showMessage } from '@/app/helpers/mesaages';
 
 const { invoiceForNotaCredito } = useInvoiceNotaCreditoComposable();
 const { CompanyGetter } = useCompanyComposable();
 const { from, to } = storeToRefs(useFilterSearchByBetweenDaysStore());
 const { customer } = storeToRefs(useFilterSearchByCustomerStore());
-const { currentPage, itemsPerPage, totalPages, status_id, totalItems } = storeToRefs(
-    useInvoiceListStore()
-);
+const { currentPage, itemsPerPage, totalPages, status_id, totalItems } = storeToRefs(useInvoiceListStore());
 
 type Props = {
     list: InvoiceList;
@@ -227,16 +201,16 @@ type InvoiceTableColumn = {
     key: string;
     sorter?: any;
 };
-const pageSizeOptions = ref<string[]>(["10", "20", "30", "40", "50", "100"]);
-const filterKey = ref(["Adeudada", "Parcialmente Cancelada", "Cancelada"]);
-const stateValue = ref("");
+const pageSizeOptions = ref<string[]>(['10', '20', '30', '40', '50', '100']);
+const filterKey = ref(['Adeudada', 'Parcialmente Cancelada', 'Cancelada']);
+const stateValue = ref('');
 const sortDefault = ref();
 const printSpinner = ref<boolean>(false);
 const dataExcel = ref([]);
 const selectedCustomerId = ref<any>(null);
 
 const print = async () => {
-    const print = "yes";
+    const print = 'yes';
 
     const resp = await getInvoiceList(
         CompanyGetter!.value!.id ?? 0,
@@ -246,29 +220,29 @@ const print = async () => {
         to.value,
         currentPage.value,
         itemsPerPage.value,
-        print
+        print,
     );
 
     if (resp.data.length === 0) {
-        showMessage("info", "No hay datos para exportar", 4);
+        showMessage('info', 'No hay datos para exportar', 4);
         return;
     }
 
     const excel = new ExcelService();
 
-    excel.download(resp.data, "Listado Ventas");
+    excel.download(resp.data, 'Listado Ventas');
 };
 
 const invoiceTableColumns: ColumnProps<InvoiceTableColumn>[] = [
     {
-        title: "#",
-        dataIndex: "row",
-        key: "row",
+        title: '#',
+        dataIndex: 'row',
+        key: 'row',
     },
     {
-        title: "Cliente",
-        dataIndex: "customer",
-        key: "customer",
+        title: 'Cliente',
+        dataIndex: 'customer',
+        key: 'customer',
         sorter: {
             compare: (a: InvoiceList, b: InvoiceList) => {
                 const nameA = `${a.customer.name} ${a.customer.last_name}`;
@@ -287,21 +261,16 @@ const invoiceTableColumns: ColumnProps<InvoiceTableColumn>[] = [
             },
             multiple: 1,
         },
-        width: "17%",
-        align: "left",
+        width: '17%',
+        align: 'left',
     },
     {
-        title: "Fecha",
-        dataIndex: "date",
-        key: "date",
+        title: 'Fecha',
+        dataIndex: 'date',
+        key: 'date',
         sorter: {
             compare: (a: InvoiceList, b: InvoiceList) => {
-                if (
-                    !a.voucher ||
-                    !a.voucher.cbte_fch ||
-                    !b.voucher ||
-                    !b.voucher.cbte_fch
-                ) {
+                if (!a.voucher || !a.voucher.cbte_fch || !b.voucher || !b.voucher.cbte_fch) {
                     return 1;
                 }
                 const dayA = dayjs(a.voucher.cbte_fch);
@@ -316,28 +285,23 @@ const invoiceTableColumns: ColumnProps<InvoiceTableColumn>[] = [
             },
             multiple: 3,
         },
-        width: "9%",
-        align: "center",
+        width: '9%',
+        align: 'center',
     },
     {
-        title: "Número",
-        dataIndex: "number",
-        key: "number",
-        width: "16%",
-        align: "center",
+        title: 'Número',
+        dataIndex: 'number',
+        key: 'number',
+        width: '16%',
+        align: 'center',
     },
     {
-        title: "Importe",
-        dataIndex: "value",
-        key: "value",
+        title: 'Importe',
+        dataIndex: 'value',
+        key: 'value',
         sorter: {
             compare: (a: InvoiceList, b: InvoiceList) => {
-                if (
-                    !a.voucher ||
-                    !a.voucher.cbte_fch ||
-                    !b.voucher ||
-                    !b.voucher.cbte_fch
-                ) {
+                if (!a.voucher || !a.voucher.cbte_fch || !b.voucher || !b.voucher.cbte_fch) {
                     return 1;
                 }
                 if (a.voucher.total < b.voucher.total) {
@@ -352,36 +316,36 @@ const invoiceTableColumns: ColumnProps<InvoiceTableColumn>[] = [
             },
             multiple: 2,
         },
-        width: "16%",
-        align: "right",
+        width: '16%',
+        align: 'right',
     },
     {
-        title: "Vto. Pago",
-        dataIndex: "vto_pago",
-        key: "vto_pago",
-        width: "10%",
-        align: "center",
+        title: 'Vto. Pago',
+        dataIndex: 'vto_pago',
+        key: 'vto_pago',
+        width: '10%',
+        align: 'center',
     },
     {
-        title: "Cond. de venta",
-        dataIndex: "sale_condition",
-        key: "sale_condition",
+        title: 'Cond. de venta',
+        dataIndex: 'sale_condition',
+        key: 'sale_condition',
     },
     {
-        title: "Estado",
-        dataIndex: "status",
-        key: "status",
-        width: "10%",
+        title: 'Estado',
+        dataIndex: 'status',
+        key: 'status',
+        width: '10%',
     },
 ];
 
 if (props.isSale) {
     invoiceTableColumns.push({
-        title: "Acción",
-        dataIndex: "actions",
-        key: "actions",
-        width: "3%",
-        align: "center",
+        title: 'Acción',
+        dataIndex: 'actions',
+        key: 'actions',
+        width: '3%',
+        align: 'center',
     });
 }
 
@@ -393,7 +357,7 @@ const showTotal = (totalPages: number, range: [number, number]) => {
 
     // Comprobar si los datos son números válidos
     if (isNaN(totalPages) || newRange.some(isNaN)) {
-        return "Cargando...";
+        return 'Cargando...';
     }
     return `${newRange[0]}-${newRange[1]} de ${totalPages} comprobantes`;
 };
@@ -411,10 +375,10 @@ const handleChangeForFilter = (e: any): void => {
     stateValue.value = e.target.value;
 
     const statusesArray = [
-        { name: "all", value: null },
-        { name: "Adeudada", value: 1 },
-        { name: "Parcialmente Cancelada", value: 2 },
-        { name: "Cancelada", value: 3 },
+        { name: 'all', value: null },
+        { name: 'Adeudada', value: 1 },
+        { name: 'Parcialmente Cancelada', value: 2 },
+        { name: 'Cancelada', value: 3 },
     ];
 
     const index = statusesArray.findIndex((row) => row.name === e.target.value);

@@ -58,10 +58,10 @@ onMounted(() => {
 <style lang="css">
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 1;
+    transition: opacity 1s;
 }
 .fade-enter,
 .fade-leave-to {
-    transition: opacity 0;
+    opacity: 0;
 }
 </style>

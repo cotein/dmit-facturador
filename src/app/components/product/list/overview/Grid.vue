@@ -1,86 +1,128 @@
 <script setup lang="ts">
-import { ref, defineAsyncComponent } from 'vue';
-import { PaginationWrapper, NotFoundWrapper } from '../../Style';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { PaginationWrapper } from '../../Style';
 import { useProductComposable } from '@/app/composables/product/useProductComposable';
 import { usePaginationComposable } from '@/app/composables/pagination/usePaginationComposable';
+import { useCategoryComposable } from '@/app/composables/category/useCategoryComposable';
+import { collectCategoryIds, filterProducts, useProductFilters } from './useProductFilters';
+import ProductCards from './ProductCards.vue';
 
-const { currentPage, itemsPerPage, totalItems } = usePaginationComposable();
-
-const ProductCards = defineAsyncComponent(() => import('./ProductCards.vue'));
+const router = useRouter();
 
 const { products, productsListSpinner } = useProductComposable();
+const { currentPage, itemsPerPage, totalItems } = usePaginationComposable();
+const { CategoriesGetter } = useCategoryComposable();
+const { search, categoryId } = useProductFilters();
+
+const categoryIds = computed(() =>
+    categoryId.value === undefined ? undefined : collectCategoryIds(CategoriesGetter.value, categoryId.value),
+);
+
+const filtered = computed(() => filterProducts(products.value, search.value, categoryIds.value));
+
+const hasActiveFilters = computed(() => search.value.trim() !== '' || categoryId.value !== undefined);
+
+const pageSizeOptions = ['10', '20', '30', '40', '50', '100'];
 
 const onShowSizeChange = (newCurrent: number, newPageSize: number) => {
     currentPage.value = newCurrent;
     itemsPerPage.value = newPageSize;
 };
 
-const pageSizeOptions = ref<string[]>(['1', '2', '10', '20', '30', '40', '50', '100']);
-
 const onHandleChange = (newCurrent: number, newPageSize: number) => {
     currentPage.value = newCurrent;
     itemsPerPage.value = newPageSize;
 };
+
+const clearFilters = () => {
+    search.value = '';
+    categoryId.value = undefined;
+};
 </script>
 
 <template>
-    <a-row :gutter="30">
-        <a-col v-if="productsListSpinner" :xs="24">
-            <div class="spin">
-                <a-spin />
+    <div>
+        <div v-if="productsListSpinner" class="product-grid-skeleton">
+            <div v-for="index in 6" :key="index" class="product-grid-skeleton__item">
+                <a-skeleton :paragraph="{ rows: 3 }" active />
             </div>
-        </a-col>
-        <template v-else-if="products.length">
-            <a-col
-                v-for="(product, index) in products"
-                :xxl="6"
-                :lg="12"
-                :xs="24"
-                :key="index"
-                style="min-height: 331px"
-            >
-                <Suspense>
-                    <template #default>
-                        <ProductCards :product_data="product" />
-                    </template>
-                    <template #fallback>
-                        <sdCards headless>
-                            <a-skeleton :paragraph="{ rows: 22 }" active />
-                        </sdCards>
-                    </template>
-                </Suspense>
-            </a-col>
+        </div>
+
+        <template v-else-if="filtered.length">
+            <p class="results-count">
+                <span class="num">{{ filtered.length }}</span>
+                {{ filtered.length === 1 ? 'producto' : 'productos' }}
+                <template v-if="hasActiveFilters">de {{ totalItems }}</template>
+            </p>
+            <a-row :gutter="[24, 24]">
+                <a-col v-for="product in filtered" :key="product.id" :xxl="6" :lg="12" :xs="24">
+                    <ProductCards :product_data="product" />
+                </a-col>
+            </a-row>
         </template>
 
-        <a-col v-else :md="24">
-            <NotFoundWrapper>
-                <sdHeading as="h1">Datos no encontrados</sdHeading>
-            </NotFoundWrapper>
-        </a-col>
+        <div v-else-if="totalItems === 0" class="state-box">
+            <p class="state-box__title">Todavía no cargaste productos</p>
+            <p class="state-box__text">
+                Cargá el primer producto para poder facturarlo: con el costo y una lista de precios ya queda listo.
+            </p>
+            <div class="state-box__actions">
+                <a-button type="primary" data-action="load-first" @click="router.push({ name: 'AddProduct' })">
+                    Cargar el primero
+                </a-button>
+            </div>
+        </div>
 
-        <a-col :xs="24" class="pb-30" style="display: flex; justify-content: center">
-            <PaginationWrapper v-if="products.length">
-                <a-pagination
-                    :style="{ marginTop: 31 }"
-                    :change="onHandleChange"
-                    showSizeChanger
-                    @showSizeChange="onShowSizeChange"
-                    v-model:current="currentPage"
-                    v-model:pageSize="itemsPerPage"
-                    :defaultCurrent="1"
-                    :total="totalItems"
-                    :page-size-options="pageSizeOptions"
-                >
-                    <template #buildOptionText="props">
-                        <span>{{ props.value }} productos</span>
-                    </template>
-                    <template #itemRender="{ type, originalElement }">
-                        <a v-if="type === 'prev'">Ant.</a>
-                        <a v-else-if="type === 'next'">Sig.</a>
-                        <component :is="originalElement" v-else></component>
-                    </template>
-                </a-pagination>
-            </PaginationWrapper>
-        </a-col>
-    </a-row>
+        <div v-else class="state-box">
+            <p class="state-box__title">
+                <template v-if="search.trim()">No hay productos para “{{ search.trim() }}”</template>
+                <template v-else>No hay productos en esa categoría</template>
+            </p>
+            <p class="state-box__text">
+                Probá con otro término (podés buscar por nombre o por código) o quitá los filtros para ver todo el
+                catálogo.
+            </p>
+            <div class="state-box__actions">
+                <a-button data-action="clear-filters-empty" @click="clearFilters">Limpiar filtros</a-button>
+            </div>
+        </div>
+
+        <PaginationWrapper v-if="filtered.length && totalItems > 0">
+            <a-pagination
+                style="margin-top: 31px"
+                show-size-changer
+                :current="currentPage"
+                :page-size="itemsPerPage"
+                :total="totalItems"
+                :page-size-options="pageSizeOptions"
+                @showSizeChange="onShowSizeChange"
+                @change="onHandleChange"
+            >
+                <template #buildOptionText="option">
+                    <span>{{ option.value }} productos</span>
+                </template>
+                <template #itemRender="{ type, originalElement }">
+                    <a v-if="type === 'prev'">Ant.</a>
+                    <a v-else-if="type === 'next'">Sig.</a>
+                    <component :is="originalElement" v-else></component>
+                </template>
+            </a-pagination>
+        </PaginationWrapper>
+    </div>
 </template>
+
+<style scoped>
+.product-grid-skeleton {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.product-grid-skeleton__item {
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #e3e6ef;
+    border-radius: 4px;
+}
+</style>

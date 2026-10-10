@@ -3,122 +3,79 @@
         <div>
             <sdPageHeader title="Dashboard" class="ninjadash-page-header-main" :routes="pageRoutes"></sdPageHeader>
             <Main>
-                <a-row :gutter="25">
-                    <a-col :xxl="12" :lg="12" :md="12" :sm="12" :xs="24">
-                        <a-row :gutter="25">
-                            <a-col :lg="12" :md="12" :sm="12" :xs="24">
-                                <Suspense>
-                                    <template #default>
-                                        <OverviewCard :ocData="OverviewDataLastMonthInvoiced" />
-                                    </template>
-                                    <template #fallback>
-                                        <sdCards headless>
-                                            <a-skeleton active />
-                                        </sdCards>
-                                    </template>
-                                </Suspense>
-                            </a-col>
-                            <a-col :lg="12" :md="12" :sm="12" :xs="24">
-                                <Suspense>
-                                    <template #default>
-                                        <OverviewCard :ocData="OverviewDataThisMonthInvoiced" />
-                                    </template>
-                                    <template #fallback>
-                                        <sdCards headless>
-                                            <a-skeleton active />
-                                        </sdCards>
-                                    </template>
-                                </Suspense>
-                            </a-col>
-                            <a-col :lg="12" :md="12" :sm="12" :xs="24">
-                                <Suspense>
-                                    <template #default>
-                                        <OverviewCard :ocData="OverviewDataTotalCustomers" :bottomStatus="false" />
-                                    </template>
-                                    <template #fallback>
-                                        <sdCards headless>
-                                            <a-skeleton active />
-                                        </sdCards>
-                                    </template>
-                                </Suspense>
-                            </a-col>
+                <div class="dash-wrap">
+                    <!-- KPIs: una sola fila en pantallas anchas -->
+                    <a-row :gutter="[24, 24]">
+                        <a-col class="dash-kpi" :xxl="6" :xl="6" :lg="12" :md="12" :sm="12" :xs="24">
+                            <Suspense>
+                                <template #default>
+                                    <OverviewCard :ocData="OverviewDataLastMonthInvoiced" separator="." decimalSeparator="," />
+                                </template>
+                                <template #fallback>
+                                    <sdCards headless>
+                                        <a-skeleton active />
+                                    </sdCards>
+                                </template>
+                            </Suspense>
+                        </a-col>
+                        <a-col class="dash-kpi" :xxl="6" :xl="6" :lg="12" :md="12" :sm="12" :xs="24">
+                            <Suspense>
+                                <template #default>
+                                    <OverviewCard :ocData="OverviewDataThisMonthInvoiced" separator="." decimalSeparator="," />
+                                </template>
+                                <template #fallback>
+                                    <sdCards headless>
+                                        <a-skeleton active />
+                                    </sdCards>
+                                </template>
+                            </Suspense>
+                        </a-col>
+                        <a-col class="dash-kpi" :xxl="6" :xl="6" :lg="12" :md="12" :sm="12" :xs="24">
+                            <Suspense>
+                                <template #default>
+                                    <OverviewCard :ocData="OverviewDataTotalCustomers" :bottomStatus="false" separator="." decimalSeparator="," />
+                                </template>
+                                <template #fallback>
+                                    <sdCards headless>
+                                        <a-skeleton active />
+                                    </sdCards>
+                                </template>
+                            </Suspense>
+                        </a-col>
+                        <a-col class="dash-kpi" :xxl="6" :xl="6" :lg="12" :md="12" :sm="12" :xs="24">
+                            <Suspense>
+                                <template #default>
+                                    <OverviewCard :ocData="OverviewDataTotalProducts" :bottomStatus="false" separator="." decimalSeparator="," />
+                                </template>
+                                <template #fallback>
+                                    <sdCards headless>
+                                        <a-skeleton active />
+                                    </sdCards>
+                                </template>
+                            </Suspense>
+                        </a-col>
+                    </a-row>
 
-                            <a-col :lg="12" :md="12" :sm="12" :xs="24">
-                                <Suspense>
-                                    <template #default>
-                                        <OverviewCard :ocData="OverviewDataTotalProducts" :bottomStatus="false" />
-                                    </template>
-                                    <template #fallback>
-                                        <sdCards headless>
-                                            <a-skeleton active />
-                                        </sdCards>
-                                    </template>
-                                </Suspense>
-                            </a-col>
-                        </a-row>
-                    </a-col>
+                    <!-- Ventas diarias + Cobros online: llenan el ancho y la mitad inferior -->
+                    <a-row :gutter="[24, 24]" class="dash-charts">
+                        <a-col :xxl="16" :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
+                            <Suspense>
+                                <template #default v-if="salesReportData">
+                                    <SalesReport :salesReportData="salesReportData" />
+                                </template>
+                                <template #fallback>
+                                    <sdCards headless>
+                                        <a-skeleton active />
+                                    </sdCards>
+                                </template>
+                            </Suspense>
+                        </a-col>
 
-                    <a-col :xxl="12" :xl="12" :xs="24">
-                        <Suspense>
-                            <template #default v-if="salesReportData">
-                                <SalesReport :salesReportData="salesReportData" />
-                            </template>
-                            <template #fallback>
-                                <sdCards headless>
-                                    <a-skeleton active />
-                                </sdCards>
-                            </template>
-                        </Suspense>
-                    </a-col>
-                    <!-- <a-col :xxl="8" :xl="12" :xs="24">
-                        <Suspense>
-                            <template #default>
-                                <SalesGrowth />
-                            </template>
-                            <template #fallback>
-                                <sdCards headless>
-                                    <a-skeleton active />
-                                </sdCards>
-                            </template>
-                        </Suspense>
-                    </a-col> -->
-                    <!-- <a-col :xxl="16" :xs="24">
-                        <Suspense>
-                            <template #default>
-                                <SalesByLocation />
-                            </template>
-                            <template #fallback>
-                                <sdCards headless>
-                                    <a-skeleton active />
-                                </sdCards>
-                            </template>
-                        </Suspense>
-                    </a-col> -->
-                    <!-- <a-col :xxl="12" :xs="24">
-                        <Suspense>
-                            <template #default>
-                                <TopSellingProduct />
-                            </template>
-                            <template #fallback>
-                                <sdCards headless>
-                                    <a-skeleton active />
-                                </sdCards>
-                            </template>
-                        </Suspense>
-                    </a-col> -->
-                    <!-- <a-col :xxl="12" :xs="24">
-                        <Suspense>
-                            <template #default>
-                                <BrowsersState />
-                            </template>
-                            <template #fallback>
-                                <sdCards headless>
-                                    <a-skeleton active />
-                                </sdCards>
-                            </template>
-                        </Suspense>
-                    </a-col> -->
-                </a-row>
+                        <a-col :xxl="8" :xl="8" :lg="24" :md="24" :sm="24" :xs="24">
+                            <MercadoPagoDashboardSummary />
+                        </a-col>
+                    </a-row>
+                </div>
             </Main>
         </div>
     </div>
@@ -141,6 +98,8 @@ import type { Invoiced, LastMonthInvoiced, SalesReportType } from '../types/Dash
 import dayjs from 'dayjs';
 import 'dayjs/locale/es'; // Importa la localización en español
 import { useSleepComposable } from '../composables/sleep/useSleepComposable';
+import OverviewCard from '@/app/components/cards/OverviewCard.vue';
+import MercadoPagoDashboardSummary from '@/app/components/mercadoPago/MercadoPagoDashboardSummary.vue';
 
 const { sleep } = useSleepComposable();
 dayjs.locale('es');
@@ -219,7 +178,7 @@ onBeforeMount(async () => {
             decimal: 0,
         };
 
-        const invoiced: Invoiced = await getLastMonthInvoiced(CompanyGetter.value.id);
+        const { data: invoiced } = await getLastMonthInvoiced(CompanyGetter.value.id);
 
         let variationPercentageCurrentToPrevious: number = 0;
         let variationPercentagePreviousToCurrent: number = 0;
@@ -258,7 +217,7 @@ onBeforeMount(async () => {
             prefix: '',
             label: `Facturado en ${previousMonth}`,
             growth: trendPreviousToCurrent,
-            growthRate: variationPercentagePreviousToCurrent.toFixed(2),
+            growthRate: Math.abs(variationPercentagePreviousToCurrent).toFixed(2),
             dataPeriod: 'Respecto al mes actual',
             decimal: 0,
         };
@@ -272,7 +231,7 @@ onBeforeMount(async () => {
             prefix: '',
             label: `Facturado en ${currentMonth}`,
             growth: trendCurrentToPrevious,
-            growthRate: variationPercentageCurrentToPrevious.toFixed(2),
+            growthRate: Math.abs(variationPercentageCurrentToPrevious).toFixed(2),
             dataPeriod: 'Respecto al mes anterior',
             decimal: 0,
         };
@@ -281,7 +240,8 @@ onBeforeMount(async () => {
 
         await sleep(1000);
 
-        salesReportData.value = await getDailySalesReport(CompanyGetter.value.id);
+        const { data: salesReport } = await getDailySalesReport(CompanyGetter.value.id);
+        salesReportData.value = salesReport;
     }
 });
 
@@ -295,4 +255,145 @@ onMounted(() => {
     }
 });
 </script>
-<style scoped></style>
+<style scoped>
+/* Superficie del tablero: gris muy suave para que las tarjetas blancas se lean
+   como tarjetas (antes eran blanco sobre blanco). Va SÓLO en esta pantalla. */
+.dash-wrap {
+    padding: 24px;
+    border-radius: 18px;
+    background: #f7f8fa;
+}
+
+.dash-wrap .ant-row {
+    row-gap: 24px;
+}
+
+/* Entre filas, el mismo ancho de separación que entre tarjetas (24px) */
+.dash-wrap > .ant-row + .ant-row {
+    margin-top: 24px;
+}
+
+/* --- Tarjetas KPI (restyling scoped: no toca la pantalla de recibos) --- */
+.dash-kpi :deep(.ninjadash-overview-card-box) {
+    height: 100%;
+    /* El componente del template trae margin-bottom: 25px; acá el espaciado lo
+       maneja el grid, así que se anula para que TODOS los gaps midan lo mismo. */
+    margin-bottom: 0 !important;
+}
+
+.dash-kpi :deep(.ninjadash-overview-card-box .ant-card) {
+    height: 100%;
+    border: 1px solid #efedf4;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(130, 49, 211, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dash-kpi :deep(.ninjadash-overview-card-box .ant-card:hover) {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(130, 49, 211, 0.14);
+}
+
+.dash-kpi :deep(.ant-card-body) {
+    padding: 22px 24px !important;
+}
+
+.dash-kpi :deep(.ninjadash-overview-card__top--icon) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(130, 49, 211, 0.1);
+    color: #8231d3;
+}
+
+.dash-kpi :deep(.ninjadash-overview-total) {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: #1b1b27;
+}
+
+.dash-kpi :deep(.ninjadahs-overview-label) {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.dash-kpi :deep(.ninjadash-overview-status) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dash-kpi :deep(.ninjadash-status-upward) {
+    background: rgba(14, 159, 110, 0.1);
+    color: #0e9f6e;
+}
+
+.dash-kpi :deep(.ninjadash-status-downward) {
+    background: rgba(224, 36, 36, 0.1);
+    color: #e02424;
+}
+
+.dash-kpi :deep(.ninjadash-status-rate) {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dash-kpi :deep(.ninjadash-status-label) {
+    font-weight: 500;
+    color: #8a8f9c;
+}
+
+/* --- Tarjetas de gráficos / paneles --- */
+.dash-charts :deep(.ant-card) {
+    border: 1px solid #efedf4;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(130, 49, 211, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dash-charts :deep(.ant-card:hover) {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px rgba(130, 49, 211, 0.14);
+}
+
+/* --- Entrada suave (sin dependencias: CSS, respetando reduced-motion) --- */
+.dash-wrap > .ant-row {
+    animation: dashEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.dash-wrap > .ant-row:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+@keyframes dashEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dash-wrap > .ant-row {
+        animation: none;
+    }
+
+    .dash-kpi :deep(.ant-card),
+    .dash-charts :deep(.ant-card) {
+        transition: none;
+    }
+}
+</style>

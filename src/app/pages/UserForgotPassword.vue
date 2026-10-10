@@ -43,9 +43,7 @@
                         >
                             Restablecer contraseña
                         </a-button>
-                        <p v-if="passwordMismatch" class="error-message">
-                            Las contraseñas no coinciden
-                        </p>
+                        <p v-if="passwordMismatch" class="error-message">Las contraseñas no coinciden</p>
                     </a-col>
                 </a-row>
             </MaintananceWrapper>
@@ -54,13 +52,13 @@
 </template>
 
 <script setup lang="ts">
-import { Main } from "../styled";
-import { MaintananceWrapper } from "./style";
-import { ref, computed, watch } from "vue";
-import { apiResetPassword } from "@/api/auth/email-verification-api";
-import { useSleepComposable } from "../composables/sleep/useSleepComposable";
-import { showNotification } from "@/app/helpers/notifications";
-import { useRoute } from "vue-router";
+import { Main } from '../styled';
+import { MaintananceWrapper } from './style';
+import { ref, computed, watch } from 'vue';
+import { apiResetPassword } from '@/api/auth/email-verification-api';
+import { useSleepComposable } from '../composables/sleep/useSleepComposable';
+import { showNotification } from '@/app/helpers/notifications';
+import { useRoute } from 'vue-router';
 
 const loading = ref<boolean>(false);
 const { sleep } = useSleepComposable();
@@ -69,8 +67,8 @@ const route = useRoute();
 const token = route.query.token;
 
 // Estado para almacenar la nueva contraseña y su confirmación
-const newPassword = ref<string>("");
-const confirmPassword = ref<string>("");
+const newPassword = ref<string>('');
+const confirmPassword = ref<string>('');
 
 // Estado para controlar la visibilidad de las contraseñas
 const showNewPassword = ref<boolean>(false);
@@ -80,37 +78,29 @@ const showConfirmPassword = ref<boolean>(false);
 const passwordMismatch = ref<boolean>(false);
 
 const isPasswordMatch = computed(() => {
-    return (
-        newPassword.value === confirmPassword.value &&
-        newPassword.value !== "" &&
-        confirmPassword.value !== ""
-    );
+    return newPassword.value === confirmPassword.value && newPassword.value !== '' && confirmPassword.value !== '';
 });
 const resetPassword = async () => {
     loading.value = true;
-    if (
-        newPassword.value !== "" &&
-        confirmPassword.value !== "" &&
-        newPassword.value === confirmPassword.value
-    ) {
+    if (newPassword.value !== '' && confirmPassword.value !== '' && newPassword.value === confirmPassword.value) {
         if (token) {
             try {
                 const response = await apiResetPassword(token, newPassword.value);
                 if (response.status === 200) {
                     showNotification(
-                        "success",
-                        "Contraseña restablecida",
-                        "Tu contraseña ha sido restablecida con éxito. Serás redirigido al inicio de sesión en 5 segundos.",
-                        5
+                        'success',
+                        'Contraseña restablecida',
+                        'Tu contraseña ha sido restablecida con éxito. Serás redirigido al inicio de sesión en 5 segundos.',
+                        5,
                     );
-                    window.location.href = "/auth/login";
+                    window.location.href = '/auth/login';
                 }
             } catch (error) {
                 showNotification(
-                    "error",
-                    "Error al restablecer la contraseña",
-                    "Hubo un problema al restablecer tu contraseña. Por favor, intenta de nuevo más tarde.",
-                    5
+                    'error',
+                    'Error al restablecer la contraseña',
+                    'Hubo un problema al restablecer tu contraseña. Por favor, intenta de nuevo más tarde.',
+                    5,
                 );
             } finally {
                 loading.value = false;

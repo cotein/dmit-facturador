@@ -3,6 +3,7 @@ import { B } from '@/app/pdf/invoices/B';
 import { C } from '@/app/pdf/invoices/C';
 import type { Invoice } from '@/app/pdf/invoices/Invoice';
 import type { InvoiceList } from '@/app/types/Invoice';
+import type { Item as PdfItem } from '@/app/types/Pdf';
 import { useCompanyComposable } from '../company/useCompanyComposable';
 
 export const usePrinterPdfComposable = () => {
@@ -39,11 +40,15 @@ export const usePrinterPdfComposable = () => {
     const createInvoicePdf = (invoice: InvoiceList) => {
         const invoicePdf = getPdfInvoice(invoice.voucher!.voucher_type);
 
+        // El DTO de InvoiceList declara menos campos de los que la API devuelve para cada item:
+        // los impresores necesitan iva_afip_code, iva_id y subtotal, que sí están en types/Pdf.
+        const items = invoice.items as unknown as PdfItem[];
+
         return new invoicePdf(
             invoice.company,
             invoice.customer,
             invoice.voucher,
-            invoice.items,
+            items,
             invoice.comment,
             CompanyGetter.value?.logo_base64,
         ) as Invoice;

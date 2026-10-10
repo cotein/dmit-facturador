@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, onMounted, ref, defineComponent } from 'vue';
 import { SaleLocationMap, LocationTableWrap } from './style';
-import WorldMap from '@/components/utilities/VectorMap.vue';
+import WorldMap from '@/app/components/charts/VectorMap.vue';
 import { useStore } from 'vuex';
 
 const sellingColumns = [

@@ -14,6 +14,12 @@ const addressStore = useAddressStore();
 
 interface Props {
     onlyCuit: boolean;
+    /**
+     * Modo compacto para formularios en dos columnas: en vez de un botón grande al costado,
+     * la búsqueda en el padrón queda como sufijo dentro del campo del CUIT. Por defecto queda
+     * apagado, así el alta de compañía sigue con el botón suelto de siempre.
+     */
+    inlineButton?: boolean;
 }
 
 const hasMoreThanOneResult = ref<boolean>(false);
@@ -24,6 +30,7 @@ const afipGetPersonForm = ref();
 
 const props = withDefaults(defineProps<Props>(), {
     onlyCuit: false,
+    inlineButton: false,
 });
 
 const { sujeto, sujetoIsEditable, clearSujetoData } = usePadronComposable();
@@ -201,7 +208,66 @@ onUnmounted(() => {
 const buttonSize = computed(() => (window.innerWidth <= 500 ? 'small' : 'large'));
 </script>
 <template>
+    <!--
+        Modo compacto: una sola columna, con el botón del padrón como sufijo del campo del CUIT.
+    -->
     <a-form
+        v-if="props.inlineButton"
+        class="afip-lookup afip-lookup--inline"
+        name="ninjadash_validation-form"
+        ref="afipGetPersonForm"
+        :model="sujeto"
+        :rules="rules"
+        layout="vertical"
+    >
+        <a-form-item name="cuit" ref="cuit" label="CUIT">
+            <a-input
+                :disabled="sujetoIsEditable"
+                v-model:value="sujeto.cuit"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="CUIT / CUIL / DNI"
+                @keypress="onlyNumeric"
+                @change="(e:any) => e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"
+                v-if="!hasMoreThanOneResult"
+            >
+                <template #suffix>
+                    <a-button
+                        type="primary"
+                        class="search-button search-button--suffix"
+                        :loading="loading"
+                        :disabled="sujetoIsEditable"
+                        aria-label="Buscar los datos del CUIT en el padrón"
+                        @click.prevent="getInfo"
+                    >
+                        <template #icon>
+                            <SearchOutlined />
+                        </template>
+                    </a-button>
+                </template>
+            </a-input>
+            <a-select
+                v-else
+                ref="select"
+                v-model:value="sujeto.cuit"
+                class="afip-lookup__select"
+                :loading="loading"
+                :disabled="sujetoIsEditable"
+                aria-label="Seleccionar el CUIT encontrado"
+                open
+            >
+                <a-select-option v-for="number in listPerson" :value="number" :key="number">{{
+                    number
+                }}</a-select-option>
+            </a-select>
+            <template #help>
+                <span class="help--message">Sólo se permiten números</span>
+            </template>
+        </a-form-item>
+    </a-form>
+
+    <a-form
+        v-else
         class="flex-container scale-down"
         name="ninjadash_validation-form"
         ref="afipGetPersonForm"
@@ -271,6 +337,53 @@ const buttonSize = computed(() => (window.innerWidth <= 500 ? 'small' : 'large')
 }
 .search-button {
     margin-top: 2rem;
+}
+
+/* Modo compacto: el ítem se apila (label arriba, campo abajo) y el botón entra en el sufijo. */
+.afip-lookup--inline .ant-form-item {
+    margin-bottom: 0;
+}
+
+.afip-lookup--inline .ant-form-item-label {
+    padding-bottom: 4px;
+}
+
+.afip-lookup--inline .ant-form-item-label > label {
+    height: auto;
+    font-size: 14px;
+    font-weight: 500;
+    color: #404040;
+}
+
+/* El campo deja lugar al botón, que ahora vive adentro. */
+.afip-lookup--inline .ant-input-affix-wrapper .ant-input {
+    padding-right: 4px;
+}
+
+.afip-lookup__select {
+    width: 100%;
+}
+
+.search-button--suffix {
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.search-button--suffix :deep(.anticon) {
+    margin: 0;
+}
+
+.search-button--suffix:focus-visible {
+    outline: 2px solid #8231d3;
+    outline-offset: 2px;
 }
 
 @media (max-width: 1280px) and (max-height: 768px) {

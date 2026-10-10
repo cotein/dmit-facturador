@@ -1,108 +1,73 @@
 <script setup lang="ts">
-import { ProductCard } from "../../Style";
-import { computed, toRefs, ref } from "vue";
-import { useProductComposable } from "@/app/composables/product/useProductComposable";
-import AddProduct from "@/app/components/product/new/AddProduct.vue";
+import { computed, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
+import { useProductComposable } from '@/app/composables/product/useProductComposable';
+import { useCategoryComposable } from '@/app/composables/category/useCategoryComposable';
+import { toProductForm } from '@/app/components/product/productFormModel';
+import type { ListProductItemWithCost } from '@/app/components/product/productFormModel';
+import type { ListProductPriceList } from '@/app/types/Product';
 
 const props = defineProps({
-    product_data: Object,
+    product_data: { type: Object, required: true },
 });
 
-const { productsListSpinner, product } = useProductComposable();
+const router = useRouter();
+
+const { product } = useProductComposable();
+const { rawCategories } = useCategoryComposable();
 
 const { product_data } = toRefs(props);
+const item = computed(() => product_data.value as ListProductItemWithCost);
 
-const renderData = computed(() => product_data?.value);
+const MAX_VISIBLE_PRICES = 3;
 
-const visibleModal = ref<boolean>(false);
+const priceLists = computed<ListProductPriceList[]>(() => item.value.lista_de_precios ?? []);
 
-const openModal = () => {
-    product.value = renderData;
-    setTimeout(() => {
-        visibleModal.value = true;
-    }, 250);
+const visiblePriceLists = computed(() => priceLists.value.slice(0, MAX_VISIBLE_PRICES));
+
+const hiddenPricesCount = computed(() => Math.max(0, priceLists.value.length - MAX_VISIBLE_PRICES));
+
+const categoryLabel = computed(() => {
+    const paths = item.value.category ?? [];
+
+    return paths
+        .map((path) => {
+            const id = Array.isArray(path) ? path[path.length - 1] : path;
+
+            return rawCategories.value.find((category) => category.id === Number(id))?.name ?? '';
+        })
+        .filter(Boolean)
+        .join(', ');
+});
+
+const meta = computed(() => [item.value.code, categoryLabel.value].filter(Boolean).join(' · '));
+
+const edit = () => {
+    product.value = toProductForm(item.value);
+    router.push({ name: 'EditProduct', params: { id: item.value.id } });
 };
 </script>
 
 <template>
-    <div class="spin" v-if="productsListSpinner"><a-spin /></div>
-    <ProductCard v-else class="list-view" :style="{ marginBottom: '20px' }">
-        <div class="product-list">
-            <a-row :gutter="15">
-                <!-- <a-col :md="24" :lg="6" :xs="24">
-                    <figure>
-                        <img :src="$environment.VITE_SRC_ASSETS + '/img/products/2.png'" :alt="renderData.slug" />
-                    </figure>
-                </a-col> -->
-                <a-col :md="24" :lg="12" :xs="24">
-                    <div class="product-single-description">
-                        <sdHeading class="product-single-title" as="h5">
-                            <!-- <router-link
-                                :to="`${matched[1].path}/ecommerce/productDetails/${renderData.id}`"
-                                >{{ renderData.name }}</router-link
-                            > -->
-                            {{ renderData?.name }}
-                        </sdHeading>
-                        <p>
-                            {{
-                                renderData.description
-                                    ? renderData.description
-                                    : "Éste producto no tiene descripción"
-                            }}
-                        </p>
-                    </div>
-                </a-col>
-                <a-col :md="24" :lg="6" :xs="24">
-                    <div class="product-single-info">
-                        <p>
-                            <!-- <span class="product-single-price__new">${{ renderData.name }} </span> -->
-                            <template v-if="renderData?.lista_de_precios.length">
-                                <template
-                                    v-for="(
-                                        price_list, index
-                                    ) in renderData.lista_de_precios"
-                                    :key="index"
-                                >
-                                    <span class="">
-                                        L. precio: {{ price_list.name }}
-                                        {{
-                                            $filters.formatCurrency(
-                                                parseFloat(price_list.sale_price)
-                                            )
-                                        }}
-                                    </span>
-
-                                    <br />
-                                </template>
-                            </template>
-                        </p>
-                        <div class="product-single-action">
-                            <!-- <button @click="goToUpdate">Editar</button> -->
-                            <a-button @click="openModal"> Editar </a-button>
-                            <a-modal
-                                v-model:visible="visibleModal"
-                                title="Editar informacion del producto"
-                                width="auto"
-                                class="custom-modal"
-                                :closable="false"
-                            >
-                                <template #footer>
-                                    <a-button key="back" @click="visibleModal = false">
-                                        Cancelar
-                                    </a-button>
-                                </template>
-                                <AddProduct />
-                            </a-modal>
-                        </div>
-                    </div>
-                </a-col>
-            </a-row>
+    <article class="product-row">
+        <div>
+            <h3 class="product-card__name">{{ item.name }}</h3>
+            <p class="product-card__meta">{{ meta || 'Sin código ni categoría' }}</p>
         </div>
-    </ProductCard>
-</template>
 
-<style scoped>
-.custom-modal .ant-modal-mask {
-    background-color: rgba(0, 0, 0, 0) !important;
-}
-</style>
+        <ul v-if="priceLists.length" class="product-row__prices">
+            <li v-for="priceList in visiblePriceLists" :key="priceList.pricelist_id">
+                <span>{{ priceList.name }}</span>
+                <b>{{ $filters.formatCurrency(Number(priceList.sale_price)) }}</b>
+            </li>
+            <li v-if="hiddenPricesCount">
+                <span>y {{ hiddenPricesCount }} más</span>
+            </li>
+        </ul>
+        <p v-else class="product-card__empty">Sin listas de precios: todavía no tiene precio de venta.</p>
+
+        <div class="product-card__actions">
+            <a-button :data-action="`edit-${item.id}`" @click="edit">Editar</a-button>
+        </div>
+    </article>
+</template>

@@ -1,3 +1,4 @@
+import type { AlicIva, CbteAsoc, PeriodoAsoc } from './../../../types/Afip';
 import type { ProductForNotaCredito } from '@/app/types/Product';
 import { AfipInvoiceBaseBuilder } from './AfipInvoiceBaseBuilder';
 
@@ -61,7 +62,7 @@ export class AfipNotaCreditoBBuiler extends AfipInvoiceBaseBuilder {
         this.FECAEDetRequest.ImpTotal = parseFloat(total.toFixed(2));
     }
 
-    setImpTrib(productsForNotaCredito: ProductForNotaCredito[]): void {
+    setImpTrib(impTrib: number): void {
         delete this.FECAEDetRequest.Tributos;
     }
 

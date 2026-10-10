@@ -36,7 +36,8 @@ export const getCustomers = async (
 
         return response.data; // Devuelve directamente el objeto con la estructura deseada
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };
 
@@ -86,7 +87,8 @@ export const getCustomerCuentaCorriente = async (
 
         return data;
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };
 
@@ -105,6 +107,7 @@ export const dashBoardTotalcustomers = async (company_id: number, dashboard: str
 
         return response.data; // Devuelve directamente el objeto con la estructura deseada
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };

@@ -1,7 +1,7 @@
 import type { Company, CompanyRawData, CBU } from '@/app/types/Company';
 import moment from 'moment';
 import { CUIT_ID } from '@/app/types/Constantes';
-import { defineStore, storeToRefs } from 'pinia';
+import { defineStore } from 'pinia';
 import { ref, computed, reactive, type UnwrapRef } from 'vue';
 import { useAddressStore } from '../address/address-store';
 

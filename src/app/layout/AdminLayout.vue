@@ -94,12 +94,16 @@ const onEventChange = {
                                         alt="logo"
                                     />
                                 </router-link>
-                                <a-button v-if="!topMenu || innerWidth <= 991" @click="toggleCollapsed" type="white">
-                                    <img
-                                        :src="$environment.VITE_SRC_ASSETS + `/img/icon/align-center-alt.svg`"
-                                        alt="menu"
-                                        width="20px"
-                                    />
+                                <a-button
+                                    v-if="!topMenu || innerWidth <= 991"
+                                    @click="toggleCollapsed"
+                                    type="white"
+                                    aria-label="Mostrar u ocultar el menú"
+                                >
+                                    <!-- Antes era una imagen (`/img/icon/align-center-alt.svg`) que ya no
+                                         existe en el repo: daba 404 en cada carga y el botón quedaba sin
+                                         ícono. El set de unicons no depende de assets. -->
+                                    <unicon name="bars" width="20"></unicon>
                                 </a-button>
                             </div>
                         </div>

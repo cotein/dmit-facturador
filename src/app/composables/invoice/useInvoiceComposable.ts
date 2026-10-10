@@ -2,7 +2,7 @@ import type { CustomerInvoice, CustomerOnSaleInvoice } from '@/app/types/Custome
 import type { FECAEDetRequest, FeCabReq, Ivas } from '@/app/types/Afip';
 import type { ProductForNotaCredito, ProductOnInvoiceTable } from '@/app/types/Product';
 import type { InvoiceList } from '@/app/types/Invoice';
-import { computed, isProxy } from 'vue';
+import { computed } from 'vue';
 import { FECAESolicitar } from '@/api/afip/afip-factura-electronica';
 import { storeToRefs } from 'pinia';
 import { useMutation } from '@tanstack/vue-query';
@@ -58,7 +58,7 @@ const IVA = computed(() => {
 
 const TotalComprobante = computed(() => {
     const totalComprobante = invoiceTableData.value.reduce((total: number, item: ProductOnInvoiceTable) => {
-        return total + item.total + item.percep_iva_import! + item.percep_iibb_import!;
+        return total + item.total + (item.percep_iva_import ?? 0) + (item.percep_iibb_import ?? 0);
     }, 0);
 
     return parseFloat(totalComprobante.toFixed(2));
@@ -127,6 +127,35 @@ export const useInvoiceComposable = () => {
     const { CompanyGetter } = useCompanyComposable();
 
     const { alicuotaPercepcion } = useArbaComposable();
+
+    /**
+     * Validación real de la venta.
+     *
+     * Antes el botón "Facturar" dependía de `invoiceConfigIsValidated`, que sólo se
+     * ponía en `true` al cerrar el drawer "Datos del cliente": si no lo abrías y
+     * cerrabas, el botón quedaba deshabilitado para siempre y sin explicar por qué.
+     *
+     * Ahora se deriva del estado de la venta y devuelve, además del booleano, la
+     * lista de lo que falta, para poder mostrarla al lado del botón y no sólo en un
+     * mensaje transitorio.
+     */
+    const invoiceValidation = computed<{ valid: boolean; blockers: string[] }>(() => {
+        const blockers: string[] = [];
+
+        if (invoice.value.voucher === null || invoice.value.voucher === undefined) {
+            blockers.push('Elegí el tipo de comprobante.');
+        }
+
+        if (invoiceTableData.value.length === 0) {
+            blockers.push('Agregá al menos un producto.');
+        }
+
+        if (!(Number(CompanyGetter.value?.pto_vta_fe) > 0)) {
+            blockers.push('Configurá el punto de venta de facturación electrónica en los datos de la empresa.');
+        }
+
+        return { valid: blockers.length === 0, blockers };
+    });
 
     invoiceStore.$subscribe(() => {
         invoiceTableData.value.forEach((item: ProductOnInvoiceTable) => {
@@ -231,12 +260,12 @@ export const useInvoiceComposable = () => {
                     console.log('🚀 ~ useInvoiceComposable ~ wwww:', data?.data);
                     if (Array.isArray(data.data.invoice) && data.data.invoice.length > 0) {
                         const newInvoice = data.data.invoice[0];
-                        if (isProxy(invoiceList.value)) {
-                            const list = JSON.parse(JSON.stringify(invoiceList.value));
-                            list.unshift(newInvoice);
-                            invoiceList.value = list;
-                        } else {
-                            invoiceList.value.unshift(newInvoice);
+
+                        // El listado local espera la forma completa del comprobante y el
+                        // endpoint devuelve lo emitido sin tipar: el assert vive acá, en el
+                        // borde, en vez de arrastrar un error de tipos al resto del archivo.
+                        if (newInvoice) {
+                            invoiceList.value.unshift(newInvoice as unknown as (typeof invoiceList.value)[number]);
                         }
                     }
                 }
@@ -285,6 +314,7 @@ export const useInvoiceComposable = () => {
         insertProductOnInvoiceTable,
         invoice,
         invoiceConfigIsValidated,
+        invoiceValidation,
         InvoiceGetter,
         invoiceInitialStatus,
         invoiceTableData,

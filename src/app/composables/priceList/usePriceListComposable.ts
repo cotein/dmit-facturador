@@ -1,10 +1,8 @@
 import { usePriceListStore } from '@/app/store/price-list/usePriceListStore';
 import { storeToRefs } from 'pinia';
 import { message } from 'ant-design-vue';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { getPriceList, savePriceList, updatePriceList } from '@/api/priceList/price-list-api';
-import type { AxiosResponse } from 'axios';
-import type { PriceList } from '@/app/types/PriceList';
 
 const store = usePriceListStore();
 
@@ -12,59 +10,45 @@ const { PriceListGetter, priceListForTransferComponent } = storeToRefs(store);
 
 const { setPriceList, setPriceListTranferData, addPriceListToListPriceList } = store;
 
-const extractPriceList = async (company_id: number) => {
-    console.log('🚀 ~ file: usePriceListComposable.ts:17 ~ extractPriceList ~ company_id:', company_id);
-    const { data: priceList } = await getPriceList(company_id);
-
-    setPriceList(priceList);
-};
-
 export const usePriceListComposable = (company_id: number) => {
     const queryClient = useQueryClient();
+
+    /**
+     * Relee el listado desde la API y deja el store y el cache en el mismo
+     * estado. Se resuelve de forma imperativa (sin `useQuery`) para que
+     * funcione igual desde un handler o desde un hook de ciclo de vida.
+     */
     const fetchPriceList = async () => {
         try {
-            const { isLoading, data } = await useQuery(['price-list'], async () => await getPriceList(company_id), {
-                onSuccess(data: AxiosResponse<PriceList[]>) {
-                    setPriceList(data.data);
-                    setPriceListTranferData(data.data);
-                },
-                staleTime: 1000 * 60 * 60,
-            });
+            const { data } = await getPriceList(company_id);
+
+            setPriceList(data);
+            setPriceListTranferData(data);
+            queryClient.setQueryData(['price-list'], data);
+
             return data;
         } catch (error) {
-            console.error('Error fetching price list:', error);
+            console.log('🚀 ~ usePriceListComposable ~ fetchPriceList ~ error:', error);
             throw error;
         }
     };
 
     const { mutateAsync, isLoading } = useMutation(savePriceList, {
-        onSuccess: async (data) => {
-            console.log('🚀 ~ file: usePriceListComposable.ts:26 ~ onSuccess: ~ data:', data?.data);
-            message.success('La lista de precios fue ingresada');
-            queryClient.setQueryData<PriceList[]>(['price-list'], (oldData) => {
-                console.log('🚀 ~ file: usePriceListComposable.ts:41 ~ queryClient.setQueryData ~ oldData:', oldData);
-                if (!oldData) {
-                    return data?.data;
-                }
-
-                return [...oldData.data, data.data];
-            });
-
-            const query = await queryClient.getQueryData(['price-list']);
-            console.log('🚀 ~ file: usePriceListComposable.ts:49 ~ onSuccess: ~ query:', query);
-            setPriceList(query);
-            setPriceListTranferData(query);
+        onSuccess: async () => {
+            message.success('La lista de precios fue creada.');
+            await fetchPriceList();
         },
-        onError: async (error, data) => {
-            console.log('🚀 ~ file: usePriceListComposable.ts:29 ~ onError: ~ error:', error.message);
-
-            message.error(error.message);
+        onError: async (error) => {
+            console.log('🚀 ~ usePriceListComposable ~ onError:', error instanceof Error ? error.message : error);
         },
     });
 
     const { mutateAsync: modifyPriceListAsync, isLoading: modifyPriceListLoading } = useMutation(updatePriceList, {
-        onSuccess: async (data) => {
-            await extractPriceList(company_id);
+        onSuccess: async () => {
+            await fetchPriceList();
+        },
+        onError: async (error) => {
+            console.log('🚀 ~ usePriceListComposable ~ onError:', error instanceof Error ? error.message : error);
         },
     });
 
@@ -77,5 +61,6 @@ export const usePriceListComposable = (company_id: number) => {
         modifyPriceListAsync,
         modifyPriceListLoading,
         priceListForTransferComponent,
+        addPriceListToListPriceList,
     };
 };

@@ -15,6 +15,7 @@ export const getBanks = async (name: string | null = null): Promise<AxiosRespons
 
         return response;
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };

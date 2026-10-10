@@ -32,8 +32,7 @@
             "node"
         ],
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "verbatimModuleSyntax": true
+        "allowSyntheticDefaultImports": true
     },
     "files": [
         "env.d.ts",

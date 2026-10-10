@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import type { PropType } from 'vue';
-import { customTooltips, chartLinearGradient } from '@/components/utilities/utilities';
-import Cards from '@/components/cards/frame/CardsFrame.vue';
+import { customTooltips, chartLinearGradient } from '@/app/components/charts/utilities';
+import Cards from '@/app/components/cards/frame/CardsFrame.vue';
 import { BorderLessHeading } from '../../styled';
 import { SalesReportWrapper, ChartContainer } from './style';
-import Chart from '@/components/utilities/Chartjs.vue';
+import Chart from '@/app/components/charts/Chartjs.vue';
 import type { SalesReportType } from '@/app/types/DashBoard';
 import { formatCurrency } from '@/app/helpers/formatCurrency';
 const salesReport = defineComponent({
@@ -124,29 +124,47 @@ const salesReport = defineComponent({
             ];
         });
 
+        // Ejes en formato corto: antes el eje Y mostraba "$7.400.000,00" once
+        // veces y el X las 31 fechas del mes, que es puro ruido.
+        const formatoEjeY = (valor: number) => {
+            const abs = Math.abs(Number(valor) || 0);
+
+            if (abs >= 1000000) {
+                return `$${(valor / 1000000).toLocaleString('es-AR', { maximumFractionDigits: 1 })}M`;
+            }
+
+            if (abs >= 1000) {
+                return `$${Math.round(valor / 1000)}K`;
+            }
+
+            return `$${Math.round(valor)}`;
+        };
+
+        const formatoEjeX = (etiqueta: string) => {
+            const partes = String(etiqueta).match(/^(\d{2})-(\d{2})-\d{4}$/);
+
+            return partes ? `${partes[1]}/${partes[2]}` : String(etiqueta);
+        };
+
         const scales = {
             y: {
                 grid: {
-                    color: '#E3E6EF',
-                    borderDash: [3, 3],
-                    zeroLineColor: '#E3E6EF',
-                    zeroLineWidth: 1,
-                    zeroLineBorderDash: [3, 3],
+                    color: '#F0F0F5',
                     drawTicks: false,
                     drawBorder: false,
                     borderWidth: 0,
                 },
                 ticks: {
                     beginAtZero: true,
+                    maxTicksLimit: 6,
                     font: {
-                        size: 14,
+                        size: 12,
                         family: "'Jost', sans-serif",
                     },
-                    color: '#747474',
-                    stepSize: 20,
-                    padding: 15,
-                    callback: function (value: any, index: any, ticks: any) {
-                        return formatCurrency(value);
+                    color: '#8A8F9C',
+                    padding: 12,
+                    callback: function (value: any) {
+                        return formatoEjeY(Number(value));
                     },
                 },
             },
@@ -155,19 +173,25 @@ const salesReport = defineComponent({
                 offset: true,
                 grid: {
                     display: false,
-                    zeroLineWidth: 0,
-                    drawTicks: true,
+                    drawTicks: false,
                     drawBorder: false,
                     color: 'transparent',
-                    z: 1,
                 },
                 ticks: {
-                    beginAtZero: true,
+                    autoSkip: true,
+                    maxTicksLimit: 7,
+                    maxRotation: 0,
                     font: {
-                        size: 14,
+                        size: 12,
                         family: "'Jost', sans-serif",
                     },
-                    color: '#747474',
+                    color: '#8A8F9C',
+                    callback: function (value: any) {
+                        const etiqueta =
+                            typeof this?.getLabelForValue === 'function' ? this.getLabelForValue(value) : value;
+
+                        return formatoEjeX(etiqueta);
+                    },
                 },
             },
         };

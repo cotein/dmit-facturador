@@ -23,6 +23,48 @@ export type Product = {
     view_price: boolean;
 };
 
+/**
+ * Paginación que devuelve GET /api/product (snake_case, distinta de la que usa
+ * el listado de facturas en types/Invoice.ts).
+ */
+export type ProductPagination = {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from?: number;
+    to?: number;
+};
+
+/**
+ * Modelo del formulario de alta/edición de producto.
+ * `category` son los caminos que devuelve el cascader múltiple (number[][]) y
+ * `price_list` son los ids de las listas de precios tildadas, no los objetos
+ * que el listado devuelve en `lista_de_precios`.
+ */
+export type ProductForm = {
+    id?: number;
+    apply_discount: boolean;
+    apply_discount_amount: number;
+    apply_discount_percentage: number;
+    category: number[][];
+    code: string;
+    cost: number;
+    critical_stock: number;
+    discount_amount: number;
+    discount_percentage: number;
+    iva: number;
+    meters_by_unity: number;
+    name: string;
+    pictures: [];
+    price_list: (number | string)[];
+    priority: number;
+    published_here: boolean;
+    quantity: number;
+    sale_by_meter: boolean;
+    view_price: boolean;
+};
+
 export type ProductOnInvoiceTable = {
     key: string;
     row: string;
@@ -128,6 +170,36 @@ export type ListProductItem = {
     apply_discount_amount: number;
     apply_discount_percentage: number;
     see_price_on_the_web: boolean | null;
-    price_list: ListProductPriceList[];
+    /**
+     * El listado devuelve los ids de las listas asignadas en `price_list` y el
+     * detalle de cada una (con `sale_price`) en `lista_de_precios`.
+     */
+    price_list: (number | string)[];
+    lista_de_precios?: ListProductPriceList[];
+    /** Caminos de categorías tal como los devuelve el cascader múltiple. */
+    category?: number[][];
     iva: ListProductIva;
+};
+
+/**
+ * Producto tal como lo devuelve `GET /api/product` sin `list`: el catálogo entero
+ * como array plano.
+ *
+ * Es lo que consume el buscador del modo mostrador: no se pagina y se filtra en
+ * memoria, así que necesita el `code` (para poder tipear o escanear el código) y
+ * las filas de cada lista de precios (`lista_de_precios`) para resolver el precio
+ * de la lista que eligió la venta sin pedir nada más al servidor.
+ *
+ * La API histórica devuelve `iva` como objeto y `price_list` como ids, mientras
+ * que los tipos de arriba describen `price_list` como ids y `iva` como objeto: de
+ * ahí el `Omit`, que deja las dos formas declaradas en un solo tipo.
+ */
+export type PosProduct = Omit<Product, 'category' | 'iva'> & {
+    id: number;
+    active?: boolean;
+    code?: string | null;
+    cost?: number;
+    category?: number[][] | CategoryRawData[] | null;
+    iva?: ListProductIva | number | null;
+    lista_de_precios?: ListProductPriceList[];
 };

@@ -6,7 +6,7 @@ export type CategoryRawData = {
     id: number;
     name: string;
     parent_id: number | null | undefined;
-    slug: string | undefined;
+    slug: string | null | undefined;
 };
 
 export type Category = CategoryRawData & {

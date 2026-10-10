@@ -5,7 +5,7 @@ const reportsAxios = axios.create({
     baseURL: import.meta.env.VITE_API_REPORTS_URL, // Reemplaza con la URL base de la API de reportes
 });
 
-axios.interceptors.request.use(
+reportsAxios.interceptors.request.use(
     function (config) {
         if (config.url?.includes('api')) {
             config.headers['Accept'] = 'application/json';

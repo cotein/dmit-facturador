@@ -1,8 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import { ApiHttp } from '../base-api';
 import type { ErrorData } from '@/app/types/Request';
-import type { ListProductItem, Product } from '@/app/types/Product';
-import type { Pagination } from '@/app/types/Invoice';
+import type { ListProductItem, Product, ProductPagination } from '@/app/types/Product';
 
 const URL = '/api/product';
 
@@ -72,7 +71,7 @@ export const getProducts = async (
 
 type ProductListWithPagination = {
     data: ListProductItem[];
-    pagination: Pagination;
+    pagination: ProductPagination;
 };
 export const fetchProducts = async (
     company_id: number | undefined,

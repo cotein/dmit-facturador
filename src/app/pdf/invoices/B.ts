@@ -374,4 +374,54 @@ export class B extends Invoice {
 
         this.cleanTempDivsWithCommentsToConverterImages();
     }
+
+    // Faltaba: la clase base lo declara abstracto y A y C ya lo tenían.
+    // Sin esto, pedir el PDF de una factura B (por ejemplo para enviarla por email) fallaba en runtime.
+    async getFilePdf(): Promise<any> {
+        this.printStructure(this.typeB);
+
+        this.printProducts();
+
+        this.printHorizontalLineAfterLastProduct();
+
+        if (this.comment != '' && this.comment != null) {
+            await this.convertCommentsToImage(this.comment);
+        }
+
+        this.printPageNumber(this.typeB);
+
+        this.cae(this.voucher!.cae, this.voucher!.cae_fch_vto);
+
+        this.printAfipQr(
+            1,
+            this.dateFormatted(this.voucher!.cbte_fch, 'YYYY-MM-DD'),
+            parseInt(this.company!.cuit, 10),
+            parseInt(this.voucher!.pto_vta, 10),
+            parseInt(this.voucher!.voucher_type_afip_code, 10),
+            parseInt(this.voucher!.cbte_desde, 10),
+            this.voucher!.total,
+            'PES',
+            1,
+            parseInt(String(this.customer!.afipDocTipo), 10),
+            parseInt(this.customer!.cuit, 10),
+            'E',
+            parseInt(this.voucher!.cae, 10),
+        );
+
+        this.afipLogo();
+
+        this.afipLegend();
+
+        await this.printCommentImage(this.typeB);
+
+        const customer_name = `${this.customer?.name} ${this.customer?.last_name ? this.customer?.last_name : ''}`;
+
+        const fileName = `${customer_name} - ${this.customer?.cuit} ${this.voucher?.name} ${this.voucher?.pto_vta}-${this.voucher?.cbte_desde}.pdf`;
+
+        const file = this.pdf.output('datauristring', { filename: fileName });
+
+        this.cleanTempDivsWithCommentsToConverterImages();
+
+        return Promise.resolve(file);
+    }
 }

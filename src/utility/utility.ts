@@ -14,6 +14,9 @@ const ellipsis = (text: string, size: number) => {
  */
 
 const idGenerator = (data: any[], length: number = 1) => {
+    if (data.length === 0) {
+        return '1'.padStart(length, '0');
+    }
     const arrayData: number[] = [];
     data.map((data: any) => {
         return arrayData.push(parseInt(data.id, 10));

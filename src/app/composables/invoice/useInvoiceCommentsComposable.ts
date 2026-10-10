@@ -16,9 +16,11 @@ export const useInvoiceCommentsComposable = () => {
     const { isLoading, data } = useQuery(
         ['invoice-list', currentPage, itemsPerPage, customer],
         async () => {
+            const companyId = CompanyGetter.value?.id;
+            if (!companyId) return;
             return await getInvoiceComments(
-                CompanyGetter.value!.id!,
-                customer.value?.value!,
+                companyId,
+                customer.value?.value ?? null,
                 currentPage.value,
                 itemsPerPage.value,
             );

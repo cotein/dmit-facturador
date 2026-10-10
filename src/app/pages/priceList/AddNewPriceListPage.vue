@@ -1,10 +1,7 @@
 <template>
-    <div>
-        <sdPageHeader title="Ingresar Lista de precios" class="ninjadash-page-header-main"> </sdPageHeader>
-        <Main>
-            <AddNewPriceListForm />
-        </Main>
-    </div>
+    <Main>
+        <AddNewPriceListForm />
+    </Main>
 </template>
 
 <script setup lang="ts">

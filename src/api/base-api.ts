@@ -13,7 +13,11 @@ axios.interceptors.request.use(
 
             config.headers['Accept'] = 'application/json';
 
-            config.headers['Authorization'] = `${user.token_type} ${user.access_token}`;
+            // Solo se firma el pedido cuando hay sesión: antes esto rompía con
+            // "Cannot read properties of undefined" si el token no estaba cargado.
+            if (user?.token_type && user?.access_token) {
+                config.headers['Authorization'] = `${user.token_type} ${user.access_token}`;
+            }
 
             if (config.url.includes('upload')) {
                 config.headers['Content-Type'] = 'multipart/form-data';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { FormValidationWrap, VerticalFormStyleWrap } from '@/views/forms/overview/Style';
-import { Main, DatePickerWrapper } from '@/views/styled';
+import { FormValidationWrap, VerticalFormStyleWrap } from '@/app/styles/formsStyle';
+import { Main, DatePickerWrapper } from '@/app/styled';
 import { ref, watch, defineEmits, onMounted } from 'vue';
 import locale from 'ant-design-vue/es/date-picker/locale/es_ES';
 import AddressForm from '../address/AddressForm.vue';
@@ -97,14 +97,43 @@ const onSubmit = async () => {
         if (!lastNameIsRequired.value) {
             delete rules.lastName;
         }
+
+        // El CUIT vive en el store del padrón (sujeto) y la regla de validación lo busca en
+        // companyForm: sin esta copia, la regla 'required' del CUIT falla siempre al dar de alta
+        // una compañía. Solo pisamos el valor cuando el padrón tiene un CUIT cargado, para no
+        // romper la edición de una compañía existente.
+        const cuitDelPadron = (sujeto.value.cuit ?? '').toString().trim();
+        if (cuitDelPadron !== '') {
+            companyForm.value.cuit = cuitDelPadron;
+        }
+
         const validate = await companyFormRef.value!.validate().catch((error: any) => {
+            // Sin esto, cuando falla una regla de un campo que no está en este formulario
+            // (por ejemplo el CUIT, que se valida en el formulario del padrón) la única pista
+            // era el mensaje genérico de abajo.
+            console.log('🚀 ~ onSubmit ~ campos que fallaron:', error?.errorFields);
+            const fallado = error?.errorFields?.[0];
+            const campo = Array.isArray(fallado?.name) ? fallado.name.join('.') : '';
+            const motivo = fallado?.errors?.[0] ?? '';
             showMessage('error', 'Error al validar el formulario', 3);
+            if (campo) {
+                showMessage('warning', `Revisá el campo ${campo}: ${motivo}`, 5);
+            }
         });
 
         if (validate) {
-            companyForm.value.cuit = sujeto.value.cuit;
-
             companyForm.value.address = addressInStore.value;
+
+            // Los datos bancarios son opcionales: las filas que quedaron vacías no se envían,
+            // así no se crea una cuenta en blanco en el servidor ni se borran las ya cargadas.
+            companyForm.value.cbus = companyForm.value.cbus.filter((cuenta: CBU) =>
+                Boolean(
+                    (cuenta?.cbu ?? '').toString().trim() ||
+                        (cuenta?.ctaCte ?? '').toString().trim() ||
+                        (cuenta?.alias ?? '').toString().trim() ||
+                        cuenta?.bank_id,
+                ),
+            );
 
             let inscription: any = companyForm.value.inscription;
 
@@ -214,38 +243,64 @@ const addAccount = () => {
     }
 };
 
-const cbuSchema = z.object({
-    alias: z.string().optional(),
-    bank_id: z
-        .number()
-        .optional()
-        .refine(
-            (val) => {
-                //console.log(val); // Imprime el valor de val
-                return val !== undefined;
-            },
-            {
-                message: 'El Banco es requerido',
-            },
-        ),
-    // bank: z.string().optional(),
-    cbu: z
-        .string()
-        .nonempty('El CBU es requerido')
-        .refine((val) => val.length === 22, {
-            message: 'El CBU debe tener 22 caracteres de longitud',
-        }),
-    ctaCte: z.string().nonempty('El número de cuenta es requerido'),
-});
+const cbuSchema = z
+    .object({
+        // El alias es opcional y admite null: el store inicializa cada cuenta con null y antes eso
+        // rechazaba la validación sin mostrar ningún mensaje en pantalla.
+        alias: z.string().nullish(),
+        // Banco, CBU y cuenta corriente son opcionales: la compañía se puede guardar sin datos
+        // bancarios y cargarlos después, cuando haga falta.
+        bank_id: z.number().nullish(),
+        cbu: z.string().nullish(),
+        ctaCte: z.string().nullish(),
+    })
+    .superRefine((cuenta, ctx) => {
+        const cbu = (cuenta.cbu ?? '').toString().trim();
+        const tieneBanco = cuenta.bank_id !== undefined && cuenta.bank_id !== null;
+
+        // Fila vacía: no hay nada que validar y tampoco se va a enviar al servidor.
+        if (cbu === '' && !tieneBanco) {
+            return;
+        }
+
+        // Si se empieza a cargar la cuenta, se pide completa: banco y CBU de 22 dígitos.
+        if (!tieneBanco) {
+            ctx.addIssue({
+                path: ['bank_id'],
+                code: z.ZodIssueCode.custom,
+                message: 'Elegí el banco de la cuenta',
+            });
+        }
+        if (cbu === '') {
+            ctx.addIssue({
+                path: ['cbu'],
+                code: z.ZodIssueCode.custom,
+                message: 'Completá el CBU de 22 dígitos',
+            });
+        } else if (cbu.length !== 22) {
+            ctx.addIssue({
+                path: ['cbu'],
+                code: z.ZodIssueCode.custom,
+                message: 'El CBU debe tener 22 caracteres de longitud',
+            });
+        }
+    });
 
 const hasDuplicateCBU = (arr: Array<CBU>) => {
     const cbuSet = new Set();
 
     for (const item of arr) {
-        if (cbuSet.has(item.cbu)) {
+        const cbu = (item?.cbu ?? '').toString().trim();
+
+        // Las filas vacías no cuentan: antes dos cuentas vacías daban "Los CBU deben ser únicos".
+        if (cbu === '') {
+            continue;
+        }
+
+        if (cbuSet.has(cbu)) {
             return true; // Encontrado un valor de CBU repetido
         }
-        cbuSet.add(item.cbu);
+        cbuSet.add(cbu);
     }
     return false; // No se encontraron valores de CBU repetidos
 };
@@ -413,7 +468,7 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         <a-form-item
                                             ref="cbu"
                                             name="cbu"
-                                            label="CBU - Necesario para Facturas MiPyme"
+                                            label="CBU (opcional, necesario para Facturas MiPyme)"
                                             :help="cbuErrors[0][0]"
                                             :validateStatus="cbuErrors[0][0] ? 'error' : 'success'"
                                         >
@@ -481,7 +536,7 @@ const hasDuplicateCBU = (arr: Array<CBU>) => {
                                         <a-form-item
                                             :ref="'cbu_' + index"
                                             :name="'cbu_' + index"
-                                            label="CBU - Necesario para Facturas MiPyme"
+                                            label="CBU (opcional, necesario para Facturas MiPyme)"
                                             :help="cbuErrors[index + 1][0]"
                                             :validateStatus="cbuErrors[index + 1][0] ? 'error' : 'success'"
                                         >

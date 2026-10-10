@@ -42,7 +42,8 @@ export const getPriceList = async (company_id: number): Promise<AxiosResponse<Pr
 
         return response;
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };
 
@@ -52,6 +53,7 @@ export const updatePriceList = async (priceList: PriceList): Promise<AxiosRespon
 
         return response;
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };

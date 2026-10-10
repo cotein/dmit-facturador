@@ -71,7 +71,7 @@
 </template>
 <script setup lang="ts">
 import { Main } from '@/app/styled';
-import Cards from '@/components/cards/frame/CardsFrame.vue';
+import Cards from '@/app/components/cards/frame/CardsFrame.vue';
 import { reactive, ref, onBeforeMount } from 'vue';
 import { useCategoryComposable } from '@/app/composables/category/useCategoryComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';

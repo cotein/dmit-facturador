@@ -408,7 +408,7 @@ export class A extends Invoice {
         );
 
         const totalInvoice = this.items?.reduce((total: number, item: Item) => {
-            return total + (item.total ?? 0) + item.percep_iibb_import! + item.percep_iva_import!;
+            return total + (item.total ?? 0) + (item.percep_iibb_import ?? 0) + (item.percep_iva_import ?? 0);
         }, 0);
 
         this.pdf.text(

@@ -11,7 +11,7 @@ export const saveCategory = async (category: CategoryRawData): Promise<AxiosResp
         return response;
     } catch (error) {
         console.log('🚀 ~ file: login-api.ts:13 ~ Login ~ error:', error);
-        throw new Error('hubo un error saveCategory');
+        throw error;
     }
 };
 
@@ -32,6 +32,7 @@ export const getCategories = async (
 
         return response;
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };

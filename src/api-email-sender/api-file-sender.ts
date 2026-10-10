@@ -6,7 +6,7 @@ const emailSenderAxios = axios.create({
     baseURL: import.meta.env.VITE_API_EMAIL_SENDER_URL, // Reemplaza con la URL base de la API de reportes
 });
 
-axios.interceptors.request.use(
+emailSenderAxios.interceptors.request.use(
     function (config) {
         if (config.url?.includes('api')) {
             config.headers['Accept'] = 'application/json';

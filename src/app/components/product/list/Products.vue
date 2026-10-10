@@ -1,110 +1,169 @@
 <script setup lang="ts">
-import { onMounted, ref, defineAsyncComponent, onBeforeMount } from 'vue';
+import { computed, onBeforeMount, onMounted, provide, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Main } from '../../../styled';
-import { TopToolBox } from '../Style';
+import { getCategories } from '@/api/category/category-api';
+import { CatalogPage } from '@/app/styles/catalogAdminStyle';
+import { PRODUCT_FILTERS_KEY } from './overview/useProductFilters';
 import { useProductComposable } from '@/app/composables/product/useProductComposable';
+import { usePaginationComposable } from '@/app/composables/pagination/usePaginationComposable';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-
-const Filters = defineAsyncComponent(() => import('./overview/Filters.vue'));
-const pageRoutes = [
-    {
-        path: '/',
-        breadcrumbName: 'Dashboard',
-    },
-    {
-        path: 'demo-one',
-        breadcrumbName: 'Products',
-    },
-];
+import { useCategoryComposable } from '@/app/composables/category/useCategoryComposable';
+import type { Category } from '@/app/types/Category';
 
 const { CompanyGetter } = useCompanyComposable();
-
 const { useFetchProducts } = useProductComposable();
-//const searchData = computed(() => state.headerSearchData.data);
-const { matched } = useRoute();
+const { totalItems } = usePaginationComposable();
+const { CategoriesGetter, rawCategories, transform_categories, setCategories } = useCategoryComposable();
 
-const { path } = matched[1];
-
+const route = useRoute();
 const router = useRouter();
 
-const active = ref('active');
+const listPath = computed(() => route.matched[1]?.path ?? '/sistema/productos');
+const viewMode = computed<'grilla' | 'listado'>(() => (route.path.endsWith('/listado') ? 'listado' : 'grilla'));
 
-const onSorting = (e: any) => {
-    //dispatch('sorting', e.target.value);
+/* ---------------------------------------------------------------- filtros */
+const search = ref('');
+const categoryId = ref<number | undefined>(undefined);
+
+provide(PRODUCT_FILTERS_KEY, { search, categoryId });
+
+const flattenCategories = (tree: Category[], depth = 0): { value: number; label: string }[] =>
+    tree.flatMap((node) => [
+        { value: Number(node.id), label: `${'\u00A0\u00A0'.repeat(depth)}${node.name}` },
+        ...flattenCategories(node.children ?? [], depth + 1),
+    ]);
+
+const categoryOptions = computed(() => flattenCategories(CategoriesGetter.value));
+
+const hasActiveFilters = computed(() => search.value.trim() !== '' || categoryId.value !== undefined);
+
+const clearFilters = () => {
+    search.value = '';
+    categoryId.value = undefined;
 };
-const sortDefault = ref('rate');
-const innerWidth = ref(window.innerWidth);
 
-onBeforeMount(async () => {
-    if (CompanyGetter.value && CompanyGetter.value.id) {
+/**
+ * Las categorías se piden de forma imperativa: el listado las necesita para
+ * los nombres de cada producto y para el filtro, sin depender de otro observer.
+ */
+const loadCategories = async () => {
+    const id = CompanyGetter.value?.id;
+
+    if (!id) {
+        return;
+    }
+
+    const { data } = await getCategories(id, 0);
+
+    rawCategories.value = data;
+    setCategories(transform_categories(data));
+};
+
+onBeforeMount(() => {
+    if (CompanyGetter.value?.id) {
         useFetchProducts(CompanyGetter.value.id);
     }
 });
-onMounted(() => {
-    router.push(`${path}/grilla`);
+
+onMounted(async () => {
+    if (!route.matched[2]) {
+        router.push(`${listPath.value}/grilla`);
+    }
+
+    await loadCategories();
 });
 </script>
 
 <template>
-    <sdPageHeader title="Shop pp" class="ninjadash-page-header-main" :routes="pageRoutes"></sdPageHeader>
     <Main>
-        <a-row :gutter="30">
-            <!-- <a-col class="product-sidebar-col" :xxl="5" :xl="7" :lg="7" :md="10" :xs="24">
-                <Suspense>
-                    <template #default>
-                        <Filters />
-                    </template>
-                    <template #fallback>
-                        <sdCards headless>
-                            <a-skeleton :paragraph="{ rows: 22 }" active />
-                        </sdCards>
-                    </template>
-                </Suspense>
-            </a-col>-->
-            <a-col class="product-content-col" :xxl="19" :lg="17" :md="14" :xs="24">
-                <TopToolBox>
-                    <a-row :gutter="0">
-                        <a-col :xxl="7" :lg="12" :xs="24">
-                            <!-- <sdAutoComplete :dataSource="[]" placeholder="Search" width="100%" patterns /> -->
-                            <h3>Listado de productos</h3>
-                        </a-col>
-                        <!--  <a-col :xxl="7" :lg="12" :xs="24">
-                            <p class="search-result">Showing 1–8 of 86 results</p>
-                        </a-col> -->
-                        <a-col :xxl="10" :xs="24">
-                            <div class="product-list-action d-flex justify-content-between align-items-center">
-                                <!-- <div class="product-list-action__tab">
-                                    <span class="toolbox-menu-title"> Status:</span>
-                                    <a-radio-group @change="onSorting" v-model:value="sortDefault">
-                                        <a-radio-button value="rate">Top Rated</a-radio-button>
-                                        <a-radio-button value="popular">Popular</a-radio-button>
-                                        <a-radio-button value="time">Newest</a-radio-button>
-                                        <a-radio-button value="price">Price</a-radio-button>
-                                    </a-radio-group>
-                                </div> -->
+        <CatalogPage class="catalog-page products-page">
+            <header class="page-head">
+                <a-breadcrumb>
+                    <a-breadcrumb-item>
+                        <router-link :to="{ name: 'Dashboard' }">Inicio</router-link>
+                    </a-breadcrumb-item>
+                    <a-breadcrumb-item>Productos</a-breadcrumb-item>
+                </a-breadcrumb>
 
-                                <div
-                                    v-if="(innerWidth <= 991 && innerWidth >= 768) || innerWidth > 575"
-                                    class="product-list-action__viewmode"
-                                >
-                                    <a-tooltip title="Ver en grilla">
-                                        <router-link :to="`${path}/grilla`">
-                                            <unicon name="apps" width="16"></unicon>
-                                        </router-link>
-                                    </a-tooltip>
-                                    <a-tooltip title="Ver en listado">
-                                        <router-link :to="`${path}/listado`">
-                                            <unicon name="list-ul" width="16"></unicon>
-                                        </router-link>
-                                    </a-tooltip>
-                                </div>
-                            </div>
-                        </a-col>
-                    </a-row>
-                </TopToolBox>
-                <router-view name="grid"></router-view>
-            </a-col>
-        </a-row>
+                <div class="page-head__row">
+                    <div>
+                        <h1 class="page-head__title">Productos</h1>
+                        <p class="page-head__sub">
+                            <span class="num">{{ totalItems }}</span>
+                            {{ totalItems === 1 ? 'producto' : 'productos' }} en el catálogo
+                        </p>
+                    </div>
+                    <a-button type="primary" data-action="new-product" @click="router.push({ name: 'AddProduct' })">
+                        Cargar producto
+                    </a-button>
+                </div>
+            </header>
+
+            <div class="catalog-surface">
+                <div class="toolbar">
+                    <a-input-search
+                        v-model:value="search"
+                        class="toolbar__search"
+                        placeholder="Buscar por nombre o código"
+                        allow-clear
+                        data-field="product-search"
+                    />
+
+                    <a-select
+                        v-model:value="categoryId"
+                        class="toolbar__select"
+                        placeholder="Todas las categorías"
+                        :options="categoryOptions"
+                        allow-clear
+                        show-search
+                        option-filter-prop="label"
+                        data-field="product-category-filter"
+                    />
+
+                    <a-button v-if="hasActiveFilters" type="link" data-action="clear-filters" @click="clearFilters">
+                        Limpiar filtros
+                    </a-button>
+
+                    <span class="toolbar__spacer"></span>
+
+                    <div class="view-toggle" role="group" aria-label="Forma de ver el listado">
+                        <router-link
+                            :to="`${listPath}/grilla`"
+                            :class="{ 'is-active': viewMode === 'grilla' }"
+                            title="Ver en grilla"
+                        >
+                            <unicon name="apps" width="16"></unicon>
+                            <span class="visually-hidden">Ver en grilla</span>
+                        </router-link>
+                        <router-link
+                            :to="`${listPath}/listado`"
+                            :class="{ 'is-active': viewMode === 'listado' }"
+                            title="Ver en listado"
+                        >
+                            <unicon name="list-ul" width="16"></unicon>
+                            <span class="visually-hidden">Ver en listado</span>
+                        </router-link>
+                    </div>
+                </div>
+
+                <div class="results-view">
+                    <router-view name="grid"></router-view>
+                </div>
+            </div>
+        </CatalogPage>
     </Main>
 </template>
+
+<style scoped>
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+</style>

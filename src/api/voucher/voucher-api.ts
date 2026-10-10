@@ -25,9 +25,13 @@ export const getVouchers = async (
 
         return data;
     } catch (error) {
+        // Antes, un error que no fuera de Axios salía de la función devolviendo
+        // `undefined`: quien llamaba recibía datos vacíos en vez de enterarse de que
+        // la lista de comprobantes no se pudo traer. Ahora siempre se propaga.
         if (ApiHttp.isAxiosError<ErrorData, Record<string, unknown>>(error)) {
-            const errorMessage = error.response?.data.message;
-            throw new Error(errorMessage);
+            throw new Error(error.response?.data.message ?? 'No se pudieron obtener los comprobantes.');
         }
+
+        throw error instanceof Error ? error : new Error('No se pudieron obtener los comprobantes.');
     }
 };

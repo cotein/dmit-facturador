@@ -74,7 +74,7 @@ export const getReceipts = async (
         return response;
     } catch (error) {
         console.log('🚀 ~ error:', error);
-        throw new Error();
+        throw error;
     }
 };
 

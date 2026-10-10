@@ -19,10 +19,12 @@ export const useReceiptListComposable = () => {
     const { isLoading, data } = useQuery(
         ['receipt-list', currentPage, itemsPerPage, customer, status_id, from, to],
         async () => {
+            const companyId = CompanyGetter.value?.id;
+            if (!companyId) return;
             return await getReceipts(
-                CompanyGetter.value!.id!,
-                customer.value?.value!,
-                status_id.value!,
+                companyId,
+                customer.value?.value ?? null,
+                status_id.value ?? null,
                 from.value,
                 to.value,
                 currentPage.value,
@@ -30,7 +32,6 @@ export const useReceiptListComposable = () => {
             );
         },
         {
-            cacheTime: Infinity,
             onSuccess(data) {
                 console.log('🚀 ~ useReceiptListComposable ~ data:', data);
                 receiptList.value = data.data;

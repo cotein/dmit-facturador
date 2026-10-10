@@ -104,10 +104,10 @@
 <script setup lang="ts">
 import { BorderLessHeading, TableDefaultStyle } from '../../../styled';
 import { ref } from 'vue';
-import { TopSellerWrap } from '../../../../views/dashboard/style';
+import { TopSellerWrap } from '@/app/pages/dashBoard/style';
 import { TopToolBox } from '../Style';
 import { useCompanyComposable } from '@/app/composables/company/useCompanyComposable';
-import Cards from '../../../../components/cards/frame/CardsFrame.vue';
+import Cards from '@/app/components/cards/frame/CardsFrame.vue';
 import CustomerAfipNumber from '../list/tableFields/CustomerAfipNumber.vue';
 import CustomerDocumentType from '../list/tableFields/CustomerDocumentType.vue';
 import CustomerName from '../list/tableFields/CustomerName.vue';

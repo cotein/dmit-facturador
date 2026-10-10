@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
-import Cards from '@/components/cards/frame/CardsFrame.vue';
+import Cards from '@/app/components/cards/frame/CardsFrame.vue';
 import { BrowserStateWrap } from './style';
 import { BorderLessHeading, TableDefaultStyle } from '../../styled';
 

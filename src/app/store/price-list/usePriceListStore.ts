@@ -7,22 +7,24 @@ export const usePriceListStore = defineStore('price-list', () => {
 
     const priceListForTransferComponent = ref<PriceListTranferData[]>([]);
 
+    /**
+     * Reemplaza el array completo en cada carga: acumular con push duplicaba
+     * todas las listas cada vez que se volvía a pedir el listado.
+     */
     const setPriceListTranferData = (list: PriceList[]) => {
-        list.map((priceList: PriceList) => {
-            priceListForTransferComponent.value.push({
-                key: String(priceList.value),
-                title: priceList.label ?? '',
-                profit_percentage: priceList.profit_percentage,
-            });
-        });
+        priceListForTransferComponent.value = (list ?? []).map((priceList: PriceList) => ({
+            key: String(priceList.value),
+            title: priceList.label ?? '',
+            profit_percentage: priceList.profit_percentage,
+        }));
     };
 
     const setPriceList = (value: PriceList[]) => {
         priceList.value = value;
     };
 
-    const addPriceListToListPriceList = (value: any) => {
-        priceList.value.push(value);
+    const addPriceListToListPriceList = (value: PriceList) => {
+        priceList.value = [...priceList.value, value];
     };
 
     return {

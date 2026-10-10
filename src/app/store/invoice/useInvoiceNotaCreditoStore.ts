@@ -1,7 +1,7 @@
 import type { InvoiceList } from '@/app/types/Invoice';
 import type { ProductForNotaCredito } from '@/app/types/Product';
 import { defineStore } from 'pinia';
-import { ref, reactive, toRaw } from 'vue';
+import { ref } from 'vue';
 
 //También se utiliza para notas de débitos
 export const useInvoiceNotaCreditoStore = defineStore('invoice-nota-credito', () => {

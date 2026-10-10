@@ -1,6 +1,6 @@
 import type { Address } from '@/app/types/Address';
 import { defineStore, storeToRefs } from 'pinia';
-import { computed, reactive, ref } from 'vue';
+import { ref } from 'vue';
 import { useAfipStateStore } from '../afip/states-store';
 
 export const useAddressStore = defineStore('address', () => {

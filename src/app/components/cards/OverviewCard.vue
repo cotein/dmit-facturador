@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { OverviewCard } from './style';
 import Vue3Autocounter from 'vue3-autocounter';
-import { formatCurrency } from '@/app/helpers/formatCurrency';
+
 const props = defineProps({
     ocData: {
         type: Object,
@@ -10,13 +10,13 @@ const props = defineProps({
             id: '1',
             type: 'primary',
             icon: 'briefcase-alt',
-            total: '31',
+            total: '100',
             suffix: '+',
             prefix: '',
-            label: 'Productos',
+            label: 'Total Products',
             growth: 'downward',
             growthRate: '15.65',
-            dataPeriod: 'Desde el último mes',
+            dataPeriod: 'Since Last Month',
             decimal: 0,
         }),
     },
@@ -30,12 +30,21 @@ const props = defineProps({
     },
     halfCircleIcon: {
         type: Boolean,
-        default: true,
+        default: false,
+    },
+    // Formato de miles/decimales configurable: el dashboard usa el de es-AR
+    // ("12.047.954"); el default queda como estaba para el resto de las pantallas.
+    separator: {
+        type: String,
+        default: ',',
+    },
+    decimalSeparator: {
+        type: String,
+        default: '.',
     },
 });
 
 const didViewCountUp = ref(false);
-
 onMounted(() => {
     setTimeout(() => {
         didViewCountUp.value = true;
@@ -74,8 +83,8 @@ onMounted(() => {
                                     :duration="2"
                                     :prefix="ocData.prefix"
                                     :suffix="ocData.suffix"
-                                    separator="."
-                                    decimalSeparator=","
+                                    :separator="separator"
+                                    :decimalSeparator="decimalSeparator"
                                     :decimals="ocData.decimal"
                                     :autoinit="true"
                                 ></vue3-autocounter>
@@ -90,8 +99,8 @@ onMounted(() => {
                                     :duration="2"
                                     :prefix="ocData.prefix"
                                     :suffix="ocData.suffix"
-                                    separator="."
-                                    decimalSeparator=","
+                                    :separator="separator"
+                                    :decimalSeparator="decimalSeparator"
                                     :decimals="ocData.decimal"
                                     :autoinit="true"
                                 ></vue3-autocounter>

@@ -1,20 +1,22 @@
 <template>
     <div class="cart-single-quantity">
-        <sdButton class="btn-dec" type="default" @click="down">
+        <button type="button" class="btn-dec" aria-label="Restar una unidad" @click="down">
             <unicon name="minus" width="14"></unicon>
-        </sdButton>
+        </button>
+        <!-- Sin `v-model`: el valor lo escribe sólo `input()`, que valida. Con v-model,
+             el campo vacío entraba al modelo antes de que la guarda pudiera restaurarlo. -->
         <a-input
+            :value="invoiceTableData[props.index].quantity"
             @input="input"
             @keypress="onlyNumericInputEvent"
             inputmode="numeric"
-            v-model:value="invoiceTableData[props.index].quantity"
             class="custom--input"
             @focus="selectText"
         />
         <!-- {{ invoiceTableData[props.index].quantity }} -->
-        <sdButton class="btn-inc" type="default" @click="up">
+        <button type="button" class="btn-inc" aria-label="Sumar una unidad" @click="up">
             <unicon name="plus" width="14"></unicon>
-        </sdButton>
+        </button>
     </div>
 </template>
 
@@ -46,8 +48,19 @@ const up = () => {
 
 const input = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    invoiceTableData.value[props.index].quantity = parseFloat(target.value);
-    console.log('🚀 ~ input ~ target.value:', target.value);
+    const value = Number(target.value.replace(',', '.'));
+    const line = invoiceTableData.value[props.index];
+
+    // Un campo vacío dejaba `parseFloat('') === NaN` en el modelo y rompía los totales
+    // del comprobante sin forma de recuperarlos. Si el valor no sirve se restaura el
+    // último válido en el input, en vez de escribir basura en el modelo.
+    if (!Number.isFinite(value) || value < 1) {
+        target.value = String(line.quantity);
+
+        return;
+    }
+
+    line.quantity = value;
 };
 </script>
 
@@ -56,5 +69,22 @@ const input = (e: Event) => {
     width: 5rem;
     text-align: center;
     padding: 6px 5px;
+}
+
+/* `sdButton` no está registrado como componente: renderizaba un elemento sin
+   semántica ni foco de teclado. Ahora son <button> reales con el mismo aspecto
+   (el tamaño, el radio y el hover salen de .btn-inc / .btn-dec en main.css). */
+.btn-dec,
+.btn-inc {
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.btn-dec:focus-visible,
+.btn-inc:focus-visible {
+    outline: 2px solid #8231d3;
+    outline-offset: 1px;
 }
 </style>

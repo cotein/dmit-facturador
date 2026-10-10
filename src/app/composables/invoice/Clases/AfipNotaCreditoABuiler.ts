@@ -57,7 +57,7 @@ export class AfipNotaCreditoABuiler extends AfipInvoiceBaseBuilder {
 
     setImpTotal(productsForNotaCredito: ProductForNotaCredito[]): void {
         const total = productsForNotaCredito.reduce((acc, item) => {
-            return acc + item.total + item.percep_iibb_import! + item.percep_iva_import!;
+            return acc + item.total + (item.percep_iibb_import ?? 0) + (item.percep_iva_import ?? 0);
         }, 0);
 
         this.FECAEDetRequest.ImpTotal = parseFloat(total.toFixed(2));

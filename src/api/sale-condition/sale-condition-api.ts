@@ -14,6 +14,7 @@ export const getSaleConditions = async (company_id: number): Promise<AxiosRespon
 
         return response;
     } catch (error) {
-        throw new Error();
+        console.log('🚀 ~ error:', error);
+        throw error;
     }
 };

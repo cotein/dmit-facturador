@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { TopMenuStyle } from './style';
-import { inlineSvg } from '@/components/utilities/utilities';
+import { inlineSvg } from '@/app/components/charts/utilities';
 
 onMounted(() => {
     const active: any = document.querySelector('.ninjadash-top-menu a.active');

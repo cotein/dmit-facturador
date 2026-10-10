@@ -7,8 +7,8 @@ const getItem = (key: string): string | object => {
     }
 };
 
-const setItem = (key: string, value: string) => {
-    const stringify = typeof value !== 'string' ? JSON.stringify(value) : value;
+const setItem = (key: string, value: unknown) => {
+    const stringify = typeof value !== 'string' ? JSON.stringify(value) ?? '' : value;
     return localStorage.setItem(key, stringify);
 };
 

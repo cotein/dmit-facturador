@@ -9,8 +9,6 @@ import '@/core/plugins/apexcharts';
 import '@/core/plugins/fonts';
 import '@/core/plugins/ckEditor';
 import '@/core/plugins/maps';
-import '@/core/components/custom';
-import '@/core/components/style';
 import { VueQueryPlugin } from '@tanstack/vue-query';
 import { createPinia } from 'pinia';
 import { SearchOutlined } from '@ant-design/icons-vue';
@@ -21,6 +19,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
 import vue3GoogleLogin from 'vue3-google-login';
+import { formatCurrency } from './app/helpers/formatCurrency';
 
 app.use(createPinia());
 
@@ -42,23 +41,7 @@ app.config.globalProperties.$filters = {
     afipDate(date: any) {
         return moment(date).format('YYYYMMDD');
     },
-    formatCurrency(value: number, useToFixed: boolean = true) {
-        if (value === null) {
-            return '';
-        }
-
-        let formattedValue = value.toString();
-
-        if (useToFixed) {
-            formattedValue = value
-                .toFixed(2)
-                .replace(/\./g, ',')
-                .replace(/\d(?=(\d{3})+,)/g, '$&.');
-        } else {
-            formattedValue = formattedValue.replace(/\./g, ',').replace(/\d(?=(\d{3})+,)/g, '$&.');
-        }
-        return `$${formattedValue}`;
-    },
+    formatCurrency,
     formatNumberWithThousandsSeparator(value: number) {
         if (value === null || value === undefined) {
             return '';
